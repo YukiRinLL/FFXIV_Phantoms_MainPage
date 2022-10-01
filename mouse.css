@@ -1,0 +1,15 @@
+/* 修改鼠标样式为图片 */
+/**{*/
+/*    cursor:url('https://images.cnblogs.com/cnblogs_com/SutsuharaYuki/1470910/o_miku1.png'), auto;*/
+/*}*/
+/*a{*/
+/*    cursor:url('https://images.cnblogs.com/cnblogs_com/SutsuharaYuki/1470910/o_miku2.png'), auto;*/
+/*}*/
+
+
+*{
+    cursor:url(HG.cur), auto;
+}
+a{
+    cursor:url(DY.cur), auto;
+}

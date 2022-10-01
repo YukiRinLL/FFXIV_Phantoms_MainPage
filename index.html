@@ -26,12 +26,19 @@
   <link rel="stylesheet" href="assets/theme/css/style.css">
   <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css" type="text/css">
 
+    <link rel="stylesheet" href="mouse.css">
 </head>
 
 
 
 
 <body>
+
+
+<!--&lt;!&ndash; 背景线段动画 &ndash;&gt;-->
+<!--&lt;!&ndash;Yuki:20190724&ndash;&gt;-->
+<!--<canvas id="c_n" width="1920" height="990" style=" opacity: 1;"></canvas>-->
+<!--<script src="canvas-nest.min.js"></script>-->
 
 <section class="menu cid-s48OLK6784" once="menu" id="menu1-h">
     <nav class="navbar navbar-dropdown navbar-fixed-top navbar-expand-lg">
@@ -53,7 +60,7 @@
                 </div>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true"><li class="nav-item dropdown"><a class="nav-link link text-white text-primary dropdown-toggle display-4" href="#" data-toggle="dropdown-submenu" aria-expanded="false">HOME</a><div class="dropdown-menu"><a class="text-white text-primary dropdown-item display-4" href="index.html#top" aria-expanded="false">Top</a><a class="text-white text-primary dropdown-item display-4" href="index.html#features14-t">FCに関して</a></div></li><li class="nav-item dropdown"><a class="nav-link link text-white text-primary dropdown-toggle display-4" href="#" aria-expanded="true" data-toggle="dropdown-submenu">FC関連</a><div class="dropdown-menu"><a class="text-white text-primary dropdown-item display-4" href="#" aria-expanded="false">FCの歴史</a></div></li></ul>
+                <ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true"><li class="nav-item dropdown"><a class="nav-link link text-white text-primary dropdown-toggle display-4" href="#" data-toggle="dropdown-submenu" aria-expanded="false">HOME</a><div class="dropdown-menu"><a class="text-white text-primary dropdown-item display-4" href="index.html#top" aria-expanded="false">Top</a><a class="text-white text-primary dropdown-item display-4" href="index.html#features14-t">FCに関して</a></div></li><li class="nav-item dropdown"><a class="nav-link link text-white text-primary dropdown-toggle display-4" href="#" aria-expanded="true" data-toggle="dropdown-submenu">FC関連</a><div class="dropdown-menu"><a class="text-white text-primary dropdown-item display-4" href="page1.html#" aria-expanded="false">FCの歴史</a></div></li></ul>
                 <div class="icons-menu">
                     <a class="iconfont-wrapper" href="https://jp.finalfantasyxiv.com/lodestone/freecompany/9227453424017171422/" target="_blank">
                         <span class="p-2 mbr-iconfont mobi-mbri-file mobi-mbri" style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255);"></span>
@@ -67,21 +74,19 @@
     </nav>
 </section>
 
-<!--
-<section class="header1 cid-s48MCQYojq mbr-fullscreen" id="header1-logo">
-    <div class="mbr-overlay" style="opacity: 0.7; background-color: rgb(53, 53, 53);">
-        <img class="mbr-overlay" src="assets/images/logo.jpg" style="width: 100%; height: 100%; object-fit: contain; opacity: 1">
-    </div>
-</section>
--->
 
+<!--<section class="header1 cid-s48MCQYojq mbr-fullscreen" id="header1-logo">-->
+<!--&lt;!&ndash;section class="header1 cid-s48MCQYojq mbr-fullscreen" data-bg-video="https://youtu.be/AF2NrrJB8zA" id="header1-f"&ndash;&gt;-->
+<!--    <div class="mbr-overlay" style="opacity: 1; background-color: rgb(255, 255, 255);">-->
+<!--        <img class="mbr-overlay" src="assets/images/logo.jpg" style="width: 100%; height: 100%; max-width: 100%; object-fit: contain; opacity: 1">-->
+<!--    </div>-->
+<!--</section>-->
+
+
+<!--<section class="image3 cid-seogusrmXz" id="header1-f" >-->
 <section class="header1 cid-s48MCQYojq mbr-fullscreen" id="header1-f" >
-<!--section class="header1 cid-s48MCQYojq mbr-fullscreen" data-bg-video="https://youtu.be/AF2NrrJB8zA" id="header1-f"-->
-    <div class="mbr-overlay" style="opacity: 0.7; background-color: rgb(255, 255, 255);">
-<!--        style="width: 100%; height: 500px; max-width: 100%；align:center; padding:20px 0;-->
-        <video autoplay muted loop style="width: 100%; height: 100%; object-fit: contain">
-            <source src="vedio.mp4" type="video/mp4">
-        </video>
+    <div class="mbr-overlay" style="opacity:0.15; background-color: rgb(255, 255, 255);">
+        <img class="mbr-overlay" src="assets/images/WC.PNG" style="max-width: 100%; align:center; padding:20px 0;">
     </div>
     <div class="align-center container-fluid">
         <div class="row justify-content-center">
@@ -89,7 +94,21 @@
                 <h1 class="mbr-section-title mbr-fonts-style mb-3 display-1"><strong>Phantoms</strong></h1>
 
                 <p class="mbr-text mbr-fonts-style display-7">Freecompany and Cross-world Linkshell</p>
-                <div class="mbr-section-btn mt-3"><a class="btn btn-success display-4" href="index.html#features14-t">もっと知る</a></div>
+                <div class="mbr-section-btn mt-3"><a class="btn btn-success display-4" href="index.html#features14-t">More</a></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="image3 cid-seogusrmXz" id="logo">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="image-wrapper">
+                <a href="https://jp.finalfantasyxiv.com/lodestone/community_finder/ff45ab8a78cd67e766cd1f943f70e368b0b11c04/" target="_blank">
+                    <img src="assets/images/logo.jpg" alt="a cup of tea card" style="max-width: 100%; align:center; padding:20px 0;">
+                </a>
+                <p class="mbr-description mbr-fonts-style mt-2 align-center display-4">コミュニティファインダー</p>
             </div>
         </div>
     </div>
@@ -101,7 +120,13 @@
         <div class="row justify-content-center">
             <div class="col-12 col-lg-10">
                 <div class="image-wrapper">
-                    <a href="https://jp.finalfantasyxiv.com/lodestone/community_finder/ff45ab8a78cd67e766cd1f943f70e368b0b11c04/" target="_blank"><img src="assets/images/logo.jpg" alt="a cup of tea card"></a>
+                    <a href="https://jp.finalfantasyxiv.com/lodestone/community_finder/ff45ab8a78cd67e766cd1f943f70e368b0b11c04/" target="_blank">
+                        <!--        style="width: 100%; height: 500px; max-width: 100%; align:center; padding:20px 0;"-->
+                        <!--        <video autoplay muted loop style="width: 100%; height: 100%; object-fit: contain">-->
+                        <video autoplay muted loop style="width: 100%; max-width: 100%; align:center; padding:20px 0;">
+                            <source src="vedio.mp4" type="video/mp4">
+                        </video>
+                    </a>
                     <p class="mbr-description mbr-fonts-style mt-2 align-center display-4">コミュニティファインダー</p>
                 </div>
             </div>
@@ -115,7 +140,9 @@
         <div class="row justify-content-center">
             <div class="col-12 col-lg-10">
                 <div class="image-wrapper">
-                    <a href="https://jp.finalfantasyxiv.com/lodestone/community_finder/ff45ab8a78cd67e766cd1f943f70e368b0b11c04/" target="_blank"><img src="assets/images/community-card.png" alt="a cup of tea card"></a>
+                    <a href="https://jp.finalfantasyxiv.com/lodestone/community_finder/ff45ab8a78cd67e766cd1f943f70e368b0b11c04/" target="_blank">
+                        <img src="assets/images/community-card.png" alt="a cup of tea card" style="width: 100%; max-width: 100%; align:center; padding:20px 0;">
+                    </a>
                     <p class="mbr-description mbr-fonts-style mt-2 align-center display-4">コミュニティファインダー</p>
                 </div>
             </div>
@@ -124,11 +151,7 @@
 </section>
 
 
-
 <section class="features13 cid-seeRGZBhsx" id="features14-t">
-
-
-
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -161,9 +184,6 @@
                     </div>
                 </div>
             </div>
-
-
-
         </div>
     </div>
 </section>
@@ -190,28 +210,14 @@
 </section>
 
 <section class="share3 cid-seeJd7VvmR" id="share3-o">
-
-
-
-
-
     <div class="container">
         <div class="media-container-row">
             <div class="col-12">
                 <h3 class="mbr-section-title align-center mb-3 mbr-fonts-style display-2"><strong>Social Link</strong></h3>
                 <div class="social-list align-center">
-
-
                         <a class="iconfont-wrapper bg-twitter m-2" href="https://mobiri.se" target="_blank">
                             <span class="socicon-twitter socicon"></span>
                         </a>
-
-
-
-
-
-
-
                         <a class="iconfont-wrapper bg-youtube m-2" href="https://www.youtube.com/channel/UCBnJJhHW79EWznmZLKjLR8Q" target="_blank">
                             <span class="socicon-youtube socicon" style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255);"></span>
                         </a>
@@ -238,8 +244,136 @@
             </div>
         </div>
     </div>
-</section><section style="background-color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif; color:#aaa; font-size:12px; padding: 0; align-items: center; display: flex;"><a href="https://mobirise.site/n" style="flex: 1 1; height: 3rem; padding-left: 1rem;"></a><p style="flex: 0 0 auto; margin:0; padding-right:1rem;">Page was <a href="https://mobirise.site/g" style="color:#aaa;">designed</a> with Mobirise</p></section><script src="assets/web/assets/jquery/jquery.min.js"></script>  <script src="assets/popper/popper.min.js"></script>  <script src="assets/tether/tether.min.js"></script>  <script src="assets/bootstrap/js/bootstrap.min.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/ytplayer/jquery.mb.ytplayer.min.js"></script>  <script src="assets/vimeoplayer/jquery.mb.vimeo_player.js"></script>  <script src="assets/dropdown/js/nav-dropdown.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/touchswipe/jquery.touch-swipe.min.js"></script>  <script src="assets/theme/js/script.js"></script>
+</section>
+
+<section style="background-color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif; color:#aaa; font-size:12px; padding: 0; align-items: center; display: flex;"><a href="https://mobirise.site/n" style="flex: 1 1; height: 3rem; padding-left: 1rem;"></a><p style="flex: 0 0 auto; margin:0; padding-right:1rem;">Page was <a href="https://mobirise.site/g" style="color:#aaa;">designed</a> with Mobirise</p></section><script src="assets/web/assets/jquery/jquery.min.js"></script>  <script src="assets/popper/popper.min.js"></script>  <script src="assets/tether/tether.min.js"></script>  <script src="assets/bootstrap/js/bootstrap.min.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/ytplayer/jquery.mb.ytplayer.min.js"></script>  <script src="assets/vimeoplayer/jquery.mb.vimeo_player.js"></script>  <script src="assets/dropdown/js/nav-dropdown.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/touchswipe/jquery.touch-swipe.min.js"></script>  <script src="assets/theme/js/script.js"></script>
 
 
 </body>
+
+
+
+
+
+<!--回到顶部按钮-->
+<!--Yuki:20190724-->
+<style>
+    .box{
+        position:fixed;
+        right:20px;
+        bottom: 480px;
+        height:30px;
+        width: 50px;
+        text-align:center;
+        padding-top:20px;
+        background-color: black;
+        border-radius: 20%;
+        overflow: hidden;
+    }.box:hover:before{
+         top:50%
+     }.box:hover .box-in{
+          visibility: hidden;
+      }.box:before{
+           position: absolute;
+           top: -50%;
+           left: 50%;
+           transform: translate(-50%,-50%);
+           content:'TOP';
+           width: 40px;
+           color:white;
+           font-weight:bold;
+       }.box-in{
+            visibility: visible;
+            display:inline-block;
+            height:20px;
+            width: 20px;
+            border: 3px solid black;
+            border-color: white transparent transparent white;
+            transform:rotate(45deg);
+        }
+</style>
+<div id="box" class="box">
+    <div class="box-in"></div>
+</div>
+<script>
+    var timer  = null;
+    box.onclick = function(){
+        cancelAnimationFrame(timer);
+        timer = requestAnimationFrame(
+            function fn(){
+                var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+                if(oTop > 0){
+                    document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+                    timer = requestAnimationFrame(fn);
+                }
+                else{
+                    cancelAnimationFrame(timer);
+                }
+            }
+        );
+    }
+</script>
+
+<!--更改网页标题-->
+<!--Yuki:20190724-->
+<title>标题</title>
+<script>
+    document.title = '(ノ￣▽￣) Phantoms !'
+</script>
+<!--网页标题(title)动态改变-->
+<!--离开和回到当前页 网页标题改变-->
+<script>
+    window.onload = function () {
+        var OriginTitile = document.title;
+        var titleTime;
+        document.addEventListener('visibilitychange', function () {
+            if (document.hidden) {
+                $('[rel="shortcut icon"]').attr('href', "/Content/Images/fail.ico");
+                document.title = '( * ￣▽￣)／肿么不看了呢？';
+                clearTimeout(titleTime);
+            }
+            else {
+                $('[rel="shortcut icon"]').attr('href', "/Content/Images/icon.png");
+                // document.title = '(～￣▽￣)～咦！又开始看了！' + OriginTitile;
+                document.title = '(～￣▽￣)～咦！又开始看了！';
+                titleTime = setTimeout(function () {
+                    document.title = OriginTitile;
+                }, 2000);
+            }
+        });
+    }
+</script>
+
+<!--text click effect-->
+<!--Yuki:20190724-->
+<script type="text/javascript">
+    var a_idx = 0;
+    jQuery(document).ready(function($) {
+        $("body").click(function(e) {
+            var a = new Array("朧月","十六夜","花鳥風月","黄昏","花筏","雪月花","花吹雪","秋晴れ","冬枯れ","さようなら");
+            var $i = $("<span></span>").text(a[a_idx]);
+            a_idx = (a_idx + 1) % a.length;
+            var x = e.pageX,
+                y = e.pageY;
+            $i.css({
+                "z-index": 999999999999999999999999999999999999999999999999999999999999999999999,
+                "top": y - 20,
+                "left": x,
+                "position": "absolute",
+                "font-weight": "bold",
+                "color": "rgb("+~~(255*Math.random())+","+~~(255*Math.random())+","+~~(255*Math.random())+")"
+            });
+            $("body").append($i);
+            $i.animate({
+                    "top": y - 180,
+                    "opacity": 0
+                },
+                1500,
+                function() {
+                    $i.remove();
+                });
+        });
+    });
+</script>
+
 </html>
