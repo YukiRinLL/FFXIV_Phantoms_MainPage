@@ -128,28 +128,40 @@ https://bzy.mocca-works.site/#/
 
 
 
-
-
-FFXIV Interactive Map
-https://map.wakingsands.com/#f=area&id=92
-
-
-FFXIV Squadron 冒险者小队数值计算器
-http://ffxivsquadron.com/
-
-Universalis 市场价格
-https://universalis.app/
-
-
-
-xivsim 模拟器
-https://www.xivsim.com/game/
-
 Ariyala's Final Fantasy XIV Toolkit 配装
 https://ffxiv.ariyala.com/
 
-dlunch's ffxiv tools
-https://ffxiv.dlunch.net/
+最终幻想14配装器-素素
+https://gearing.ffsusu.com/
+
+ffxiv-gearing
+https://asvel.github.io/ffxiv-gearing/
+
+FFXIV Cactpot Solver
+http://super-aardvark.github.io/yuryu/
+
+
+
+
+
+lOGS
+https://cn.fflogs.com/
+
+xivanalysis 警察网
+Xivanalysis.com
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 XIV Mod Archive
 https://www.xivmodarchive.com/
@@ -160,13 +172,39 @@ http://www.guabot.com/
 ACT
 https://advancedcombattracker.com/
 
+
+
 [大合奏！]项目发布页 – Livehouse-猫铃-
 https://blog.ffxiv.cat/download/
 
 Midi Repository
 https://bmp.trotlinebeercan.com/
 
-FFXIV Cactpot Solver
-http://super-aardvark.github.io/yuryu/
 
-lOGS 警察网
+
+
+
+
+
+Universalis 市场价格
+https://universalis.app/
+
+
+
+
+
+FFXIV Interactive Map
+https://map.wakingsands.com/#f=area&id=92
+
+
+FFXIV Squadron 冒险者小队数值计算器
+http://ffxivsquadron.com/
+
+xivsim 模拟器
+https://www.xivsim.com/game/
+
+
+
+dlunch's ffxiv tools
+https://ffxiv.dlunch.net/
+
