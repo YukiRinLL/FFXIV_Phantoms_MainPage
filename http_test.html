@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>选择最快的页面</title>
+  <style>
+body {
+font-family: Arial, sans-serif;
+text-align: center;
+margin: 20px;
+}
+#loadingMessage {
+font-size: 24px;
+font-weight: bold;
+color: blue;
+}
+</style>
+</head>
+<body>
+<h1>选择最快的页面</h1>
+<div id="loadingMessage">正在检测...</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+// 发送HTTP请求
+function measureResponseTime(url) {
+return new Promise(function(resolve, reject) {
+var startTime = new Date().getTime();
+fetch(url)
+.then(function(response) {
+if (!response.ok) {
+throw new Error('无法连接');
+}
+var endTime = new Date().getTime();
+var responseTime = endTime - startTime;
+resolve(responseTime);
+})
+.catch(function(error) {
+reject(error.message);
+});
+});
+}
+// 检测两个页面响应时间
+Promise.all([
+measureResponseTime('https://yukirinll.github.io/FFXIV_Phantoms_MainPage/'), // 替换为你的GitHub Page链接
+measureResponseTime('https://yukirinll.github.io/FFXIV_Phantoms_MainPage/') // 替换为你的Gitee Page链接
+]).then(function(responseTimes) {
+var loadingMessage = document.getElementById('loadingMessage');
+loadingMessage.textContent = '检测完成，正在跳转...';
+// 根据响应时间选择跳转链接
+var fasterIndex = responseTimes.indexOf(Math.min(...responseTimes));
+var pageUrls = [
+'https://yukirinll.github.io/FFXIV_Phantoms_MainPage/', // 替换为你的GitHub Page链接
+'https://yukirinll.github.io/FFXIV_Phantoms_MainPage/' // 替换为你的Gitee Page链接
+];
+// 跳转到响应时间较短的页面
+window.location.href = pageUrls[fasterIndex];
+}).catch(function(error) {
+var loadingMessage = document.getElementById('loadingMessage');
+loadingMessage.textContent = '检测失败：' + error;
+});
+});
+</script>
+</body>
+</html>
