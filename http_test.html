@@ -1,10 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Redirection Jump</title>
-  <style>
+    <!-- Site made with Mobirise Website Builder v5.2.0, https://mobirise.com -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="generator" content="Mobirise v5.2.0, mobirise.com">
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:image:src" content="assets/images/index-meta.jpg">
+    <meta property="og:image" content="assets/images/index-meta.jpg">
+    <meta name="twitter:title" content="Phantoms">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+    <link rel="shortcut icon" href="assets/images/frame-1-121x121.png" type="image/x-icon">
+    <meta name="description" content="FF14、FC/CWLS Phantomsのホームページです。">
+
+    <link rel="stylesheet" href="assets/web/assets/mobirise-icons2/mobirise2.css">
+    <link rel="stylesheet" href="assets/tether/tether.min.css">
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-reboot.min.css">
+    <link rel="stylesheet" href="assets/dropdown/css/style.css">
+    <link rel="stylesheet" href="assets/socicon/css/styles.css">
+    <link rel="stylesheet" href="assets/theme/css/style.css">
+    <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css" type="text/css">
+
+    <link rel="stylesheet" href="mouse.css">
+
+    <title>Redirection Jump</title>
+    <style>
 body {
 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 text-align: center;
@@ -29,23 +52,84 @@ margin-top: 20px;
 max-width: 600px; /* 设置最大宽度 */
 width: 90%; /* 设置相对宽度 */
 }
+.button-container {
+margin-top: 20px;
+}
+.redirect-button {
+display: inline-block;
+margin: 10px;
+padding: 15px 30px;
+font-size: 18px;
+font-weight: bold;
+text-align: center;
+text-decoration: none;
+color: #fff;
+background-color: #0066cc;
+border: 2px solid #0056a3;
+border-radius: 8px;
+cursor: pointer;
+transition: background-color 0.3s, border-color 0.3s;
+}
+.redirect-button:hover {
+background-color: #0056a3;
+border-color: #004080;
+}
 /* 响应式设计 */
 @media only screen and (max-width: 600px) {
 h1 {
 font-size: 28px;
 }
 #loadingMessage {
+.redirect-button {
+display: inline-block;
+margin: 10px;
+padding: 10px 20px;
 font-size: 18px;
+background-color: #0066cc;
+color: #fff;
+text-decoration: none;
+border-radius: 8px;
+cursor: pointer;
 padding: 15px;
 max-width: 100%;
 }
 }
-</style>
+
+    </style>
 </head>
+
+
+
 <body>
-<h1>Redirection</h1>
-<div id="loadingMessage">Detecting connection...</div>
-<script>
+
+<section class="menu cid-s48OLK6784" once="menu" id="menu1-h">
+    <nav class="navbar navbar-dropdown navbar-fixed-top navbar-expand-lg">
+        <div class="container">
+            <div class="navbar-brand">
+                <span class="navbar-logo">
+                    <a href="index.html#features14-t">
+                        <img src="assets/images/frame-1-121x121.png" alt="Mobirise" style="height: 3.8rem;">
+                    </a>
+                </span>
+                <span class="navbar-caption-wrap"><a class="navbar-caption text-white text-primary display-7" href="index.html">Phantoms</a></span>
+            </div>
+        </div>
+    </nav>
+</section>
+
+<!--<section class="image3 cid-seogusrmXz" id="header1-f" >-->
+<section class="header1 cid-s48MCQYojq mbr-fullscreen" id="header1-f" >
+    <div class="align-center container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-8">
+
+                <h1 class="mbr-section-title mbr-fonts-style mb-3 display-1"><strong>Redirection</strong></h1>
+                <p id="loadingMessage" class="mbr-text mbr-fonts-style display-7">Detecting connection...</p>
+                <div class="button-container" id="buttonContainer" style="display: none;">
+                    <a id="redirectButton1" class="btn btn-primary display-4" href="#" target="_blank">Route 1</a>
+                    <a id="redirectButton2" class="btn btn-primary display-4" href="#" target="_blank">Route 2</a>
+                </div>
+                <script>
 document.addEventListener('DOMContentLoaded', function () {
 // 发送HTTP请求
 function measureResponseTime(url) {
@@ -54,7 +138,7 @@ var startTime = new Date().getTime();
 fetch(url)
 .then(function(response) {
 if (!response.ok) {
-throw new Error('无法连接');
+throw new Error('Cannot connect');
 }
 var endTime = new Date().getTime();
 var responseTime = endTime - startTime;
@@ -67,24 +151,57 @@ reject(error.message);
 }
 // 检测两个页面响应时间
 Promise.all([
-measureResponseTime('https://yukirinll.github.io/FFXIV_Phantoms_MainPage/'), // 替换为你的Page链接
-measureResponseTime('https://yukirinll.github.io/FFXIV_Phantoms_MainPage/') // 替换为你的Page链接
+measureResponseTime('https://yukirinll.github.io/FFXIV_Phantoms_MainPage/'),
+measureResponseTime('https://yukirinll.github.io/FFXIV_Phantoms_MainPage/')
 ]).then(function(responseTimes) {
 var loadingMessage = document.getElementById('loadingMessage');
 loadingMessage.textContent = 'Detection completed, Redirecting...';
 // 根据响应时间选择跳转链接
 var fasterIndex = responseTimes.indexOf(Math.min(...responseTimes));
 var pageUrls = [
-'https://yukirinll.github.io/FFXIV_Phantoms_MainPage/', // 替换为你的GitHub Page链接
-'https://yukirinll.github.io/FFXIV_Phantoms_MainPage/' // 替换为你的Gitee Page链接
+'https://yukirinll.github.io/FFXIV_Phantoms_MainPage/',
+'https://yukirinll.github.io/FFXIV_Phantoms_MainPage/'
 ];
+// 显示跳转按钮和延迟信息
+var buttonContainer = document.getElementById('buttonContainer');
+buttonContainer.style.display = 'block';
+var redirectButton1 = document.getElementById('redirectButton1');
+redirectButton1.href = pageUrls[0];
+redirectButton1.textContent += ' (' + responseTimes[0] + 'ms)';
+var redirectButton2 = document.getElementById('redirectButton2');
+redirectButton2.href = pageUrls[1];
+redirectButton2.textContent += ' (' + responseTimes[1] + 'ms)';
+
 // 跳转到响应时间较短的页面
 window.location.href = pageUrls[fasterIndex];
 }).catch(function(error) {
 var loadingMessage = document.getElementById('loadingMessage');
-loadingMessage.textContent = 'Detection failed:' + error;
+loadingMessage.textContent = 'Detection failed: ' + error;
 });
 });
-</script>
+            </script>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<section class="footer7 cid-seeJHoNSny" once="footers" id="footer7-p">
+
+
+    <div class="container">
+        <div class="media-container-row align-center mbr-white">
+            <div class="col-12">
+                <p class="mbr-text mb-0 mbr-fonts-style display-7">Copyright (C) SQUARE ENIX CO., LTD. All Rights Reserved.<br>Copyright&nbsp;(C) Crystal Alliance cir. All Rights Reserved.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section style="background-color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif; color:#aaa; font-size:12px; padding: 0; align-items: center; display: flex;"><a href="https://mobirise.site/n" style="flex: 1 1; height: 3rem; padding-left: 1rem;"></a><p style="flex: 0 0 auto; margin:0; padding-right:1rem;">Page was <a href="https://mobirise.site/g" style="color:#aaa;">designed</a> with Mobirise</p></section><script src="assets/web/assets/jquery/jquery.min.js"></script>  <script src="assets/popper/popper.min.js"></script>  <script src="assets/tether/tether.min.js"></script>  <script src="assets/bootstrap/js/bootstrap.min.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/ytplayer/jquery.mb.ytplayer.min.js"></script>  <script src="assets/vimeoplayer/jquery.mb.vimeo_player.js"></script>  <script src="assets/dropdown/js/nav-dropdown.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/touchswipe/jquery.touch-swipe.min.js"></script>  <script src="assets/theme/js/script.js"></script>
+
+
 </body>
 </html>
