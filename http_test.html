@@ -3,23 +3,48 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>选择最快的页面</title>
+  <title>Redirection Jump</title>
   <style>
 body {
-font-family: Arial, sans-serif;
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 text-align: center;
 margin: 20px;
+background-color: #f8f8f8;
+color: #333;
+}
+h1 {
+font-size: 36px;
+color: #0066cc;
 }
 #loadingMessage {
 font-size: 24px;
 font-weight: bold;
-color: blue;
+color: #333;
+padding: 20px;
+background-color: #fff;
+border-radius: 12px;
+box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+display: inline-block;
+margin-top: 20px;
+max-width: 600px; /* 设置最大宽度 */
+width: 90%; /* 设置相对宽度 */
+}
+/* 响应式设计 */
+@media only screen and (max-width: 600px) {
+h1 {
+font-size: 28px;
+}
+#loadingMessage {
+font-size: 18px;
+padding: 15px;
+max-width: 100%;
+}
 }
 </style>
 </head>
 <body>
-<h1>选择最快的页面</h1>
-<div id="loadingMessage">正在检测...</div>
+<h1>Redirection</h1>
+<div id="loadingMessage">Detecting connection...</div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 // 发送HTTP请求
@@ -42,11 +67,11 @@ reject(error.message);
 }
 // 检测两个页面响应时间
 Promise.all([
-measureResponseTime('https://yukirinll.github.io/FFXIV_Phantoms_MainPage/'), // 替换为你的GitHub Page链接
-measureResponseTime('https://yukirinll.github.io/FFXIV_Phantoms_MainPage/') // 替换为你的Gitee Page链接
+measureResponseTime('https://yukirinll.github.io/FFXIV_Phantoms_MainPage/'), // 替换为你的Page链接
+measureResponseTime('https://yukirinll.github.io/FFXIV_Phantoms_MainPage/') // 替换为你的Page链接
 ]).then(function(responseTimes) {
 var loadingMessage = document.getElementById('loadingMessage');
-loadingMessage.textContent = '检测完成，正在跳转...';
+loadingMessage.textContent = 'Detection completed, Redirecting...';
 // 根据响应时间选择跳转链接
 var fasterIndex = responseTimes.indexOf(Math.min(...responseTimes));
 var pageUrls = [
@@ -57,7 +82,7 @@ var pageUrls = [
 window.location.href = pageUrls[fasterIndex];
 }).catch(function(error) {
 var loadingMessage = document.getElementById('loadingMessage');
-loadingMessage.textContent = '检测失败：' + error;
+loadingMessage.textContent = 'Detection failed:' + error;
 });
 });
 </script>
