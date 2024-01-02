@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="import" href="import.html">
+</head>
+<body>
+<div id="container"></div>
+<script>
+        var link = document.querySelector('link[rel="import"]');
+        var layout = link.import.getElementById('layout');
+
+        var container = document.getElementById('container');
+        container.appendChild(layout.cloneNode(true));
+    </script>
+</body>
