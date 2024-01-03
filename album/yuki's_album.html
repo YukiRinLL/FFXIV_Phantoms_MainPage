@@ -101,9 +101,11 @@
 
 
 			<!-- 弹出层调用 -->
-
-			<link type="text/css" href="css/prettyPhoto.css" rel="stylesheet" />
-			<script type="text/javascript" src="./js/prettyPhoto.js"></script>
+			<link type="text/css" href="css/prettyPhoto.css" rel="stylesheet">
+			<!-- 引入 jQuery -->
+			<script src="./../jquery.min.js"></script>
+			<!-- 引入 PrettyPhoto JS -->
+			<script type="text/javascript" src="./js/jquery.prettyphoto.js"></script>
 			<script type="text/javascript">
 				$(document).ready(function(){
 					$("area[rel^='prettyPhoto']").prettyPhoto();
