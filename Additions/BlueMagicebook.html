@@ -31,81 +31,15 @@
 </head>
 <body>
 
-<section class="menu cid-s48OLK6784" once="menu" id="menu1-h">
-    <nav class="navbar navbar-dropdown navbar-fixed-top navbar-expand-lg">
-        <div class="container">
-            <div class="navbar-brand">
-                <span class="navbar-logo">
-                    <a href="../index.html#features14-t">
-                        <img src="../assets/images/frame-1-121x121.png" alt="Mobirise" style="height: 3.8rem;">
-                    </a>
-                </span>
-                <span class="navbar-caption-wrap"><a class="navbar-caption text-white text-primary display-7" href="../index.html">Phantoms</a></span>
-            </div>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                <div class="hamburger">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link link text-white text-primary dropdown-toggle display-4" href="#" data-toggle="dropdown-submenu" aria-expanded="false">HOME</a>
-                        <div class="dropdown-menu">
-                            <a class="text-white text-primary dropdown-item display-4" href="../index.html" aria-expanded="false">Top</a>
-                            <a class="text-white text-primary dropdown-item display-4" href="../index.html#features14-t">Detail</a>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link link text-white text-primary dropdown-toggle display-4" href="#" aria-expanded="true" data-toggle="dropdown-submenu">About FC</a>
-                        <div class="dropdown-menu">
-                            <a class="text-white text-primary dropdown-item display-4" href="../history.html#" aria-expanded="false">History</a>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link link text-white text-primary dropdown-toggle display-4" href="#" aria-expanded="true" data-toggle="dropdown-submenu">Tools</a>
-                        <div class="dropdown-menu">
-                            <a class="text-light text-primary dropdown-item display-4" href="../tools.html#" aria-expanded="false">All Tools Index</a>
-                            <a class="text-white text-primary dropdown-item display-4" href="wakingsands.html#" aria-expanded="false">XIV 文本检索</a>
-                            <a class="text-white text-primary dropdown-item display-4" href="BlueMagicebook.html#" aria-expanded="false">BlueMagicbook</a>
-                            <a class="text-white text-primary dropdown-item display-4" href="V5.html#" aria-expanded="false">V5配方计算器</a>
-                            <a class="text-white text-primary dropdown-item display-4" href="crafter.html#" aria-expanded="false">V6生产模拟器</a>
-                            <a class="text-white text-primary dropdown-item display-4" href="wanahome.html#" aria-expanded="false">I Wanna Home</a>
-                            <a class="text-white text-primary dropdown-item display-4" href="fauxhollowsprobabilisticsolver.html#" aria-expanded="false">幻巧拼图计算器</a>
-                            <a class="text-white text-primary dropdown-item display-4" href="what-zc-today.html#" aria-expanded="false">今天什么战场</a>
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link link text-white text-primary dropdown-toggle display-4" href="#" aria-expanded="true" data-toggle="dropdown-submenu">Albums</a>
-                        <div class="dropdown-menu">
-                            <a class="text-light text-primary dropdown-item display-4" href="../albums.html#" aria-expanded="false">Albums Index</a>
-                        </div>
-                    </li>
-                </ul>
-                <div class="icons-menu">
-                    <a class="iconfont-wrapper" href="https://ff.web.sdo.com/finder/" target="_blank">
-                        <span class="p-2 mbr-iconfont mobi-mbri-file mobi-mbri" style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255);"></span>
-                    </a>
-                    <a class="iconfont-wrapper" href="https://https://jq.qq.com/?_wv=1027&k=FSun33H0" target="_blank">
-                        <span class="p-2 mbr-iconfont socicon-qq socicon" style="color: rgb(34, 165, 229); fill: rgb(34, 165, 229);"></span>
-                    </a>
-                    <a class="iconfont-wrapper" href="https://weibo.com/5722698883/LnwkL1Fk2" target="_blank">
-                        <span class="p-2 mbr-iconfont socicon-weibo socicon" style="color: rgb(34, 165, 229); fill: rgb(34, 165, 229);"></span>
-                    </a>
-                    <a class="iconfont-wrapper" href="https://kaihei.co/Pz0Q4r" target="_blank">
-                        <span class="p-2 mbr-iconfont socicon-discord socicon" style="color: rgb(34, 165, 229); fill: rgb(34, 165, 229);"></span>
-                    </a>
-                    <a class="iconfont-wrapper" href="https://github.com/YukiRinLL/FFXIV_Phantoms_MainPage" target="_blank">
-                        <span class="p-2 mbr-iconfont socicon-github socicon" style="color: rgb(34, 165, 229); fill: rgb(34, 165, 229);"></span>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </nav>
-</section>
+<div id="menu-container"></div>
+<script type="module">
+async function loadContent() {
+const response = await fetch('menu.html');
+const content = await response.text();
+document.getElementById('menu-container').innerHTML = content;
+}
+loadContent();
+</script>
 
 
 <!--plugin began-->
@@ -163,18 +97,15 @@
 <!--&lt;!&ndash;plugin end&ndash;&gt;-->
 
 
-<section class="footer7 cid-seeJHoNSny" once="footers" id="footer7-p">
-    <div class="container">
-        <div class="media-container-row align-center mbr-white">
-            <div class="col-12">
-                <p class="mbr-text mb-0 mbr-fonts-style display-7">Copyright (C) SQUARE ENIX CO., LTD. All Rights Reserved.<br>Copyright&nbsp;(C) Crystal Alliance cir. All Rights Reserved.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section style="background-color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif; color:#aaa; font-size:12px; padding: 0; align-items: center; display: flex;"><a href="https://mobirise.site/n" style="flex: 1 1; height: 3rem; padding-left: 1rem;"></a><p style="flex: 0 0 auto; margin:0; padding-right:1rem;">Page was <a href="https://mobirise.site/g" style="color:#aaa;">designed</a> with Mobirise</p></section><script src="../assets/web/assets/jquery/jquery.min.js"></script>  <script src="../assets/popper/popper.min.js"></script>  <script src="../assets/tether/tether.min.js"></script>  <script src="../assets/bootstrap/js/bootstrap.min.js"></script>  <script src="../assets/smoothscroll/smooth-scroll.js"></script>  <script src="../assets/ytplayer/jquery.mb.ytplayer.min.js"></script>  <script src="../assets/vimeoplayer/jquery.mb.vimeo_player.js"></script>  <script src="../assets/dropdown/js/nav-dropdown.js"></script>  <script src="../assets/dropdown/js/navbar-dropdown.js"></script>  <script src="../assets/touchswipe/jquery.touch-swipe.min.js"></script>  <script src="../assets/theme/js/script.js"></script>
+<div id="footer-container"></div>
+<script type="module">
+async function loadContent() {
+const response = await fetch('footer.html');
+const content = await response.text();
+document.getElementById('footer-container').innerHTML = content;
+}
+loadContent();
+</script>
 
 </body>
 
