@@ -1,15 +1,25 @@
+<!-- index.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <link rel="import" href="import.html">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index Page</title>
 </head>
 <body>
-<div id="container"></div>
-<script>
-        var link = document.querySelector('link[rel="import"]');
-        var layout = link.import.getElementById('layout');
+<!-- Use the imported content -->
+<div id="header-container"></div>
+<h2>Content specific to index page</h2>
+<!-- Other content for the index page -->
+<script type="module">
+async function loadContent() {
+const response = await fetch('common-header.html');
+const content = await response.text();
+document.getElementById('header-container').innerHTML = content;
+}
+loadContent();
+</script>
 
-        var container = document.getElementById('container');
-        container.appendChild(layout.cloneNode(true));
-    </script>
+
 </body>
+</html>
