@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+<p id="loadingMessage">
+    Detecting connection...
+</p>
+
+
+    <a id="redirectButton1">
+        Route 1: Github
+    </a>
+    <br>
+    <a id="redirectButton2">
+        Route 2: Gitee
+    </a>
+
+
+
+<script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            function measureResponseTime(url) {
+                return new Promise(function(resolve, reject) {
+                    var xhr = new XMLHttpRequest();
+                    var startTime = new Date().getTime();
+                    xhr.onreadystatechange = function() {
+                        if (xhr.readyState === 4) {
+                            if (xhr.status === 200) {
+                                var endTime = new Date().getTime();
+                                var responseTime = endTime - startTime;
+                                resolve(responseTime);
+                            } else {
+                                reject('Cannot connect');
+                            }
+                        }
+                    };
+                    xhr.open('GET', url, true);
+                    xhr.send();
+                });
+            }
+
+            // 检测两个页面响应时间
+            Promise.all([
+                measureResponseTime('https://yukirinll.github.io/FFXIV_Phantoms_MainPage/'),
+                measureResponseTime('http://gitee.com/server.php')
+            ]).then(function(responseTimes) {
+                var loadingMessage = document.getElementById('loadingMessage');
+                loadingMessage.textContent = 'Detection completed, Redirecting...';
+                // 根据响应时间选择跳转链接
+                var fasterIndex = responseTimes.indexOf(Math.min(...responseTimes));
+                var pageUrls = [
+                    'https://yukirinll.github.io/FFXIV_Phantoms_MainPage/',
+                    'https://yukirinll.gitee.io/ffxiv_phantoms_mainpage/'
+                ];
+                // 显示跳转按钮和延迟信息
+                var redirectButton1 = document.getElementById('redirectButton1');
+                redirectButton1.href = pageUrls[0];
+                redirectButton1.textContent += ' (' + responseTimes[0] + 'ms)';
+                var redirectButton2 = document.getElementById('redirectButton2');
+                redirectButton2.href = pageUrls[1];
+                redirectButton2.textContent += ' (' + responseTimes[1] + 'ms)';
+
+            }).catch(function(error) {
+                var loadingMessage = document.getElementById('loadingMessage');
+                loadingMessage.textContent = 'Detection failed: ' + error;
+            });
+        });
+</script>
+</body>
+</html>

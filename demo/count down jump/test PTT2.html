@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delay Test</title>
+</head>
+<body>
+<iframe id="giteeFrame" src="https://yukirinll.github.io/FFXIV_Phantoms_MainPage/" style="display: none;"></iframe>
+<script>
+function measureIframeLoadTime() {
+return new Promise(function(resolve, reject) {
+var iframe = document.getElementById('giteeFrame');
+iframe.onload = function() {
+var endTime = new Date().getTime();
+var loadTime = endTime - startTime;
+resolve(loadTime);
+};
+iframe.onerror = function() {
+reject('Cannot connect');
+};
+var startTime = new Date().getTime();
+iframe.src = iframe.src; // 强制重新加载 iframe
+});
+}
+// 测试加载时间
+measureIframeLoadTime().then(function(loadTime) {
+console.log('Iframe Load Time:', loadTime);
+}).catch(function(error) {
+console.error('Error:', error);
+});
+</script>
+</body>
+</html>

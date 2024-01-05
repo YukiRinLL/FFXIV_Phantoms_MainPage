@@ -131,60 +131,98 @@
                 <p id="loadingMessage" class="mbr-text mbr-fonts-style display-7">
                     Detecting connection...
                 </p>
-                <div class="button-container" id="buttonContainer" style="display: none;">
-                    <a id="redirectButton1" class="btn btn-primary display-4" href="#" target="_blank">
-                        Route 1
+                <div id="countdown" class="mbr-text mbr-fonts-style display-7"></div>
+                <div class="button-container" id="buttonContainer" style="opacity: 0.5;">
+                    <a id="redirectButton1" class="btn btn-primary display-4" href="#" target="_blank" aria-expanded="false" style="width: 500px">
+                        Route 1: Github [国际服务器]
                     </a>
-                    <a id="redirectButton2" class="btn btn-primary display-4" href="#" target="_blank">
-                        Route 2
+                    <br>
+                    <a id="redirectButton2" class="btn btn-primary display-4" href="#" target="_blank" aria-expanded="false" style="width: 500px">
+                        Route 2: Gitee [国内源]
                     </a>
                 </div>
                 <script>
-							document.addEventListener('DOMContentLoaded',
-							function() {
-								// 发送HTTP请求
-								function measureResponseTime(url) {
-									return new Promise(function(resolve, reject) {
-										var startTime = new Date().getTime();
-										fetch(url).then(function(response) {
-											if (!response.ok) {
-												throw new Error('Cannot connect');
-											}
-											var endTime = new Date().getTime();
-											var responseTime = endTime - startTime;
-											resolve(responseTime);
-										}).
-										catch(function(error) {
-											reject(error.message);
-										});
-									});
-								}
-								// 检测两个页面响应时间
-								Promise.all([measureResponseTime('https://yukirinll.github.io/FFXIV_Phantoms_MainPage/'), measureResponseTime('https://yukirinll.github.io/FFXIV_Phantoms_MainPage/')]).then(function(responseTimes) {
-									var loadingMessage = document.getElementById('loadingMessage');
-									loadingMessage.textContent = 'Detection completed, Redirecting...';
-									// 根据响应时间选择跳转链接
-									var fasterIndex = responseTimes.indexOf(Math.min(...responseTimes));
-									var pageUrls = ['https://yukirinll.github.io/FFXIV_Phantoms_MainPage/', 'https://yukirinll.github.io/FFXIV_Phantoms_MainPage/'];
-									// 显示跳转按钮和延迟信息
-									var buttonContainer = document.getElementById('buttonContainer');
-									buttonContainer.style.display = 'block';
-									var redirectButton1 = document.getElementById('redirectButton1');
-									redirectButton1.href = pageUrls[0];
-									redirectButton1.textContent += ' (' + responseTimes[0] + 'ms)';
-									var redirectButton2 = document.getElementById('redirectButton2');
-									redirectButton2.href = pageUrls[1];
-									redirectButton2.textContent += ' (' + responseTimes[1] + 'ms)';
+                        document.addEventListener('DOMContentLoaded', function () {
+                        /*
+                            const express = require('express');
+                            const app = express();
+                            app.use((req, res, next) => {
+                                res.header('Access-Control-Allow-Origin', '*'); // 允许所有域访问，实际生产环境中应该更安全
+                                res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+                                res.header('Access-Control-Allow-Headers', 'Content-Type');
+                            next();
+                            });
+                            app.listen(3000, () => {
+                                console.log('Server is running on port 3000');
+                            });
+                        */
 
-									// 跳转到响应时间较短的页面
-									window.location.href = pageUrls[fasterIndex];
-								}).
-								catch(function(error) {
-									var loadingMessage = document.getElementById('loadingMessage');
-									loadingMessage.textContent = 'Detection failed: ' + error;
-								});
-							});
-						</script>
+
+
+                            // 发送HTTP请求
+                            function measureResponseTime(url) {
+                                return new Promise(function(resolve, reject) {
+                                    var startTime = new Date().getTime();
+                                    fetch(url)
+                                    .then(function(response) {
+                                        if (!response.ok) {
+                                            throw new Error('Cannot connect');
+                                        }
+                                    var endTime = new Date().getTime();
+                                    var responseTime = endTime - startTime;
+                                    resolve(responseTime);
+                                    })
+                                    .catch(function(error) {
+                                        reject(error.message);
+                                    });
+                                });
+                            }
+
+                            // 检测两个页面响应时间
+                            Promise.all([
+                                measureResponseTime('https://yukirinll.github.io/FFXIV_Phantoms_MainPage/'),
+                                measureResponseTime('https://yukirinll.gitee.io/ffxiv_phantoms_mainpage/')
+                            ]).then(function(responseTimes) {
+                                var loadingMessage = document.getElementById('loadingMessage');
+                                loadingMessage.textContent = 'Detection completed, Redirecting...';
+                                // 根据响应时间选择跳转链接
+                                var fasterIndex = responseTimes.indexOf(Math.min(...responseTimes));
+                                var pageUrls = [
+                                    'https://yukirinll.github.io/FFXIV_Phantoms_MainPage/',
+                                    'http://yukirinll.gitee.io/ffxiv_phantoms_mainpage/'
+                                ];
+                                // 显示跳转按钮和延迟信息
+                                var buttonContainer = document.getElementById('buttonContainer');
+                                buttonContainer.style.display = 'block';
+                                var redirectButton1 = document.getElementById('redirectButton1');
+                                redirectButton1.href = pageUrls[0];
+                                redirectButton1.textContent += ' (' + responseTimes[0] + 'ms)';
+                                var redirectButton2 = document.getElementById('redirectButton2');
+                                redirectButton2.href = pageUrls[1];
+                                redirectButton2.textContent += ' (' + responseTimes[1] + 'ms)';
+
+                                //倒计时结束后跳转
+                                var countdownElement = document.getElementById('countdown');
+                                var seconds = 10;
+                                function updateCountdown() {
+                                    countdownElement.textContent = seconds + "秒后自动跳转";
+                                    if (seconds === 0) {
+                                        clearInterval(countdownInterval);
+                                        // 跳转到响应时间较短的页面
+                                        window.location.href = pageUrls[fasterIndex];
+                                    }
+                                    seconds--;
+                                }
+                                var countdownInterval = setInterval(updateCountdown, 1000);
+                                // 如果想在页面加载后开始倒计时，可以将下面这行取消注释
+                                 updateCountdown();
+
+                            }).catch(function(error) {
+                                var loadingMessage = document.getElementById('loadingMessage');
+                                loadingMessage.textContent = 'Detection failed: ' + error;
+                            });
+                        });
+            </script>
             </div>
         </div>
     </div>
