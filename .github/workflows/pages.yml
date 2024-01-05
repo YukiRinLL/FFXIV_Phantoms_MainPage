@@ -1,5 +1,6 @@
 # Simple workflow for deploying static content to GitHub Pages
 name: Deploy static content to Pages
+name: Set Default Page for GitHub Pages
 
 on:
   # Runs on pushes targeting the default branch
@@ -40,3 +41,17 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@main
+
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - name: Set Default Page
+        run: |
+          echo "/*" > docs/.nojekyll
+          mv docs/http_test.html docs/index.html
+        working-directory: .
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@4.1.5
+        with:
+          branch: gh-pages  # 设置你的 GitHub Pages 分支
+          folder: docs
+
