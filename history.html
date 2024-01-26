@@ -255,18 +255,23 @@
             <script>
                 var audio = document.getElementById('myAudio');
                 audio.volume = 0;
+                var fadeIn;
                 audio.addEventListener('play', function() {
-                    var fadeIn = setInterval(function() {
-                        if (audio.volume < 0.4) {
-                            audio.volume += 0.005;
+                    fadeIn = setInterval(function() {
+                        if (audio.volume < 0.40) {
+                            audio.volume += 0.002;
                         } else {
                             clearInterval(fadeIn);
                         }
                     }, 100);
                 });
                 audio.addEventListener('pause', function() {
+                    clearInterval(fadeIn);
                     audio.volume = 0;
                 });
+                audio.onloadedmetadata = function() {
+                    audio.play();
+                };
             </script>
             <div class="col-12 col-lg-10">
                 <div class="image-wrapper">
