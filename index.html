@@ -343,9 +343,9 @@
                     clearInterval(fadeIn);
                     audio.volume = 0;
                 });
-                audio.onloadedmetadata = function() {
-                    audio.play();
-                };
+                audio.onloadedmetadata = function() {audio.play();};
+                audio.oncanplay = function() {audio.play();};
+                audio.oncanplaythrough = function() {audio.play();};
             </script>
             <div class="col-12 col-lg-10">
                 <div class="image-wrapper">
