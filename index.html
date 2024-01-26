@@ -26,6 +26,8 @@
   <link rel="stylesheet" href="assets/theme/css/style.css">
   <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css" type="text/css">
 
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+  <link rel="stylesheet" href="play_vedio.css">
     <link rel="stylesheet" href="mouse.css">
 </head>
 
@@ -173,11 +175,34 @@
 <!--                        <video autoplay muted loop style="width: 100%; max-width: 100%; align:center; padding:20px 0;">-->
 <!--                            <source src="vedio.mp4" type="video/mp4">-->
 <!--                        </video>-->
-                        <video controls muted loop style="width: 100%; max-width: 100%; align:center; padding:20px 0;">
-                            <source src="vedio.mp4" type="video/mp4">
-                        </video>
+
+                        <button id="playVideo" class="btn-black" style="height: 150px;width: 400px;">
+                            <p class="mbr-description mbr-fonts-style mt-2 align-center display-4">Demonstration</p>
+                            <h3 class="align-center mb-3 mbr-fonts-style display-2"><strong>Play Vedio</strong></h3>
+                        </button>
+                        <div id="videoContainer" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1;">
+                            <video id="myVideo" controls>
+                                <source src="vedio.mp4" type="video/mp4">
+                            </video>
+                            <a id="closeVideo" class="btn btn-black display-4">Close</a>
+                        </div>
+
+                        <script type="text/javascript">
+                            document.getElementById('playVideo').addEventListener('mouseover', function() {
+                                this.style.transform = 'scale(1.1)';
+                            });
+                            document.getElementById('playVideo').addEventListener('mouseout', function() {
+                                this.style.transform = 'scale(1)';
+                            });
+                            document.getElementById('playVideo').addEventListener('click', function() {
+                                document.getElementById('videoContainer').style.display = 'flex';
+                            });
+                            document.getElementById('closeVideo').addEventListener('click', function() {
+                                document.getElementById('videoContainer').style.display = 'none';
+                            });
+                        </script>
                     </a>
-                    <p class="mbr-description mbr-fonts-style mt-2 align-center display-4">Demonstration</p>
+<!--                    <p class="mbr-description mbr-fonts-style mt-2 align-center display-4">Demonstration</p>-->
                 </div>
             </div>
         </div>
@@ -362,7 +387,7 @@
         position:fixed;
         right:20px;
         bottom: 480px;
-        height:30px;
+        height:50px;
         width: 50px;
         text-align:center;
         padding-top:20px;
