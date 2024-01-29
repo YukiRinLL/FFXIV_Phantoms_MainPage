@@ -256,22 +256,27 @@
                 var audio = document.getElementById('myAudio');
                 audio.volume = 0;
                 var fadeIn;
+                var userInteracted = false;
+
+                document.addEventListener('click', function() {
+                    userInteracted = true;
+                });
+
                 audio.addEventListener('play', function() {
-                    fadeIn = setInterval(function() {
-                        if (audio.volume < 0.40) {
-                            audio.volume += 0.002;
-                        } else {
-                            clearInterval(fadeIn);
-                        }
-                    }, 100);
+                    if (userInteracted) {
+                        fadeIn = setInterval(function() {
+                            if (audio.volume < 0.40) {
+                                audio.volume += 0.002;
+                            } else {
+                                clearInterval(fadeIn);
+                            }
+                        }, 100);
+                    }
                 });
                 audio.addEventListener('pause', function() {
                     clearInterval(fadeIn);
                     audio.volume = 0;
                 });
-                audio.onloadedmetadata = function() {
-                    audio.play();
-                };
             </script>
             <div class="col-12 col-lg-10">
                 <div class="image-wrapper">

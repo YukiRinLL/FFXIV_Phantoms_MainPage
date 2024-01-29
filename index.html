@@ -173,7 +173,7 @@
                         <!--        style="width: 100%; height: 500px; max-width: 100%; align:center; padding:20px 0;"-->
                         <!--        <video autoplay muted loop style="width: 100%; height: 100%; object-fit: contain">-->
 <!--                        <video autoplay muted loop style="width: 100%; max-width: 100%; align:center; padding:20px 0;">-->
-<!--                            <source src="vedio.mp4" type="video/mp4">-->
+<!--                            <source src="vedio/vedio.mp4" type="video/mp4">-->
 <!--                        </video>-->
 
                         <button id="playVideo" class="btn-black" style="height: 150px;width: 400px;">
@@ -182,7 +182,7 @@
                         </button>
                         <div id="videoContainer" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1;">
                             <video id="myVideo" controls>
-                                <source src="vedio/vedio.mp4" type="video/mp4">
+                                <source src="./vedio/vedio.mp4" type="video/mp4">
                             </video>
                             <a id="closeVideo" class="btn btn-black display-4">Close</a>
                         </div>
@@ -330,22 +330,27 @@
                 var audio = document.getElementById('myAudio');
                 audio.volume = 0;
                 var fadeIn;
+                var userInteracted = false;
+
+                document.addEventListener('click', function() {
+                    userInteracted = true;
+                });
+
                 audio.addEventListener('play', function() {
-                    fadeIn = setInterval(function() {
-                        if (audio.volume < 0.40) {
-                            audio.volume += 0.002;
-                        } else {
-                            clearInterval(fadeIn);
-                        }
-                    }, 100);
+                    if (userInteracted) {
+                        fadeIn = setInterval(function() {
+                            if (audio.volume < 0.40) {
+                                audio.volume += 0.002;
+                            } else {
+                                clearInterval(fadeIn);
+                            }
+                        }, 100);
+                    }
                 });
                 audio.addEventListener('pause', function() {
                     clearInterval(fadeIn);
                     audio.volume = 0;
                 });
-                audio.onloadedmetadata = function() {audio.play();};
-                audio.oncanplay = function() {audio.play();};
-                audio.oncanplaythrough = function() {audio.play();};
             </script>
             <div class="col-12 col-lg-10">
                 <div class="image-wrapper">
