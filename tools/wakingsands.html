@@ -213,12 +213,12 @@
             var titleTime;
             document.addEventListener('visibilitychange', function () {
                 if (document.hidden) {
-                    $('[rel="shortcut icon"]').attr('href', "/Content/Images/fail.ico");
+                    //$('[rel="shortcut icon"]').attr('href', "/Content/Images/fail.ico");
                     document.title = '( * ￣▽￣)／肿么不看了呢？';
                     clearTimeout(titleTime);
                 }
                 else {
-                    $('[rel="shortcut icon"]').attr('href', "/Content/Images/icon.png");
+                    //$('[rel="shortcut icon"]').attr('href', "/Content/Images/icon.png");
                     // document.title = '(～￣▽￣)～咦！又开始看了！' + OriginTitile;
                     document.title = '(～￣▽￣)～咦！又开始看了！';
                     titleTime = setTimeout(function () {
