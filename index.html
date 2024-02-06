@@ -202,57 +202,15 @@
                                 document.getElementById('videoContainer').style.display = 'none';
                             });
                         </script>
-                        <button id="playVideo_avi" class="btn-black" style="height: 150px;width: 400px;">
-                            <p class="mbr-description mbr-fonts-style mt-2 align-center display-4">Demonstration</p>
-                            <h3 class="align-center mb-3 mbr-fonts-style display-2"><strong>Play Vedio</strong></h3>
-                        </button>
-                        <div id="videoContainer_avi" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1;">
-                            <video id="myVideo_avi" controls>
-                                <source src="./vedio/vedio.avi" type="video/mp4">
-                            </video>
-                            <a id="closeVideo_avi" class="btn btn-black display-4">Close</a>
-                        </div>
 
-                        <script type="text/javascript">
-                            document.getElementById('playVideo').addEventListener('mouseover', function() {
-                                this.style.transform = 'scale(1.1)';
-                            });
-                            document.getElementById('playVideo').addEventListener('mouseout', function() {
-                                this.style.transform = 'scale(1)';
-                            });
-                            document.getElementById('playVideo').addEventListener('click', function() {
-                                document.getElementById('videoContainer').style.display = 'flex';
-                            });
-                            document.getElementById('closeVideo').addEventListener('click', function() {
-                                document.getElementById('videoContainer').style.display = 'none';
-                            });
-                        </script>
-                        <button id="playVideo_mov" class="btn-black" style="height: 150px;width: 400px;">
-                            <p class="mbr-description mbr-fonts-style mt-2 align-center display-4">Demonstration</p>
-                            <h3 class="align-center mb-3 mbr-fonts-style display-2"><strong>Play Vedio</strong></h3>
-                        </button>
-                        <div id="videoContainer_mov" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1;">
-                            <video id="myVideo_mov" controls>
-                                <source src="./vedio/vedio.mov" type="video/mp4">
-                            </video>
-                            <a id="closeVideo_mov" class="btn btn-black display-4">Close</a>
-                        </div>
+                        <video id="myVideo_avi" controls>
+                            <source src="./vedio/vedio.avi" type="video/x-msvideo">
+                        </video>
 
-                        <script type="text/javascript">
-                            document.getElementById('playVideo').addEventListener('mouseover', function() {
-                                this.style.transform = 'scale(1.1)';
-                            });
-                            document.getElementById('playVideo').addEventListener('mouseout', function() {
-                                this.style.transform = 'scale(1)';
-                            });
-                            document.getElementById('playVideo').addEventListener('click', function() {
-                                document.getElementById('videoContainer').style.display = 'flex';
-                            });
-                            document.getElementById('closeVideo').addEventListener('click', function() {
-                                document.getElementById('videoContainer').style.display = 'none';
-                            });
-                        </script>
 
+                        <video id="myVideo_mov" controls>
+                            <source src="./vedio/vedio.mov" type="video/quicktime">
+                        </video>
                     </a>
 <!--                    <p class="mbr-description mbr-fonts-style mt-2 align-center display-4">Demonstration</p>-->
                 </div>
