@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>js粒子旋涡</title>
+<title>JS Particle vortex</title>
 <style>
 html, body { margin: 0px; width: 100%; height: 100%; overflow: hidden; background: #000; }
 #canvas { position: absolute; width: 100%; height: 100%; }
@@ -122,7 +122,11 @@ function drawFloor(vars) {
                 if (a > 0) {
                     vars.ctx.fillStyle = colorString(interpolateColors(rgbArray(d / 26 - vars.frameNo / 40), [0, 128, 32], .5 + Math.sin(d / 6 - vars.frameNo / 8) / 2));
                     vars.ctx.globalAlpha = a;
-                    vars.ctx.fillRect(point.x - size / 2, point.y - size / 2, size, size)
+                    //vars.ctx.fillRect(point.x - size / 2, point.y - size / 2, size, size)
+                    var ctx = canvas.getContext('2d');
+                    ctx.beginPath();
+                    ctx.arc(point.x, point.y, size / 2, 0, 2 * Math.PI, false);
+                    ctx.fill();
                 }
             }
         }
@@ -141,7 +145,11 @@ function drawFloor(vars) {
                 if (a > 0) {
                     vars.ctx.fillStyle = colorString(interpolateColors(rgbArray( - d / 26 - vars.frameNo / 40), [32, 0, 128], .5 + Math.sin( - d / 6 - vars.frameNo / 8) / 2));
                     vars.ctx.globalAlpha = a;
-                    vars.ctx.fillRect(point.x - size / 2, point.y - size / 2, size, size)
+                    //vars.ctx.fillRect(point.x - size / 2, point.y - size / 2, size, size)
+                    var ctx = canvas.getContext('2d');
+                    ctx.beginPath();
+                    ctx.arc(point.x, point.y, size / 2, 0, 2 * Math.PI, false);
+                    ctx.fill();
                 }
             }
         }
@@ -168,7 +176,14 @@ function draw(vars) {
             a = .8 - Math.pow(d / (vars.vortexHeight / 2), 1000) * .8;
             vars.ctx.globalAlpha = a >= 0 && a <= 1 ? a: 0;
             vars.ctx.fillStyle = rgb(vars.points[i].color);
-            if (point.x > -1 && point.x < vars.canvas.width && point.y > -1 && point.y < vars.canvas.height) vars.ctx.fillRect(point.x - size / 2, point.y - size / 2, size, size)
+            //if (point.x > -1 && point.x < vars.canvas.width && point.y > -1 && point.y < vars.canvas.height) vars.ctx.fillRect(point.x - size / 2, point.y - size / 2, size, size)
+            if (point.x > -1 && point.x < vars.canvas.width && point.y > -1 && point.y < vars.canvas.height) {
+                //vars.ctx.fillRect(point.x - size / 2, point.y - size / 2, size, size)
+                var ctx = canvas.getContext('2d');
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, size / 2, 0, 2 * Math.PI, false);
+                ctx.fill();
+            }
         }
     }
     vars.points.sort(sortFunction)
@@ -225,6 +240,7 @@ function frame(vars) {
     process(vars);
     draw(vars)
 }
-frame();</script>
+frame();
+</script>
 </body>
 </html>
