@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>山羊の前端小窝</title>
+    <!-- 引入字体图标 -->
+    <!-- 图标由阿里矢量图标库下载，如果需要可以粉丝群获取或者自行下载 -->
+    <link rel="stylesheet" href="./iconfont/iconfont.css">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            color: #ffffff;
+            background-color: #f3f3f3;
+        }
+
+        /* 定义一个名为shell的类，用于包裹整个元素*/
+        .shell {
+            width: 330px;
+            /* 设置宽度为330像素*/
+            height: 100px;
+            /* 设置高度为100像素*/
+            position: absolute;
+            /* 设置定位为绝对定位*/
+            top: 50%;
+            /* 设置顶部距离为父元素的50%*/
+            left: 50%;
+            /* 设置左侧距离为父元素的50%*/
+            transform: translate(-50%, -50%);
+            /* 使用transform属性将元素水平和垂直居中*/
+            border-radius: 5px;
+            /* 设置边框圆角为5像素*/
+            background-color: #fafafa;
+            /* 设置背景颜色为#fafafa*/
+            box-shadow: 0 0 2rem #babbbc;
+            /* 设置阴影效果*/
+            animation: show-shell 0.5s forwards ease-in-out;
+            /* 设置动画效果 */
+        }
+
+        /* 定义一个名为show-shell的关键帧动画*/
+        @keyframes show-shell {
+            0% {
+                width: 0;
+                /* 动画开始时宽度为0 */
+            }
+        }
+
+        /* 定义名为photo和content的类，用于包裹照片和内容*/
+        .photo,
+        .content {
+            box-sizing: border-box;
+            /* 设置盒模型为border-box */
+        }
+
+        /* 定义名为photo的类*/
+        .photo {
+            width: 100px;
+            /* 设置宽度为100像素*/
+            height: 100px;
+            /* 设置高度为100像素*/
+            border-radius: 50%;
+            /* 设置边框圆角为50%*/
+            overflow: hidden;
+            /* 设置溢出隐藏*/
+            border: 5px solid #fafafa;
+            /* 设置边框为5像素实线，颜色为#fafafa*/
+            background-color: #fafafa;
+            /* 设置背景颜色为#fafafa*/
+            margin-left: -50px;
+            /* 设置左侧外边距为负的宽度的一半，实现水平居中*/
+            box-shadow: 0 0 0.5rem #babbbc;
+            /* 设置阴影效果*/
+            animation: rotate-photo 0.5s forwards ease-in-out;
+            /* 设置动画效果 */
+        }
+
+        /* 定义一个名为rotate-photo的关键帧动画*/
+        @keyframes rotate-photo {
+            100% {
+                transform: rotate(-360deg);
+                /* 动画结束时旋转-360度 */
+            }
+        }
+
+        /* 定义名为photo的类中的img元素*/
+        .photo img {
+            width: 100%;
+            /* 设置宽度为100% */
+        }
+
+        /* 定义名为content的类*/
+        .content {
+            padding: 10px;
+            /* 设置内边距为10像素*/
+            overflow: hidden;
+            /* 设置溢出隐藏*/
+            position: absolute;
+            /* 设置定位为绝对定位*/
+            width: 100%;
+            /* 设置宽度为100%*/
+            height: 100%;
+            /* 设置高度为100%*/
+            top: 0;
+            /* 设置顶部距离为0*/
+            left: 0;
+            /* 设置左侧距离为0 */
+        }
+
+        /* 定义名为content的类中的before伪元素*/
+        .content::before {
+            content: "";
+            /* 设置内容为空*/
+            position: absolute;
+            /* 设置定位为绝对定位*/
+            width: 230px;
+            /* 设置宽度为230像素*/
+            height: 150px;
+            /* 设置高度为150像素*/
+            left: 0;
+            /* 设置左侧距离为0*/
+            top: -20px;
+            /* 设置顶部距离为-20像素*/
+            z-index: -1;
+            /* 设置堆叠顺序为-1*/
+            transform: rotate(-8deg);
+            /* 设置旋转-8度*/
+            background-image: linear-gradient(to top, #6866ee 0%, #fbc8d4 100%);
+            /* 设置背景渐变色 */
+        }
+
+        /* 定义名为content的类中的text类*/
+        .content .text {
+            margin-top: 20px;
+            /* 设置顶部外边距为20像素*/
+            margin-left: 50px;
+            /* 设置左侧外边距为50像素 */
+        }
+
+        /* 定义名为content的类中的text类中的h3和h6元素*/
+        .content .text h3,
+        .content .text h6 {
+            font-weight: normal;
+            /* 设置字体粗细为正常*/
+            margin: 3px 0;
+            /* 设置外边距为3像素的上下外边距，0像素的左右外边距*/
+            letter-spacing: 0.5px;
+            /* 设置字母间距为0.5像素*/
+            white-space: nowrap;
+            /* 设置不换行 */
+        }
+
+        /* 定义名为content的类中的btn类*/
+        .content .btn {
+            background-color: rgb(106, 106, 245);
+            /* 设置背景颜色为rgb(106, 106, 245)*/
+            width: 50px;
+            /* 设置宽度为50像素*/
+            height: 50px;
+            /* 设置高度为50像素*/
+            position: absolute;
+            /* 设置定位为绝对定位*/
+            right: 25px;
+            /* 设置右侧距离为25像素*/
+            top: 25px;
+            /* 设置顶部距离为25像素*/
+            border-radius: 50%;
+            /* 设置边框圆角为50%*/
+            z-index: 1;
+            /* 设置堆叠顺序为1*/
+            cursor: pointer;
+            /* 设置鼠标样式为手型*/
+            transition-duration: 0.3s;
+            /* 设置过渡动画持续时间为0.3秒*/
+            animation: pop-btn 0.3s both ease-in-out 0.5s;
+            /* 设置动画效果 */
+        }
+
+        /* 定义一个名为pop-btn的关键帧动画*/
+        @keyframes pop-btn {
+            0% {
+                transform: scale(0);
+                /* 动画开始时缩放为0 */
+            }
+
+            80% {
+                transform: scale(1.2);
+                /* 动画进行到80%时缩放为1.2 */
+            }
+
+            100% {
+                transform: scale(1);
+                /* 动画结束时缩放为1 */
+            }
+        }
+
+        /* 定义名为content的类中的btn类的hover状态*/
+        .content .btn:hover {
+            box-shadow: 0 0 0 5px rgba(170, 187, 204, 0.5);
+            /* 设置阴影效果 */
+        }
+
+        /* 定义名为content的类中的btn类中的span元素*/
+        .content .btn span {
+            width: 60%;
+            /* 设置宽度为60%*/
+            height: 2px;
+            /* 设置高度为2像素*/
+            position: absolute;
+            /* 设置定位为绝对定位*/
+            background-color: white;
+            /* 设置背景颜色为白色*/
+            top: 50%;
+            /* 设置顶部距离为父元素的50%*/
+            left: 20%;
+            /* 设置左侧距离为父元素的20%*/
+            transform: translateY(-50%);
+            /* 使用transform属性将元素垂直居中*/
+            animation: to-hamburger 0.3s forwards ease-in-out;
+            /* 设置动画效果 */
+        }
+
+        /* 定义名为content的类中的btn类中的span元素的before和after伪元素*/
+        .content .btn span::before,
+        .content .btn span::after {
+            content: "";
+            /* 设置内容为空*/
+            width: 100%;
+            /* 设置宽度为100%*/
+            height: 2px;
+            /* 设置高度为2像素*/
+            position: absolute;
+            /* 设置定位为绝对定位*/
+            background-color: white;
+            /* 设置背景颜色为白色*/
+            transition-duration: 0.3s;
+            /* 设置过渡动画持续时间为0.3秒*/
+            transform: rotate(0deg);
+            /* 设置旋转角度为0度*/
+            right: 0;
+            /* 设置右侧距离为0 */
+        }
+
+        /* 定义名为content的类中的btn类中的span元素的before伪元素*/
+        .content .btn span::before {
+            margin-top: -7px;
+            /* 设置上外边距为-7像素 */
+        }
+
+        /* 定义名为content的类中的btn类中的span元素的after伪元素*/
+        .content .btn span::after {
+            margin-top: 7px;
+            /* 设置上外边距为7像素 */
+        }
+
+        /* 定义名为content的类中的btn类的active状态的span元素*/
+        .content .btn.active span {
+            animation: to-arrow 0.3s forwards ease-in-out;
+            /* 设置动画效果 */
+        }
+
+        /* 定义名为content的类中的btn类的active状态的span元素的before和after伪元素*/
+        .content .btn.active span::before,
+        .content .btn.active span::after {
+            width: 60%;
+            /* 设置宽度为60%*/
+            right: -1px;
+            /* 设置右侧距离为-1像素 */
+        }
+
+        /* 定义名为content的类中的btn类的active状态的span元素的before伪元素*/
+        .content .btn.active span::before {
+            transform: rotate(45deg);
+            /* 设置旋转角度为45度 */
+        }
+
+        /* 定义名为content的类中的btn类的active状态的span元素的after伪元素*/
+        .content .btn.active span::after {
+            transform: rotate(-45deg);
+            /* 设置旋转角度为-45度 */
+        }
+
+        /* 定义一个名为to-hamburger的关键帧动画*/
+        @keyframes to-hamburger {
+            from {
+                transform: translateY(-50%) rotate(-180deg);
+                /* 动画开始时垂直居中并旋转-180度 */
+            }
+        }
+
+        /* 定义一个名为to-arrow的关键帧动画*/
+        @keyframes to-arrow {
+            from {
+                transform: translateY(-50%) rotate(0deg);
+                /* 动画开始时垂直居中并旋转0度 */
+            }
+
+            to {
+                transform: translateY(-50%) rotate(180deg);
+                /* 动画结束时垂直居中并旋转180度 */
+            }
+        }
+
+        *
+
+        /* 定义一个名为box的样式类*/
+        .box {
+            /* 设置透明度为0*/
+            opacity: 0;
+            /* 设置边框圆角为50%*/
+            border-radius: 50%;
+            /* 设置背景颜色为白色带有70%的透明度*/
+            background-color: rgba(255, 255, 255, 0.7);
+            /* 设置定位为绝对定位*/
+            position: absolute;
+            /* 设置顶部位置为50%*/
+            top: 50%;
+            /* 设置右侧位置为-30%*/
+            right: -30%;
+            /* 设置水平和垂直方向上的平移为-50%*/
+            transform: translate(-50%, -50%);
+            /* 设置过渡动画的持续时间为0.3秒*/
+            transition-duration: 0.3s;
+            /* 设置阴影效果，颜色为白色*/
+            box-shadow: 0 0 10px #fff;
+            /* 设置边框宽度为5px，颜色为白色 */
+            border: 5px #fff solid;
+        }
+
+        /* 定义box的伪元素after*/
+        .box::after {
+            /* 设置内容为空*/
+            content: '';
+            /* 设置为块级元素*/
+            display: block;
+            /* 设置宽度为120px*/
+            width: 120px;
+            /* 设置高度为120px*/
+            height: 120px;
+            /* 设置背景图片为./img/2.gif*/
+            background-image: url(./img/2.gif);
+            /* 设置背景大小为cover*/
+            background-size: cover;
+            /* 设置透明度为0.7*/
+            opacity: .7;
+            /* 设置边框圆角为50% */
+            border-radius: 50%;
+        }
+
+        /* 定义box内部的i元素*/
+        .box i {
+            /* 设置宽度为60px*/
+            width: 60px;
+            /* 设置高度为60px*/
+            height: 60px;
+            /* 设置边框圆角为50%*/
+            border-radius: 50%;
+            /* 设置背景颜色为#ececec*/
+            background-color: #ececec;
+            /* 设置字体大小为26px*/
+            font-size: 26px;
+            /* 设置文本居中对齐*/
+            text-align: center;
+            /* 设置行高为60px*/
+            line-height: 60px;
+            /* 设置定位为绝对定位*/
+            position: absolute;
+            /* 设置左侧位置为18px*/
+            left: 18px;
+            /* 设置顶部位置为计算值(60px - 50px/2)*/
+            top: calc(60px - 50px/2);
+            /* 设置阴影效果，颜色为白色*/
+            box-shadow: 0 0 10px #fff;
+            /* 设置字体颜色为rgb(106, 106, 245)*/
+            color: rgb(106, 106, 245);
+            /* 设置背景颜色为白色*/
+            background-color: #fff;
+            /* 设置过渡动画的持续时间为0.3秒 */
+            transition-duration: 0.3s;
+        }
+
+        /* 定义鼠标悬停在i元素上的样式*/
+        .box i:hover {
+            /* 设置过渡延迟时间为初始值，重要性为最高*/
+            transition-delay: initial !important;
+            /* 设置阴影效果，颜色为#babbbc*/
+            box-shadow: 0 0 0 5px #babbbc;
+            /* 设置背景颜色为rgb(106, 106, 245)*/
+            background-color: rgb(106, 106, 245);
+            /* 设置字体颜色为白色 */
+            color: #fff;
+        }
+
+        /* 定义box的打开状态样式*/
+        .box.open {
+            /* 设置透明度为1 */
+            opacity: 1;
+        }
+
+        /* 定义box打开状态下i元素的样式*/
+        .box.open i {
+            /* 设置左侧位置为20px*/
+            left: 20px;
+            /* 设置透明度为1 */
+            opacity: 1;
+        }
+
+        /* 定义box打开状态下第一个i元素的样式*/
+        .box.open i:nth-of-type(1) {
+            /* 设置旋转角度为-90度，水平平移距离为120px，再旋转角度为90度*/
+            transform: rotate(-90deg) translateX(120px) rotate(90deg);
+            /* 设置过渡延迟时间为0秒 */
+            transition-delay: 0s;
+        }
+
+        /* 定义box打开状态下第二个i元素的样式*/
+        .box.open i:nth-of-type(2) {
+            /* 设置旋转角度为-45度，水平平移距离为120px，再旋转角度为45度*/
+            transform: rotate(-45deg) translateX(120px) rotate(45deg);
+            /* 设置过渡延迟时间为0.1秒 */
+            transition-delay: 0.1s;
+        }
+
+        /* 定义box打开状态下第三个i元素的样式*/
+        .box.open i:nth-of-type(3) {
+            /* 设置旋转角度为0度，水平平移距离为130px，再旋转角度为0度*/
+            transform: rotate(0deg) translateX(130px) rotate(0deg);
+            /* 设置过渡延迟时间为0.2秒 */
+            transition-delay: 0.2s;
+        }
+
+        /* 定义box打开状态下第四个i元素的样式*/
+        .box.open i:nth-of-type(4) {
+            /* 设置旋转角度为45度，水平平移距离为120px，再旋转角度为-45度*/
+            transform: rotate(45deg) translateX(120px) rotate(-45deg);
+            /* 设置过渡延迟时间为0.3秒 */
+            transition-delay: 0.3s;
+        }
+
+        /* 定义box打开状态下第五个i元素的样式*/
+        .box.open i:nth-of-type(5) {
+            /* 设置旋转角度为90度，水平平移距离为110px，再旋转角度为-90度*/
+            transform: rotate(90deg) translateX(110px) rotate(-90deg);
+            /* 设置过渡延迟时间为0.4秒 */
+            transition-delay: 0.4s;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="shell">
+    <div class="photo">
+        <img src="./img/1.jpg" alt="">
+    </div>
+    <div class="content">
+        <div class="text">
+            <h3>Bbusiness card</h3>
+            <h6>BILIBILI-山羊の前端小窝</h6>
+        </div>
+        <div class="btn"><span></span></div>
+    </div>
+    <div class="box">
+        <i class="iconfont icon-qq"></i>
+        <i class="iconfont icon-youtube"></i>
+        <i class="iconfont icon-wechat"></i>
+        <i class="iconfont icon-douyin"></i>
+        <i class="iconfont icon-bilibili"></i>
+    </div>
+</div>
+
+</body>
+
+<!-- 引入JQ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script>
+    // 当点击按钮（class为btn的元素）时执行以下代码
+    $('.btn').click(function () {
+        // 切换当前按钮的类名为active，如果已经有active类名则移除，如果没有则添加
+        $(this).toggleClass('active');
+        // 切换所有class为box的元素的类名为open，如果已经有open类名则移除，如果没有则添加
+        $('.box').toggleClass('open');
+    });
+</script>
+
+</html>
