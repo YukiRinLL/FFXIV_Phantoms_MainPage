@@ -1,0 +1,75 @@
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+
+#messages {
+    flex: 1;
+    overflow: hidden;
+}
+
+#messages iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+#messageForm {
+    flex: 0 0 auto;
+    padding: 10px;
+    background-color: #ffffff;
+    border-top: 1px solid #ccc;
+    width: 95%;
+    margin: 0 auto;
+}
+
+#messageForm label {
+    font-weight: bold;
+}
+
+#messageForm input[type="text"],
+#messageForm textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+#messageForm input[type="text"] {
+    height: 0.5em;
+    width: 10%;
+}
+
+#messageForm textarea {
+    height: 5em;
+    width: 95%;
+}
+
+#messageForm input[type="submit"] {
+    background-color: #ccc;
+    color: #333;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+#messageForm input[type="submit"]:hover {
+    background-color: #999;
+}
+
+#signature {
+    width: 20%;
+    margin-top: 10px;
+}
+
+#signature input[type="text"] {
+    height: 2em;
+}
