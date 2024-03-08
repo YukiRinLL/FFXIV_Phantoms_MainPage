@@ -2,9 +2,87 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Message Form</title>
+    <title>Message Board</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        #messages {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        #messages iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        #messageForm {
+            flex: 0 0 auto;
+            padding: 10px;
+            background-color: #ffffff;
+            border-top: 1px solid #ccc;
+            width: 95%;
+            margin: 0 auto;
+        }
+
+        #messageForm label {
+            font-weight: bold;
+        }
+
+        #messageForm input[type="text"],
+        #messageForm textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+
+        #messageForm input[type="text"] {
+            height: 0.5em;
+            width: 10%;
+        }
+
+        #messageForm textarea {
+            height: 5em;
+            width: 95%;
+        }
+
+        #messageForm input[type="submit"] {
+            background-color: #ccc;
+            color: #333;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        #messageForm input[type="submit"]:hover {
+            background-color: #999;
+        }
+
+        #signature {
+            width: 20%;
+            margin-top: 10px;
+        }
+
+        #signature input[type="text"] {
+            height: 2em;
+        }
+    </style>
 </head>
 <body>
+<h1>Message Board</h1>
+<div id="messages">
+    <iframe src="readMessage.html" frameborder="0"></iframe>
+</div>
 <form id="messageForm">
     <label for="username">Signature:</label><br>
     <input type="text" id="username" name="username" required><br>
@@ -56,6 +134,9 @@
                 .then(function(response) {
                     if (response.ok) {
                         alert('message success');
+                        // Reload the iframe to update the messages
+                        var iframe = document.querySelector('#messages iframe');
+                        iframe.src = iframe.src;
                     } else {
                         alert('message failed');
                     }
@@ -69,5 +150,6 @@
             });
         });
     </script>
+
 </body>
 </html>
