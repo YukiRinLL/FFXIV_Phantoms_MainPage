@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>Image from Supabase Storage</h2>
+
+<img id="myImage" src="" alt="Profile">
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
+<script>
+// 初始化Supabase
+const supabase = Supabase.createClient('https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com', 'public')
+https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com/storage/v1/object/sign/avatars/Profile.png
+// 使用Supabase下载图片
+supabase.storage.from('avatars').download('public/avatar1.png')
+  .then(response => {
+    // 创建一个ObjectURL
+    let imgURL = URL.createObjectURL(response.data)
+    // 设置img标签的src属性为刚刚创建的ObjectURL
+    document.getElementById('myImage').src = imgURL
+  })
+  .catch(error => {
+    console.log('Error: ', error)
+  })
+</script>
+
+</body>
+</html>
