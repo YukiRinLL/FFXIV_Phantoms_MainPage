@@ -1,0 +1,18 @@
+{
+  "sourceMap": false,
+  "instrument": false,
+  "include": [
+    "lib/**/*.js"
+  ],
+  "exclude": [
+    "lib/web-worker.js",
+    "lib/UPNG.js"
+  ],
+  "reporter": [
+    "text",
+    "json-summary",
+    "json",
+    "html",
+    "lcov"
+  ]
+}
