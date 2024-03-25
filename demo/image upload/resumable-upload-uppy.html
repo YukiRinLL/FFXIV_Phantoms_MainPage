@@ -58,7 +58,8 @@ const config = {
       const BEARER_TOKEN = config.authorization
 
       const folder = ''
-      const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.baseapi.memfiredb.com/storage/v1/upload/resumable`
+      //const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.baseapi.memfiredb.com/storage/v1/upload/resumable`
+      const supabaseStorageURL = `https://${SUPABASE_PROJECT_ID}.baseapi.memfiredb.com/storage/v1/upload/resumable/object/avatars`
 
 
 
@@ -75,11 +76,11 @@ const config = {
         .use(Tus, {
           endpoint: supabaseStorageURL,
           headers: {
-            authorization: `Bearer ${BEARER_TOKEN}`,
+            authorization: BEARER_TOKEN,
             apikey: SUPABASE_ANON_KEY,
           },
           uploadDataDuringCreation: true,
-
+          chunkSize: 6 * 1024 * 1024,
           allowedMetaFields: ['bucketName', 'objectName', 'contentType', 'cacheControl'],
           onError: function (error) {
             console.log('Failed because: ' + error)
