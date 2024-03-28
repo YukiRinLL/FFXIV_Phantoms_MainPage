@@ -1,28 +1,0 @@
-
-Z	Web:S5254"@Add "lang" and/or "xml:lang" attributes to this "<html>" element(œ÷Ãûÿÿÿÿ
-IWeb:AvoidCommentedOutCodeCheck"Remove this commented out code.(È×ì
-N	Web:S1827%"-Remove this deprecated "scrolling" attribute.(ª­¹ûûÿÿÿÿ8¾»ÀÃá1
-P	Web:S1827%"/Remove this deprecated "frameborder" attribute.(ª­¹ûûÿÿÿÿ8¾»ÀÃá1
-_Web:FrameWithoutTitleCheck%"-Add a "title" attribute to this <iframe> tag.(ª­¹ûûÿÿÿÿ8¾»ÀÃá1
-HWeb:TableWithoutCaptionCheckv" Add a description to this table.(ò·Œª
-:	Web:S5256v"%Add "<th>" headers to this "<table>".(ò·Œª
-LWeb:ImgWithoutAltCheckx"%Add an "alt" attribute to this image.(òùÔøÿÿÿÿ
-LWeb:ImgWithoutAltChecky"%Add an "alt" attribute to this image.(àÊ‹¤úÿÿÿÿ
-LWeb:ImgWithoutAltCheckz"%Add an "alt" attribute to this image.(üÓûüÿÿÿÿ
-LWeb:ImgWithoutAltCheck{"%Add an "alt" attribute to this image.(‚ê”£üÿÿÿÿ
-GWeb:ImgWithoutAltCheck~"%Add an "alt" attribute to this image.(ÎÎ¾
-LWeb:ImgWithoutAltCheck"%Add an "alt" attribute to this image.(¨’‰ûÿÿÿÿ
-HWeb:ImgWithoutAltCheck€"%Add an "alt" attribute to this image.(Ò¸¥±
-GWeb:ImgWithoutAltCheck"%Add an "alt" attribute to this image.(ôÃÎv
-JWeb:AvoidCommentedOutCodeCheckƒ"Remove this commented out code.(Ë©ç§
-IWeb:AvoidCommentedOutCodeCheck„"Remove this commented out code.(¯›‘A
-JWeb:AvoidCommentedOutCodeCheck…"Remove this commented out code.(–Ûˆ·
-OWeb:AvoidCommentedOutCodeCheck†"Remove this commented out code.(É¤ğİıÿÿÿÿ
-JWeb:AvoidCommentedOutCodeCheck‡"Remove this commented out code.(¢˜øÏ
-JWeb:AvoidCommentedOutCodeCheckˆ"Remove this commented out code.(îØº¤
-JWeb:AvoidCommentedOutCodeCheck‰"Remove this commented out code.(Ë©ç§
-JWeb:AvoidCommentedOutCodeCheckŠ"Remove this commented out code.(°À†º
-OWeb:AvoidCommentedOutCodeCheck‹"Remove this commented out code.(æÄ±üÿÿÿÿ
-OWeb:AvoidCommentedOutCodeCheckŒ"Remove this commented out code.(âÇò¼úÿÿÿÿ
-OWeb:AvoidCommentedOutCodeCheck"Remove this commented out code.(÷¢Óãûÿÿÿÿ
-JWeb:AvoidCommentedOutCodeCheck"Remove this commented out code.(îØº¤
