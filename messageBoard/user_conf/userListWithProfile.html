@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Member List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        #userList {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .user-profile img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+
+        .user-profile div {
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+<h1>Member List</h1>
+<div id="userList">
+    <!-- User profiles will be appended here -->
+</div>
+
+<script>
+    const config = {
+        apiKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
+        authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
+        prefer: 'return=minimal',
+        baseUrl: 'https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com'
+    };
+
+    fetch(`${config.baseUrl}/rest/v1/users?select=*`, {
+        method: 'GET',
+        headers: {
+            'apikey': config.apiKey,
+            'Authorization': config.authorization,
+            'Prefer': config.prefer
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        var userListDiv = document.getElementById('userList');
+        data.forEach(user => {
+            var userProfileDiv = document.createElement('div');
+            userProfileDiv.className = 'user-profile';
+
+            var img = document.createElement('img');
+            img.src = 'default.png'; // replace with actual image URL
+
+            var userDiv = document.createElement('div');
+            userDiv.textContent = user.username;
+
+            userProfileDiv.appendChild(img);
+            userProfileDiv.appendChild(userDiv);
+
+            userListDiv.appendChild(userProfileDiv);
+
+            fetch(`${config.baseUrl}/rest/v1/user_profile?select=*&user_id=eq.${user.id}`, {
+                method: 'GET',
+                headers: {
+                    'apikey': config.apiKey,
+                    'Authorization': config.authorization,
+                    'Content-Type': 'application/json',
+                    'Prefer': config.prefer
+                }
+            })
+            .then(response => response.json())
+            .then(profileData => {
+                if (profileData.length > 0) {
+                    img.src = profileData[0].data;
+                }
+            });
+        });
+    })
+    .catch(error => console.error('Error:', error));
+</script>
+</body>
+</html>

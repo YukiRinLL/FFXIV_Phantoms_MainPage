@@ -6,6 +6,12 @@ const config = {
 };
 
 function registerUser(username, password) {
+    // 检查密码是否为4位数字
+    if (!/^\d{4}$/.test(password)) {
+        alert('Password must be 4 digits');
+        return;
+    }
+
     fetch(`${config.baseUrl}/rest/v1/users`, {
         method: 'POST',
         headers: {
@@ -37,3 +43,7 @@ document.querySelector('form').addEventListener('submit', function(event) {
     var password = document.getElementById('password').value;
     registerUser(username, password);
 });
+
+function showTooltip() {
+    document.getElementById('tooltip').style.display = 'block';
+}
