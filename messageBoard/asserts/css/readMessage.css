@@ -14,10 +14,6 @@ h1 {
     margin: 0 auto; /* 这将使内容在页面居中显示 */
 }
 
-
-
-
-
 .message-container {
 
     background-color: #fff;
@@ -26,6 +22,19 @@ h1 {
     margin-bottom: 10px;
     border-radius: 5px;
     width: 100%;
+    display: flex;
+    align-items: center;
+}
+.message-container img {
+    flex: 0 0 auto;
+    margin-right: 10px;
+}
+.message-number {
+    flex: 0 0 auto;
+    margin-right: 10px;
+}
+.message {
+    flex: 1 1 auto;
 }
 
 .message-number {
@@ -59,6 +68,13 @@ h1 {
     font-size: 0.8em;
     color: #999;
     margin-top: 10px;
+}
+
+.profile-image {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    margin-right: 15px;
 }
 
 button {

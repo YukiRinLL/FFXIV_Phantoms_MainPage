@@ -507,12 +507,6 @@ M
 demo/image upload/return.html,7\c\7cf8caf4b3e14e254c107ca62bc685db5b057a09
 R
 "demo/image upload/tus-js-client.js,5\d\5d17439b0ff6177dc0c5672933b61cab35acca2d
-Y
-)messageBoard/asserts/css/messageBoard.css,0\2\02888071afd7647849337b52f0731cae7c0ce12c
-X
-(messageBoard/asserts/css/readMessage.css,f\b\fb5cae2c9c6225e9daffb231764cc65809ba838e
-W
-'messageBoard/asserts/js/messageBoard.js,a\f\afb46f5f2164b9ac18adb925d09956520b13f7e0
 \
 ,demo/image upload/resumable-upload-uppy.html,b\7\b7a527d88356863b8f455278f30174c6e13f5004
 T
