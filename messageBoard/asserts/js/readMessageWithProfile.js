@@ -62,7 +62,7 @@ const config = {
                         .then(response => response.json())
                         .then(profileData => {
                             if (profileData.length > 0) {
-                                img.src = profileData[0].data;
+                                img.src = profileData[profileData.length - 1].data;
                             }
                         });
 
