@@ -47,7 +47,8 @@ const config = {
 
                         // Add profile
                         var img = document.createElement('img');
-                        img.src = 'default.png'; // replace with actual image URL
+                        img.src = './user_conf/default.png'; // replace with actual image URL
+                        img.classList.add('profile-image');  // Add the class to the img element
 
                         fetch(`${config.baseUrl}/rest/v1/user_profile?select=*&user_id=eq.${message.user_id}`, {
                             method: 'GET',
@@ -62,7 +63,6 @@ const config = {
                         .then(profileData => {
                             if (profileData.length > 0) {
                                 img.src = profileData[0].data;
-                                img.classList.add('profile-image');  // Add the class to the img element
                             }
                         });
 
