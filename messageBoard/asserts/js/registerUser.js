@@ -27,7 +27,12 @@ function registerUser(username, password) {
     })
     .then(function(response) {
         if (response.ok) {
-            alert('User registered successfully');
+            if (confirm('User registered successfully. Do you want to upload a profile?')) {
+                window.location.href = 'updateProfilie.html';
+            }
+            else {
+                window.location.href = 'userListWithProfile_fromed.html';
+            }
         } else {
             throw new Error('Error: ' + response.statusText);
         }

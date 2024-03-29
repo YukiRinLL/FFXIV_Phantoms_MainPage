@@ -52,7 +52,7 @@
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            max-width: 300px;
+            max-width: 500px;
             margin: 0 auto;
         }
 
@@ -114,19 +114,27 @@
                 <p class="mbr-text mbr-fonts-style display-7"><strong>上传头像</strong></p>
 
                 <form action="/upload" method="post" enctype="multipart/form-data">
-                    <label for="image">Image:</label>
-                    <input type="file" id="image" name="image" accept="image/*" required>
+
+                    <div class="form-button-wrapper">
+                        <table>
+                            <tr>
+                                <th><label for="image">Image:</label></th>
+                                <th><input type="file" id="image" name="image" accept="image/*" required></th>
+                            </tr>
+                            <tr>
+                                <th><label for="uploaded_by">Uploaded By:</label></th>
+                                <th><input type="text" id="uploaded_by" name="uploaded_by" required></th>
+                            </tr>
+                        </table>
+                    </div>
                     <img id="preview">
-                    <label for="uploaded_by">Uploaded By:</label>
-                    <input type="text" id="uploaded_by" name="uploaded_by" required>
                     <div class="form-button-wrapper">
                         <input type="submit" value="Upload" class="btn btn-black display-4">
                     </div>
                 </form>
-                <div class="form-button-wrapper">
-                    <input type="submit" value="Upload" class="btn btn-black display-4">
-                </div>
-                <p class="mbr-text mbr-fonts-style display-7">Freecompany and Cross-world Linkshell</p>
+
+                <br>
+                <p class="mbr-text mbr-fonts-style display-7"><strong>Phantoms</strong>: Freecompany and Cross-world Linkshell</p>
 
                 <script>
                     document.querySelector('form').addEventListener('change', function(event) {
@@ -225,6 +233,7 @@
                                     .then(function(response) {
                                         if (response.ok) {
                                             alert('Image uploaded successfully');
+                                            window.location.href = 'userListWithProfile_fromed.html';
                                         } else {
                                             throw new Error('Error: ' + response.statusText);
                                         }
