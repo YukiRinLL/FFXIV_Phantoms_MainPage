@@ -215,6 +215,7 @@
                                 var name = randomN + '_profile';
 
                                 compressImage(image, 100, 100).then((compressedImage) => {
+                                    //var base64 = URL.createObjectURL(compressedImage);
                                     fetch('https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com/rest/v1/user_profile', {
                                         method: 'POST',
                                         headers: {
