@@ -1,32 +1,0 @@
-
-T	Web:S5254"@Add "lang" and/or "xml:lang" attributes to this "<html>" element(€÷ğ=
-Z	Web:S5254"@Add "lang" and/or "xml:lang" attributes to this "<html>" element(œ÷Ãûÿÿÿÿ
-IWeb:AvoidCommentedOutCodeCheck"Remove this commented out code.(È×ì
-LWeb:ImgWithoutAltCheck'"%Add an "alt" attribute to this image.(øŒ»ùÿÿÿÿ
-G	Web:S18273"-Remove this deprecated "scrolling" attribute.(ª­¹ûûÿÿÿÿ
-I	Web:S18273"/Remove this deprecated "frameborder" attribute.(ª­¹ûûÿÿÿÿ
-XWeb:FrameWithoutTitleCheck3"-Add a "title" attribute to this <iframe> tag.(ª­¹ûûÿÿÿÿ
-NWeb:AvoidCommentedOutCodeCheck6"Remove this commented out code.(ƒÃ¬Áıÿÿÿÿ
-NWeb:AvoidCommentedOutCodeCheck7"Remove this commented out code.(…´Ëøÿÿÿÿ
-IWeb:AvoidCommentedOutCodeCheck8"Remove this commented out code.(ÊòÜ
-IWeb:AvoidCommentedOutCodeCheck9"Remove this commented out code.(ÏÛ‹ş
-IWeb:AvoidCommentedOutCodeCheck:"Remove this commented out code.(ß©—Š
-IWeb:AvoidCommentedOutCodeCheck;"Remove this commented out code.(‹ü­½
-QWeb:LinkToImageCheckS"1Change this link to not directly target an image.(‡¦Àˆ
-GWeb:ImgWithoutAltCheckS"%Add an "alt" attribute to this image.(‡¦Àˆ
-QWeb:LinkToImageCheckT"1Change this link to not directly target an image.(ˆşØ¦
-GWeb:ImgWithoutAltCheckT"%Add an "alt" attribute to this image.(ˆşØ¦
-QWeb:LinkToImageCheckU"1Change this link to not directly target an image.(ƒèÕ
-GWeb:ImgWithoutAltCheckU"%Add an "alt" attribute to this image.(ƒèÕ
-VWeb:LinkToImageCheckV"1Change this link to not directly target an image.(•Ö±‹øÿÿÿÿ
-LWeb:ImgWithoutAltCheckV"%Add an "alt" attribute to this image.(•Ö±‹øÿÿÿÿ
-VWeb:LinkToImageCheckW"1Change this link to not directly target an image.(Ö‚ëúÿÿÿÿ
-LWeb:ImgWithoutAltCheckW"%Add an "alt" attribute to this image.(Ö‚ëúÿÿÿÿ
-VWeb:LinkToImageCheckX"1Change this link to not directly target an image.(ìª«Şûÿÿÿÿ
-LWeb:ImgWithoutAltCheckX"%Add an "alt" attribute to this image.(ìª«Şûÿÿÿÿ
-QWeb:LinkToImageCheckY"1Change this link to not directly target an image.(Ìéä˜
-GWeb:ImgWithoutAltCheckY"%Add an "alt" attribute to this image.(Ìéä˜
-VWeb:LinkToImageCheckZ"1Change this link to not directly target an image.( ù¢áÿÿÿÿÿ
-LWeb:ImgWithoutAltCheckZ"%Add an "alt" attribute to this image.( ù¢áÿÿÿÿÿ
-QWeb:LinkToImageCheck["1Change this link to not directly target an image.(ù´´
-GWeb:ImgWithoutAltCheck["%Add an "alt" attribute to this image.(ù´´
