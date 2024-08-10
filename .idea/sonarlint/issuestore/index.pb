@@ -27,8 +27,6 @@ Z
 *demo/memfireTest/readMessage_butifyed.html,a\8\a819a5e4706779ba14001ab51aba00fc3401d8fc
 _
 /demo/memfireTest/messageBoard/messageBoard.html,9\1\919a45dd2f6c5b6ba5fd29cf5f44512c9eaf2224
-8
-note.txt,5\9\59146a94a509fbf3c9b6e735c2e0cfb6e772dbef
 q
 Alib/supabase-js/examples/next-storage/components/UploadButton.tsx,f\d\fdb50c5ab58ed92a412bbac62ef63841a5b6b663
 p
@@ -521,5 +519,3 @@ E
 SQL/create_tables.sql,1\1\114e1db18941c737e331b32b37211f8ff37b4c7b
 ;
 _config.yml,c\d\cd089ae45ce870c45e434019e8f1ed4f066cd425
->
-to_do_list.txt,3\f\3f7214762eded820f059cfbad25ff74476cab26c
