@@ -5,8 +5,6 @@ K
 .github/workflows/pages.yml,8\0\80c02bfb0cd66d4f24b483f273e3f78d725c9a30
 >
 demo/menu.html,3\8\385dab8faae54b619c89051d5d33f1e4ccfda7f9
-E
-additions/bubble.html,d\4\d4fa9a4c8649a48cd4cbf85f989b4fa958cfba7e
 @
 album/stars.html,e\9\e9524e5099dfc01240c0d3e0bece450278e72bd2
 ^

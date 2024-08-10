@@ -129,6 +129,14 @@
 </section>
 
 
+<div id="videoContainer" style="display: none; position: fixed; top: 55%; left: 50%; transform: translate(-50%, -50%); z-index: 1; width: 80%; height: 80%; background: rgba(0,0,0,0.8);">
+    <iframe id="myVideo" src="" scrolling="no" border="0" frameborder="0" allowfullscreen="true"
+            style="width: 100%; height: 100%; object-fit: contain;"></iframe>
+    <!--                            <video id="myVideo" controls>-->
+    <!--                                <source src="./vedio/vedio.mp4" type="video/mp4">-->
+    <!--                            </video>-->
+    <a id="closeVideo" class="btn btn-black display-4" style="position: absolute; top: 70px; right: 10px; color: #fff;">Close</a>
+</div>
 <section class="image3 cid-seogusrmXz" id="image3-logo">
     <div class="container">
         <div class="row justify-content-center">
@@ -144,16 +152,8 @@
                         <div class="form-button-wrapper">
                             <button id="playVideo" class="btn-black" style="width: 100%; height: 100%; max-width: 100%; object-fit: contain; opacity: 1;">
                                 <p class="mbr-description mbr-fonts-style mt-2 align-center display-4">Demonstration</p>
-                                <h3 class="align-center mb-3 mbr-fonts-style display-2"><strong>Play Vedio</strong></h3>
+                                <h3 class="align-center mb-3 mbr-fonts-style display-2"><strong>Play Video</strong></h3>
                             </button>
-                        </div>
-                        <div id="videoContainer" style="display: none; position: fixed; top: 55%; left: 50%; transform: translate(-50%, -50%); z-index: 1; width: 80%; height: 80%;">
-                            <iframe id="myVideo" src="//player.bilibili.com/player.html?isOutside=true&aid=112932809740147&bvid=BV1cKYueqE5Z&cid=500001644042391&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"
-                                    style="width: 100%; height: 100%; min-width: 854px; min-height: 480px; object-fit: contain"></iframe>
-<!--                            <video id="myVideo" controls>-->
-<!--                                <source src="./vedio/vedio.mp4" type="video/mp4">-->
-<!--                            </video>-->
-                            <a id="closeVideo" class="btn btn-black display-4">Close</a>
                         </div>
 
                         <script type="text/javascript">
@@ -164,9 +164,13 @@
                                 this.style.transform = 'scale(1)';
                             });
                             document.getElementById('playVideo').addEventListener('click', function() {
+                                var iframe = document.getElementById('myVideo');
+                                iframe.src = '//player.bilibili.com/player.html?isOutside=true&aid=112932809740147&bvid=BV1cKYueqE5Z&cid=500001644042391&p=1';
                                 document.getElementById('videoContainer').style.display = 'flex';
                             });
                             document.getElementById('closeVideo').addEventListener('click', function() {
+                                var iframe = document.getElementById('myVideo');
+                                iframe.src = ''; // Clear the src to stop the video
                                 document.getElementById('videoContainer').style.display = 'none';
                             });
                         </script>
