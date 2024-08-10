@@ -26,6 +26,11 @@ history页面也可以这样做
 
 
 http_test.html点击跳转有问题，还没修
-视频播放有问题，还没修
 
+链接加上
+https://www.thebuddyforum.com/threads/%E5%B7%A5%E5%85%B7-ff14%E5%A4%9A%E5%BC%80%E5%99%A8-multiple-copies-of-ff14.179778/
 
+wallpaper engine内容加上
+群相册和石之家相册转移
+
+默认头像更改
