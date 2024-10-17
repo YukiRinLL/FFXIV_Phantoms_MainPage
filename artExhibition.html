@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Site made with Mobirise Website Builder v5.2.0, https://mobirise.com -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="generator" content="Mobirise v5.2.0, mobirise.com">
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:image:src" content="assets/images/index-meta.jpg">
+    <meta property="og:image" content="assets/images/index-meta.jpg">
+    <meta name="twitter:title" content="Phantoms">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+    <link rel="shortcut icon" href="https://img.picgo.net/2024/10/18/frame-1-121x121bc5d878c1dd0d5fc.png" type="image/x-icon">
+    <meta name="description" content="FF14、FC/CWLS Phantomsのホームページです。">
+
+
+    <title>Phantoms</title>
+    <link rel="stylesheet" href="assets/web/assets/mobirise-icons2/mobirise2.css">
+    <link rel="stylesheet" href="assets/tether/tether.min.css">
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-grid.min.css">
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap-reboot.min.css">
+    <link rel="stylesheet" href="assets/dropdown/css/style.css">
+    <link rel="stylesheet" href="assets/socicon/css/styles.css">
+    <link rel="stylesheet" href="assets/theme/css/style.css">
+    <link rel="preload" as="style" href="assets/mobirise/css/mbr-additional.css"><link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css" type="text/css">
+
+    <link rel="stylesheet" href="additions/mouse.css">
+    <title>Art Exhibition</title>
+
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        .gallery-container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        .gallery-item {
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: relative; /* Add this */
+            width: 550px; /* Add this */
+            height: 550px; /* Add this */
+            display: flex; /* Add this */
+            align-items: center; /* Add this */
+            justify-content: center; /* Add this */
+        }
+        .gallery-item img {
+            width: auto;
+            height: auto;
+            max-width: 100%; /* Change this */
+            max-height: 100%; /* Change this */
+            display: block;
+            transition: transform 0.6s ease;
+        }
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.8);
+            /*display: flex;*/
+            align-items: center;
+            justify-content: center;
+        }
+        .lightbox img {
+            max-width: 90%;
+            max-height: 80%;
+        }
+        .close-lightbox {
+            cursor: pointer;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            color: #fff;
+            font-size: 25px;
+        }
+        .caption {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .author {
+            /* 作者名样式 */
+        }
+
+        .title {
+            /* 作品名样式 */
+        }
+    </style>
+</head>
+
+<body>
+
+<style type="text/css">
+    body {
+        background: #f4f4f4;
+    }
+</style>
+<div style="position: fixed;opacity:1; background-color: rgb(36,35,36)">
+    		<iframe src="additions/bubble.html" scrolling="No" frameborder="hide" style="position: fixed; width: 100%; height: 100%; max-width: 100%; object-fit: cover; opacity: 20%"></iframe>
+<!--    <video autoplay muted loop style="position: fixed;width: 100%; height: 100%; max-width: 100%; max-height: 100%; min-width: 426px; min-height: 240px; object-fit: cover; opacity: 0.2;padding-top: 70px">-->
+<!--        <source src="https://img.picgo.net/2024/10/18/vedio35591bb9b85483808.mp4" type="video/mp4">-->
+<!--    </video>-->
+</div>
+
+
+<div id="menu"></div>
+<script src="./assets/web/assets/jquery/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#menu").load("./additions/menu/menu1.html");
+    });
+</script>
+
+
+<div class="gallery-container">
+    <!-- Gallery Items -->
+    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/16203abc06869b783d62c061750eab7e7de31e2cb54d050d.jpg')">
+        <img src="https://img.picgo.net/2024/10/18/16203abc06869b783d62c061750eab7e7de31e2cb54d050d.md.jpg" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">YukiRinLL</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/751b8ca50bd7ab9c5c14d5936ba2f9e73eb4cf267d7f4996.jpg')">
+        <img src="https://img.picgo.net/2024/10/18/751b8ca50bd7ab9c5c14d5936ba2f9e73eb4cf267d7f4996.md.jpg" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">YukiRinLL</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/0f0769f1f8eed6498814b9fbaa29cf2793b258e793cc3aad.jpg')">
+        <img src="https://img.picgo.net/2024/10/18/0f0769f1f8eed6498814b9fbaa29cf2793b258e793cc3aad.md.jpg" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">YukiRinLL</span>
+            <span class="title"><strong>Ronka</strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/aa1b3db1ed6dab4fc6.jpg')">
+        <img src="https://img.picgo.net/2024/10/18/aa1b3db1ed6dab4fc6.md.jpg" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">YukiRinLL</span>
+            <span class="title"><strong>雨中</strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_013c7a03964af991e8d.jpg')">
+        <img src="https://img.picgo.net/2024/10/18/IMG_013c7a03964af991e8d.md.jpg" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">朝夕优</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/216E80AA15ED7DE65F0E8E92BC173164bbc7dbee9238b90a.jpeg')">
+        <img src="https://img.picgo.net/2024/10/18/216E80AA15ED7DE65F0E8E92BC173164bbc7dbee9238b90a.md.jpeg" alt="Gallery Image" />
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/llbb308d6690c35c82.jpg')">
+        <img src="https://img.picgo.net/2024/10/18/llbb308d6690c35c82.md.jpg" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">YukiRinLL</span>
+            <span class="title"><strong>角色自画像</strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_01192373d6739840ac4.png')">
+        <img src="https://img.picgo.net/2024/10/18/IMG_01192373d6739840ac4.md.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">朝夕优</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_010aded14e83e228ab7.png')">
+        <img src="https://img.picgo.net/2024/10/18/IMG_010aded14e83e228ab7.md.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">朝夕优</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_008c69bef7dd6784a93.png')">
+        <img src="https://img.picgo.net/2024/10/18/IMG_008c69bef7dd6784a93.md.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">朝夕优</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_0094ed144dfdc93eb7a.png')">
+        <img src="https://img.picgo.net/2024/10/18/IMG_0094ed144dfdc93eb7a.md.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">朝夕优</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_0065924cad9c8344886.png')">
+        <img src="https://img.picgo.net/2024/10/18/IMG_0065924cad9c8344886.md.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">朝夕优</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/CPa7c87a3fad998fad.jpg')">
+        <img src="https://img.picgo.net/2024/10/18/CPa7c87a3fad998fad.md.jpg" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">YukiRinLL</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG5df9ec9265d50c4a.png')">
+        <img src="https://img.picgo.net/2024/10/18/IMG5df9ec9265d50c4a.md.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Yan</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_014f3afce7efc3954d5.png')">
+        <img src="https://img.picgo.net/2024/10/18/IMG_014f3afce7efc3954d5.md.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">朝夕优</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_0022e66f914b51d223a.png')">
+        <img src="https://img.picgo.net/2024/10/18/IMG_0022e66f914b51d223a.md.png" alt="GalleryImage" />
+        <div class="caption">
+            <span class="author">Yan</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_00715b84a00543aea85.png')">
+        <img src="https://img.picgo.net/2024/10/18/IMG_00715b84a00543aea85.md.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">朝夕优</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_004964694cb331379db.jpg')">
+        <img src="https://img.picgo.net/2024/10/18/IMG_004964694cb331379db.md.jpg" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">朝夕优</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_005ac9def51dab57fae.jpg')">
+        <img src="https://img.picgo.net/2024/10/18/IMG_005ac9def51dab57fae.md.jpg" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">朝夕优</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_00140055024436b9786.jpg')">
+        <img src="https://img.picgo.net/2024/10/18/IMG_00140055024436b9786.md.jpg" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Yan</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_00335bb81ba5c3ab5f6.jpg')">
+        <img src="https://img.picgo.net/2024/10/18/IMG_00335bb81ba5c3ab5f6.md.jpg" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">鲸波万仞</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/9500463C-2849-4792-A758-FDF132F77CD4_hd1a7081d54d0d5276.jpg')">
+        <img src="https://img.picgo.net/2024/10/18/9500463C-2849-4792-A758-FDF132F77CD4_hd1a7081d54d0d5276.md.jpg" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">YukiRinLL</span>
+            <span class="title"><strong>猫猫Yan</strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/75B25F2160F64384E26287DA3F7A926A994664b4259bf053.jpeg')">
+        <img src="https://img.picgo.net/2024/10/18/75B25F2160F64384E26287DA3F7A926A994664b4259bf053.jpeg" alt="Gallery Image" />
+    </div>
+</div>
+<!-- Lightbox -->
+<div id="lightbox" class="lightbox">
+    <img src="" alt="Lightbox Image" />
+    <span id="close-lightbox" class="close-lightbox">&times;</span>
+</div>
+<script>
+    let lightboxImg = document.getElementById('lightbox').querySelector('img');
+    let closeLightbox = document.getElementById('close-lightbox');
+    let lightbox = document.getElementById('lightbox');
+    function openLightbox(src) {
+        lightbox.style.display = 'flex';
+        lightboxImg.src = src;
+    }
+    closeLightbox.onclick = function() {
+        lightbox.style.display = 'none';
+    }
+    window.onclick = function(event) {
+        if (event.target == lightbox) {
+            lightbox.style.display = 'none';
+        }
+    }</script>
+
+
+<section style="background-color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif; color:#aaa; font-size:12px; padding: 0; align-items: center; display: flex;">
+    <p style="flex: 0 0 auto; margin:0; padding-right:1rem;">Page was <a href="https://mobirise.site/g" style="color:#aaa;">designed</a> with Mobirise</p>
+</section>
+<script src="assets/web/assets/jquery/jquery.min.js"></script>
+<script src="assets/popper/popper.min.js"></script>
+<script src="assets/tether/tether.min.js"></script>
+<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="assets/smoothscroll/smooth-scroll.js"></script>
+<script src="assets/ytplayer/jquery.mb.ytplayer.min.js"></script>
+<script src="assets/vimeoplayer/jquery.mb.vimeo_player.js"></script>
+<script src="assets/dropdown/js/nav-dropdown.js"></script>
+<script src="assets/dropdown/js/navbar-dropdown.js"></script>
+<script src="assets/touchswipe/jquery.touch-swipe.min.js"></script>
+<script src="assets/theme/js/script.js"></script>
+
+
+</body>
+</html>
