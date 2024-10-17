@@ -18,7 +18,9 @@
       font-size: 3.125rem;
       line-height: 3.125rem; }
   .navbar-dropdown .navbar-caption {
-    font-weight: 700;
+    /* updated by Yuki 20241017 */
+    font-weight: 500;
+    /*font-weight: 700;*/
     white-space: normal;
     vertical-align: -4px;
     line-height: 3.125rem !important; }
@@ -81,7 +83,9 @@
     padding-left: 1rem; }
   .nav-dropdown .link {
     margin: .667em 1.667em;
-    font-weight: 500;
+    /* updated by Yuki 20241017 */
+    font-weight: 400;
+    /*font-weight: 500;*/
     padding: 0;
     transition: color .2s ease-in-out; }
     .nav-dropdown .link.dropdown-toggle {
@@ -89,8 +93,9 @@
       .nav-dropdown .link.dropdown-toggle::after {
         margin-left: .25rem;
         border-top: 0.35em solid;
-        border-right: 0.35em solid transparent;
-        border-left: 0.35em solid transparent;
+        /* removed by Yuki 20241017 */
+        /*border-right: 0.35em solid transparent;*/
+        /*border-left: 0.35em solid transparent;*/
         border-bottom: 0; }
       .nav-dropdown .link.dropdown-toggle[aria-expanded="true"] {
         margin: 0;
