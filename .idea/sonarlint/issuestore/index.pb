@@ -5,6 +5,8 @@ K
 .github/workflows/pages.yml,8\0\80c02bfb0cd66d4f24b483f273e3f78d725c9a30
 >
 demo/menu.html,3\8\385dab8faae54b619c89051d5d33f1e4ccfda7f9
+E
+additions/bubble.html,d\4\d4fa9a4c8649a48cd4cbf85f989b4fa958cfba7e
 @
 album/stars.html,e\9\e9524e5099dfc01240c0d3e0bece450278e72bd2
 ^
@@ -293,9 +295,9 @@ o
 ?lib/supabase-js/docs/v1/classes/index.RealtimeSubscription.html,f\a\fa4a147c6db0446d348f3480e58b35c381cf71c8
 i
 9lib/supabase-js/docs/v1/classes/index.SupabaseClient.html,b\b\bb3b4b5ee8d1eaf7deb5b312879c6a24d627bcd8
-Ü
+ÔøΩ
 Vlib/supabase-js/docs/v1/classes/lib_SupabaseRealtimeClient.SupabaseRealtimeClient.html,6\3\6374b92e859e70f4b7bc0241370d868918ae7c5d
-Ç
+ÔøΩ
 Rlib/supabase-js/docs/v1/classes/lib_SupabaseQueryBuilder.SupabaseQueryBuilder.html,4\5\452c7721547e5556efac3d456ae82fdbcb4680ec
 Z
 *lib/supabase-js/docs/v1/modules/index.html,6\f\6fb16d5667e35cea2bd72acf5278fa21ca82ac52
@@ -365,7 +367,7 @@ s
 Clib/browser-image-compression/example/Webpack App/webpack.config.js,5\0\507db5448c0cc6746248e80cbc88470e6219e93b
 P
  lib/supabase-js/src/lib/fetch.ts,8\7\8737bacbf2309bdbf46f0d7bfd144cc994e3eb3a
-Å
+ÔøΩ
 Qlib/browser-image-compression/example/Angular App/src/environments/environment.ts,6\a\6ac6dda1a007c16c41e7fdcc70b8f71ce6f38cac
 p
 @lib/browser-image-compression/example/Angular App/src/styles.css,6\0\6061fff958fa6a380e5d9ee0fbd008f87bd6d767
@@ -391,7 +393,7 @@ m
 =lib/browser-image-compression/example/Angular App/tslint.json,b\f\bf9cda22f96eff49fc97cd285960bffc6ffd761e
 r
 Blib/browser-image-compression/example/Angular App/src/polyfills.ts,2\a\2a218634b8bd394f77ff9b6a1682dfc58699eaf4
-Ü
+ÔøΩ
 Vlib/browser-image-compression/example/Angular App/src/environments/environment.prod.ts,3\a\3ad8688a8c47a16325387f682f928ed8ae8caa5c
 o
 ?lib/browser-image-compression/example/Nextjs App/next.config.js,f\9\f945509030d93114dfc111b10a829f3773618a55
@@ -405,11 +407,11 @@ Llib/browser-image-compression/example/Angular App/src/app/app.component.html,5
 Klib/browser-image-compression/example/Angular App/src/app/app.component.css,1\4\142e7dbd24e52764616467efb6dfe559c6a92d8a
 z
 Jlib/browser-image-compression/example/Angular App/src/app/app.component.ts,f\7\f77709ba116504bffa0683686a0c004a114033d1
-ñ
+ÔøΩ
 flib/browser-image-compression/example/Angular App/src/app/image-compress/image-compress.component.html,e\6\e66241b046731f66f9fa2dcc915ab71e355c0185
-ï
+ÔøΩ
 elib/browser-image-compression/example/Angular App/src/app/image-compress/image-compress.component.css,b\6\b6190773afbcea75015037fc181274a9b8e15af6
-î
+ÔøΩ
 dlib/browser-image-compression/example/Angular App/src/app/image-compress/image-compress.component.ts,e\8\e84855fca4fee870acc3dc057f6f874f3940a626
 w
 Glib/browser-image-compression/example/Angular App/src/app/app.module.ts,a\0\a004fd8682f6ddd395afb4241dd173adc52e0f0d
