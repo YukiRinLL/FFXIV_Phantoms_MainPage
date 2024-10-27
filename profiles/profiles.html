@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>公会成员展示</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        body, html {
+          font-family: 'Arial', sans-serif;
+          margin: 0;
+          padding: 0;
+          background: #f8f8f8;
+          overflow-x: hidden;
+        }
+        .container {
+            flex-direction: row; /* 修改为row以水平排列 */
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          height: 93vh;
+          padding: 20px;
+          margin: 0;
+          width: 100%;
+            overflow-x: auto; /* 允许水平滚动 */
+            /*scroll-snap-type: x mandatory; !* 水平滚动快照 *!*/
+            overflow: hidden;
+        }
+        .member-card {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          width: 18vw;
+          height: 90%;
+          flex-grow: 0;
+          flex-shrink: 0;
+          margin: 0 10px;
+          background: linear-gradient(135deg, rgba(196, 196, 196, 0.2), rgba(196, 196, 196, 0));
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+          overflow: hidden;
+          position: relative;
+          transition: transform 0.3s ease-in-out;
+          scroll-snap-align: start;
+        }
+        .member-card:hover {
+          transform: translateY(-5px);
+        }
+        .member-image {
+          width: 100%;
+          height: 55%;
+          padding-bottom: 100%; /* Square aspect ratio */
+          background-size: cover;
+          background-position: center;
+          border-radius: 8px 8px 0 0;
+          position: relative;
+        }
+        .member-image img {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+        .member-info {
+          width: 100%;
+          padding: 25px;
+          text-align: center;
+          background: white;
+          border-radius: 0 0 8px 8px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .member-name {
+          font-size: 18px;
+          color: #333;
+          margin-bottom: 5px;
+        }
+        .member-role {
+          font-size: 14px;
+          color: #666;
+        }
+        .modal {
+          display: none;
+          position: fixed;
+          z-index: 1;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          overflow: auto;
+          background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+          background-color: #fefefe;
+          margin: 15% auto;
+          padding: 20px;
+          border: 1px solid #888;
+          width: 80%;
+          border-radius: 8px;
+
+            margin-top: 0; /* 移除顶部外边距 */
+        }
+        .close {
+          color: #aaa;
+          float: right;
+          font-size: 28px;
+          font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+          color: black;
+          text-decoration: none;
+          cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+
+<div class="container">
+    <!-- 公会成员卡片 -->
+    <div class="member-card" onclick="openModal('member1Modal')">
+        <div class="member-image" style="background-image: url('https://img.picgo.net/2024/10/20/202410201936022c9054e0a931c118.md.png');">
+            <img src="https://img.picgo.net/2024/10/20/202410201936022c9054e0a931c118.md.png" alt="Member 1" style="display: none;">
+        </div>
+        <div class="member-info">
+            <h3 class="member-name">鲸波万仞</h3>
+            <p class="member-role">&ltClement&gt</p>
+        </div>
+    </div>
+    <div class="member-card" onclick="openModal('member2Modal')">
+        <div class="member-image" style="background-image: url('https://img.picgo.net/2024/10/20/20241020193632dee195645d114d76.md.png');">
+            <img src="https://img.picgo.net/2024/10/20/20241020193632dee195645d114d76.md.png" alt="Member 1" style="display: none;">
+        </div>
+        <div class="member-info">
+            <h3 class="member-name">朝夕优</h3>
+            <p class="member-role">&ltClement&gt</p>
+        </div>
+    </div>
+    <div class="member-card" onclick="openModal('member3Modal')">
+        <div class="member-image" style="background-image: url('https://img.picgo.net/2024/10/20/20241020193622bffb7c8166cbf5e9.md.png');">
+            <img src="https://img.picgo.net/2024/10/20/20241020193622bffb7c8166cbf5e9.md.png" alt="Member 3" style="display: none;">
+        </div>
+        <div class="member-info">
+            <h3 class="member-name">緋雪yuki</h3>
+            <p class="member-role">&ltAstral&gt</p>
+        </div>
+    </div>
+    <div class="member-card" onclick="openModal('member4Modal')">
+        <div class="member-image" style="background-image: url('https://img.picgo.net/2024/10/20/202410201936596193144754704659.md.png');">
+            <img src="https://img.picgo.net/2024/10/20/202410201936596193144754704659.md.png" alt="Member 4" style="display: none;">
+        </div>
+        <div class="member-info">
+            <h3 class="member-name">暧昧回避</h3>
+            <p class="member-role">&ltClement&gt</p>
+        </div>
+    </div>
+    <div class="member-card" onclick="openModal('member5Modal')">
+        <div class="member-image" style="background-image: url('https://img.picgo.net/2024/10/20/20241020193637807ffc1c4ce336fb.md.png');">
+            <img src="https://img.picgo.net/2024/10/20/20241020193637807ffc1c4ce336fb.md.png" alt="Member 5" style="display: none;">
+        </div>
+        <div class="member-info">
+            <h3 class="member-name">Vricr</h3>
+            <p class="member-role">&ltMissionary&gt</p>
+        </div>
+    </div>
+    <div class="member-card" onclick="openModal('member6Modal')">
+        <div class="member-image" style="background-image: url('https://img.picgo.net/2024/10/20/20241020193654514c86254d16f6e5.md.png');">
+            <img src="https://img.picgo.net/2024/10/20/20241020193654514c86254d16f6e5.md.png" alt="Member 6" style="display: none;">
+        </div>
+        <div class="member-info">
+            <h3 class="member-name">Yan</h3>
+            <p class="member-role">&ltOriginal&gt</p>
+        </div>
+    </div>
+    <div class="member-card" onclick="openModal('member7Modal')">
+        <div class="member-image" style="background-image: url('https://img.picgo.net/2024/10/20/20241020193649280f28d84fb13a65.md.png');">
+            <img src="https://img.picgo.net/2024/10/20/20241020193649280f28d84fb13a65.md.png" alt="Member 7" style="display: none;">
+        </div>
+        <div class="member-info">
+            <h3 class="member-name">大白鹅</h3>
+            <p class="member-role">&ltTranscendent&gt</p>
+        </div>
+    </div>
+    <div class="member-card" onclick="openModal('member8Modal')">
+        <div class="member-image" style="background-image: url('https://img.picgo.net/2024/10/20/2024102019361731660f32ad502a5b.md.png');">
+            <img src="https://img.picgo.net/2024/10/20/2024102019361731660f32ad502a5b.md.png" alt="Member 8" style="display: none;">
+        </div>
+        <div class="member-info">
+            <h3 class="member-name">Unvoler</h3>
+            <p class="member-role">&ltClement&gt</p>
+        </div>
+    </div>
+    <div class="member-card" onclick="openModal('member9Modal')">
+        <div class="member-image" style="background-image: url('https://img.picgo.net/2024/10/20/2024102019364432a9ab2765ced26a.md.png');">
+            <img src="https://img.picgo.net/2024/10/20/2024102019364432a9ab2765ced26a.md.png" alt="Member 9" style="display: none;">
+        </div>
+        <div class="member-info">
+            <h3 class="member-name">菠萝芒果橙</h3>
+            <p class="member-role">&ltTranscendent&gt</p>
+        </div>
+    </div>
+    <div class="member-card" onclick="openModal('member10Modal')">
+        <div class="member-image" style="background-image: url('https://img.picgo.net/2024/10/27/QQ202410271352035fa587d2a58035dd.md.png');">
+            <img src="https://img.picgo.net/2024/10/27/QQ202410271352035fa587d2a58035dd.md.png" alt="Member 10" style="display: none;">
+        </div>
+        <div class="member-info">
+            <h3 class="member-name">隼人</h3>
+            <p class="member-role">&ltTranscendent&gt</p>
+        </div>
+    </div>
+    <!-- 更多成员卡片... -->
+</div>
+
+<!-- 模态窗口 -->
+<div id="member1Modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('member1Modal')">&times;</span>
+        <img src="https://img.picgo.net/2024/10/20/202410201936022c9054e0a931c118.png" alt="Member 1" style="width:100%">
+        <h2>鲸波万仞</h2>
+        <p>恰巧此时，两手空空，才能无限拥有。</p>
+    </div>
+</div>
+<div id="member2Modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('member2Modal')">&times;</span>
+        <img src="https://img.picgo.net/2024/10/20/20241020193632dee195645d114d76.png" alt="Member 2" style="width:100%">
+        <h2></h2>
+        <p></p>
+    </div>
+</div>
+<div id="member3Modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('member3Modal')">&times;</span>
+        <img src="https://img.picgo.net/2024/10/20/20241020193622bffb7c8166cbf5e9.png" alt="Member 3" style="width:100%">
+        <h2></h2>
+        <p></p>
+    </div>
+</div>
+<div id="member4Modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('member4Modal')">&times;</span>
+        <img src="https://img.picgo.net/2024/10/20/202410201936596193144754704659.png" alt="Member 4" style="width:100%">
+        <h2></h2>
+        <p></p>
+    </div>
+</div>
+<div id="member5Modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('member5Modal')">&times;</span>
+        <img src="https://img.picgo.net/2024/10/20/20241020193637807ffc1c4ce336fb.png" alt="Member 5" style="width:100%">
+        <h2></h2>
+        <p></p>
+    </div>
+</div>
+<div id="member6Modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('member6Modal')">&times;</span>
+        <img src="https://img.picgo.net/2024/10/20/20241020193654514c86254d16f6e5.png" alt="Member 6" style="width:100%">
+        <h2></h2>
+        <p></p>
+    </div>
+</div>
+<div id="member7Modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('member7Modal')">&times;</span>
+        <img src="https://img.picgo.net/2024/10/20/20241020193649280f28d84fb13a65.png" alt="Member 7" style="width:100%">
+        <h2></h2>
+        <p></p>
+    </div>
+</div>
+<div id="member8Modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('member8Modal')">&times;</span>
+        <img src="https://img.picgo.net/2024/10/20/2024102019361731660f32ad502a5b.png" alt="Member 8" style="width:100%">
+        <h2></h2>
+        <p></p>
+    </div>
+</div>
+<div id="member9Modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('member9Modal')">&times;</span>
+        <img src="https://img.picgo.net/2024/10/20/2024102019364432a9ab2765ced26a.png" alt="Member 9" style="width:100%">
+        <h2></h2>
+        <p></p>
+    </div>
+</div>
+<div id="member10Modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('member10Modal')">&times;</span>
+        <img src="https://img.picgo.net/2024/10/27/QQ202410271352035fa587d2a58035dd.png" alt="Member 10" style="width:100%">
+        <h2></h2>
+        <p></p>
+    </div>
+</div>
+
+<script>
+    function openModal(modalId) {
+      document.getElementById(modalId).style.display = "block";
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = "none";
+    }
+
+    document.addEventListener('wheel', handleWheel);
+    // 新增处理鼠标滚轮的函数
+    function handleWheel(event) {
+        // 获取容器元素
+        const container = document.querySelector('.container');
+        // 获取容器的当前滚动位置
+        let scrollLeft = container.scrollLeft;
+        // 计算滚轮滚动的方向和距离
+        const delta = event.deltaY;
+        const step = 100; // 每次滚动的像素数，对齐卡片300
+        if (delta > 0) {
+            scrollLeft += step;
+        } else {
+            scrollLeft -= step;
+        }
+        // 设置容器的新滚动位置
+        container.scrollLeft = scrollLeft;
+        // 阻止默认的滚轮行为
+        event.preventDefault();
+    }
+
+</script>
+
+</body>
+</html>
