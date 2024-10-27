@@ -23,13 +23,14 @@
           margin: 0;
           width: 100%;
             overflow-x: auto; /* 允许水平滚动 */
-            scroll-snap-type: x mandatory; /* 水平滚动快照 */
+            /*scroll-snap-type: x mandatory; !* 水平滚动快照 *!*/
+            overflow: hidden;
         }
         .member-card {
           display: flex;
           flex-direction: column;
           align-items: center;
-          width: 300px;
+          width: 18vw;
           height: 90%;
           flex-grow: 0;
           flex-shrink: 0;
@@ -95,6 +96,8 @@
           border: 1px solid #888;
           width: 80%;
           border-radius: 8px;
+
+            margin-top: 0; /* 移除顶部外边距 */
         }
         .close {
           color: #aaa;
@@ -299,6 +302,7 @@
       document.getElementById(modalId).style.display = "none";
     }
 
+    document.addEventListener('wheel', handleWheel);
     // 新增处理鼠标滚轮的函数
     function handleWheel(event) {
         // 获取容器元素
@@ -307,11 +311,11 @@
         let scrollLeft = container.scrollLeft;
         // 计算滚轮滚动的方向和距离
         const delta = event.deltaY;
-        const step = 100; // 每次滚动的像素数，可以根据需要调整
+        const step = 100; // 每次滚动的像素数，对齐卡片300
         if (delta > 0) {
-            scrollLeft -= step;
-        } else {
             scrollLeft += step;
+        } else {
+            scrollLeft -= step;
         }
         // 设置容器的新滚动位置
         container.scrollLeft = scrollLeft;
@@ -319,8 +323,6 @@
         event.preventDefault();
     }
 
-    // 监听鼠标滚轮事件
-    document.addEventListener('wheel', handleWheel);
 </script>
 
 </body>
