@@ -39,6 +39,10 @@
           .then(data => {
             console.log(data);
             userToken = data.access_token; // 存储access_token
+            // 改为不设置httpOnly;
+            //document.cookie = `access_token=${userToken}; path=/; secure; httpOnly;`; // 设置cookie
+            document.cookie = `access_token=${userToken}; path=/; secure;`;
+            console.log('Cookie has been set. Cookie content:', getCookie('access_token')); // 打印cookie内容
           })
           .catch(error => console.error('Error:', error));
         }
@@ -53,19 +57,25 @@
               'Authorization': `Bearer ${userToken}` // 使用存储的用户token
             }
           })
-          .then(response => response.json())
+          //.then(response => response.json())
           .then(data => console.log(data))
           .catch(error => console.error('Error:', error));
+
           userToken = ''; // 清除用户token
+          // 改为不设置httpOnly;
+          //document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; secure; httpOnly;'; // 清除cookie
+          document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; secure;'; // 清除cookie
+          console.log('Cookie has been cleared.'); // 打印清除cookie的信息
         }
 
         // 函数：获取用户信息
         function getUserInfo() {
+          const token = getCookie('access_token'); // 从cookie中获取access_token
           fetch(`${supabaseURL}/auth/v1/user`, {
             method: 'GET',
             headers: {
               'apikey': supabaseAPIKey,
-              'Authorization': `Bearer ${userToken}` // 使用存储的用户token
+              'Authorization': `Bearer ${token}` // 使用存储的用户token
             }
           })
           .then(response => response.json())
@@ -90,11 +100,12 @@
 
         // 函数：更新用户信息
         function updateUser(email, password, userData) {
+          const token = getCookie('access_token'); // 从cookie中获取access_token
           fetch(`${supabaseURL}/auth/v1/user`, {
             method: 'PUT',
             headers: {
               'apikey': supabaseAPIKey,
-              'Authorization': `Bearer ${userToken}`, // 使用存储的用户token
+              'Authorization': `Bearer ${token}`, // 使用存储的用户token
               'Content-Type': 'application/json'
             },
             body: JSON.stringify({ email, password, data: userData })
@@ -118,6 +129,18 @@
           .then(response => response.json())
           .then(data => console.log(data))
           .catch(error => console.error('Error:', error));
+        }
+
+        // 函数：获取cookie
+        function getCookie(name) {
+          let cookieArray = document.cookie.split(';');
+          for (let i = 0; i < cookieArray.length; i++) {
+            let cookie = cookieArray[i].trim();
+            if (cookie.indexOf(name + "=") == 0) {
+              return cookie.substring(name.length + 1, cookie.length);
+            }
+          }
+          return "";
         }
     </script>
 </head>
