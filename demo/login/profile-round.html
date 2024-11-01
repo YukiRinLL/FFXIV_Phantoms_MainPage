@@ -1,0 +1,35 @@
+<foot>
+    <style>
+        /* 简单的样式，根据需要进行调整 */
+        .avatar-floating-window {
+            position: fixed; /* 固定定位 */
+            bottom: 20px; /* 距离底部20px */
+            right: 20px; /* 距离右侧20px */
+            border-radius: 50%; /* 圆形 */
+            width: 60px; /* 根据实际图片大小调整 */
+            height: 60px; /* 根据实际图片大小调整 */
+            overflow: hidden; /* 隐藏超出部分 */
+            cursor: pointer; /* 鼠标悬停时显示指针 */
+            transition: transform 0.3s ease; /* 平滑变换效果 */
+        }
+        .avatar-floating-window:hover {
+            transform: scale(1.1); /* 鼠标悬停时放大 */
+        }
+        .avatar-floating-window img {
+            width: 100%; /* 宽度自适应 */
+            height: auto; /* 高度自适应 */
+        }
+    </style>
+
+    <!-- 头像悬浮窗 -->
+    <div class="avatar-floating-window" onclick="location.href='login.html';">
+        <img src="path/to/your/avatar.jpg" alt="User Avatar">
+    </div>
+
+    <script>
+        // JavaScript 用于处理头像点击事件
+        document.querySelector('.avatar-floating-window').addEventListener('click', function() {
+            window.location.href = 'login.html'; // 点击时跳转到登录页面
+        });
+    </script>
+</foot>
