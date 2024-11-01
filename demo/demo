@@ -1,0 +1,42 @@
+async function signUp() {
+        const { email, password } = getValues();
+        const { data, error } = await supabase.auth.signUp({
+            email: email,
+            password: password
+        });
+        handleAuthResponse(data, error);
+    }
+
+    async function logInWithEmail() {
+        const { email, password } = getValues();
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+        handleAuthResponse(data, error);
+    }
+
+    async function logOut() {
+        const { error } = await supabase.auth.signOut();
+        handleAuthResponse(null, error);
+    }
+
+    function getValues() {
+        return {
+            email: document.getElementById('email').value,
+            password: document.getElementById('password').value
+        };
+    }
+
+    function handleAuthResponse(data, error) {
+        if (error) {
+            console.error('Error:', error);
+            alert(error.message);
+        } else {
+            console.log('Success:', data);
+            alert('Logged in successfully');
+            // You can now use `data` to get user information
+            // For example, to get the user's profile:
+            // supabase.auth.getUser().then(({ data: { user } }) => console.log(user));
+        }
+    }
