@@ -43,6 +43,18 @@
           transition: transform 0.3s ease-in-out;
           scroll-snap-align: start;
         }
+        /* 媒体查询：屏幕宽度小于768px时 */
+        @media (max-width: 768px) {
+          .member-card {
+            width: 30vw;
+          }
+        }
+        /* 媒体查询：屏幕宽度小于480px时 */
+        @media (max-width: 480px) {
+          .member-card {
+            width: 45vw;
+          }
+        }
         .member-card:hover {
           transform: translateY(-5px);
         }
