@@ -12,14 +12,14 @@
 
 图片上传，图片展示界面美化
 
-tools页面用DB存储渲染，不要每次修改静态页面
-history页面也可以这样做
+tools页面用DB存储渲染，不要每次修改静态页面（暂时不做）
+history页面也可以这样做（
 
-主界面UI美化，用带滚动效果的模板来做
+主界面UI美化，用带滚动效果的模板来做（暂时不做）
 
-整合网页版oopz
+整合网页版oopz（已完成）
 
-http_test.html点击跳转有问题，还没修
+http_test.html点击跳转有问题，还没修(跳转修好了，样式还有问题)
 
 链接加上
 https://www.thebuddyforum.com/threads/%E5%B7%A5%E5%85%B7-ff14%E5%A4%9A%E5%BC%80%E5%99%A8-multiple-copies-of-ff14.179778/
