@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Site made with Mobirise Website Builder v5.2.0, https://mobirise.com
-    -->
+    <!-- Site made with Mobirise Website Builder v5.2.0, https://mobirise.com -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -30,73 +29,75 @@
     </title>
     <style>
         body {
-            font - family: 'Segoe UI',
-            Tahoma,
-            Geneva,
-            Verdana,
-            sans - serif;
-            text - align: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
             margin: 20px;
-            background - color: #f8f8f8;
+            background-color: #f8f8f8;
             color: #333;
         }
         h1 {
-            font - size: 36px;
+            font-size: 36px;
             color: #0066cc;
-        }#loadingMessage {
-            font - size: 24px;
-            font - weight: bold;
+        }
+        #loadingMessage {
+            font-size: 24px;
+            font-weight: bold;
             color: #333;
             padding: 20px;
-            background - color: #fff;
-            border - radius: 12px;
-            box - shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-            display: inline - block;
-            margin - top: 20px;
-            max - width: 600px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            margin-top: 20px;
+            max-width: 600px;
             /* 设置最大宽度 */
-            width: 90 % ;
+            width: 90%;
             /* 设置相对宽度 */
-        }.button - container {
-            margin - top: 20px;
-        }.redirect - button {
-            display: inline - block;
+        }
+        .button-container {
+            margin-top: 20px;
+        }
+        .redirect-button {
+            display: inline-block;
             margin: 10px;
             padding: 15px 30px;
-            font - size: 18px;
-            font - weight: bold;
-            text - align: center;
-            text - decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
             color: #fff;
-            background - color: #0066cc;
-            border: 2px solid#0056a3;
-            border - radius: 8px;
+            background-color: #0066cc;
+            border: 2px solid #0056a3;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background - color 0.3s,
-            border - color 0.3s;
-        }.redirect - button: hover {
-            background - color: #0056a3;
-            border - color: #004080;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        .redirect-button:hover {
+            background-color: #0056a3;
+            border-color: #004080;
         }
         /* 响应式设计 */
-        @media only screen and(max - width: 600px) {
+        @media only screen and (max-width: 600px) {
             h1 {
-                font - size: 28px;
-            }#loadingMessage {.redirect - button {
-                    display: inline - block;
-                    margin: 10px;
-                    padding: 10px 20px;
-                    font - size: 18px;
-                    background - color: #0066cc;
-                    color: #fff;
-                    text - decoration: none;
-                    border - radius: 8px;
-                    cursor: pointer;
-                    padding: 15px;
-                    max - width: 100 % ;
-                }
+                font-size: 28px;
             }
-
+            #loadingMessage {
+                width: 90%;
+            }
+            .redirect-button {
+                display: inline-block;
+                margin: 10px;
+                padding: 10px 20px;
+                font-size: 18px;
+                background-color: #0066cc;
+                color: #fff;
+                text-decoration: none;
+                border-radius: 8px;
+                cursor: pointer;
+                padding: 15px;
+                max-width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -124,18 +125,17 @@
                 </p>
                 <div id="countdown" class="mbr-text mbr-fonts-style display-7"></div>
                 <div class="button-container" id="buttonContainer" style="opacity: 0.5;">
-                    <a id="redirectButton1" class="btn btn-primary display-4" href="#" target="_blank" aria-expanded="false" style="width: 500px">
+                    <a id="redirectButton1" class="btn btn-primary display-4" href="https://yukirinll.github.io/FFXIV_Phantoms_MainPage/#" target="_blank" aria-expanded="false" style="width: 500px">
                         Route 1: Github [国际服务器]
                     </a>
                     <br>
-                    <a id="redirectButton2" class="btn btn-primary display-4" href="#" target="_blank" aria-expanded="false" style="width: 500px">
+                    <a id="redirectButton2" class="btn btn-primary display-4" href="https://yukirinll.gitee.io/ffxiv_phantoms_mainpage/#" target="_blank" aria-expanded="false" style="width: 500px">
                         Route 2: Gitee [国内源]
                     </a>
                     <br>
-                    <a id="redirectButton3" class="btn btn-primary display-4" href="#" target="_blank" aria-expanded="false" style="width: 500px">
-                        Route 2: Cloudflare [国内源]
+                    <a id="redirectButton3" class="btn btn-primary display-4" href="https://ffxiv-phantoms-mainpage.pages.dev/#" target="_blank" aria-expanded="false" style="width: 500px">
+                        Route 3: Cloudflare [国内源]
                     </a>
-
                 </div>
                 <script>
                         document.addEventListener('DOMContentLoaded', function () {
@@ -193,13 +193,13 @@
                                 var buttonContainer = document.getElementById('buttonContainer');
                                 buttonContainer.style.display = 'block';
                                 var redirectButton1 = document.getElementById('redirectButton1');
-                                redirectButton1.href = pageUrls[0];
+                                //redirectButton1.href = pageUrls[0];
                                 redirectButton1.textContent += ' (' + responseTimes[0] + 'ms)';
                                 var redirectButton2 = document.getElementById('redirectButton2');
-                                redirectButton2.href = pageUrls[1];
+                                //redirectButton2.href = pageUrls[1];
                                 redirectButton2.textContent += ' (' + responseTimes[1] + 'ms)';
                                 var redirectButton3 = document.getElementById('redirectButton3');
-                                redirectButton3.href = pageUrls[2];
+                                //redirectButton3.href = pageUrls[2];
                                 redirectButton3.textContent += ' (' + responseTimes[1] + 'ms)';
 
                                 //倒计时结束后跳转
