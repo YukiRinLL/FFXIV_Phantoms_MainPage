@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management</title>
+    <script>
+        // 假设你的API密钥和Supabase URL配置
+        const supabaseURL = 'https://cnpu0oa5g6haaugeu7ig.baseapi.memfiredb.com';
+        const supabaseAPIKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NzI4MTUwNSwiaWF0IjoxNzEwNDgxNTA1LCJpc3MiOiJzdXBhYmFzZSJ9.UYeItSss-F3-p9AmC77pEih3FD4_UtGMkE9LN0-YihE';
+        let userToken = ''; // 用于存储用户的access_token
+
+        // 函数：注册用户
+        function signup(email, password) {
+          fetch(`${supabaseURL}/auth/v1/signup`, {
+            method: 'POST',
+            headers: {
+              'apikey': supabaseAPIKey,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+          })
+          .then(response => response.json())
+          .then(data => console.log(data))
+          .catch(error => console.error('Error:', error));
+        }
+
+        // 函数：邮箱/密码登录
+        function login(email, password) {
+          fetch(`${supabaseURL}/auth/v1/token?grant_type=password`, {
+            method: 'POST',
+            headers: {
+              'apikey': supabaseAPIKey,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log(data);
+            userToken = data.access_token; // 存储access_token
+          })
+          .catch(error => console.error('Error:', error));
+        }
+
+        // 函数：登出用户
+        function logout() {
+          fetch(`${supabaseURL}/auth/v1/logout`, {
+            method: 'POST',
+            headers: {
+              'apikey': supabaseAPIKey,
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${userToken}` // 使用存储的用户token
+            }
+          })
+          .then(response => response.json())
+          .then(data => console.log(data))
+          .catch(error => console.error('Error:', error));
+          userToken = ''; // 清除用户token
+        }
+
+        // 函数：获取用户信息
+        function getUserInfo() {
+          fetch(`${supabaseURL}/auth/v1/user`, {
+            method: 'GET',
+            headers: {
+              'apikey': supabaseAPIKey,
+              'Authorization': `Bearer ${userToken}` // 使用存储的用户token
+            }
+          })
+          .then(response => response.json())
+          .then(data => console.log(data))
+          .catch(error => console.error('Error:', error));
+        }
+
+        // 函数：发送忘记密码邮件
+        function recoverPassword(email) {
+          fetch(`${supabaseURL}/auth/v1/recover`, {
+            method: 'POST',
+            headers: {
+              'apikey': supabaseAPIKey,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email })
+          })
+          .then(response => response.json())
+          .then(data => console.log(data))
+          .catch(error => console.error('Error:', error));
+        }
+
+        // 函数：更新用户信息
+        function updateUser(email, password, userData) {
+          fetch(`${supabaseURL}/auth/v1/user`, {
+            method: 'PUT',
+            headers: {
+              'apikey': supabaseAPIKey,
+              'Authorization': `Bearer ${userToken}`, // 使用存储的用户token
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password, data: userData })
+          })
+          .then(response => response.json())
+          .then(data => console.log(data))
+          .catch(error => console.error('Error:', error));
+        }
+
+        // 函数：通过邮件发送邀请
+        function inviteUser(email) {
+          fetch(`${supabaseURL}/auth/v1/invite`, {
+            method: 'POST',
+            headers: {
+              'apikey': supabaseAPIKey,
+              'Authorization': `Bearer ${supabaseAPIKey}`, // 使用service_role_key
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email })
+          })
+          .then(response => response.json())
+          .then(data => console.log(data))
+          .catch(error => console.error('Error:', error));
+        }
+    </script>
+</head>
+<body>
+<!-- 注册表单 -->
+<form id="signupForm">
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required><br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br>
+    <button type="button" onclick="signup(document.getElementById('email').value, document.getElementById('password').value)">Sign Up</button>
+</form>
+
+<!-- 登录表单 -->
+<form id="loginForm">
+    <label for="loginEmail">Email:</label>
+    <input type="email" id="loginEmail" name="loginEmail" required><br>
+    <label for="loginPassword">Password:</label>
+    <input type="password" id="loginPassword" name="loginPassword" required><br>
+    <button type="button" onclick="login(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value)">Log In</button>
+</form>
+
+<!-- 登出按钮 -->
+<button onclick="logout()">Log Out</button>
+
+<!-- 获取用户信息按钮 -->
+<button onclick="getUserInfo()">Get User Info</button>
+
+<!-- 忘记密码表单 -->
+<form id="recoverForm">
+    <label for="recoverEmail">Email:</label>
+    <input type="email" id="recoverEmail" name="recoverEmail" required><br>
+    <button type="button" onclick="recoverPassword(document.getElementById('recoverEmail').value)">Recover Password</button>
+</form>
+
+<!-- 更新用户信息表单 -->
+<form id="updateUserForm">
+    <label for="updateEmail">New Email:</label>
+    <input type="email" id="updateEmail" name="updateEmail"><br>
+    <label for="updatePassword">New Password:</label>
+    <input type="password" id="updatePassword" name="updatePassword"><br>
+    <label for="userData">User Data:</label>
+    <input type="text" id="userData" name="userData"><br>
+    <button type="button" onclick="updateUser(document.getElementById('updateEmail').value, document.getElementById('updatePassword').value, {key: document.getElementById('userData').value})">Update User</button>
+</form>
+
+<!-- 邀请用户表单 -->
+<form id="inviteUserForm">
+    <label for="inviteEmail">Email:</label>
+    <input type="email" id="inviteEmail" name="inviteEmail" required><br>
+    <button type="button" onclick="inviteUser(document.getElementById('inviteEmail').value)">Invite User</button>
+</form>
+</body>
+</html>

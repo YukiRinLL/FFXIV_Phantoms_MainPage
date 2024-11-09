@@ -1,0 +1,210 @@
+<style>
+    /* 头像悬浮窗样式 */
+    :is(.avatar-floating-window) {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: top 0.3s ease-in-out;
+        z-index: 1000;
+    }
+    :is(.avatar-floating-window):hover {
+        transform: scale(1.1);
+    }
+    :is(.avatar-floating-window img) {
+        width: 100%;
+        height: auto;
+    }
+
+    /* 屏幕宽度<992px时的样式 */
+    @media (max-width: 992px) {
+        :is(.avatar-floating-window) {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+        }
+        :is(.avatar-floating-window):hover {
+            transform: scale(1.15);
+        }
+    }
+
+    /* 屏幕宽度992px-1200px时的样式 */
+    @media (min-width: 992px) and (max-width: 1200px) {
+        :is(.avatar-floating-window) {
+            position: fixed;
+            top: 40px;
+            right: 5px;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: none;
+            z-index: 1000;
+        }
+    }
+
+    /* 登录弹窗的样式 */
+    :is(.modal) {
+        display: none;
+        position: fixed;
+        z-index: 2;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+        animation: fadeIn 0.5s;
+    }
+    :is(.modal-content) {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        width: 350px;
+        max-width: 80%;
+        transition: transform 0.3s ease-in-out;
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    :is(.modal-content.show) {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    :is(.close) {
+        color: #aaa;
+        float: right;
+        font-size: 60px;
+        font-weight: bold;
+    }
+    :is(.close):hover,
+    :is(.close):focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    /* 动画效果 */
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    /* 输入框美化 */
+    :is(input[type="email"]), :is(input[type="password"]) {
+        width: calc(100% - 22px);
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+    /* 按钮组 */
+    :is(.buttons) {
+        display: block;
+    }
+    /* 每个按钮的样式 */
+    :is(.buttons) :is(button) {
+        margin-bottom: 10px;
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #222;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    :is(.buttons) :is(button):hover {
+        background-color: #333;
+    }
+    /* 注册和找回密码按钮样式 */
+    :is(.buttons) :is(.secondary-button) {
+        background-color: #f0f0f0;
+        color: #333;
+        margin-bottom: 10px;
+    }
+    :is(.buttons) :is(.secondary-button):hover {
+        background-color: #eaeaea;
+    }
+</style>
+
+<!-- 头像悬浮窗 -->
+<div class="avatar-floating-window">
+    <img src="../../assets/images/def-profile-gray.png" alt="User Avatar">
+</div>
+
+<!-- 登录弹窗 -->
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <form id="loginForm">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required><br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br><br>
+            <div class="buttons">
+                <button type="submit">Login</button>
+                <button type="button" class="secondary-button" onclick="window.location.href='register.html';">Register</button>
+                <button type="button" class="secondary-button" onclick="window.location.href='forgotPassword.html';">Forgot Password</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // 获取头像悬浮窗元素
+    var avatarFloatingWindow = document.querySelector('.avatar-floating-window');
+    var initialTop = 10; // 初始的top值
+    var movedUp = false; // 是否已经向上移动过
+
+
+    // 监听滚动事件
+    window.addEventListener('scroll', function() {
+        var scrollHeight = window.pageYOffset || document.documentElement.scrollTop;
+        var currentTop = parseInt(window.getComputedStyle(avatarFloatingWindow).top, 5);
+        var isNarrowScreen = window.innerWidth < 1200 && window.innerWidth > 992; // 检查屏幕宽度
+
+        if (scrollHeight > 0 && !movedUp && !isNarrowScreen) { // 当页面向下滚动且还没有向上移动过
+            avatarFloatingWindow.style.top = (initialTop - 5) + 'px'; // 计算新的top值，平滑减少5px
+            movedUp = true; // 标记为已经向上移动过
+        } else if (scrollHeight === 0 && movedUp && !isNarrowScreen) { // 当页面向上滚动回到顶部
+            avatarFloatingWindow.style.top = initialTop + 'px'; // 恢复到初始的top值
+            movedUp = false; // 重置标记
+        }
+    });
+
+    // 获取弹窗元素
+    var modal = document.getElementById("loginModal");
+    var span = document.getElementsByClassName("close")[0];
+    var modalContent = document.querySelector('.modal-content');
+    // 显示弹窗
+    function showModal() {
+        modal.style.display = "block";
+        modalContent.classList.add('show');
+    }
+    // 隐藏弹窗
+    function hideModal() {
+        modal.style.display = "none";
+        modalContent.classList.remove('show');
+    }
+    // 处理头像点击事件 显示弹窗
+    avatarFloatingWindow.addEventListener('click', function() {
+        showModal();
+    });
+    // 点击 <span> (x) 时关闭弹窗
+    span.onclick = function() {
+        hideModal();
+    }
+    // 点击窗口外的区域时关闭弹窗
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            hideModal();
+        }
+    }
+</script>

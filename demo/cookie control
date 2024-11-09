@@ -1,0 +1,63 @@
+设置Cookie：
+当用户登录成功时，你可以将用户的access_token存储在一个cookie中。这可以在login函数中完成。
+
+javascript
+function login(email, password) {
+  fetch(`${supabaseURL}/auth/v1/token?grant_type=password`, {
+    method: 'POST',
+    headers: {
+      'apikey': supabaseAPIKey,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ email, password })
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+    userToken = data.access_token; // 存储access_token
+    document.cookie = `access_token=${userToken}; path=/;`; // 设置cookie
+  })
+  .catch(error => console.error('Error:', error));
+}
+
+
+
+读取Cookie：
+在其他页面中，你可以读取cookie来获取用户的登录状态。
+
+javascript
+function getCookie(name) {
+  let cookieArray = document.cookie.split(';');
+  for (let i = 0; i < cookieArray.length; i++) {
+    let cookie = cookieArray[i].trim();
+    if (cookie.indexOf(name + "=") == 0) {
+      return cookie.substring(name.length + 1, cookie.length);
+    }
+  }
+  return "";
+}
+
+let userToken = getCookie('access_token'); // 从cookie中获取access_token
+
+
+
+登出和清除Cookie：
+当用户登出时，你需要清除cookie。
+
+javascript
+function logout() {
+  fetch(`${supabaseURL}/auth/v1/logout`, {
+    method: 'POST',
+    headers: {
+      'apikey': supabaseAPIKey,
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${userToken}` // 使用存储的用户token
+    }
+  })
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error('Error:', error));
+  userToken = ''; // 清除用户token
+  document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;'; // 清除cookie
+}
+
