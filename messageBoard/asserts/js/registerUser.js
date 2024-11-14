@@ -5,8 +5,52 @@ const config = {
     baseUrl: 'https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com'
 };
 
-function registerUser(username, password) {
-    // 检查密码是否为4位数字
+function reversibleHash4to6(str) {
+    const primeMultiplier = 7;
+    const offset = 100000;
+    const num = parseInt(str, 10);
+    const hash = ((num * primeMultiplier) + offset) % 1000000;
+    return hash.toString().padStart(6, '0');
+}
+function reversibleHash6to4(hashStr) {
+    const primeMultiplier = 7;
+    const offset = 100000;
+    const hash = parseInt(hashStr, 10);
+    const original = ((hash - offset) / primeMultiplier) | 0;
+    return original.toString().padStart(4, '0');
+}
+
+// 发送注册请求
+function sendSignupRequest(email, password) {
+    const hashedPassword = reversibleHash4to6(password);
+    const url = `${config.baseUrl}/auth/v1/signup?apikey=${config.apiKey}&Content-Type=application/json`;
+
+    return fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: email,
+            password: hashedPassword
+        })
+    })
+    .then(function(response) {
+        if (response.ok) {
+            console.log('Signup request sent successfully');
+            return Promise.resolve();
+        } else {
+            throw new Error('Error: ' + response.statusText);
+        }
+    })
+    .catch(function(error) {
+        console.error('Error sending signup request:', error);
+        return Promise.reject(error);
+    });
+}
+
+// registerUser插入user数据表
+function registerUser(username, email, password) {
     if (!/^\d{4}$/.test(password)) {
         alert('Password must be 4 digits');
         return;
@@ -22,6 +66,7 @@ function registerUser(username, password) {
         },
         body: JSON.stringify({
             username: username,
+            email: email,
             password: password
         })
     })
@@ -45,8 +90,16 @@ function registerUser(username, password) {
 document.querySelector('form').addEventListener('submit', function(event) {
     event.preventDefault();
     var username = document.getElementById('username').value;
+    var email = document.getElementById('email').value;
     var password = document.getElementById('password').value;
-    registerUser(username, password);
+
+    sendSignupRequest(email, password)
+        .then(() => {
+            registerUser(username, email, password);
+        })
+        .catch((error) => {
+            console.error('Signup request failed:', error);
+        });
 });
 
 function showTooltip() {

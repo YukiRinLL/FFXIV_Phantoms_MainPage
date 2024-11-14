@@ -4,6 +4,8 @@ CREATE TABLE users (
     password VARCHAR(255)
 );
 
+ALTER TABLE users ADD COLUMN email VARCHAR(255) UNIQUE;
+
 CREATE TABLE messages (
     id SERIAL PRIMARY KEY,
     user_id INT,
