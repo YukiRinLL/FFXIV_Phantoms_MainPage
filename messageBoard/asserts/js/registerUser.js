@@ -37,8 +37,7 @@ function sendSignupRequest(email, password) {
     })
     .then(function(response) {
         if (response.ok) {
-            console.log('Signup request sent successfully');
-            return Promise.resolve();
+            return response.json(); // 解析JSON
         } else {
             throw new Error('Error: ' + response.statusText);
         }
@@ -50,7 +49,7 @@ function sendSignupRequest(email, password) {
 }
 
 // registerUser插入user数据表
-function registerUser(username, email, password) {
+function registerUser(username, email, password, access_token) {
     if (!/^\d{4}$/.test(password)) {
         alert('Password must be 4 digits');
         return;
@@ -60,7 +59,8 @@ function registerUser(username, email, password) {
         method: 'POST',
         headers: {
             'apikey': config.apiKey,
-            'Authorization': config.authorization,
+            'Authorization': `Bearer ${access_token}`, //使用注册返回的access_token
+            'apikey': config.authorization,
             'Content-Type': 'application/json',
             'Prefer': config.prefer
         },
@@ -94,10 +94,11 @@ document.querySelector('form').addEventListener('submit', function(event) {
     var password = document.getElementById('password').value;
 
     sendSignupRequest(email, password)
-        .then(() => {
-            registerUser(username, email, password);
+        .then(function(responseData) { // 确保这里处理的是解析后的JSON对象
+            const accessToken = responseData.access_token;
+            registerUser(username, email, password, accessToken); // 使用access_token
         })
-        .catch((error) => {
+        .catch(function(error) {
             console.error('Signup request failed:', error);
         });
 });

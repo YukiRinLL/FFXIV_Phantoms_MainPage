@@ -63,3 +63,22 @@ WHERE
     tgisinternal = FALSE -- 排除系统内部触发器
 
 AND t.tgname like '%my%'
+
+
+--##查看权限
+SELECT
+    table_schema,
+    table_name,
+    privilege_type
+FROM
+    information_schema.table_privileges
+WHERE
+    table_name = 'xxxxxx';
+
+
+
+
+
+
+
+DROP TRIGGER IF EXISTS trigger_name ON table_name;
