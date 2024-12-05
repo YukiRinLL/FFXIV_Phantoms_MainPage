@@ -42,6 +42,13 @@ function sendSignupRequest(email, password) {
             throw new Error('Error: ' + response.statusText);
         }
     })
+    //存储token到cookie
+    .then(function(data) {
+        console.log(data);
+        const userToken = data.access_token;
+        document.cookie = `access_token=${userToken}; path=/; secure;`;
+        console.log('Cookie has been set. Cookie content:', getCookie('access_token')); // 打印cookie内容
+    })
     .catch(function(error) {
         console.error('Error sending signup request:', error);
         return Promise.reject(error);
@@ -105,4 +112,11 @@ document.querySelector('form').addEventListener('submit', function(event) {
 
 function showTooltip() {
     document.getElementById('tooltip').style.display = 'block';
+}
+
+// 获取cookie的函数
+function getCookie(name) {
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+    if (parts.length == 2) return parts.pop().split(";").shift();
 }
