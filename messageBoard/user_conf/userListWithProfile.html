@@ -88,7 +88,7 @@
 
             userListDiv.appendChild(userProfileDiv);
 
-            fetch(`${config.baseUrl}/rest/v1/user_profile?select=*&user_id=eq.${user.id}`, {
+            fetch(`${config.baseUrl}/rest/v1/user_profile?select=*&legacy_user_id=eq.${user.id}`, {
                 method: 'GET',
                 headers: {
                     'apikey': config.apiKey,
