@@ -46,8 +46,10 @@ function sendSignupRequest(email, password) {
     .then(function(data) {
         console.log(data);
         const userToken = data.access_token;
+        const userId = data.user.id;
         document.cookie = `access_token=${userToken}; path=/; secure;`;
-        console.log('Cookie has been set. Cookie content:', getCookie('access_token')); // 打印cookie内容
+        document.cookie = `user_id=${userId}; path=/; secure;`;
+        console.log('Cookie has been set. Cookie content:', getCookie('access_token'), getCookie('user_id')); // 打印cookie内容
     })
     .catch(function(error) {
         console.error('Error sending signup request:', error);

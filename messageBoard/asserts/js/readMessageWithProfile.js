@@ -24,8 +24,8 @@ const config = {
             .then(function(data) {
                 var messagesDiv = document.getElementById('messages');
                 data.forEach(function(message, index) {
-                    // Fetch the username from the user_id
-                    fetch(`${config.baseUrl}/rest/v1/users?select=username&id=eq.${message.user_id}`, {
+                    // Fetch the username from the legacy_user_id
+                    fetch(`${config.baseUrl}/rest/v1/users?select=username&id=eq.${message.legacy_user_id}`, {
                         method: 'GET',
                         headers: {
                             'apikey': config.apiKey,
@@ -50,7 +50,7 @@ const config = {
                         img.src = './user_conf/default.png'; // replace with actual image URL
                         img.classList.add('profile-image');  // Add the class to the img element
 
-                        fetch(`${config.baseUrl}/rest/v1/user_profile?select=*&user_id=eq.${message.user_id}`, {
+                        fetch(`${config.baseUrl}/rest/v1/user_profile?select=*&legacy_user_id=eq.${message.legacy_user_id}`, {
                             method: 'GET',
                             headers: {
                                 'apikey': config.apiKey,
@@ -97,12 +97,24 @@ const config = {
             });
         }
 
+// 获取cookie的函数
+function getCookie(name) {
+    let cookieArray = document.cookie.split(';');
+    for (let i = 0; i < cookieArray.length; i++) {
+        let cookie = cookieArray[i].trim();
+        if (cookie.indexOf(name + "=") == 0) {
+            return cookie.substring(name.length + 1, cookie.length);
+        }
+    }
+    return "";
+}
+
 function deleteMessage(messageId) {
     fetch(`${config.baseUrl}/rest/v1/messages?id=eq.${messageId}`, {
         method: 'DELETE',
         headers: {
             'apikey': config.apiKey,
-            'Authorization': config.authorization,
+            'Authorization': `Bearer ${getCookie('access_token')}`, // 使用 cookie 中的 token
             'Prefer': config.prefer
         }
     })
@@ -143,7 +155,7 @@ function updateMessage(messageId) {
                 method: 'PATCH',
                 headers: {
                     'apikey': config.apiKey,
-                    'Authorization': config.authorization,
+                    'Authorization': `Bearer ${getCookie('access_token')}`, // 使用 cookie 中的 token
                     'Content-Type': 'application/json',
                     'Prefer': config.prefer
                 },

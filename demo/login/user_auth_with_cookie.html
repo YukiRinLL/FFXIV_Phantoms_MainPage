@@ -9,6 +9,7 @@
         const supabaseURL = 'https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com';
         const supabaseAPIKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c';
         let userToken = ''; // 用于存储用户的access_token
+        let userId = ''; // 用于存储用户的user_id
 
         // 函数：注册用户
         function signup(email, password) {
@@ -21,7 +22,15 @@
             body: JSON.stringify({ email, password })
           })
           .then(response => response.json())
-          .then(data => console.log(data))
+          .then(data => {
+            console.log(data);
+            const userToken = data.access_token;
+            const userId = data.user.id; // 获取user_id
+            // 存储access_token和user_id到cookie
+            document.cookie = `access_token=${userToken}; path=/; secure;`;
+            document.cookie = `user_id=${userId}; path=/; secure;`;
+            console.log('Cookie has been set. Cookie content:', getCookie('access_token'), getCookie('user_id')); // 打印cookie内容
+          })
           .catch(error => console.error('Error:', error));
         }
 
@@ -39,10 +48,12 @@
           .then(data => {
             console.log(data);
             userToken = data.access_token; // 存储access_token
+            userId = data.user.id; // 存储user_id
             // 改为不设置httpOnly;
             //document.cookie = `access_token=${userToken}; path=/; secure; httpOnly;`; // 设置cookie
             document.cookie = `access_token=${userToken}; path=/; secure;`;
-            console.log('Cookie has been set. Cookie content:', getCookie('access_token')); // 打印cookie内容
+            document.cookie = `user_id=${userId}; path=/; secure;`; // 设置user_id cookie
+            console.log('Cookie has been set. Cookie content:', getCookie('access_token'), getCookie('user_id')); // 打印cookie内容
           })
           .catch(error => console.error('Error:', error));
         }
@@ -57,14 +68,15 @@
               'Authorization': `Bearer ${userToken}` // 使用存储的用户token
             }
           })
-          //.then(response => response.json())
           .then(data => console.log(data))
           .catch(error => console.error('Error:', error));
 
           userToken = ''; // 清除用户token
+          userId = ''; // 清除用户user_id
           // 改为不设置httpOnly;
           //document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; secure; httpOnly;'; // 清除cookie
           document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; secure;'; // 清除cookie
+          document.cookie = 'user_id=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; secure;'; // 清除user_id cookie
           console.log('Cookie has been cleared.'); // 打印清除cookie的信息
         }
 
