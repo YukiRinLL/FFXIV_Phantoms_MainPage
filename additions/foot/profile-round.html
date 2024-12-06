@@ -36,8 +36,8 @@
     @media (min-width: 992px) and (max-width: 1200px) {
         :is(.avatar-floating-window) {
             position: fixed;
-            top: 40px;
-            right: 5px;
+            top: 5%; /* 使用百分比 */
+            right: 1%; /* 使用百分比 */
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -132,11 +132,225 @@
     :is(.buttons) :is(.secondary-button):hover {
         background-color: #eaeaea;
     }
+
+    /* 下拉菜单样式 */
+    .myDropdown{
+        position: fixed;
+        top: 20px;
+        right: 10px;
+        z-index: 1000;
+
+        display: inline-block;
+        float:left;
+    }
+    .myDropdown-content{
+        right: 0;
+        top: 60px;
+
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow:  0px 8px 16px 0px rgba(0,0,0,0.2);
+
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+        right: 0; /* 与头像悬浮窗对齐 */
+        top: 60px; /* 位于头像悬浮窗外部 */
+    }
+    .myDropdown-content a{
+        color: #000000;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+    .myDropdown-content a:hover{background-color: #f1f1f1}
+    .myDropdown:hover .myDropdown-content{
+        display: block;
+        opacity: 100;
+        transition: opacity 0.3s ease-in-out;
+    }
+    .myDropdown:hover .dropbtn{
+        background-color: #a1a1a1;
+    }
+
+    /* 屏幕宽度<992px时的样式 */
+    @media (max-width: 992px) {
+        .myDropdown {
+            position: fixed;
+            top: 20px;
+            right: 10px;
+        }
+    }
+
+    /* 屏幕宽度992px-1200px时的样式 */
+    @media (min-width: 992px) and (max-width: 1200px) {
+        .myDropdown {
+            position: fixed;
+            top: 60px;
+            right: 10px;
+        }
+    }
 </style>
 
+<script>
+    // 假设你的API密钥和Supabase URL配置
+    const supabaseURL = 'https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com';
+    const supabaseAPIKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c';
+    let userToken = ''; // 用于存储用户的access_token
+    let userId = ''; // 用于存储用户的user_id
+
+    // 函数：注册用户
+    function signup(email, password) {
+      fetch(`${supabaseURL}/auth/v1/signup`, {
+        method: 'POST',
+        headers: {
+          'apikey': supabaseAPIKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        const userToken = data.access_token;
+        const userId = data.user.id; // 获取user_id
+        // 存储access_token和user_id到cookie
+        document.cookie = `access_token=${userToken}; path=/; secure;`;
+        document.cookie = `user_id=${userId}; path=/; secure;`;
+        console.log('Cookie has been set. Cookie content:', getCookie('access_token'), getCookie('user_id')); // 打印cookie内容
+      })
+      .catch(error => console.error('Error:', error));
+    }
+
+    // 函数：邮箱/密码登录
+    function login(email, password) {
+      fetch(`${supabaseURL}/auth/v1/token?grant_type=password`, {
+        method: 'POST',
+        headers: {
+          'apikey': supabaseAPIKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        userToken = data.access_token; // 存储access_token
+        userId = data.user.id; // 存储user_id
+        // 改为不设置httpOnly;
+        //document.cookie = `access_token=${userToken}; path=/; secure; httpOnly;`; // 设置cookie
+        document.cookie = `access_token=${userToken}; path=/; secure;`;
+        document.cookie = `user_id=${userId}; path=/; secure;`; // 设置user_id cookie
+        console.log('Cookie has been set. Cookie content:', getCookie('access_token'), getCookie('user_id')); // 打印cookie内容
+      })
+      .catch(error => console.error('Error:', error));
+    }
+
+    // 函数：登出用户
+    function logout() {
+      fetch(`${supabaseURL}/auth/v1/logout`, {
+        method: 'POST',
+        headers: {
+          'apikey': supabaseAPIKey,
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userToken}` // 使用存储的用户token
+        }
+      })
+      .then(data => console.log(data))
+      .catch(error => console.error('Error:', error));
+
+      userToken = ''; // 清除用户token
+      userId = ''; // 清除用户user_id
+      // 改为不设置httpOnly;
+      //document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; secure; httpOnly;'; // 清除cookie
+      document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; secure;'; // 清除cookie
+      document.cookie = 'user_id=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; secure;'; // 清除user_id cookie
+      console.log('Cookie has been cleared.'); // 打印清除cookie的信息
+    }
+
+    // 函数：获取用户信息
+    function getUserInfo() {
+      const token = getCookie('access_token'); // 从cookie中获取access_token
+      fetch(`${supabaseURL}/auth/v1/user`, {
+        method: 'GET',
+        headers: {
+          'apikey': supabaseAPIKey,
+          'Authorization': `Bearer ${token}` // 使用存储的用户token
+        }
+      })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error('Error:', error));
+    }
+
+    // 函数：发送忘记密码邮件
+    function recoverPassword(email) {
+      fetch(`${supabaseURL}/auth/v1/recover`, {
+        method: 'POST',
+        headers: {
+          'apikey': supabaseAPIKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email })
+      })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error('Error:', error));
+    }
+
+    // 函数：更新用户信息
+    function updateUser(email, password, userData) {
+      const token = getCookie('access_token'); // 从cookie中获取access_token
+      fetch(`${supabaseURL}/auth/v1/user`, {
+        method: 'PUT',
+        headers: {
+          'apikey': supabaseAPIKey,
+          'Authorization': `Bearer ${token}`, // 使用存储的用户token
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password, data: userData })
+      })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error('Error:', error));
+    }
+
+    // 函数：通过邮件发送邀请
+    function inviteUser(email) {
+      fetch(`${supabaseURL}/auth/v1/invite`, {
+        method: 'POST',
+        headers: {
+          'apikey': supabaseAPIKey,
+          'Authorization': `Bearer ${supabaseAPIKey}`, // 使用service_role_key
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email })
+      })
+      .then(response => response.json())
+      .then(data => console.log(data))
+      .catch(error => console.error('Error:', error));
+    }
+
+    // 函数：获取cookie
+    function getCookie(name) {
+      let cookieArray = document.cookie.split(';');
+      for (let i = 0; i < cookieArray.length; i++) {
+        let cookie = cookieArray[i].trim();
+        if (cookie.indexOf(name + "=") == 0) {
+          return cookie.substring(name.length + 1, cookie.length);
+        }
+      }
+      return "";
+    }
+</script>
+
 <!-- 头像悬浮窗 -->
-<div class="avatar-floating-window">
-    <img src="../../assets/images/def-profile-gray.png" alt="User Avatar">
+<div class="myDropdown">
+    <img class="avatar-floating-window dropbtn" src="../../assets/images/def-profile-gray.png" alt="User Avatar">
+    <div class="myDropdown-content">
+        <a href="">Upload Profile</a>
+        <a href="#" onclick="logout()">Logout</a>
+    </div>
 </div>
 
 <!-- 登录弹窗 -->
@@ -149,7 +363,7 @@
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required><br><br>
             <div class="buttons">
-                <button type="submit">Login</button>
+                <button type="submit" onclick="login(document.getElementById('email').value, document.getElementById('password').value)">Login</button>
                 <button type="button" class="secondary-button" onclick="window.location.href='register.html';">Register</button>
                 <button type="button" class="secondary-button" onclick="window.location.href='forgotPassword.html';">Forgot Password</button>
             </div>
@@ -207,4 +421,52 @@
             hideModal();
         }
     }
+</script>
+
+<script>
+    // 从cookie中获取user_id的函数
+    function getCookie(name) {
+        let cookieArray = document.cookie.split(';');
+        for (let i = 0; i < cookieArray.length; i++) {
+            let cookie = cookieArray[i].trim();
+            if (cookie.indexOf(name + "=") == 0) {
+                return cookie.substring(name.length + 1, cookie.length);
+            }
+        }
+        return "";
+    }
+
+    // 获取头像信息的函数
+    function fetchUserProfile头像() {
+        const userId = getCookie('user_id'); // 从cookie中获取user_id
+        if (!userId) {
+            console.log('No user_id found in cookies.');
+            return;
+        }
+
+        fetch(`${supabaseURL}/rest/v1/user_profile?user_id=eq.${userId}`, {
+            method: 'GET',
+            headers: {
+                'apikey': supabaseAPIKey
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.length > 0 && data[0].data) {
+                updateAvatar(data[0].data);
+            } else {
+                console.log('No avatar URL found for the user.');
+            }
+        })
+        .catch(error => console.error('Error fetching user profile:', error));
+    }
+
+    // 更新头像显示的函数
+    function updateAvatar(avatarData) {
+        const avatarImg = document.querySelector('.avatar-floating-window');
+        avatarImg.src = avatarData; // 设置src为Base64数据
+    }
+
+    // 页面加载完成后获取用户信息并更新头像
+    window.addEventListener('load', fetchUserProfile头像);
 </script>
