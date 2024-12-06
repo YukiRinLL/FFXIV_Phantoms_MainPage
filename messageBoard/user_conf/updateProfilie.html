@@ -152,7 +152,7 @@
                         }
                     });
 
-                        function compressImage(file, maxWidth, maxHeight) {
+                    function compressImage(file, maxWidth, maxHeight) {
                         return new Promise((resolve, reject) => {
                             let img = new Image();
                             img.src = URL.createObjectURL(file);
@@ -178,6 +178,12 @@
                             };
                             img.onerror = reject;
                         });
+                    }
+
+                    function getCookie(name) {
+                        var value = "; " + document.cookie;
+                        var parts = value.split("; " + name + "=");
+                        if (parts.length == 2) return parts.pop().split(";").shift();
                     }
 
                     document.querySelector('form').addEventListener('submit', function(event) {
@@ -206,7 +212,7 @@
                                 }
                             })
                             .then(function(userData) {
-                                var userId = userData[0].id;
+                                var legacyUserId = userData[0].id;
 
                                 // Get the current username
                                 var randomN = new Date().getTime();  // This will get the current time in milliseconds
@@ -218,13 +224,13 @@
                                     method: 'POST',
                                     headers: {
                                         'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
-                                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
+                                        'Authorization': `Bearer ${getCookie('access_token')}`, // 使用 cookie 中的 token
                                         'Content-Type': 'application/json',
                                         'Prefer': 'return=minimal'
                                     },
                                     body: JSON.stringify({
                                         name: name,
-                                        user_id: userId,
+                                        legacy_user_id: legacyUserId,
                                         data: data,
                                         uploaded_by: uploaded_by
                                     })
