@@ -132,11 +132,50 @@
     :is(.buttons) :is(.secondary-button):hover {
         background-color: #eaeaea;
     }
+
+    .myDropdown{
+        position: fixed;
+        top: 20px;
+        right: 10px;
+        z-index: 1000;
+
+        display: inline-block;
+        float:left;
+    }
+    .myDropdown-content{
+        right: 0;
+        top: 60px;
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow:  0px 8px 16px 0px rgba(0,0,0,0.2);
+
+        right: 0; /* 与头像悬浮窗对齐 */
+        top: 60px; /* 位于头像悬浮窗外部 */
+    }
+    .myDropdown-content a{
+        color: #000000;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+    .myDropdown-content a:hover{background-color: #f1f1f1}
+    .myDropdown:hover .myDropdown-content{
+        display: block;
+    }
+    .myDropdown:hover .dropbtn{
+        background-color: #a1a1a1;
+    }
 </style>
 
 <!-- 头像悬浮窗 -->
-<div class="avatar-floating-window">
-    <img src="../../assets/images/def-profile-gray.png" alt="User Avatar">
+<div class="myDropdown">
+    <img class="avatar-floating-window dropbtn" src="../../assets/images/def-profile-gray.png" alt="User Avatar">
+    <div class="myDropdown-content">
+        <a href="">Upload Profile</a>
+        <a href="">Logout</a>
+    </div>
 </div>
 
 <!-- 登录弹窗 -->
