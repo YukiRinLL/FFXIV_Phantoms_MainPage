@@ -2,7 +2,7 @@
     /* 头像悬浮窗样式 */
     :is(.avatar-floating-window) {
         position: fixed;
-        top: 10px;
+        top: 8px;
         right: 10px;
         border-radius: 50%;
         width: 60px;
@@ -193,37 +193,32 @@
 </style>
 
 <script>
+    function reversibleHash4to6(str) {
+        const primeMultiplier = 7;
+        const offset = 100000;
+        const num = parseInt(str, 10);
+        const hash = ((num * primeMultiplier) + offset) % 1000000;
+        return hash.toString().padStart(6, '0');
+    }
+    function reversibleHash6to4(hashStr) {
+        const primeMultiplier = 7;
+        const offset = 100000;
+        const hash = parseInt(hashStr, 10);
+        const original = ((hash - offset) / primeMultiplier) | 0;
+        return original.toString().padStart(4, '0');
+    }
+
+
     // 假设你的API密钥和Supabase URL配置
     const supabaseURL = 'https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com';
     const supabaseAPIKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c';
     let userToken = ''; // 用于存储用户的access_token
     let userId = ''; // 用于存储用户的user_id
 
-    // 函数：注册用户
-    function signup(email, password) {
-      fetch(`${supabaseURL}/auth/v1/signup`, {
-        method: 'POST',
-        headers: {
-          'apikey': supabaseAPIKey,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        const userToken = data.access_token;
-        const userId = data.user.id; // 获取user_id
-        // 存储access_token和user_id到cookie
-        document.cookie = `access_token=${userToken}; path=/; secure;`;
-        document.cookie = `user_id=${userId}; path=/; secure;`;
-        console.log('Cookie has been set. Cookie content:', getCookie('access_token'), getCookie('user_id')); // 打印cookie内容
-      })
-      .catch(error => console.error('Error:', error));
-    }
 
     // 函数：邮箱/密码登录
-    function login(email, password) {
+    function login(email, passwd) {
+      const password = reversibleHash4to6(passwd);
       fetch(`${supabaseURL}/auth/v1/token?grant_type=password`, {
         method: 'POST',
         headers: {
@@ -370,7 +365,7 @@
         <form id="loginForm">
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required><br><br>
-            <label for="password">Password:</label>
+            <label for="password">Password(PIN):</label>
             <input type="password" id="password" name="password" required><br><br>
             <div class="buttons">
                 <button type="submit" onclick="login(document.getElementById('email').value, document.getElementById('password').value)">Login</button>
@@ -384,8 +379,9 @@
 <script>
     // 获取头像悬浮窗元素
     var avatarFloatingWindow = document.querySelector('.avatar-floating-window');
-    var initialTop = 10; // 初始的top值
+    var initialTop = 8; // 初始的top值
     var movedUp = false; // 是否已经向上移动过
+    var dropdownContent = document.querySelector('.myDropdown-content');
 
 
     // 监听滚动事件
@@ -417,9 +413,14 @@
         modal.style.display = "none";
         modalContent.classList.remove('show');
     }
-    // 处理头像点击事件 显示弹窗
+    // 处理头像点击事件
     avatarFloatingWindow.addEventListener('click', function() {
-        showModal();
+        if (isLoggedIn()) {
+            // 如果已登录，不执行任何操作
+        } else {
+            // 如果未登录，显示登录弹窗
+            showModal();
+        }
     });
     // 点击 <span> (x) 时关闭弹窗
     span.onclick = function() {
@@ -468,4 +469,35 @@
 
     // 页面加载完成后获取用户信息并更新头像
     window.addEventListener('load', fetchUserProfile头像);
+
+
+    // 检查用户是否登录的函数
+    function isLoggedIn() {
+        return getCookie('access_token') !== '';
+    }
+
+    // 显示弹窗的函数
+    function showModal() {
+        var modal = document.getElementById("loginModal");
+        var modalContent = document.querySelector('.modal-content');
+        modal.style.display = "block";
+        modalContent.classList.add('show');
+    }
+
+    // 隐藏弹窗的函数
+    function hideModal() {
+        var modal = document.getElementById("loginModal");
+        modal.style.display = "none";
+        document.querySelector('.modal-content').classList.remove('show');
+    }
+
+    // 页面加载完成后检查用户登录状态并更新头像悬浮窗和下拉菜单的显示
+    window.addEventListener('load', function() {
+        if (!isLoggedIn()) {
+            dropdownContent.style.display = 'none'; // 未登录时隐藏下拉菜单
+        } else {
+            dropdownContent.style.display = 'block'; // 登录时显示下拉菜单
+        }
+        fetchUserProfile头像(); // 获取用户信息并更新头像
+    });
 </script>
