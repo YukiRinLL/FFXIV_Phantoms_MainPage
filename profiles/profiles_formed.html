@@ -104,25 +104,11 @@
 </body>
 
 
+<div id="foot"></div>
+<script src="../assets/web/assets/jquery/jquery.min.js"></script>
 <script>
-    document.addEventListener('wheel', handleWheel);
-    // 禁用整个页面的滚动
     $(document).ready(function () {
-        $('body').bind('mousewheel DOMMouseScroll', function (e) {
-            var scrollTo = null;
-
-            if (e.type === 'mousewheel') {
-                scrollTo = (e.wheelDeltaY > 0) ? 'down' : 'up';
-            } else if (e.type === 'DOMMouseScroll') {
-                scrollTo = (e.detail > 0) ? 'down' : 'up';
-            }
-
-            if (scrollTo === 'down') {
-                e.preventDefault();
-            } else if (scrollTo === 'up') {
-                e.preventDefault();
-            }
-        });
+        $("#foot").load("../additions/foot/profile-round.html");
     });
 </script>
 

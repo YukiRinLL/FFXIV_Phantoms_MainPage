@@ -8,6 +8,12 @@ const config = {
 document.getElementById('messageForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
+    var access_token = getCookie('access_token');
+    if (!access_token) {
+        alert('You must be logged in to post a comment.');
+        return;
+    }
+
     var message = document.getElementById('message').value;
     var authUserId = getCookie('user_id'); // 从cookie中获取user_id
 
@@ -79,3 +85,12 @@ function getCookie(name) {
     }
     return "";
 }
+
+
+// 在文档加载完成后立即检查是否登录，并显示提示
+window.addEventListener('DOMContentLoaded', function() {
+    var access_token = getCookie('access_token');
+    if (!access_token) {
+        document.getElementById('loginSuggest').style.display = 'block';
+    }
+});
