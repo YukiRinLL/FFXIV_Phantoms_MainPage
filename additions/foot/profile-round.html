@@ -242,12 +242,18 @@
         document.cookie = `access_token=${userToken}; path=/; secure;`;
         document.cookie = `user_id=${userId}; path=/; secure;`; // 设置user_id cookie
         console.log('Cookie has been set. Cookie content:', getCookie('access_token'), getCookie('user_id')); // 打印cookie内容
+        // 登录成功后刷新页面
+        window.location.reload();
       })
-      .catch(error => console.error('Error:', error));
+      .catch(error => {
+        console.error('Error:', error);
+      });
     }
 
     // 函数：登出用户
     function logout() {
+      userToken = getCookie('access_token');
+      // 发送登出请求
       fetch(`${supabaseURL}/auth/v1/logout`, {
         method: 'POST',
         headers: {
@@ -256,16 +262,20 @@
           'Authorization': `Bearer ${userToken}` // 使用存储的用户token
         }
       })
-      .then(data => console.log(data))
-      .catch(error => console.error('Error:', error));
-
-      userToken = ''; // 清除用户token
-      userId = ''; // 清除用户user_id
-      // 改为不设置httpOnly;
-      //document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; secure; httpOnly;'; // 清除cookie
-      document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; secure;'; // 清除cookie
-      document.cookie = 'user_id=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; secure;'; // 清除user_id cookie
-      console.log('Cookie has been cleared.'); // 打印清除cookie的信息
+      .then(data => {
+        console.log(data);
+        // 登出成功后清除cookie
+        userToken = ''; // 清除用户token
+        userId = ''; // 清除用户user_id
+        document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; secure;'; // 清除cookie
+        document.cookie = 'user_id=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; secure;'; // 清除user_id cookie
+        console.log('Cookie has been cleared.'); // 打印清除cookie的信息
+        // 登出成功后刷新页面
+        window.location.reload();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
     }
 
     // 函数：获取用户信息
@@ -424,17 +434,6 @@
 </script>
 
 <script>
-    // 从cookie中获取user_id的函数
-    function getCookie(name) {
-        let cookieArray = document.cookie.split(';');
-        for (let i = 0; i < cookieArray.length; i++) {
-            let cookie = cookieArray[i].trim();
-            if (cookie.indexOf(name + "=") == 0) {
-                return cookie.substring(name.length + 1, cookie.length);
-            }
-        }
-        return "";
-    }
 
     // 获取头像信息的函数
     function fetchUserProfile头像() {

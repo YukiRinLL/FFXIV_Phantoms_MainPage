@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cookie Viewer</title>
+    <style>
+        /* 这里可以添加一些样式来美化显示效果 */
+        pre {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 10px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+<h2>Stored Cookies</h2>
+<pre id="cookiesDisplay"></pre>
+
+<script>
+    // 获取cookie的函数
+    function getCookie(name) {
+        let cookieArray = document.cookie.split(';');
+        for (let i = 0; i < cookieArray.length; i++) {
+            let cookie = cookieArray[i].trim();
+            if (cookie.indexOf(name + "=") == 0) {
+                return cookie.substring(name.length + 1, cookie.length);
+            }
+        }
+        return "";
+    }
+
+    // 显示所有cookie的函数
+    function displayCookies() {
+        let cookies = document.cookie.split(';');
+        let cookiesDisplay = document.getElementById('cookiesDisplay');
+        cookiesDisplay.textContent = 'All Cookies:\n\n' + cookies.join('\n');
+    }
+
+    // 页面加载完成后显示所有cookie
+    window.addEventListener('load', displayCookies);
+</script>
+</body>
+</html>
