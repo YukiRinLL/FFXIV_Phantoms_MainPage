@@ -45,14 +45,14 @@ function sendSignupRequest(email, password) {
             throw new Error('Error: ' + response.statusText);
         }
     })
-    //存储token到cookie
-    .then(function(data) {
-        console.log(data);
+    .then(function(data) { // 这里处理解析后的JSON对象
+        //console.log(data);
         const userToken = data.access_token;
         const userId = data.user.id;
         document.cookie = `access_token=${userToken}; path=/; secure;`;
         document.cookie = `user_id=${userId}; path=/; secure;`;
         console.log('Cookie has been set. Cookie content:', getCookie('access_token'), getCookie('user_id')); // 打印cookie内容
+        return data; // 确保返回解析后的data对象
     })
     .catch(function(error) {
         console.error('Error sending signup request:', error);
@@ -72,7 +72,7 @@ function registerUser(username, email, password, access_token) {
         headers: {
             'apikey': config.apiKey,
             'Authorization': `Bearer ${access_token}`, //使用注册返回的access_token
-            'apikey': config.authorization,
+            'apikey': config.apiKey,
             'Content-Type': 'application/json',
             'Prefer': config.prefer
         },
@@ -107,8 +107,9 @@ document.querySelector('form').addEventListener('submit', function(event) {
 
     sendSignupRequest(email, password)
         .then(function(responseData) { // 确保这里处理的是解析后的JSON对象
+            //console.log('responseData:', responseData); // 在控制台打印responseData
             const accessToken = responseData.access_token;
-            //registerUser(username, email, password, accessToken); // 使用access_token
+            registerUser(username, email, password, accessToken); // 使用access_token
         })
         .catch(function(error) {
             console.error('Signup request failed:', error);
