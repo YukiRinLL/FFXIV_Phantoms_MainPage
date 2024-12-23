@@ -240,7 +240,8 @@
                                         name: name,
                                         legacy_user_id: legacyUserId,
                                         data: data,
-                                        uploaded_by: uploaded_by
+                                        uploaded_by: uploaded_by,
+                                        user_id: getCookie('user_id')
                                     })
                                 })
                                 .then(function(response) {
