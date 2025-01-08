@@ -192,14 +192,18 @@
                         var reader = new FileReader();
                         reader.onloadend = function() {
                             var data = reader.result;
-                            var uploaded_by = document.getElementById('uploaded_by').value;
+                            //var uploaded_by = document.getElementById('uploaded_by').value;
+                            var user_id = getCookie('user_id');
 
                             // Get the user's ID
-                            fetch(`https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com/rest/v1/users?select=*&username=eq.${uploaded_by}`, {
+                        //  fetch(`https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com/rest/v1/users?select=*&user_id=eq.${user_id}`
+                            fetch(`https://qnwhrdsnwhrdivakvvex.supabase.co/rest/v1/users?select=*&user_id=eq.${user_id}`, {
                                 method: 'GET',
                                 headers: {
-                                    'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
-                                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
+                                    //'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
+                                    'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE',
+                                    //'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
+                                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE',
                                     'Content-Type': 'application/json',
                                     'Prefer': 'return=minimal'
                                 }
@@ -213,6 +217,7 @@
                             })
                             .then(function(userData) {
                                 var legacyUserId = userData[0].id;
+                                var uploaded_by = userData[0].username;
 
                                 // Get the current username
                                 var randomN = new Date().getTime();  // This will get the current time in milliseconds
@@ -220,11 +225,14 @@
                                 // Create the image name
                                 var name = randomN + '_profile';
 
-                                fetch('https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com/rest/v1/user_profile', {
+                            //  fetch('https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com/rest/v1/user_profile'
+                                fetch('https://qnwhrdsnwhrdivakvvex.supabase.co/rest/v1/user_profile', {
                                     method: 'POST',
                                     headers: {
-                                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
-                                        'Authorization': `Bearer ${getCookie('access_token')}`, // 使用 cookie 中的 token
+                                        //'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
+                                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE',
+                                        //'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
+                                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE',
                                         'Content-Type': 'application/json',
                                         'Prefer': 'return=minimal'
                                     },
@@ -232,7 +240,8 @@
                                         name: name,
                                         legacy_user_id: legacyUserId,
                                         data: data,
-                                        uploaded_by: uploaded_by
+                                        uploaded_by: uploaded_by,
+                                        user_id: getCookie('user_id')
                                     })
                                 })
                                 .then(function(response) {
