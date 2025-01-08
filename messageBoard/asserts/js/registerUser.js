@@ -1,8 +1,11 @@
 const config = {
-    apiKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
-    authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
+    apiKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE',
+    authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE',
+    //apiKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzIzOTg2MzAwNSwiaWF0IjoxNzAxOTQzMDA1LCJpc3MiOiJzdXBhYmFzZSJ9.LYLqWA0Ov-yKdFBXksbu3JNnldMOM-7Kth3LPFhLmA8',
+    //authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzIzOTg2MzAwNSwiaWF0IjoxNzAxOTQzMDA1LCJpc3MiOiJzdXBhYmFzZSJ9.LYLqWA0Ov-yKdFBXksbu3JNnldMOM-7Kth3LPFhLmA8',
     prefer: 'return=minimal',
-    baseUrl: 'https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com'
+//    baseUrl: 'https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com'
+    baseUrl: 'https://qnwhrdsnwhrdivakvvex.supabase.co'
 };
 
 function reversibleHash4to6(str) {
@@ -42,14 +45,14 @@ function sendSignupRequest(email, password) {
             throw new Error('Error: ' + response.statusText);
         }
     })
-    //存储token到cookie
-    .then(function(data) {
-        console.log(data);
+    .then(function(data) { // 这里处理解析后的JSON对象
+        //console.log(data);
         const userToken = data.access_token;
         const userId = data.user.id;
         document.cookie = `access_token=${userToken}; path=/; secure;`;
         document.cookie = `user_id=${userId}; path=/; secure;`;
         console.log('Cookie has been set. Cookie content:', getCookie('access_token'), getCookie('user_id')); // 打印cookie内容
+        return data; // 确保返回解析后的data对象
     })
     .catch(function(error) {
         console.error('Error sending signup request:', error);
@@ -69,7 +72,7 @@ function registerUser(username, email, password, access_token) {
         headers: {
             'apikey': config.apiKey,
             'Authorization': `Bearer ${access_token}`, //使用注册返回的access_token
-            'apikey': config.authorization,
+            'apikey': config.apiKey,
             'Content-Type': 'application/json',
             'Prefer': config.prefer
         },
@@ -104,6 +107,7 @@ document.querySelector('form').addEventListener('submit', function(event) {
 
     sendSignupRequest(email, password)
         .then(function(responseData) { // 确保这里处理的是解析后的JSON对象
+            //console.log('responseData:', responseData); // 在控制台打印responseData
             const accessToken = responseData.access_token;
             registerUser(username, email, password, accessToken); // 使用access_token
         })

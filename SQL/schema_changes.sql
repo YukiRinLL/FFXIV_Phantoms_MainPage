@@ -1,5 +1,5 @@
 CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     username VARCHAR(255) UNIQUE,
     password VARCHAR(255)
 );
@@ -9,8 +9,8 @@ ALTER TABLE users ADD CONSTRAINT users_user_id_fkey FOREIGN KEY (user_id) REFERE
 ALTER TABLE users ALTER COLUMN user_id SET DEFAULT auth.uid();
 
 CREATE TABLE messages (
-    id SERIAL PRIMARY KEY,
-    user_id INT,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID,
     message TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
@@ -24,7 +24,7 @@ ALTER TABLE messages ALTER COLUMN user_id SET DEFAULT auth.uid();
 
 
 CREATE TABLE images (
-    id SERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name VARCHAR(255) NOT NULL,
     data TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -33,8 +33,8 @@ CREATE TABLE images (
 
 
 CREATE TABLE user_profile (
-    id SERIAL PRIMARY KEY,
-    user_id INT,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID,
     name VARCHAR(255) NOT NULL,
     data TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

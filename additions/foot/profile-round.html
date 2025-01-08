@@ -210,8 +210,11 @@
 
 
     // 假设你的API密钥和Supabase URL配置
-    const supabaseURL = 'https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com';
-    const supabaseAPIKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c';
+    //const supabaseURL = 'https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com';
+    const supabaseURL = 'https://qnwhrdsnwhrdivakvvex.supabase.co';
+    //const supabaseAPIKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c';
+    const supabaseAPIKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE';
+
     let userToken = ''; // 用于存储用户的access_token
     let userId = ''; // 用于存储用户的user_id
 
@@ -230,20 +233,30 @@
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        userToken = data.access_token; // 存储access_token
-        userId = data.user.id; // 存储user_id
-        // 改为不设置httpOnly;
-        //document.cookie = `access_token=${userToken}; path=/; secure; httpOnly;`; // 设置cookie
-        document.cookie = `access_token=${userToken}; path=/; secure;`;
-        document.cookie = `user_id=${userId}; path=/; secure;`; // 设置user_id cookie
-        console.log('Cookie has been set. Cookie content:', getCookie('access_token'), getCookie('user_id')); // 打印cookie内容
-        // 登录成功后刷新页面
-        window.location.reload();
-      })
-      .catch(error => {
+        if (data.access_token) {
+            // 登录成功
+            userToken = data.access_token; // 存储access_token
+            userId = data.user.id; // 存储user_id
+            // 改为不设置httpOnly;
+            //document.cookie = `access_token=${userToken}; path=/; secure; httpOnly;`; // 设置cookie
+            document.cookie = `access_token=${userToken}; path=/; secure;`;
+            document.cookie = `user_id=${userId}; path=/; secure;`; // 设置user_id cookie
+            console.log('Cookie has been set. Cookie content:', getCookie('access_token'), getCookie('user_id')); // 打印cookie内容
+            // 登录成功后刷新页面
+            window.location.reload();
+        } else {
+            // 登录失败
+            console.error('Login failed:', data);
+            // 错误提示，弹出一个警告框
+            alert('Login failed: ' + data.error_description);
+        }
+    })
+    .catch(error => {
         console.error('Error:', error);
-      });
-    }
+        //错误提示，弹出一个警告框
+        alert('An error occurred during login.');
+    });
+}
 
     // 函数：登出用户
     function logout() {
@@ -369,8 +382,8 @@
             <input type="password" id="password" name="password" required><br><br>
             <div class="buttons">
                 <button type="submit" onclick="login(document.getElementById('email').value, document.getElementById('password').value)">Login</button>
-                <button type="button" class="secondary-button" onclick="window.location.href='register.html';">Register</button>
-                <button type="button" class="secondary-button" onclick="window.location.href='forgotPassword.html';">Forgot Password</button>
+                <button type="button" class="secondary-button" onclick="window.location.href='../../messageBoard/user_conf/registerUser.html';">Register</button>
+                <button type="button" class="secondary-button" onclick="window.location.href='';">Forgot Password</button>
             </div>
         </form>
     </div>
