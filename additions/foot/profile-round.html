@@ -233,20 +233,30 @@
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        userToken = data.access_token; // 存储access_token
-        userId = data.user.id; // 存储user_id
-        // 改为不设置httpOnly;
-        //document.cookie = `access_token=${userToken}; path=/; secure; httpOnly;`; // 设置cookie
-        document.cookie = `access_token=${userToken}; path=/; secure;`;
-        document.cookie = `user_id=${userId}; path=/; secure;`; // 设置user_id cookie
-        console.log('Cookie has been set. Cookie content:', getCookie('access_token'), getCookie('user_id')); // 打印cookie内容
-        // 登录成功后刷新页面
-        window.location.reload();
-      })
-      .catch(error => {
+        if (data.access_token) {
+            // 登录成功
+            userToken = data.access_token; // 存储access_token
+            userId = data.user.id; // 存储user_id
+            // 改为不设置httpOnly;
+            //document.cookie = `access_token=${userToken}; path=/; secure; httpOnly;`; // 设置cookie
+            document.cookie = `access_token=${userToken}; path=/; secure;`;
+            document.cookie = `user_id=${userId}; path=/; secure;`; // 设置user_id cookie
+            console.log('Cookie has been set. Cookie content:', getCookie('access_token'), getCookie('user_id')); // 打印cookie内容
+            // 登录成功后刷新页面
+            window.location.reload();
+        } else {
+            // 登录失败
+            console.error('Login failed:', data);
+            // 错误提示，弹出一个警告框
+            alert('Login failed: ' + data.error_description);
+        }
+    })
+    .catch(error => {
         console.error('Error:', error);
-      });
-    }
+        //错误提示，弹出一个警告框
+        alert('An error occurred during login.');
+    });
+}
 
     // 函数：登出用户
     function logout() {
