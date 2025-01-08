@@ -144,9 +144,19 @@
                         if (input.files && input.files[0]) {
                             var reader = new FileReader();
 
-                            reader.onload = function (e) {
-                                preview.src = e.target.result;
-                            };
+                        //    reader.onload = function (e) {
+                        //        preview.src = e.target.result;
+                        //    };
+
+                            cropMaxSquare(input.files[0]).then((croppedImage) => {
+                                return compressImage(croppedImage, 512, 512);
+                            }).then((compressedImage) => {
+                                reader.readAsDataURL(compressedImage);
+                                //var base64 = URL.createObjectURL(compressedImage);
+                                reader.onloadend = function() {
+                                    preview.src = reader.result;
+                                };
+                            })
 
                             reader.readAsDataURL(input.files[0]);
                         }
@@ -171,6 +181,31 @@
                                 canvas.height = height;
                                 let ctx = canvas.getContext('2d');
                                 ctx.drawImage(img, 0, 0, width, height);
+
+                                canvas.toBlob((blob) => {
+                                    resolve(blob);
+                                }, 'image/jpeg', 0.8);
+                            };
+                            img.onerror = reject;
+                        });
+                    }
+
+                    function cropMaxSquare(image) {
+                        return new Promise((resolve, reject) => {
+                            const img = new Image();
+                            img.src = URL.createObjectURL(image);
+                            img.onload = () => {
+                                const width = img.width;
+                                const height = img.height;
+                                const size = Math.min(width, height);
+                                const x = (width - size) / 2;
+                                const y = (height - size) / 2;
+
+                                const canvas = document.createElement('canvas');
+                                canvas.width = size;
+                                canvas.height = size;
+                                const ctx = canvas.getContext('2d');
+                                ctx.drawImage(img, x, y, size, size, 0, 0, size, size);
 
                                 canvas.toBlob((blob) => {
                                     resolve(blob);
@@ -258,10 +293,12 @@
                             });
                         };
 
-                        compressImage(image, 100, 100).then((compressedImage) => {
-                            reader.readAsDataURL(compressedImage);
-                            //var base64 = URL.createObjectURL(compressedImage);
-                        });
+                        cropMaxSquare(image).then((croppedImage) => {
+                            compressImage(croppedImage, 100, 100).then((compressedImage) => {
+                                reader.readAsDataURL(compressedImage);
+                                //var base64 = URL.createObjectURL(compressedImage);
+                            });
+                        })
                     });
                 </script>
 
