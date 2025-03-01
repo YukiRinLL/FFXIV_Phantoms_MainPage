@@ -243,6 +243,8 @@
             document.cookie = `user_id=${userId}; path=/; secure;`; // 设置user_id cookie
             console.log('Cookie has been set. Cookie content:', getCookie('access_token'), getCookie('user_id')); // 打印cookie内容
             // 登录成功后刷新页面
+            alert('Login success! Please click OK to continue.');
+            // 用户点击确定后刷新页面
             window.location.reload();
         } else {
             // 登录失败
@@ -432,7 +434,8 @@
             // 如果已登录，不执行任何操作
         } else {
             // 如果未登录，显示登录弹窗
-            showModal();
+            showModal(); //TODO：不使用登录弹窗?
+            // window.location.href = 'login.html';
         }
     });
     // 点击 <span> (x) 时关闭弹窗
