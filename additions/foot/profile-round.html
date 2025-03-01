@@ -221,50 +221,42 @@
 
     // 函数：邮箱/密码登录
     function login(email, passwd) {
-        const password = reversibleHash4to6(passwd);
-        fetch(`${supabaseURL}/auth/v1/token?grant_type=password`, {
-            method: 'POST',
-            headers: {
-                'apikey': supabaseAPIKey,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                if (data.access_token) {
-                    // 登录成功
-                    userToken = data.access_token; // 存储access_token
-                    userId = data.user.id; // 存储user_id
-                    // 改为不设置httpOnly;
-                    //document.cookie = `access_token=${userToken}; path=/; secure; httpOnly;`; // 设置cookie
-
-                    // 设置 Cookie，明确设置 SameSite 属性
-                    document.cookie = `access_token=${userToken}; path=/; secure; SameSite=None;`;
-                    document.cookie = `user_id=${userId}; path=/; secure; SameSite=None;`;
-
-                    // 打印 Cookie 内容，确认设置成功
-                    console.log('Cookie has been set. Cookie content:', getCookie('access_token'), getCookie('user_id'));
-
-                    // 延迟刷新页面，确保 Cookie 设置完成
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 500); // 延迟 500 毫秒
-                } else {
-                    // 登录失败
-                    console.error('Login failed:', data);
-                    // 错误提示，弹出一个警告框
-                    alert('Login failed: ' + data.error_description);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // 错误提示，弹出一个警告框
-                alert('An error occurred during login.');
-            });
-    }
-
+      const password = reversibleHash4to6(passwd);
+      fetch(`${supabaseURL}/auth/v1/token?grant_type=password`, {
+        method: 'POST',
+        headers: {
+          'apikey': supabaseAPIKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        if (data.access_token) {
+            // 登录成功
+            userToken = data.access_token; // 存储access_token
+            userId = data.user.id; // 存储user_id
+            // 改为不设置httpOnly;
+            //document.cookie = `access_token=${userToken}; path=/; secure; httpOnly;`; // 设置cookie
+            document.cookie = `access_token=${userToken}; path=/; secure;`;
+            document.cookie = `user_id=${userId}; path=/; secure;`; // 设置user_id cookie
+            console.log('Cookie has been set. Cookie content:', getCookie('access_token'), getCookie('user_id')); // 打印cookie内容
+            // 登录成功后刷新页面
+            window.location.reload();
+        } else {
+            // 登录失败
+            console.error('Login failed:', data);
+            // 错误提示，弹出一个警告框
+            alert('Login failed: ' + data.error_description);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        //错误提示，弹出一个警告框
+        alert('An error occurred during login.');
+    });
+}
 
     // 函数：登出用户
     function logout() {
