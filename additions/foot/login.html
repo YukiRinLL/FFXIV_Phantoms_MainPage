@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        /* 登录页面样式 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            max-width: 90%;
+        }
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .login-container label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .login-container input[type="email"],
+        .login-container input[type="password"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .login-container .buttons {
+            display: block;
+        }
+        .login-container .buttons button {
+            margin-bottom: 10px;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #222;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .login-container .buttons button:hover {
+            background-color: #333;
+        }
+        .login-container .buttons .secondary-button {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        .login-container .buttons .secondary-button:hover {
+            background-color: #eaeaea;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="login-container">
+    <h2>Login</h2>
+    <form id="loginForm">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        <div class="buttons">
+            <button type="button" onclick="login()">Login</button>
+            <button type="button" class="secondary-button" onclick="window.location.href='../../messageBoard/user_conf/registerUser.html'">Register</button>
+<!--            <button type="button" class="secondary-button" onclick="window.location.href='forgot-password.html'">Forgot Password</button>-->
+        </div>
+    </form>
+</div>
+
+<script>
+    function reversibleHash4to6(str) {
+        const primeMultiplier = 7;
+        const offset = 100000;
+        const num = parseInt(str, 10);
+        const hash = ((num * primeMultiplier) + offset) % 1000000;
+        return hash.toString().padStart(6, '0');
+    }
+    function reversibleHash6to4(hashStr) {
+        const primeMultiplier = 7;
+        const offset = 100000;
+        const hash = parseInt(hashStr, 10);
+        const original = ((hash - offset) / primeMultiplier) | 0;
+        return original.toString().padStart(4, '0');
+    }
+
+
+
+    // 函数：邮箱/密码登录
+    function login() {
+        const email = document.getElementById('email').value;
+        const passwd = document.getElementById('password').value;
+        const password = reversibleHash4to6(passwd);
+
+        // 假设你的 Supabase URL 和 API 密钥
+        const supabaseURL = 'https://qnwhrdsnwhrdivakvvex.supabase.co';
+        const supabaseAPIKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE';
+
+        // 使用 Supabase 的登录接口
+        fetch(`${supabaseURL}/auth/v1/token?grant_type=password`, {
+            method: 'POST',
+            headers: {
+                'apikey': supabaseAPIKey,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.access_token) {
+                    // 登录成功
+                    const userToken = data.access_token;
+                    const userId = data.user.id;
+
+                    // 设置 Cookie
+                    document.cookie = `access_token=${userToken}; path=/; secure; SameSite=Lax;`;
+                    document.cookie = `user_id=${userId}; path=/; secure; SameSite=Lax;`;
+
+                    // 跳转到主页
+                    window.location.href = '../../index.html';
+                } else {
+                    // 登录失败
+                    alert('Login failed: ' + data.error_description);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred during login.');
+            });
+    }
+</script>
+</body>
+</html>
