@@ -241,8 +241,8 @@
                     //document.cookie = `access_token=${userToken}; path=/; secure; httpOnly;`; // 设置cookie
 
                     // 设置 Cookie，明确设置 SameSite 属性
-                    document.cookie = `access_token=${userToken}; path=/; secure; SameSite=None;`;
-                    document.cookie = `user_id=${userId}; path=/; secure; SameSite=None;`;
+                    document.cookie = `access_token=${userToken}; path=/; secure; SameSite=Lax;`;
+                    document.cookie = `user_id=${userId}; path=/; secure; SameSite=Lax;`;
 
                     // 打印 Cookie 内容，确认设置成功
                     console.log('Cookie has been set. Cookie content:', getCookie('access_token'), getCookie('user_id'));
