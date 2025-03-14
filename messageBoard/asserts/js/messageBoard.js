@@ -8,6 +8,39 @@ const config = {
     baseUrl: 'https://qnwhrdsnwhrdivakvvex.supabase.co'
 };
 
+
+// 显示遮罩层的函数
+function showLoadingOverlay() {
+    const overlay = document.createElement('div');
+    overlay.id = "loadingOverlay"; // 添加一个 ID 方便后续操作
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    overlay.style.display = 'flex';
+    overlay.style.justifyContent = 'center';
+    overlay.style.alignItems = 'center';
+    overlay.style.zIndex = '9999';
+
+    const loadingText = document.createElement('div');
+    loadingText.style.color = 'white';
+    loadingText.style.fontSize = '20px';
+    loadingText.innerHTML = 'Operation in progress...<br><br>Please wait';
+
+    overlay.appendChild(loadingText);
+    document.body.appendChild(overlay);
+}
+
+// 隐藏遮罩层的函数
+function hideLoadingOverlay() {
+    const overlay = document.getElementById("loadingOverlay");
+    if (overlay) {
+        document.body.removeChild(overlay);
+    }
+}
+
 document.getElementById('messageForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -19,6 +52,9 @@ document.getElementById('messageForm').addEventListener('submit', function(event
 
     var message = document.getElementById('message').value;
     var authUserId = getCookie('user_id'); // 从cookie中获取user_id
+
+    // 显示遮罩层
+    showLoadingOverlay();
 
     // Fetch the username and id from the user_id
     fetch(`${config.baseUrl}/rest/v1/users?select=id,username&user_id=eq.${authUserId}`, {
@@ -74,6 +110,10 @@ document.getElementById('messageForm').addEventListener('submit', function(event
     })
     .catch(function(error) {
         console.error('Error fetching user:', error);
+    })
+    .finally(() => {
+        // 隐藏遮罩层
+        hideLoadingOverlay();
     });
 });
 
