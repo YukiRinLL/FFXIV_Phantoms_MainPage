@@ -33,6 +33,45 @@
     body {
         background: rgb(36,35,36);
     }
+
+    .menu-container {
+        text-align: center;
+    }
+
+    .toggle-button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #646464;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    .toggle-button:hover {
+        background-color: #b4b4b4;
+    }
+
+    .menu-items {
+        transition: all 0.3s ease;
+    }
+
+    .menu-items a {
+        display: block;
+        margin: 5px 0;
+        padding: 10px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        text-decoration: none;
+        color: #333;
+    }
+
+    .menu-items a:hover {
+        background-color: #f0f0f0;
+    }
+
 </style>
 <div style="position: fixed;opacity:1; background-color: rgb(36,35,36)">
     <!--		<iframe src="bubble.html" scrolling="No" frameborder="hide" style="position: fixed; width: 100%; height: 100%; max-width: 100%; object-fit: cover; opacity: 1"></iframe>-->
@@ -61,46 +100,50 @@
                     <tr>
                         <td>
                             <div class="mbr-section-btn mt-3"><a class="btn btn-light display-4" target="_blank" href="album/yuki_album.html" aria-expanded="false" style="width: 150px">Yuki的相册</a></div>
-                        </td>
-                        <td>
                             <div class="mbr-section-btn mt-3"><a class="btn btn-light display-4" target="_blank" href="album/yan_album.html" aria-expanded="false" style="width: 150px">Yan的相册</a></div>
-                        </td>
-                        <td>
-                            <div class="mbr-section-btn mt-3"><a class="btn btn-white display-4" target="_blank" href="https://www.picgo.net/album/Phantom-Proiles.SsWL6" aria-expanded="false">群友名牌</a></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="mbr-section-btn mt-3"><a class="btn btn-white display-4" target="_blank" href="https://www.picgo.net/album/Sl47K" aria-expanded="false">纯狱风</a></div>
-                        </td>
-                        <td>
-                            <div class="mbr-section-btn mt-3"><a class="btn btn-white display-4" target="_blank" href="https://www.picgo.net/album/SldSb" aria-expanded="false">风景照</a></div>
-                        </td>
-                        <td>
-                            <div class="mbr-section-btn mt-3"><a class="btn btn-white display-4" target="_blank" href="https://www.picgo.net/album/SltsM" aria-expanded="false">合影</a></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="mbr-section-btn mt-3"><a class="btn btn-white display-4" target="_blank" href="https://www.picgo.net/album/SlGhc" aria-expanded="false">一些NPC照片</a></div>
-                        </td>
-                        <td>
-                            <div class="mbr-section-btn mt-3"><a class="btn btn-white display-4" target="_blank" href="" aria-expanded="false">精彩集锦(还没开始做OwO)</a></div>
                         </td>
                         <td>
 
                         </td>
                     </tr>
-                    <!-- 如果需要更多按钮，可以在这里继续添加 -->
+                    <tr>
+                        <td>
+                            <div class="menu-container">
+                                <button class="toggle-button">more</button>
+                                <div class="menu-items" style="display: none;">
+                                    <div class="mbr-section-btn mt-3">
+                                        <a class="btn btn-white display-4" target="_blank" href="https://www.picgo.net/album/Phantom-Proiles.SsWL6">群友名牌</a>
+                                    </div>
+                                    <div class="mbr-section-btn mt-3">
+                                        <a class="btn btn-white display-4" target="_blank" href="https://www.picgo.net/album/Sl47K">纯狱风</a>
+                                    </div>
+                                    <div class="mbr-section-btn mt-3">
+                                        <a class="btn btn-white display-4" target="_blank" href="https://www.picgo.net/album/SldSb">风景照</a>
+                                    </div>
+                                    <div class="mbr-section-btn mt-3">
+                                        <a class="btn btn-white display-4" target="_blank" href="https://www.picgo.net/album/SltsM">合影</a>
+                                    </div>
+                                    <div class="mbr-section-btn mt-3">
+                                        <a class="btn btn-white display-4" target="_blank" href="https://www.picgo.net/album/SlGhc">一些NPC照片</a>
+                                    </div>
+                                    <div class="mbr-section-btn mt-3">
+                                        <a class="btn btn-white display-4" target="_blank" href="#">精彩集锦(还没开始做OwO)</a>
+                                    </div>
+
+                                    <div style="font-size: 0.8em; color: white; margin: 0; padding: 0;">
+                                        <br><p style="margin: 0;">
+                                        <span style="display: block;">这个页面还没有做好 凑合用一下先 --Yuki 20221016</span>
+                                    </p>
+                                        <br><p style="margin: 0;">
+                                        <span style="display: block;">懒得做了 就这样吧 (摆烂) --Yuki 20250314</span>
+                                    </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
                 </table>
-                <div style="font-size: 0.8em; color: white; margin: 0; padding: 0;">
-                    <br><p style="margin: 0;">
-                        <span style="display: block;">这个页面还没有做好 凑合用一下先 --Yuki 20221016</span>
-                    </p>
-                    <br><p style="margin: 0;">
-                        <span style="display: block;">懒得做了 就这样吧 (摆烂) --Yuki 20250314</span>
-                    </p>
-                </div>
+
 
             </div>
         </div>
@@ -108,6 +151,18 @@
 </section>
 
 
+<script>
+    document.querySelector('.toggle-button').addEventListener('click', function() {
+        const menuItems = document.querySelector('.menu-items');
+        if (menuItems.style.display === 'none') {
+            menuItems.style.display = 'block';
+            this.textContent = 'close';
+        } else {
+            menuItems.style.display = 'none';
+            this.textContent = 'more';
+        }
+    });
+</script>
 
 
 
