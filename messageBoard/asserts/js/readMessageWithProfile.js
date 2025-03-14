@@ -8,7 +8,16 @@ const config = {
     baseUrl: 'https://qnwhrdsnwhrdivakvvex.supabase.co'
 };
 
+function showLoadingIndicator() {
+    document.getElementById('loadingIndicator').style.display = 'block';
+}
+function hideLoadingIndicator() {
+    document.getElementById('loadingIndicator').style.display = 'none';
+}
+
 function fetchMessages() {
+    showLoadingIndicator(); // 显示加载提示
+
     fetch(`${config.baseUrl}/rest/v1/messages`, {
         method: 'GET',
         headers: {
@@ -26,6 +35,8 @@ function fetchMessages() {
     })
     .then(function(data) {
         var messagesDiv = document.getElementById('messages');
+        messagesDiv.innerHTML = ''; // 清空之前的消息
+
         data.forEach(function(message, index) {
             // Fetch the username from the legacy_user_id
             fetch(`${config.baseUrl}/rest/v1/users?select=username&id=eq.${message.legacy_user_id}`, {
@@ -89,14 +100,18 @@ function fetchMessages() {
                 messageDiv.appendChild(messageContentDiv);
 
                 messagesDiv.appendChild(messageDiv);
+
+                hideLoadingIndicator(); // 隐藏加载提示
             })
             .catch(function(error) {
                 console.error('Error:', error);
+                hideLoadingIndicator(); // 隐藏加载提示
             });
         });
     })
     .catch(function(error) {
         console.error('Error:', error);
+        hideLoadingIndicator(); // 隐藏加载提示
     });
 }
 
