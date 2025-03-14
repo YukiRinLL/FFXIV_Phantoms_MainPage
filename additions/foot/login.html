@@ -85,7 +85,7 @@
         <input type="password" id="password" name="password" required><br><br>
         <div class="buttons">
             <button type="button" onclick="login()">Login</button>
-            <button type="button" class="secondary-button" onclick="window.location.href='../../messageBoard/user_conf/registerUser.html'">Register</button>
+            <button type="button" class="secondary-button" onclick="window.location.href='./messageBoard/user_conf/registerUser.html'">Register</button>
 <!--            <button type="button" class="secondary-button" onclick="window.location.href='forgot-password.html'">Forgot Password</button>-->
         </div>
     </form>
@@ -140,7 +140,7 @@
                     document.cookie = `user_id=${userId}; path=/; secure; SameSite=Lax;`;
 
                     // 跳转到主页
-                    window.location.href = '../../index.html';
+                    window.location.href = './index.html';
                 } else {
                     // 登录失败
                     alert('Login failed: ' + data.error_description);
