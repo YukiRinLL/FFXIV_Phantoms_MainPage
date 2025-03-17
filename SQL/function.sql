@@ -1,3 +1,6 @@
+-- =============================================
+-- memfireDB schema changes begin here
+-- =============================================
 CREATE OR REPLACE FUNCTION my_send_registration_email()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -58,12 +61,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
-
-
-
-
-
-
-
-
+-- =============================================
+-- memfireDB schema changes end here
+-- =============================================
