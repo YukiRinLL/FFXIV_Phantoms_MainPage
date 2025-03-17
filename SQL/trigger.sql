@@ -1,3 +1,7 @@
+-- =============================================
+-- memfireDB schema changes begin here
+-- =============================================
+
 --不可用已废弃
 --CREATE TRIGGER my_trigger_send_email
 --AFTER INSERT ON auth.users
@@ -15,3 +19,7 @@ EXECUTE FUNCTION my_insert_user();
 --BEFORE INSERT ON users
 --FOR EACH ROW
 --EXECUTE FUNCTION my_get_user_id_from_auth_users();
+
+-- =============================================
+-- memfireDB schema changes end here
+-- =============================================
