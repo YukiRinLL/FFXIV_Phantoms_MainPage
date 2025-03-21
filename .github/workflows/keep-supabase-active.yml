@@ -10,20 +10,56 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Call Supabase API
+      - name: Call Supabase API with retry
         run: |
-          # 发送 GET 请求并捕获响应状态码和输出
-          response=$(curl -s -o /dev/null -w "%{http_code}" \
-            -X GET \
-            -H "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE" \
-            -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE" \
-            https://qnwhrdsnwhrdivakvvex.supabase.co/auth/v1/health)
+          retry_count=3
+          for i in $(seq 1 $retry_count); do
+            response=$(curl -s -o /dev/null -w "%{http_code}" \
+              -X GET \
+              -H "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE" \
+              -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE" \
+              https://qnwhrdsnwhrdivakvvex.supabase.co/auth/v1/health)
+            if [ "$response" -eq 200 ]; then
+              echo "Supabase health check succeeded with status code 200"
+              exit 0  # 成功，退出循环
+            else
+              echo "Attempt $i failed with status code $response"
+              if [ "$i" -lt "$retry_count" ]; then
+                sleep 10  # 等待 10 秒后重试
+              fi
+            fi
+          done
+          echo "Supabase health check failed after $retry_count attempts"
+          exit 1  # 标记任务失败
 
-          # 检查响应状态码
-          if [ "$response" -eq 200 ]; then
-            echo "Supabase health check succeeded with status code 200"
-          else
-            echo "Supabase health check failed with status code $response"
-            echo "Please check the Supabase API key, authorization token, and endpoint URL."
-            exit 1  # 标记任务失败
-          fi
+#      - name: Send Slack notification on failure
+#        if: failure()  # 仅在任务失败时运行
+#        uses: actions/github-script@v6
+#        with:
+#          script: |
+#            const { WebClient } = require('@slack/web-api');
+#            const slack = new WebClient(process.env.SLACK_TOKEN);
+#            await slack.chat.postMessage({
+#              channel: '#your-channel',
+#              text: 'Supabase health check failed! Please check the logs.',
+#            });
+#        env:
+#          SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
+
+#      - name: Call Supabase API
+#        run: |
+#          # 发送 GET 请求并捕获响应状态码和输出
+#          response=$(curl -s -o /dev/null -w "%{http_code}" \
+#            -X GET \
+#            -H "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE" \
+#            -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE" \
+#            https://qnwhrdsnwhrdivakvvex.supabase.co/auth/v1/health)
+#
+#          # 检查响应状态码
+#          if [ "$response" -eq 200 ]; then
+#            echo "Supabase health check succeeded with status code 200"
+#          else
+#            echo "Supabase health check failed with status code $response"
+#            echo "Please check the Supabase API key, authorization token, and endpoint URL."
+#            exit 1  # 标记任务失败
+#          fi
