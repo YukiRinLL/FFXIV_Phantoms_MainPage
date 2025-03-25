@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoceChat Widget</title>
+    <style>
+        #VOCECHAT_WIDGET {
+            position: fixed;
+            bottom: 16px;
+            right: 16px;
+            border-radius: 8px;
+            border: none;
+            box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
+            z-index: 9999;
+            transition: width 0.3s, height 0.3s; /* Smooth transition for size change */
+        }
+    </style>
+</head>
+<body>
+<iframe
+        id="VOCECHAT_WIDGET"
+        src="https://vocechat-server-agsr.onrender.com/widget.html?id=1&host=1&autoReg=true&themeColor=%23262626&from=example.com&welcome=Thanks+for+supporting+Phantoms+FC.+If+there%27s+any+questions+or+suggestions%2C+plz+feel+free+to+leave+messages+to+admin+here+%3AD&title=Contact+with+admin&logo=https%3A%2F%2Fimg.picgo.net%2F2024%2F10%2F18%2Fframe-1-121x121bc5d878c1dd0d5fc.png"
+        width="48"
+        height="48"
+        style="border: none;"
+        allow="microphone; camera; clipboard-write"
+        sandbox="allow-scripts allow-same-origin allow-popups"
+        frameborder="0"
+        referrerpolicy="unsafe-url"
+></iframe>
+
+<script>
+    window.addEventListener('message', function(event) {
+        const { data: CMD } = event;
+        const iframe = document.getElementById('VOCECHAT_WIDGET');
+        switch (CMD) {
+            case 'OPEN':
+                iframe.style.width = '380px';
+                iframe.style.height = '680px';
+                break;
+            case 'CLOSE':
+                iframe.style.width = '48px';
+                iframe.style.height = '48px';
+                break;
+            case 'RELOAD_WITH_OPEN':
+                iframe.src = iframe.src + '?open=' + new Date().getTime();
+                iframe.style.width = '380px';
+                iframe.style.height = '680px';
+                break;
+            default:
+                break;
+        }
+    });
+</script>
+</body>
+</html>
