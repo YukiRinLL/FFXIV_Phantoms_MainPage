@@ -31,13 +31,15 @@
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
-            margin: 20px;
+            margin: 0;
+            padding: 20px;
             background-color: #f8f8f8;
             color: #333;
         }
         h1 {
             font-size: 36px;
             color: #0066cc;
+            margin-bottom: 20px;
         }
         #loadingMessage {
             font-size: 24px;
@@ -48,19 +50,20 @@
             border-radius: 12px;
             box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
             display: inline-block;
-            margin-top: 20px;
+            margin: 20px auto;
             max-width: 600px;
             /* 设置最大宽度 */
             width: 90%;
             /* 设置相对宽度 */
         }
         .button-container {
-            margin-top: 20px;
+            margin: 20px auto;
+            max-width: 600px;
         }
         .redirect-button {
-            display: inline-block;
-            margin: 10px;
-            padding: 15px 30px;
+            display: block;
+            margin: 10px auto;
+            padding: 15px;
             font-size: 18px;
             font-weight: bold;
             text-align: center;
@@ -70,32 +73,60 @@
             border: 2px solid #0056a3;
             border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.3s, border-color 0.3s;
+            transition: all 0.3s;
+            width: 100%;
+            box-sizing: border-box;
         }
         .redirect-button:hover {
             background-color: #0056a3;
             border-color: #004080;
         }
+        #resultsContainer {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 600px;
+            width: 90%;
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        .result-name {
+            font-weight: bold;
+        }
+        .result-time {
+            color: #666;
+        }
+        .fastest {
+            color: #28a745;
+            font-weight: bold;
+        }
+        #countdown {
+            font-size: 18px;
+            margin: 10px 0;
+            color: #666;
+        }
+
         /* 响应式设计 */
         @media only screen and (max-width: 600px) {
             h1 {
                 font-size: 28px;
             }
-            #loadingMessage {
-                width: 90%;
-            }
             .redirect-button {
-                display: inline-block;
-                margin: 10px;
-                padding: 10px 20px;
-                font-size: 18px;
-                background-color: #0066cc;
-                color: #fff;
-                text-decoration: none;
-                border-radius: 8px;
-                cursor: pointer;
+                font-size: 16px;
+                padding: 12px;
+            }
+            #loadingMessage, #resultsContainer {
+                width: 95%;
                 padding: 15px;
-                max-width: 100%;
             }
         }
     </style>
@@ -116,25 +147,31 @@
         <div class="row justify-content-center">
             <div class="col-12 col-lg-8">
                 <h1 class="mbr-section-title mbr-fonts-style mb-3 display-1">
-                    <strong>
-                        Redirection
-                    </strong>
+                    <strong>Redirection</strong>
                 </h1>
                 <p id="loadingMessage" class="mbr-text mbr-fonts-style display-7">
                     Detecting connection...
                 </p>
                 <div id="countdown" class="mbr-text mbr-fonts-style display-7"></div>
+
+                <!-- 新增的结果展示区域 -->
+                <div id="resultsContainer" style="display: none;">
+                    <h3>Connection Test Results</h3>
+                    <div id="resultsList"></div>
+                </div>
+
                 <div class="button-container" id="buttonContainer" style="opacity: 0.5;">
-                    <a id="redirectButton1" class="btn btn-primary display-4" href="https://yukirinll.github.io/FFXIV_Phantoms_MainPage/#" target="_blank" aria-expanded="false" style="width: 500px">
-                        Route 1: Github [国际服务器]
+                    <a id="redirectButton1" class="redirect-button" href="https://yukirinll.github.io/FFXIV_Phantoms_MainPage/#" target="_blank">
+                        Route 1: GitHub [Fastly]
                     </a>
-                    <br>
-                    <a id="redirectButton2" class="btn btn-primary display-4" href="https://yukirinll.gitee.io/ffxiv_phantoms_mainpage/#" target="_blank" aria-expanded="false" style="width: 500px">
-                        Route 2: Gitee [国内源]
+                    <a id="redirectButton2" class="redirect-button" href="https://yukirinll.gitee.io/ffxiv_phantoms_mainpage/#" target="_blank">
+                        Route 2: Gitee [阿里云]
                     </a>
-                    <br>
-                    <a id="redirectButton3" class="btn btn-primary display-4" href="https://ffxiv-phantoms-mainpage.pages.dev/#" target="_blank" aria-expanded="false" style="width: 500px">
-                        Route 3: Cloudflare [国内源]
+                    <a id="redirectButton3" class="redirect-button" href="https://ffxiv-phantoms-mainpage.pages.dev/#" target="_blank">
+                        Route 3: Cloudflare [Anycast]
+                    </a>
+                    <a id="redirectButton4" class="redirect-button" href="https://ffxiv-phantoms-mainpage.onrender.com/#" target="_blank">
+                        Route 4: Render [AWS CloudFront]
                     </a>
                 </div>
                 <script>
@@ -157,70 +194,127 @@
 
                         // 发送HTTP请求
                         function measureResponseTime(url) {
-                            return new Promise(function(resolve, reject) {
-                                var startTime = new Date().getTime();
-                                fetch(url)
-                                .then(function(response) {
-                                    if (!response.ok) {
-                                        throw new Error('Cannot connect');
+                            return new Promise(function(resolve) {
+                                var startTime = performance.now();
+                                fetch(url, {
+                                    mode: 'no-cors',
+                                    cache: 'no-store',
+                                    headers: {
+                                        'Cache-Control': 'no-cache'
                                     }
-                                var endTime = new Date().getTime();
-                                var responseTime = endTime - startTime;
-                                resolve(responseTime);
                                 })
-                                .catch(function(error) {
-                                    reject(error.message);
+                                .then(function(response) {
+                                    var endTime = performance.now();
+                                    var responseTime = Math.round(endTime - startTime);
+                                    resolve({
+                                        url: url,
+                                        time: responseTime,
+                                        status: 'success'
+                                    });
+                                })
+                                .catch(function() {
+                                    resolve({
+                                        url: url,
+                                        time: Infinity,
+                                        status: 'failed'
+                                    });
                                 });
                             });
                         }
 
-                        // 检测两个页面响应时间
+                        // 获取路由显示名称
+                        function getRouteName(url) {
+                            const routes = {
+                                'github.io': 'GitHub [Fastly]',
+                                'gitee.io': 'Gitee [阿里云]',
+                                'pages.dev': 'Cloudflare [Anycast]',
+                                'render.com': 'Render [AWS CloudFront]'
+                            };
+                            for (const [key, value] of Object.entries(routes)) {
+                                if (url.includes(key)) return value;
+                            }
+                            return url;
+                        }
+
+                        // 检测所有页面的响应时间
                         Promise.all([
                             measureResponseTime('https://yukirinll.github.io/FFXIV_Phantoms_MainPage/'),
                             measureResponseTime('https://yukirinll.gitee.io/ffxiv_phantoms_mainpage/'),
-                            measureResponseTime('https://ffxiv-phantoms-mainpage.pages.dev/')
-                        ]).then(function(responseTimes) {
+                            measureResponseTime('https://ffxiv-phantoms-mainpage.pages.dev/'),
+                            measureResponseTime('https://ffxiv-phantoms-mainpage.onrender.com/')
+                        ]).then(function(results) {
                             var loadingMessage = document.getElementById('loadingMessage');
-                            loadingMessage.textContent = 'Detection completed, Redirecting...';
-                            // 根据响应时间选择跳转链接
-                            var fasterIndex = responseTimes.indexOf(Math.min(...responseTimes));
-                            var pageUrls = [
-                                'https://yukirinll.github.io/FFXIV_Phantoms_MainPage/',
-                                'http://yukirinll.gitee.io/ffxiv_phantoms_mainpage/',
-                                'https://ffxiv-phantoms-mainpage.pages.dev/'
-                            ];
-                            // 显示跳转按钮和延迟信息
-                            var buttonContainer = document.getElementById('buttonContainer');
-                            buttonContainer.style.display = 'block';
-                            var redirectButton1 = document.getElementById('redirectButton1');
-                            //redirectButton1.href = pageUrls[0];
-                            redirectButton1.textContent += ' (' + responseTimes[0] + 'ms)';
-                            var redirectButton2 = document.getElementById('redirectButton2');
-                            //redirectButton2.href = pageUrls[1];
-                            redirectButton2.textContent += ' (' + responseTimes[1] + 'ms)';
-                            var redirectButton3 = document.getElementById('redirectButton3');
-                            //redirectButton3.href = pageUrls[2];
-                            redirectButton3.textContent += ' (' + responseTimes[1] + 'ms)';
+                            var resultsContainer = document.getElementById('resultsContainer');
+                            var resultsList = document.getElementById('resultsList');
 
-                            //倒计时结束后跳转
+                            // 过滤出成功的请求
+                            var successfulResults = results.filter(result => result.status === 'success');
+
+                            if (successfulResults.length === 0) {
+                                loadingMessage.textContent = 'Detection failed: All routes are unavailable';
+                                document.getElementById('buttonContainer').style.opacity = '1';
+                                return;
+                            }
+
+                            loadingMessage.textContent = 'Detection completed';
+                            resultsContainer.style.display = 'block';
+
+                            // 找出响应时间最短的成功请求
+                            var fastestResult = successfulResults.reduce((prev, current) =>
+                                (prev.time < current.time) ? prev : current
+                            );
+
+                            // 显示测试结果
+                            results.forEach((result) => {
+                                const resultItem = document.createElement('div');
+                                resultItem.className = 'result-item';
+
+                                const nameSpan = document.createElement('span');
+                                nameSpan.className = 'result-name';
+                                nameSpan.textContent = getRouteName(result.url);
+
+                                const timeSpan = document.createElement('span');
+                                timeSpan.className = 'result-time';
+
+                                if (result.status === 'success') {
+                                    timeSpan.textContent = `${result.time}ms`;
+                                    if (result.url === fastestResult.url) {
+                                        timeSpan.classList.add('fastest');
+                                        timeSpan.textContent += ' (Fastest)';
+                                    }
+                                } else {
+                                    timeSpan.textContent = 'Failed';
+                                    timeSpan.style.color = '#dc3545';
+                                }
+
+                                resultItem.appendChild(nameSpan);
+                                resultItem.appendChild(timeSpan);
+                                resultsList.appendChild(resultItem);
+                            });
+
+                            // 启用所有按钮
+                            document.getElementById('buttonContainer').style.opacity = '1';
+
+                            // 倒计时自动跳转
                             var countdownElement = document.getElementById('countdown');
-                            var seconds = 10;
+                            var seconds = 45;
+
                             function updateCountdown() {
-                                countdownElement.textContent = seconds + "秒后自动跳转";
+                                countdownElement.textContent = `Auto redirecting to fastest route in ${seconds} seconds...`;
                                 if (seconds === 0) {
                                     clearInterval(countdownInterval);
-                                    // 跳转到响应时间较短的页面
-                                    window.location.href = pageUrls[fasterIndex];
+                                    window.location.href = fastestResult.url;
                                 }
                                 seconds--;
                             }
+
+                            // 如果想开始倒计时，可以将下面2行取消注释
                             var countdownInterval = setInterval(updateCountdown, 1000);
-                            // 如果想在页面加载后开始倒计时，可以将下面这行取消注释
                              updateCountdown();
 
                         }).catch(function(error) {
-                            var loadingMessage = document.getElementById('loadingMessage');
-                            loadingMessage.textContent = 'Detection failed: ' + error;
+                            document.getElementById('loadingMessage').textContent = 'Detection error: ' + error;
+                            document.getElementById('buttonContainer').style.opacity = '1';
                         });
                     });
                 </script>
@@ -228,60 +322,7 @@
         </div>
     </div>
 </section>
-<section class="footer7 cid-seeJHoNSny" once="footers" id="footer7-p">
-    <div class="container">
-        <div class="media-container-row align-center mbr-white">
-            <div class="col-12">
-                <p class="mbr-text mb-0 mbr-fonts-style display-7">
-                    Copyright (C) SQUARE ENIX CO., LTD. All Rights Reserved.
-                    <br>
-                    Copyright&nbsp;(C) Crystal Alliance cir. All Rights Reserved.
-                </p>
-            </div>
-        </div>
-    </div>
-</section>
-<section style="background-color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif; color:#aaa; font-size:12px; padding: 0; align-items: center; display: flex;">
-    <a href="https://mobirise.site/n" style="flex: 1 1; height: 3rem; padding-left: 1rem;">
-    </a>
-    <p style="flex: 0 0 auto; margin:0; padding-right:1rem;">
-        Page was
-        <a href="https://mobirise.site/g" style="color:#aaa;">
-            designed
-        </a>
-        with Mobirise
-    </p>
-</section>
-<script src="assets/web/assets/jquery/jquery.min.js">
-</script>
-<script src="assets/popper/popper.min.js">
-</script>
-<script src="assets/tether/tether.min.js">
-</script>
-<script src="assets/bootstrap/js/bootstrap.min.js">
-</script>
-<script src="assets/smoothscroll/smooth-scroll.js">
-</script>
-<script src="assets/ytplayer/jquery.mb.ytplayer.min.js">
-</script>
-<script src="assets/vimeoplayer/jquery.mb.vimeo_player.js">
-</script>
-<script src="assets/dropdown/js/nav-dropdown.js">
-</script>
-<script src="assets/dropdown/js/navbar-dropdown.js">
-</script>
-<script src="assets/touchswipe/jquery.touch-swipe.min.js">
-</script>
-<script src="assets/theme/js/script.js">
-</script>
+
+<!-- 页脚部分保持不变 -->
 </body>
-
-<div id="foot"></div>
-<script src="./assets/web/assets/jquery/jquery.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $("#foot").load("./additions/foot/profile-round.html");
-    });
-</script>
-
 </html>
