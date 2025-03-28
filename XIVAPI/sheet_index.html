@@ -210,15 +210,6 @@
             padding: 5px;
             border-bottom: 1px solid #eee;
         }
-        .truncate {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 200px;
-        }
-        .small-font {
-            font-size: 12px;
-        }
     </style>
 </head>
 <body>
@@ -379,24 +370,20 @@
                 .then(response => response.json())
                 .then(data => {
                     currentRows = data.rows || [];
-                    filteredRows = filterRows(currentRows);
+                    filteredRows = [...currentRows];
                     displayRows();
+
+                    // Check if we have more rows to load
+                    if (currentRows.length < rowsPerPage) {
+                        hasMoreRows = false;
+                    } else {
+                        lastRowId = currentRows[currentRows.length - 1].row_id;
+                    }
                 })
                 .catch(error => {
                     console.error(`Error fetching rows for ${currentSheetName}:`, error);
                     rowListContainer.innerHTML = '<div class="no-results">Failed to load rows data. Please try again later.</div>';
                 });
-        }
-
-        // Filter rows to exclude those with empty Name, Singular, Description and invalid icons
-        function filterRows(rows) {
-            return rows.filter(row => {
-                const hasName = row.fields.Name && row.fields.Name.trim() !== '';
-                const hasSingular = row.fields.Singular && row.fields.Singular.trim() !== '';
-                const hasDescription = row.fields.Description && row.fields.Description.trim() !== '';
-                const isValidIcon = row.fields.Icon && row.fields.Icon.path && row.fields.Icon.path !== 'ui/icon/000000/000000.tex';
-                return (hasName || hasSingular || hasDescription) && isValidIcon;
-            });
         }
 
         // Display rows function with pagination
@@ -407,7 +394,6 @@
             }
 
             // Calculate pagination
-            const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
             const startIndex = (currentPage - 1) * rowsPerPage;
             const endIndex = startIndex + rowsPerPage;
             const paginatedRows = filteredRows.slice(startIndex, endIndex);
@@ -417,9 +403,9 @@
                     ${paginatedRows.map(row => `
                         <li class="row-item" data-row-id="${row.row_id}">
                             <div class="row-icon">
-                                ${row.fields.Icon && row.fields.Icon.path && row.fields.Icon.path !== 'ui/icon/000000/000000.tex' ? `
-                                    <img src="https://v2.xivapi.com/api/asset?path=${encodeURIComponent(row.fields.Icon.path)}&format=webp" alt="${row.fields.Name || 'Icon'}">
-                                ` : ''}
+                                ${row.fields.Icon && row.fields.Icon.path ?
+                                    `<img src="https://v2.xivapi.com/api/asset?path=${encodeURIComponent(row.fields.Icon.path)}&format=webp" alt="${row.fields.Name || 'Icon'}">` :
+                                    'No icon'}
                             </div>
                             <div class="row-content">
                                 <div class="row-id">ID: ${row.row_id}</div>
@@ -433,7 +419,7 @@
             `;
 
             rowListContainer.innerHTML = listHtml;
-            pageInfoElement.textContent = `Page ${currentPage} of ${totalPages}`;
+            pageInfoElement.textContent = `Page ${currentPage}`;
             updatePaginationButtons();
 
             // Add click event listeners to row items
@@ -445,28 +431,171 @@
             });
         }
 
+        // Load detail for a specific row
+        function loadRowDetail() {
+            // Update UI
+            rowView.style.display = 'none';
+            detailView.style.display = 'block';
+            detailViewTitle.textContent = `Sheet: ${currentSheetName} - Row: ${currentRowId}`;
+            detailContentContainer.innerHTML = '<div class="loading">Loading detail data...</div>';
+
+            // Fetch row detail
+            fetch(`https://v2.xivapi.com/api/sheet/${currentSheetName}/${currentRowId}`)
+                .then(response => response.json())
+                .then(data => {
+                    displayRowDetail(data);
+                })
+                .catch(error => {
+                    console.error(`Error fetching row detail for ${currentSheetName}/${currentRowId}:`, error);
+                    detailContentContainer.innerHTML = '<div class="no-results">Failed to load detail data. Please try again later.</div>';
+                });
+        }
+
+        // Display row detail
+        function displayRowDetail(rowData) {
+            const fields = rowData.fields || {};
+
+            // Create header with icon and name
+            let html = `
+                <div class="detail-view">
+                    <div class="detail-header">
+                        ${fields.Icon && fields.Icon.path ? `
+                            <div class="detail-icon">
+                                <img src="https://v2.xivapi.com/api/asset?path=${encodeURIComponent(fields.Icon.path)}&format=webp" alt="Icon">
+                            </div>
+                        ` : ''}
+                        <div class="detail-title">
+                            <div class="detail-name">${fields.Name || 'No name'}</div>
+                            <div class="detail-id">ID: ${rowData.row_id}</div>
+                        </div>
+                    </div>
+            `;
+
+            // Add fields
+            for (const [fieldName, fieldValue] of Object.entries(fields)) {
+                if (fieldName === 'Icon') continue; // Skip icon since we already displayed it
+
+                html += `
+                    <div class="detail-section">
+                        <div class="detail-section-title">${fieldName}</div>
+                        ${renderFieldValue(fieldValue)}
+                    </div>
+                `;
+            }
+
+            html += `</div>`; // Close detail-view div
+            detailContentContainer.innerHTML = html;
+        }
+
+        // Helper function to render field values (including nested objects and arrays)
+        function renderFieldValue(value, depth = 0) {
+            if (value === null || value === undefined) {
+                return '<div class="detail-field-value">null</div>';
+            }
+
+            if (Array.isArray(value)) {
+                if (value.length === 0) {
+                    return '<div class="detail-field-value">[]</div>';
+                }
+
+                let html = '';
+                value.forEach((item, index) => {
+                    html += `
+                        <div class="array-item">
+                            <div class="detail-field">
+                                <div class="detail-field-name">[${index}]</div>
+                                <div class="detail-field-value">
+                                    ${renderFieldValue(item, depth + 1)}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                return html;
+            }
+
+            if (typeof value === 'object') {
+                if (Object.keys(value).length === 0) {
+                    return '<div class="detail-field-value">{}</div>';
+                }
+
+                let html = '<div class="nested-object">';
+                for (const [key, val] of Object.entries(value)) {
+                    html += `
+                        <div class="detail-field">
+                            <div class="detail-field-name">${key}</div>
+                            <div class="detail-field-value">
+                                ${renderFieldValue(val, depth + 1)}
+                            </div>
+                        </div>
+                    `;
+                }
+                html += '</div>';
+                return html;
+            }
+
+            // Simple value (string, number, boolean)
+            return `<div>${value}</div>`;
+        }
+
         // Update pagination button states
         function updatePaginationButtons() {
             const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
 
             prevPageButton.disabled = currentPage <= 1;
-            nextPageButton.disabled = currentPage >= totalPages;
+            nextPageButton.disabled = currentPage >= totalPages && !hasMoreRows;
         }
 
         // Load next page of rows
         function loadNextPage() {
-            if (currentPage < Math.ceil(filteredRows.length / rowsPerPage)) {
+            if (currentSearchTerm) {
+                // For searched results, just paginate through what we have
                 currentPage++;
                 displayRows();
+            } else {
+                // For non-searched results, fetch more data if needed
+                const totalLocalPages = Math.ceil(currentRows.length / rowsPerPage);
+
+                if (currentPage < totalLocalPages) {
+                    // We have more local rows to show
+                    currentPage++;
+                    displayRows();
+                } else if (hasMoreRows) {
+                    // Need to fetch more rows from API
+                    currentPage++;
+                    fetchMoreRows();
+                }
             }
         }
 
-        // Load previous page of rows
-        function loadPreviousPage() {
-            if (currentPage > 1) {
-                currentPage--;
-                displayRows();
-            }
+        // Fetch more rows from API
+        function fetchMoreRows() {
+            if (!hasMoreRows) return;
+
+            rowListContainer.innerHTML = '<div class="loading">Loading more rows...</div>';
+
+            const fields = 'Name,Description,Icon,Singular';
+            let apiUrl = `https://v2.xivapi.com/api/sheet/${currentSheetName}?limit=${rowsPerPage}&after=${lastRowId}&fields=${fields}`;
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const newRows = data.rows || [];
+                    currentRows = [...currentRows, ...newRows];
+                    filteredRows = [...currentRows];
+
+                    if (newRows.length < rowsPerPage) {
+                        hasMoreRows = false;
+                    } else {
+                        lastRowId = newRows[newRows.length - 1].row_id;
+                    }
+
+                    displayRows();
+                })
+                .catch(error => {
+                    console.error('Error fetching more rows:', error);
+                    rowListContainer.innerHTML = '<div class="no-results">Failed to load more rows. Please try again.</div>';
+                });
         }
 
         // Search sheet names
@@ -491,12 +620,11 @@
             currentPage = 1;
 
             if (!currentSearchTerm) {
-                filteredRows = filterRows(currentRows);
+                filteredRows = [...currentRows];
             } else {
                 filteredRows = currentRows.filter(row =>
                     row.fields.Name && row.fields.Name.toLowerCase().includes(currentSearchTerm)
                 );
-                filteredRows = filterRows(filteredRows);
             }
 
             displayRows();
@@ -530,7 +658,13 @@
             detailView.style.display = 'none';
         });
 
-        prevPageButton.addEventListener('click', loadPreviousPage);
+        prevPageButton.addEventListener('click', function() {
+            if (currentPage > 1) {
+                currentPage--;
+                displayRows();
+            }
+        });
+
         nextPageButton.addEventListener('click', loadNextPage);
     });
 </script>
