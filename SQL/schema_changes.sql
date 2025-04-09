@@ -69,6 +69,22 @@ ALTER TABLE users DROP COLUMN id;
 -- 重命名新的id列为id
 ALTER TABLE users RENAME COLUMN new_id TO id;
 
+
+-- 创建SMS_forward表
+CREATE TABLE public.SMS_forward (
+    id bigint PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    created_at timestamp with time zone DEFAULT now(),
+    message text NOT NULL
+);
+-- 启用行级安全(RLS) - 可选，根据你的安全需求
+ALTER TABLE public.SMS_forward ENABLE ROW LEVEL SECURITY;
+-- 为匿名用户添加查询权限 - 如果你想让任何人都能读取数据
+CREATE POLICY "Enable read access for all users"
+ON public.SMS_forward
+FOR SELECT
+    TO anon
+    USING (true);
+
 -- =============================================
 -- supabase schema changes end here
 -- =============================================
