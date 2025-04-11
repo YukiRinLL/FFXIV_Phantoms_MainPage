@@ -85,6 +85,24 @@ FOR SELECT
     TO anon
     USING (true);
 
+
+
+CREATE TABLE visitor_stats (
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    ip_address TEXT,
+    user_agent TEXT,
+    country TEXT,
+    region TEXT,
+    city TEXT,
+    latitude DOUBLE PRECISION,
+    longitude DOUBLE PRECISION,
+    device_type TEXT,
+    browser TEXT,
+    os TEXT,
+    referrer TEXT,
+    page_url TEXT
+);
 -- =============================================
 -- supabase schema changes end here
 -- =============================================
