@@ -27,6 +27,7 @@
             height: 400px;
             width: 100%;
             border-radius: 8px;
+            background-color: #f8f9fa; /* 添加备用背景色 */
         }
         table {
             width: 100%;
@@ -61,6 +62,13 @@
             font-weight: bold;
             margin: 10px 0 0;
         }
+        .map-loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            color: #666;
+        }
     </style>
 </head>
 <body>
@@ -88,7 +96,9 @@
 <div class="dashboard">
     <div class="card">
         <h2>Visitor Locations</h2>
-        <div id="map"></div>
+        <div id="map">
+            <div class="map-loading">Loading map...</div>
+        </div>
     </div>
 
     <div class="card">
@@ -133,10 +143,55 @@
 
     // 初始化地图
     function initMap() {
-        map = L.map('map').setView([20, 0], 2);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
+        // 移除加载提示
+        const loadingElement = document.querySelector('#map .map-loading');
+        if (loadingElement) {
+            loadingElement.remove();
+        }
+
+        // 确保地图容器存在
+        const mapElement = document.getElementById('map');
+        if (!mapElement) {
+            console.error('Map container not found');
+            return;
+        }
+
+        // 检查容器是否有高度
+        if (mapElement.offsetHeight <= 0) {
+            mapElement.style.height = '400px';
+        }
+
+        try {
+            map = L.map('map').setView([20, 0], 2);
+
+            // 主地图图层
+            const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19
+            }).addTo(map);
+
+            // 备用地图图层
+            const hotLayer = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://www.hotosm.org/" target="_blank">Humanitarian OpenStreetMap Team</a>',
+                maxZoom: 19
+            });
+
+            // 监听主图层错误
+            osmLayer.on('tileerror', function() {
+                console.log('Error loading OSM tiles, switching to HOT');
+                map.removeLayer(osmLayer);
+                hotLayer.addTo(map);
+            });
+
+            // 监听窗口大小变化
+            window.addEventListener('resize', function() {
+                map.invalidateSize();
+            });
+
+        } catch (error) {
+            console.error('Map initialization error:', error);
+            mapElement.innerHTML = '<div class="map-loading">Failed to load map. Please refresh the page.</div>';
+        }
     }
 
     // 获取并展示访客数据
@@ -180,29 +235,39 @@
 
     // 更新地图标记
     function updateMap(data) {
+        if (!map) {
+            console.warn('Map not initialized');
+            return;
+        }
+
         // 清除现有标记
         markers.forEach(marker => map.removeLayer(marker));
         markers = [];
 
         // 添加新标记
-        data.filter(v => v.latitude && v.longitude).forEach(visitor => {
+        const validLocations = data.filter(v => v.latitude && v.longitude);
+
+        if (validLocations.length === 0) {
+            console.log('No valid location data to display');
+            return;
+        }
+
+        validLocations.forEach(visitor => {
             const marker = L.marker([visitor.latitude, visitor.longitude])
                 .addTo(map)
                 .bindPopup(`
-                        <b>${visitor.city || 'Unknown'}, ${visitor.country || 'Unknown'}</b><br>
-                        Device: ${visitor.device_type || 'Unknown'}<br>
-                        Browser: ${visitor.browser || 'Unknown'}<br>
-                        OS: ${visitor.os || 'Unknown'}<br>
-                        Time: ${new Date(visitor.created_at).toLocaleString()}
-                    `);
+                    <b>${visitor.city || 'Unknown'}, ${visitor.country || 'Unknown'}</b><br>
+                    Device: ${visitor.device_type || 'Unknown'}<br>
+                    Browser: ${visitor.browser || 'Unknown'}<br>
+                    OS: ${visitor.os || 'Unknown'}<br>
+                    Time: ${new Date(visitor.created_at).toLocaleString()}
+                `);
             markers.push(marker);
         });
 
-        // 如果有标记，调整视图以包含所有标记
-        if (markers.length > 0) {
-            const group = new L.featureGroup(markers);
-            map.fitBounds(group.getBounds().pad(0.1));
-        }
+        // 调整视图以包含所有标记
+        const group = new L.featureGroup(markers);
+        map.fitBounds(group.getBounds().pad(0.1));
     }
 
     // 更新表格
@@ -215,12 +280,12 @@
         recentVisitors.forEach(visitor => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                    <td>${visitor.country || 'Unknown'}</td>
-                    <td>${visitor.city || 'Unknown'}</td>
-                    <td>${visitor.device_type || 'Unknown'}</td>
-                    <td>${visitor.browser || 'Unknown'}</td>
-                    <td>${new Date(visitor.created_at).toLocaleString()}</td>
-                `;
+                <td>${visitor.country || 'Unknown'}</td>
+                <td>${visitor.city || 'Unknown'}</td>
+                <td>${visitor.device_type || 'Unknown'}</td>
+                <td>${visitor.browser || 'Unknown'}</td>
+                <td>${new Date(visitor.created_at).toLocaleString()}</td>
+            `;
             visitorsTable.appendChild(row);
         });
 
@@ -240,10 +305,10 @@
                 const percentage = ((count / data.length) * 100).toFixed(1);
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                        <td>${country}</td>
-                        <td>${count}</td>
-                        <td>${percentage}%</td>
-                    `;
+                    <td>${country}</td>
+                    <td>${count}</td>
+                    <td>${percentage}%</td>
+                `;
                 countryTable.appendChild(row);
             });
     }
