@@ -21,6 +21,7 @@ jobs:
               https://qnwhrdsnwhrdivakvvex.supabase.co/auth/v1/health)
             if [ "$response" -eq 200 ]; then
               echo "Supabase health check succeeded with status code 200"
+              echo "status=success" >> $GITHUB_ENV
               exit 0  # 成功，退出循环
             else
               echo "Attempt $i failed with status code $response"
@@ -30,6 +31,7 @@ jobs:
             fi
           done
           echo "Supabase health check failed after $retry_count attempts"
+          echo "status=failure" >> $GITHUB_ENV
           exit 1  # 标记任务失败
 
 #      - name: Send Slack notification on failure
