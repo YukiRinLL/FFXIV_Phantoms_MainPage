@@ -173,25 +173,12 @@
                     <a id="redirectButton4" class="redirect-button" href="https://ffxiv-phantoms-mainpage.onrender.com/#" target="_blank">
                         Route 4: Render [AWS CloudFront]
                     </a>
+                    <a id="redirectButton5" class="redirect-button" href="https://ffxiv-phantoms-main-page.vercel.app/#" target="_blank">
+                        Route 5: Vercel [AWS CloudFront]
+                    </a>
                 </div>
                 <script>
                     document.addEventListener('DOMContentLoaded', function () {
-                    /*
-                        const express = require('express');
-                        const app = express();
-                        app.use((req, res, next) => {
-                            res.header('Access-Control-Allow-Origin', '*'); // 允许所有域访问，实际生产环境中应该更安全
-                            res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-                            res.header('Access-Control-Allow-Headers', 'Content-Type');
-                        next();
-                        });
-                        app.listen(3000, () => {
-                            console.log('Server is running on port 3000');
-                        });
-                    */
-
-
-
                         // 发送HTTP请求
                         function measureResponseTime(url) {
                             return new Promise(function(resolve) {
@@ -203,22 +190,22 @@
                                         'Cache-Control': 'no-cache'
                                     }
                                 })
-                                .then(function(response) {
-                                    var endTime = performance.now();
-                                    var responseTime = Math.round(endTime - startTime);
-                                    resolve({
-                                        url: url,
-                                        time: responseTime,
-                                        status: 'success'
+                                    .then(function(response) {
+                                        var endTime = performance.now();
+                                        var responseTime = Math.round(endTime - startTime);
+                                        resolve({
+                                            url: url,
+                                            time: responseTime,
+                                            status: 'success'
+                                        });
+                                    })
+                                    .catch(function() {
+                                        resolve({
+                                            url: url,
+                                            time: Infinity,
+                                            status: 'failed'
+                                        });
                                     });
-                                })
-                                .catch(function() {
-                                    resolve({
-                                        url: url,
-                                        time: Infinity,
-                                        status: 'failed'
-                                    });
-                                });
                             });
                         }
 
@@ -228,7 +215,8 @@
                                 'github.io': 'GitHub [Fastly]',
                                 'gitee.io': 'Gitee [阿里云]',
                                 'pages.dev': 'Cloudflare [Anycast]',
-                                'render.com': 'Render [AWS CloudFront]'
+                                'render.com': 'Render [AWS CloudFront]',
+                                'vercel.app': 'Vercel [AWS CloudFront]'
                             };
                             for (const [key, value] of Object.entries(routes)) {
                                 if (url.includes(key)) return value;
@@ -241,7 +229,8 @@
                             measureResponseTime('https://yukirinll.github.io/FFXIV_Phantoms_MainPage/'),
                             measureResponseTime('https://yukirinll.gitee.io/ffxiv_phantoms_mainpage/'),
                             measureResponseTime('https://ffxiv-phantoms-mainpage.pages.dev/'),
-                            measureResponseTime('https://ffxiv-phantoms-mainpage.onrender.com/')
+                            measureResponseTime('https://ffxiv-phantoms-mainpage.onrender.com/'),
+                            measureResponseTime('https://ffxiv-phantoms-main-page.vercel.app/')
                         ]).then(function(results) {
                             var loadingMessage = document.getElementById('loadingMessage');
                             var resultsContainer = document.getElementById('resultsContainer');

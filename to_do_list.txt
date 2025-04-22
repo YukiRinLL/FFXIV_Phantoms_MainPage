@@ -23,7 +23,7 @@ http_test.html点击跳转有问题，还没修(跳转修好了，样式还有�
 
 链接加上
 https://www.thebuddyforum.com/threads/%E5%B7%A5%E5%85%B7-ff14%E5%A4%9A%E5%BC%80%E5%99%A8-multiple-copies-of-ff14.179778/
-加上MacOS的项目地址
+加上MacOS的项目地址（已完成
 
 wallpaper engine内容加上
 群相册和石之家相册转移（不用做了）
@@ -44,3 +44,5 @@ wallpaper engine内容加上
 
 登录相关
 当没有登录状态的时候，留言和上传头像提示未登录，（已完成）
+
+高难模拟器和攻略网站加进去
