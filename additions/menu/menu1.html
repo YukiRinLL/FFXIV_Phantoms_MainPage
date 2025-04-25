@@ -37,7 +37,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link link text-white text-primary dropdown-toggle display-4" href="#" aria-expanded="true" data-toggle="dropdown-submenu">Tools</a>
                         <div class="dropdown-menu">
-                            <a class="text-light text-primary dropdown-item display-4" href="tools.html#" aria-expanded="false">All Tools Index</a>
+                            <a class="text-light text-primary dropdown-item display-4" href="tools.html" data-mobile-href="tools-mobile.html" aria-expanded="false">All Tools Index</a>
                             <a class="text-white text-primary dropdown-item display-4" href="tools/BlueMagicebook.html#" aria-expanded="false">BlueMagicbook</a>
 <!--                            <a class="text-white text-primary dropdown-item display-4" href="tools/V5.html#" aria-expanded="false">V5配方计算器</a>-->
                             <a class="text-white text-primary dropdown-item display-4" href="tools/crafter.html#" aria-expanded="false">V7生产模拟器</a>
@@ -72,7 +72,7 @@
                     <a class="iconfont-wrapper" href="https://ff.web.sdo.com/finder/" target="_blank">
                         <span class="p-2 mbr-iconfont mobi-mbri-file mobi-mbri" style="color: rgb(255, 255, 255); fill: rgb(255, 255, 255);"></span>
                     </a>
-                    <a class="iconfont-wrapper" href="https://https://jq.qq.com/?_wv=1027&k=FSun33H0" target="_blank">
+                    <a class="iconfont-wrapper" href="https://jq.qq.com/?_wv=1027&k=FSun33H0" target="_blank">
                         <span class="p-2 mbr-iconfont socicon-qq socicon" style="color: rgb(34, 165, 229); fill: rgb(34, 165, 229);"></span>
                     </a>
                     <a class="iconfont-wrapper" href="https://weibo.com/5722698883/LnwkL1Fk2" target="_blank">
@@ -89,3 +89,21 @@
         </div>
     </nav>
 </section>
+
+<script>
+    function adjustLinks() {
+        var links = document.querySelectorAll('a[data-mobile-href]');
+        links.forEach(function(link) {
+            if (window.innerWidth <= 768) { // 假设屏幕宽度小于或等于 768px 时为移动端
+                link.href = link.getAttribute('data-mobile-href');
+            } else {
+                link.href = link.getAttribute('href');
+            }
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        adjustLinks();
+        window.addEventListener('resize', adjustLinks);
+    });
+</script>
