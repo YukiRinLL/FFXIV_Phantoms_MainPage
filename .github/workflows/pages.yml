@@ -38,25 +38,25 @@ jobs:
 #        uses: actions/upload-pages-artifact@v1 #Pages 的专用版本
         uses: actions/upload-artifact@v4
         with:
-          # Upload entire repository
+          name: github-pages  # 明确指定 artifact 的名称为 github-pages
           path: '.'
 
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@main
 
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Set Default Page
-        run: |
-          echo "/*" > docs/.nojekyll
-          mv docs/http_test.html docs/index.html
-        working-directory: .
-
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@4.1.5
-        with:
-          branch: gh-pages  # 设置你的 GitHub Pages 分支
-          folder: docs
+#      - name: Checkout Repository
+#        uses: actions/checkout@v4
+#
+#      - name: Set Default Page
+#        run: |
+#          echo "/*" > docs/.nojekyll
+#          mv docs/http_test.html docs/index.html
+#        working-directory: .
+#
+#      - name: Deploy to GitHub Pages
+#        uses: JamesIves/github-pages-deploy-action@4.1.5
+#        with:
+#          branch: gh-pages  # 设置你的 GitHub Pages 分支
+#          folder: docs
 
