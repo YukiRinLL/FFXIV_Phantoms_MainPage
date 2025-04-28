@@ -103,6 +103,35 @@ CREATE TABLE visitor_stats (
     referrer TEXT,
     page_url TEXT
 );
+
+
+-- 添加 file_name 字段（类型为字符串）
+ALTER TABLE images
+    ADD COLUMN file_name TEXT;
+-- 添加 description 字段（类型为字符串）
+ALTER TABLE images
+    ADD COLUMN description TEXT;
+-- 添加 legacy_user_id 字段（类型为 UUID）
+ALTER TABLE images
+    ADD COLUMN legacy_user_id UUID;
+-- 添加 user_id 字段（类型为 UUID）
+ALTER TABLE images
+    ADD COLUMN user_id UUID;
+-- 设置 name 和 description 字段为可为空
+ALTER TABLE images
+    ALTER COLUMN name DROP NOT NULL;
+ALTER TABLE images
+    ALTER COLUMN description DROP NOT NULL;
+-- 设置外键约束
+ALTER TABLE images
+    ADD CONSTRAINT images_legacy_user_id_fkey
+        FOREIGN KEY (legacy_user_id) REFERENCES users(id);
+ALTER TABLE images
+    ADD CONSTRAINT images_user_id_fkey
+        FOREIGN KEY (user_id) REFERENCES auth.users(id);
+-- 设置 user_id 和 legacy_user_id 的默认值
+ALTER TABLE images
+    ALTER COLUMN user_id SET DEFAULT auth.uid();
 -- =============================================
 -- supabase schema changes end here
 -- =============================================

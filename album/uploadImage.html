@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Image</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="file"], input[type="text"] {
+            width: 100%; /* 确保输入框宽度不会超出卡片 */
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            box-sizing: border-box; /* 防止内容超出边框 */
+        }
+
+        input[type="submit"] {
+            background-color: #333; /* 按钮背景色改为黑色 */
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #555; /* 按钮悬停时背景色改为深灰色 */
+        }
+
+        #preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 10px auto;
+            border: 2px solid #ddd; /* 外框边框 */
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .preview-image {
+            width: 100px; /* 设置图片宽度 */
+            height: 100px; /* 设置图片高度 */
+            overflow: hidden; /* 隐藏超出部分 */
+            border: 1px solid #ddd; /* 图片边框 */
+            border-radius: 5px; /* 圆角边框 */
+            position: relative;
+        }
+
+        .preview-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 保持图片比例并填充 */
+            display: block;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 5px;
+        }
+
+        .progress-container {
+            margin-top: 10px;
+        }
+
+        /* 总进度条样式 */
+        .total-progress-bar {
+            width: 0%;
+            height: 20px;
+            background-color: #555; /* 深灰色背景 */
+            text-align: center;
+            color: #fff; /* 白色文字 */
+            line-height: 20px;
+            border-radius: 5px;
+            display: none; /* 默认不显示 */
+        }
+
+        /* 单个文件进度条样式 */
+        .file-progress-bar {
+            width: 0%;
+            height: 15px;
+            background-color: #888; /* 灰色背景 */
+            text-align: center;
+            color: #000; /* 黑色文字 */
+            line-height: 15px;
+            border-radius: 5px;
+            margin-top: 5px;
+            display: none; /* 默认不显示 */
+        }
+    </style>
+</head>
+<body>
+<h2>Upload Image</h2>
+<form action="/upload" method="post" enctype="multipart/form-data">
+    <label for="image">Image:</label>
+    <input type="file" id="image" name="image" accept="image/*" required multiple>
+    <div id="preview-container"></div>
+    <label for="file_name">File Name:</label>
+    <input type="text" id="file_name" name="file_name">
+    <label for="description">Description:</label>
+    <input type="text" id="description" name="description">
+    <input type="submit" value="Upload">
+    <div class="error-message" id="error-message"></div>
+    <div class="progress-container">
+        <div class="total-progress-bar" id="total-progress-bar"></div>
+    </div>
+</form>
+
+<script>
+    // Function to read user data from cookies
+    function getUserDataFromCookies() {
+        const cookies = document.cookie.split('; ');
+        const userData = {};
+        cookies.forEach(cookie => {
+            const [key, value] = cookie.split('=');
+            if (key === 'user_id' || key === 'legacy_user_id' || key === 'access_token') {
+                userData[key] = decodeURIComponent(value);
+            }
+        });
+        return userData;
+    }
+
+    // Function to show error message
+    function showError(message) {
+        const errorMessage = document.getElementById('error-message');
+        errorMessage.innerText = message;
+    }
+
+    // Function to hide error message
+    function hideError() {
+        const errorMessage = document.getElementById('error-message');
+        errorMessage.innerText = '';
+    }
+
+    // Function to handle image preview
+    document.getElementById('image').addEventListener('change', function(event) {
+        const input = event.target;
+        const previewContainer = document.getElementById('preview-container');
+        previewContainer.innerHTML = ''; // Clear previous previews
+
+        if (input.files) {
+            Array.from(input.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewDiv = document.createElement('div');
+                    previewDiv.className = 'preview-image';
+
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+
+                    previewDiv.appendChild(img);
+                    previewContainer.appendChild(previewDiv);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+    });
+
+    // Function to handle form submission
+    document.querySelector('form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Get user data from cookies
+        const userData = getUserDataFromCookies();
+        if (!userData.user_id) {
+            showError('You are not logged in. Please log in to upload images.');
+            return;
+        }
+
+        // Get form data
+        const formData = new FormData(this);
+        const files = formData.getAll('image');
+        const userDefinedName = document.getElementById('file_name').value.trim(); // 用户输入的 name
+        const description = document.getElementById('description').value.trim();
+
+        // Check if multiple files are uploaded
+        if (files.length > 1) {
+            if (userDefinedName || description) {
+                showError('Name and description are not allowed for multiple uploads.');
+                return;
+            }
+        }
+
+        // Initialize progress variables
+        let totalFiles = files.length;
+        let uploadedFiles = 0;
+
+        // Prepare data for upload
+        const uploadData = [];
+        files.forEach((file, index) => {
+            // 使用文件的实际文件名作为 file_name
+            const fileName = file.name;
+
+            const fileData = {
+                file: file,
+                file_name: fileName, // 文件的实际文件名
+                name: userDefinedName || '', // 用户输入的 name
+                description: description || '',
+                user_id: userData.user_id,
+                legacy_user_id: userData.legacy_user_id,
+                access_token: userData.access_token
+            };
+            uploadData.push(fileData);
+        });
+
+        // Function to update total progress bar
+        function updateTotalProgressBar() {
+            const progressBar = document.getElementById('total-progress-bar');
+            const percentComplete = (uploadedFiles / totalFiles) * 100;
+            progressBar.style.width = percentComplete + '%';
+            progressBar.textContent = `${uploadedFiles}/${totalFiles} (${Math.round(percentComplete)}%)`;
+            if (percentComplete > 0) {
+                progressBar.style.display = 'block';
+            }
+        }
+
+        // Upload images
+        uploadData.forEach(fileData => {
+            const reader = new FileReader();
+            const fileProgressBar = document.createElement('div');
+            fileProgressBar.className = 'file-progress-bar';
+            fileProgressBar.textContent = '0%';
+            document.querySelector('.progress-container').appendChild(fileProgressBar);
+
+            reader.onloadstart = function() {
+                fileProgressBar.style.display = 'block';
+            };
+
+            reader.onprogress = function(event) {
+                if (event.lengthComputable) {
+                    const percentComplete = (event.loaded / event.total) * 100;
+                    fileProgressBar.style.width = percentComplete + '%';
+                    fileProgressBar.textContent = Math.round(percentComplete) + '%';
+                }
+            };
+
+            reader.onload = function() {
+                const data = reader.result;
+
+                fetch('https://qnwhrdsnwhrdivakvvex.supabase.co/rest/v1/images', {
+                    method: 'POST',
+                    headers: {
+                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE',
+                        'Authorization': `Bearer ${fileData.access_token}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({
+                        file_name: fileData.file_name, // 文件的实际文件名
+                        name: fileData.name, // 用户输入的 name
+                        description: fileData.description,
+                        user_id: fileData.user_id,
+                        legacy_user_id: fileData.legacy_user_id,
+                        data: data
+                    })
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            uploadedFiles++;
+                            updateTotalProgressBar();
+                            fileProgressBar.style.display = 'none'; // Hide file progress bar after upload
+                        } else {
+                            throw new Error('Error: ' + response.statusText);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showError('Failed to upload image. Please try again later.');
+                        fileProgressBar.style.display = 'none'; // Hide file progress bar on error
+                    });
+            };
+
+            reader.readAsDataURL(fileData.file);
+        });
+    });
+</script>
+</body>
+</html>

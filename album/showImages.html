@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h2 {
+            text-align: center;
+            margin: 20px 0;
+            color: #333;
+        }
+
+        #image-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            width: 50%;
+            margin: 0 auto;
+        }
+
+        #image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .image-name {
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .pagination button {
+            padding: 5px 10px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .pagination button:disabled {
+            background-color: #ccc;
+            color: #666;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+<h2>Image Gallery</h2>
+<div id="image-container"></div>
+<div class="pagination">
+    <button id="prev-page">Previouse Page</button>
+    <button id="next-page">Next Page</button>
+</div>
+
+<script>
+    const itemsPerPage = 5; // 每页显示的图片数量
+    let currentPage = 1; // 当前页码
+    let totalItems = 0; // 总图片数量
+    let totalPages = 0; // 总页数
+
+    // 获取图片数据
+    function fetchImages(page) {
+        const offset = (page - 1) * itemsPerPage;
+        const limit = itemsPerPage;
+
+        fetch('https://qnwhrdsnwhrdivakvvex.supabase.co/rest/v1/images?select=*&limit=' + limit + '&offset=' + offset, {
+            method: 'GET',
+            headers: {
+                'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE',
+                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE',
+                'Content-Type': 'application/json',
+                'Prefer': 'return=minimal'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                totalItems = data.total_count; // 假设返回的 JSON 包含总数量
+                totalPages = Math.ceil(totalItems / itemsPerPage);
+                displayImages(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    // 显示图片
+    function displayImages(data) {
+        const container = document.getElementById('image-container');
+        container.innerHTML = ''; // 清空当前内容
+
+        data.forEach(image => {
+            const img = document.createElement('img');
+            img.src = image.data;
+            img.alt = image.name || 'No Name';
+
+            const nameDiv = document.createElement('div');
+            nameDiv.className = 'image-name';
+            nameDiv.textContent = image.name || '';
+
+            const imgWrapper = document.createElement('div');
+            imgWrapper.appendChild(img);
+            imgWrapper.appendChild(nameDiv);
+
+            container.appendChild(imgWrapper);
+        });
+
+        updatePaginationButtons();
+    }
+
+    // 更新分页按钮状态
+    function updatePaginationButtons() {
+        const prevButton = document.getElementById('prev-page');
+        const nextButton = document.getElementById('next-page');
+
+        prevButton.disabled = currentPage === 1;
+        nextButton.disabled = currentPage === totalPages;
+    }
+
+    // 监听分页按钮点击事件
+    document.getElementById('prev-page').addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            fetchImages(currentPage);
+        }
+    });
+
+    document.getElementById('next-page').addEventListener('click', () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            fetchImages(currentPage);
+        }
+    });
+
+    // 初始化加载第一页
+    fetchImages(currentPage);
+</script>
+</body>
+</html>
