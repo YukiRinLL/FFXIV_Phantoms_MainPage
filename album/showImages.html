@@ -59,13 +59,28 @@
             color: #666;
             cursor: not-allowed;
         }
+
+        #loading {
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+        }
+
+        #page-info {
+            text-align: center;
+            margin: 10px 0;
+            font-size: 0.9em;
+            color: #555;
+        }
     </style>
 </head>
 <body>
 <h2>Image Gallery</h2>
 <div id="image-container"></div>
+<div id="loading">Loading images...</div>
+<div id="page-info">Page 1 of 1</div>
 <div class="pagination">
-    <button id="prev-page">Previouse Page</button>
+    <button id="prev-page">Previous Page</button>
     <button id="next-page">Next Page</button>
 </div>
 
@@ -80,7 +95,11 @@
         const offset = (page - 1) * itemsPerPage;
         const limit = itemsPerPage;
 
-        fetch('https://qnwhrdsnwhrdivakvvex.supabase.co/rest/v1/images?select=*&limit=' + limit + '&offset=' + offset, {
+        // 显示加载状态
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('image-container').innerHTML = ''; // 清空图片容器
+
+        fetch(`https://qnwhrdsnwhrdivakvvex.supabase.co/rest/v1/images?select=*&limit=${limit}&offset=${offset}`, {
             method: 'GET',
             headers: {
                 'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE',
@@ -91,12 +110,43 @@
         })
             .then(response => response.json())
             .then(data => {
-                totalItems = data.total_count; // 假设返回的 JSON 包含总数量
-                totalPages = Math.ceil(totalItems / itemsPerPage);
+                console.log('Fetched data:', data); // 调试信息
                 displayImages(data);
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error('Error fetching images:', error);
+                document.getElementById('loading').style.display = 'none'; // 隐藏加载状态
+                alert('Failed to fetch images. Please check the URL and try again.');
+            });
+    }
+
+    // 获取总数据量
+    function fetchTotalItems() {
+        fetch('https://qnwhrdsnwhrdivakvvex.supabase.co/rest/v1/images?select=count', {
+            method: 'GET',
+            headers: {
+                'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE',
+                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE',
+                'Content-Type': 'application/json',
+                'Prefer': 'return=minimal'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Total items data:', data); // 调试信息
+                // 解析返回的总数据量
+                if (data.length > 0 && data[0].count !== undefined) {
+                    totalItems = data[0].count; // 从返回的数组中提取 count 值
+                    totalPages = Math.ceil(totalItems / itemsPerPage);
+                    fetchImages(currentPage); // 加载当前页的数据
+                } else {
+                    console.error('Invalid total items response:', data);
+                    alert('Failed to fetch total items. Please check the API response.');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching total items:', error);
+                alert('Failed to fetch total items. Please check the URL and try again.');
             });
     }
 
@@ -121,7 +171,14 @@
             container.appendChild(imgWrapper);
         });
 
+        // 更新分页按钮状态
         updatePaginationButtons();
+
+        // 更新页码信息
+        updatePageInfo();
+
+        // 隐藏加载状态
+        document.getElementById('loading').style.display = 'none';
     }
 
     // 更新分页按钮状态
@@ -131,6 +188,12 @@
 
         prevButton.disabled = currentPage === 1;
         nextButton.disabled = currentPage === totalPages;
+    }
+
+    // 更新页码信息
+    function updatePageInfo() {
+        const pageInfo = document.getElementById('page-info');
+        pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
     }
 
     // 监听分页按钮点击事件
@@ -149,7 +212,7 @@
     });
 
     // 初始化加载第一页
-    fetchImages(currentPage);
+    fetchTotalItems();
 </script>
 </body>
 </html>

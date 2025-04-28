@@ -29,16 +29,16 @@
         }
 
         input[type="file"], input[type="text"] {
-            width: 100%; /* 确保输入框宽度不会超出卡片 */
+            width: 100%;
             padding: 10px;
             margin-bottom: 10px;
             border-radius: 5px;
             border: 1px solid #ddd;
-            box-sizing: border-box; /* 防止内容超出边框 */
+            box-sizing: border-box;
         }
 
         input[type="submit"] {
-            background-color: #333; /* 按钮背景色改为黑色 */
+            background-color: #333;
             color: #fff;
             border: none;
             padding: 10px 20px;
@@ -47,7 +47,7 @@
         }
 
         input[type="submit"]:hover {
-            background-color: #555; /* 按钮悬停时背景色改为深灰色 */
+            background-color: #555;
         }
 
         #preview-container {
@@ -55,24 +55,24 @@
             flex-wrap: wrap;
             gap: 10px;
             margin: 10px auto;
-            border: 2px solid #ddd; /* 外框边框 */
+            border: 2px solid #ddd;
             padding: 10px;
             border-radius: 5px;
         }
 
         .preview-image {
-            width: 100px; /* 设置图片宽度 */
-            height: 100px; /* 设置图片高度 */
-            overflow: hidden; /* 隐藏超出部分 */
-            border: 1px solid #ddd; /* 图片边框 */
-            border-radius: 5px; /* 圆角边框 */
+            width: 100px;
+            height: 100px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             position: relative;
         }
 
         .preview-image img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* 保持图片比例并填充 */
+            object-fit: cover;
             display: block;
         }
 
@@ -85,29 +85,50 @@
             margin-top: 10px;
         }
 
-        /* 总进度条样式 */
         .total-progress-bar {
             width: 0%;
             height: 20px;
-            background-color: #555; /* 深灰色背景 */
+            background-color: #555;
             text-align: center;
-            color: #fff; /* 白色文字 */
+            color: #fff;
             line-height: 20px;
             border-radius: 5px;
-            display: none; /* 默认不显示 */
+            display: none;
         }
 
-        /* 单个文件进度条样式 */
         .file-progress-bar {
             width: 0%;
             height: 15px;
-            background-color: #888; /* 灰色背景 */
+            background-color: #888;
             text-align: center;
-            color: #000; /* 黑色文字 */
+            color: #000;
             line-height: 15px;
             border-radius: 5px;
             margin-top: 5px;
-            display: none; /* 默认不显示 */
+            display: none;
+        }
+
+        /* 遮罩层样式 */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .overlay-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 1.2em;
+            color: #333;
         }
     </style>
 </head>
@@ -121,12 +142,20 @@
     <input type="text" id="file_name" name="file_name">
     <label for="description">Description:</label>
     <input type="text" id="description" name="description">
-    <input type="submit" value="Upload">
+    <input type="submit" value="Upload" id="upload-button">
     <div class="error-message" id="error-message"></div>
     <div class="progress-container">
         <div class="total-progress-bar" id="total-progress-bar"></div>
     </div>
 </form>
+
+<!-- 遮罩层 -->
+<div class="overlay" id="upload-overlay">
+    <div class="overlay-content">
+        <p>Uploading...</p>
+        <p>Please wait...</p>
+    </div>
+</div>
 
 <script>
     // Function to read user data from cookies
@@ -182,6 +211,9 @@
     document.querySelector('form').addEventListener('submit', function(event) {
         event.preventDefault();
 
+        // Clear previous error messages
+        hideError();
+
         // Get user data from cookies
         const userData = getUserDataFromCookies();
         if (!userData.user_id) {
@@ -192,7 +224,7 @@
         // Get form data
         const formData = new FormData(this);
         const files = formData.getAll('image');
-        const userDefinedName = document.getElementById('file_name').value.trim(); // 用户输入的 name
+        const userDefinedName = document.getElementById('file_name').value.trim();
         const description = document.getElementById('description').value.trim();
 
         // Check if multiple files are uploaded
@@ -210,13 +242,11 @@
         // Prepare data for upload
         const uploadData = [];
         files.forEach((file, index) => {
-            // 使用文件的实际文件名作为 file_name
             const fileName = file.name;
-
             const fileData = {
                 file: file,
-                file_name: fileName, // 文件的实际文件名
-                name: userDefinedName || '', // 用户输入的 name
+                file_name: fileName,
+                name: userDefinedName || '',
                 description: description || '',
                 user_id: userData.user_id,
                 legacy_user_id: userData.legacy_user_id,
@@ -235,6 +265,11 @@
                 progressBar.style.display = 'block';
             }
         }
+
+        // Show overlay and disable form
+        const uploadOverlay = document.getElementById('upload-overlay');
+        uploadOverlay.style.display = 'flex';
+        document.querySelector('form').style.pointerEvents = 'none'; // Disable form interaction
 
         // Upload images
         uploadData.forEach(fileData => {
@@ -268,8 +303,8 @@
                         'Prefer': 'return=minimal'
                     },
                     body: JSON.stringify({
-                        file_name: fileData.file_name, // 文件的实际文件名
-                        name: fileData.name, // 用户输入的 name
+                        file_name: fileData.file_name,
+                        name: fileData.name,
                         description: fileData.description,
                         user_id: fileData.user_id,
                         legacy_user_id: fileData.legacy_user_id,
@@ -287,8 +322,15 @@
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        showError('Failed to upload image. Please try again later.');
+                        showError('Failed to upload image. Please check the URL and try again later.');
                         fileProgressBar.style.display = 'none'; // Hide file progress bar on error
+                    })
+                    .finally(() => {
+                        if (uploadedFiles === totalFiles) {
+                            // Hide overlay and re-enable form
+                            uploadOverlay.style.display = 'none';
+                            document.querySelector('form').style.pointerEvents = 'auto';
+                        }
                     });
             };
 
