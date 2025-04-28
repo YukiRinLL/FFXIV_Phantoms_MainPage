@@ -55,31 +55,25 @@
             flex-wrap: wrap;
             gap: 10px;
             margin: 10px auto;
+            border: 2px solid #ddd; /* 外框边框 */
+            padding: 10px;
+            border-radius: 5px;
         }
 
         .preview-image {
+            width: 100px; /* 设置图片宽度 */
+            height: 100px; /* 设置图片高度 */
+            overflow: hidden; /* 隐藏超出部分 */
+            border: 1px solid #ddd; /* 图片边框 */
+            border-radius: 5px; /* 圆角边框 */
             position: relative;
-            max-width: 100px;
-            max-height: 100px;
         }
 
         .preview-image img {
             width: 100%;
-            height: auto;
+            height: 100%;
+            object-fit: cover; /* 保持图片比例并填充 */
             display: block;
-        }
-
-        .preview-image .remove-btn {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background-color: red;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            padding: 2px 5px;
-            cursor: pointer;
-            font-size: 12px;
         }
 
         .error-message {
@@ -123,9 +117,9 @@
     <label for="image">Image:</label>
     <input type="file" id="image" name="image" accept="image/*" required multiple>
     <div id="preview-container"></div>
-    <label for="file_name">File Name (optional for multiple uploads):</label>
+    <label for="file_name">File Name:</label>
     <input type="text" id="file_name" name="file_name">
-    <label for="description">Description (optional for multiple uploads):</label>
+    <label for="description">Description:</label>
     <input type="text" id="description" name="description">
     <input type="submit" value="Upload">
     <div class="error-message" id="error-message"></div>
@@ -176,24 +170,7 @@
                     const img = document.createElement('img');
                     img.src = e.target.result;
 
-                    const removeBtn = document.createElement('button');
-                    removeBtn.className = 'remove-btn';
-                    removeBtn.textContent = '×';
-                    removeBtn.onclick = function() {
-                        previewContainer.removeChild(previewDiv);
-                        // Also remove the file from the input
-                        const fileInput = document.getElementById('image');
-                        const fileArray = Array.from(fileInput.files);
-                        const index = fileArray.indexOf(file);
-                        if (index !== -1) {
-                            fileArray.splice(index, 1);
-                            fileInput.files = new DataTransfer().files;
-                            fileArray.forEach(f => fileInput.files.add(f));
-                        }
-                    };
-
                     previewDiv.appendChild(img);
-                    previewDiv.appendChild(removeBtn);
                     previewContainer.appendChild(previewDiv);
                 };
                 reader.readAsDataURL(file);
@@ -215,13 +192,13 @@
         // Get form data
         const formData = new FormData(this);
         const files = formData.getAll('image');
-        const file_name = document.getElementById('file_name').value;
-        const description = document.getElementById('description').value;
+        const userDefinedName = document.getElementById('file_name').value.trim(); // 用户输入的 name
+        const description = document.getElementById('description').value.trim();
 
         // Check if multiple files are uploaded
         if (files.length > 1) {
-            if (file_name || description) {
-                showError('File name and description are not allowed for multiple uploads.');
+            if (userDefinedName || description) {
+                showError('Name and description are not allowed for multiple uploads.');
                 return;
             }
         }
@@ -233,9 +210,13 @@
         // Prepare data for upload
         const uploadData = [];
         files.forEach((file, index) => {
+            // 使用文件的实际文件名作为 file_name
+            const fileName = file.name;
+
             const fileData = {
                 file: file,
-                file_name: file_name || `file_${index}`,
+                file_name: fileName, // 文件的实际文件名
+                name: userDefinedName || '', // 用户输入的 name
                 description: description || '',
                 user_id: userData.user_id,
                 legacy_user_id: userData.legacy_user_id,
@@ -281,13 +262,14 @@
                 fetch('https://qnwhrdsnwhrdivakvvex.supabase.co/rest/v1/images', {
                     method: 'POST',
                     headers: {
-                        'apikey': 'YOUR_API_KEY', // 替换为你的 API Key
+                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE',
                         'Authorization': `Bearer ${fileData.access_token}`,
                         'Content-Type': 'application/json',
                         'Prefer': 'return=minimal'
                     },
                     body: JSON.stringify({
-                        file_name: fileData.file_name,
+                        file_name: fileData.file_name, // 文件的实际文件名
+                        name: fileData.name, // 用户输入的 name
                         description: fileData.description,
                         user_id: fileData.user_id,
                         legacy_user_id: fileData.legacy_user_id,
