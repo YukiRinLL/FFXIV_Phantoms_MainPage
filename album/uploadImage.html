@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Image</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="file"], input[type="text"] {
+            width: 100%; /* 确保输入框宽度不会超出卡片 */
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            box-sizing: border-box; /* 防止内容超出边框 */
+        }
+
+        input[type="submit"] {
+            background-color: #333; /* 按钮背景色改为黑色 */
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #555; /* 按钮悬停时背景色改为深灰色 */
+        }
+
+        #preview {
+            max-width: 200px;
+            max-height: 200px;
+            margin: 10px auto;
+            display: block;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 5px;
+        }
+
+        .progress-container {
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 20px;
+            background-color: #888; /* 进度条背景色改为灰色 */
+            text-align: center;
+            color: #000; /* 进度条文字颜色改为黑色 */
+            line-height: 20px;
+            border-radius: 5px;
+            display: none; /* 默认不显示进度条 */
+        }
+
+        .file-progress-bar {
+            width: 0%;
+            height: 15px;
+            background-color: #888; /* 文件进度条背景色改为灰色 */
+            text-align: center;
+            color: #000; /* 文件进度条文字颜色改为黑色 */
+            line-height: 15px;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+<h2>Upload Image</h2>
+<form action="/upload" method="post" enctype="multipart/form-data">
+    <label for="image">Image:</label>
+    <input type="file" id="image" name="image" accept="image/*" required multiple>
+    <img id="preview" src="" alt="Preview" style="display:none;">
+    <label for="file_name">File Name (optional for multiple uploads):</label>
+    <input type="text" id="file_name" name="file_name">
+    <label for="description">Description (optional for multiple uploads):</label>
+    <input type="text" id="description" name="description">
+    <input type="submit" value="Upload">
+    <div class="error-message" id="error-message"></div>
+    <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+</form>
+
+<script>
+    // Function to read user data from cookies
+    function getUserDataFromCookies() {
+        const cookies = document.cookie.split('; ');
+        const userData = {};
+        cookies.forEach(cookie => {
+            const [key, value] = cookie.split('=');
+            if (key === 'user_id' || key === 'legacy_user_id' || key === 'access_token') {
+                userData[key] = decodeURIComponent(value);
+            }
+        });
+        return userData;
+    }
+
+    // Function to show error message
+    function showError(message) {
+        const errorMessage = document.getElementById('error-message');
+        errorMessage.innerText = message;
+    }
+
+    // Function to hide error message
+    function hideError() {
+        const errorMessage = document.getElementById('error-message');
+        errorMessage.innerText = '';
+    }
+
+    // Function to handle image preview
+    document.getElementById('image').addEventListener('change', function(event) {
+        const input = event.target;
+        const preview = document.getElementById('preview');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            preview.style.display = 'none';
+        }
+    });
+
+    // Function to handle form submission
+    document.querySelector('form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Get user data from cookies
+        const userData = getUserDataFromCookies();
+        if (!userData.user_id) {
+            showError('You are not logged in. Please log in to upload images.');
+            return;
+        }
+
+        // Get form data
+        const formData = new FormData(this);
+        const files = formData.getAll('image');
+        const file_name = document.getElementById('file_name').value;
+        const description = document.getElementById('description').value;
+
+        // Check if multiple files are uploaded
+        if (files.length > 1) {
+            if (file_name || description) {
+                showError('File name and description are not allowed for multiple uploads.');
+                return;
+            }
+        }
+
+        // Initialize progress variables
+        let totalFiles = files.length;
+        let uploadedFiles = 0;
+
+        // Prepare data for upload
+        const uploadData = [];
+        files.forEach((file, index) => {
+            const fileData = {
+                file: file,
+                file_name: file_name || `file_${index}`,
+                description: description || '',
+                user_id: userData.user_id,
+                legacy_user_id: userData.legacy_user_id,
+                access_token: userData.access_token
+            };
+            uploadData.push(fileData);
+        });
+
+        // Function to update progress bar
+        function updateProgressBar() {
+            const progressBar = document.getElementById('progress-bar');
+            const percentComplete = (uploadedFiles / totalFiles) * 100;
+            progressBar.style.width = percentComplete + '%';
+            progressBar.textContent = `${uploadedFiles}/${totalFiles} (${Math.round(percentComplete)}%)`;
+            if (percentComplete === 0) {
+                progressBar.style.display = 'none';
+            } else {
+                progressBar.style.display = 'block';
+            }
+        }
+
+        // Upload images
+        uploadData.forEach(fileData => {
+            const reader = new FileReader();
+            const fileProgressBar = document.createElement('div');
+            fileProgressBar.className = 'file-progress-bar';
+            fileProgressBar.textContent = '0%';
+            document.querySelector('.progress-container').appendChild(fileProgressBar);
+
+            reader.onloadstart = function() {
+                fileProgressBar.style.display = 'block';
+            };
+
+            reader.onprogress = function(event) {
+                if (event.lengthComputable) {
+                    const percentComplete = (event.loaded / event.total) * 100;
+                    fileProgressBar.style.width = percentComplete + '%';
+                    fileProgressBar.textContent = Math.round(percentComplete) + '%';
+                }
+            };
+
+            reader.onload = function() {
+                const data = reader.result;
+
+                fetch('https://qnwhrdsnwhrdivakvvex.supabase.co/rest/v1/images', {
+                    method: 'POST',
+                    headers: {
+                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE',
+                        'Authorization': `Bearer ${fileData.access_token}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({
+                        file_name: fileData.file_name,
+                        description: fileData.description,
+                        user_id: fileData.user_id,
+                        legacy_user_id: fileData.legacy_user_id,
+                        data: data
+                    })
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            uploadedFiles++;
+                            updateProgressBar();
+                            fileProgressBar.style.display = 'none'; // Hide file progress bar after upload
+                        } else {
+                            throw new Error('Error: ' + response.statusText);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showError('Failed to upload image. Please try again later.');
+                        fileProgressBar.style.display = 'none'; // Hide file progress bar on error
+                    });
+            };
+
+            reader.readAsDataURL(fileData.file);
+        });
+    });
+</script>
+</body>
+</html>

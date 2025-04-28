@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Upload</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        h2 {
+            text-align: center;
+            margin: 20px 0;
+            color: #333;
+        }
+
+        .upload-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin: 0 auto;
+            padding: 20px;
+            width: 50%;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .upload-container input[type="file"] {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .upload-container input[type="submit"] {
+            padding: 10px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .upload-container input[type="submit"]:hover {
+            background-color: #555;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .overlay .message {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+<h2>Image Upload</h2>
+<div class="upload-container">
+    <input type="file" id="images" name="images" accept="image/*" multiple required>
+    <input type="submit" value="Upload Images" id="upload-button">
+</div>
+
+<div class="overlay" id="overlay">
+    <div class="message" id="overlay-message">
+        <p>Processing images...</p>
+    </div>
+</div>
+
+<script>
+    document.getElementById('upload-button').addEventListener('click', function(event) {
+        event.preventDefault();
+        const files = document.getElementById('images').files;
+        if (files.length === 0) {
+            alert('Please select at least one image.');
+            return;
+        }
+
+        // Show overlay with "Processing images..." message
+        document.getElementById('overlay').style.display = 'flex';
+        document.getElementById('overlay-message').innerText = 'Processing images...';
+
+        const uploadPromises = Array.from(files).map((file, index) => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    const imgData = reader.result;
+                    // Update overlay message to show progress
+                    document.getElementById('overlay-message').innerText = `Uploading image ${index + 1} of ${files.length}...`;
+
+                    fetch('https://qnwhrdsnwhrdivakvvex.supabase.co/rest/v1/images', {
+                        method: 'POST',
+                        headers: {
+                            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE',
+                            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE',
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=minimal'
+                        },
+                        body: JSON.stringify({
+                            name: file.name,
+                            data: imgData
+                        })
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                resolve();
+                            } else {
+                                reject(new Error('Error: ' + response.statusText));
+                            }
+                        })
+                        .catch(error => reject(error));
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
+        // Wait for all images to be uploaded
+        Promise.all(uploadPromises)
+            .then(() => {
+                // Hide overlay
+                document.getElementById('overlay').style.display = 'none';
+                alert('All images uploaded successfully!');
+                document.getElementById('images').value = ''; // Clear file input
+            })
+            .catch(function(error) {
+                // Hide overlay
+                document.getElementById('overlay').style.display = 'none';
+                console.error('Error:', error);
+                alert('Failed to upload images. Please try again later.');
+            });
+    });
+</script>
+</body>
+</html>
