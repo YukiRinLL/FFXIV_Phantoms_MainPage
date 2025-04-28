@@ -50,11 +50,36 @@
             background-color: #555; /* 按钮悬停时背景色改为深灰色 */
         }
 
-        #preview {
-            max-width: 200px;
-            max-height: 200px;
+        #preview-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
             margin: 10px auto;
+        }
+
+        .preview-image {
+            position: relative;
+            max-width: 100px;
+            max-height: 100px;
+        }
+
+        .preview-image img {
+            width: 100%;
+            height: auto;
             display: block;
+        }
+
+        .preview-image .remove-btn {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            padding: 2px 5px;
+            cursor: pointer;
+            font-size: 12px;
         }
 
         .error-message {
@@ -66,26 +91,29 @@
             margin-top: 10px;
         }
 
-        .progress-bar {
+        /* 总进度条样式 */
+        .total-progress-bar {
             width: 0%;
             height: 20px;
-            background-color: #888; /* 进度条背景色改为灰色 */
+            background-color: #555; /* 深灰色背景 */
             text-align: center;
-            color: #000; /* 进度条文字颜色改为黑色 */
+            color: #fff; /* 白色文字 */
             line-height: 20px;
             border-radius: 5px;
-            display: none; /* 默认不显示进度条 */
+            display: none; /* 默认不显示 */
         }
 
+        /* 单个文件进度条样式 */
         .file-progress-bar {
             width: 0%;
             height: 15px;
-            background-color: #888; /* 文件进度条背景色改为灰色 */
+            background-color: #888; /* 灰色背景 */
             text-align: center;
-            color: #000; /* 文件进度条文字颜色改为黑色 */
+            color: #000; /* 黑色文字 */
             line-height: 15px;
             border-radius: 5px;
             margin-top: 5px;
+            display: none; /* 默认不显示 */
         }
     </style>
 </head>
@@ -94,7 +122,7 @@
 <form action="/upload" method="post" enctype="multipart/form-data">
     <label for="image">Image:</label>
     <input type="file" id="image" name="image" accept="image/*" required multiple>
-    <img id="preview" src="" alt="Preview" style="display:none;">
+    <div id="preview-container"></div>
     <label for="file_name">File Name (optional for multiple uploads):</label>
     <input type="text" id="file_name" name="file_name">
     <label for="description">Description (optional for multiple uploads):</label>
@@ -102,7 +130,7 @@
     <input type="submit" value="Upload">
     <div class="error-message" id="error-message"></div>
     <div class="progress-container">
-        <div class="progress-bar" id="progress-bar"></div>
+        <div class="total-progress-bar" id="total-progress-bar"></div>
     </div>
 </form>
 
@@ -135,16 +163,41 @@
     // Function to handle image preview
     document.getElementById('image').addEventListener('change', function(event) {
         const input = event.target;
-        const preview = document.getElementById('preview');
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                preview.src = e.target.result;
-                preview.style.display = 'block';
-            };
-            reader.readAsDataURL(input.files[0]);
-        } else {
-            preview.style.display = 'none';
+        const previewContainer = document.getElementById('preview-container');
+        previewContainer.innerHTML = ''; // Clear previous previews
+
+        if (input.files) {
+            Array.from(input.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewDiv = document.createElement('div');
+                    previewDiv.className = 'preview-image';
+
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+
+                    const removeBtn = document.createElement('button');
+                    removeBtn.className = 'remove-btn';
+                    removeBtn.textContent = '×';
+                    removeBtn.onclick = function() {
+                        previewContainer.removeChild(previewDiv);
+                        // Also remove the file from the input
+                        const fileInput = document.getElementById('image');
+                        const fileArray = Array.from(fileInput.files);
+                        const index = fileArray.indexOf(file);
+                        if (index !== -1) {
+                            fileArray.splice(index, 1);
+                            fileInput.files = new DataTransfer().files;
+                            fileArray.forEach(f => fileInput.files.add(f));
+                        }
+                    };
+
+                    previewDiv.appendChild(img);
+                    previewDiv.appendChild(removeBtn);
+                    previewContainer.appendChild(previewDiv);
+                };
+                reader.readAsDataURL(file);
+            });
         }
     });
 
@@ -191,15 +244,13 @@
             uploadData.push(fileData);
         });
 
-        // Function to update progress bar
-        function updateProgressBar() {
-            const progressBar = document.getElementById('progress-bar');
+        // Function to update total progress bar
+        function updateTotalProgressBar() {
+            const progressBar = document.getElementById('total-progress-bar');
             const percentComplete = (uploadedFiles / totalFiles) * 100;
             progressBar.style.width = percentComplete + '%';
             progressBar.textContent = `${uploadedFiles}/${totalFiles} (${Math.round(percentComplete)}%)`;
-            if (percentComplete === 0) {
-                progressBar.style.display = 'none';
-            } else {
+            if (percentComplete > 0) {
                 progressBar.style.display = 'block';
             }
         }
@@ -230,7 +281,7 @@
                 fetch('https://qnwhrdsnwhrdivakvvex.supabase.co/rest/v1/images', {
                     method: 'POST',
                     headers: {
-                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFud2hyZHNud2hyZGl2YWt2dmV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ5MjMzNDksImV4cCI6MjA1MDQ5OTM0OX0.nULznxBpxQ7-vB8H6oBDMZitNtb0EMmXaBk_J9gw1qE',
+                        'apikey': 'YOUR_API_KEY', // 替换为你的 API Key
                         'Authorization': `Bearer ${fileData.access_token}`,
                         'Content-Type': 'application/json',
                         'Prefer': 'return=minimal'
@@ -246,7 +297,7 @@
                     .then(response => {
                         if (response.ok) {
                             uploadedFiles++;
-                            updateProgressBar();
+                            updateTotalProgressBar();
                             fileProgressBar.style.display = 'none'; // Hide file progress bar after upload
                         } else {
                             throw new Error('Error: ' + response.statusText);
