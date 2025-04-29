@@ -23,3 +23,13 @@ EXECUTE FUNCTION my_insert_user();
 -- =============================================
 -- memfireDB schema changes end here
 -- =============================================
+
+
+-- =============================================
+-- supabase schema changes begin here
+-- =============================================
+
+CREATE TRIGGER trigger_update_legacy_user_id_and_uploaded_by
+BEFORE INSERT ON images
+FOR EACH ROW
+EXECUTE FUNCTION update_legacy_user_id_and_uploaded_by();

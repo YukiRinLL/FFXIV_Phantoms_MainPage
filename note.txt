@@ -4,6 +4,7 @@ Branches:
         main:
             Github Pages: yukirinll.github.io/FFXIV_Phantoms_MainPage
             Vercel Prod: ffxiv-phantoms-main-page.vercel.app
+            Render: https://ffxiv-phantoms-mainpage.onrender.com
         none-25M-for-deployment
             Cloudflare Prod: ffxiv-phantoms-mainpage.pages.dev
         redefine_url_new:
