@@ -32,7 +32,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Pages
-        uses: actions/configure-pages@v1
+        uses: actions/configure-pages@v2 # 升级到 v2 或更高版本
+#        uses: actions/configure-pages@v1
 
       - name: Upload artifact
 #        uses: actions/upload-pages-artifact@v1 #Pages 的专用版本
@@ -43,7 +44,9 @@ jobs:
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@main
+        uses: actions/deploy-pages@v1  # 使用官方推荐的 deploy-pages@v1
+#        uses: actions/deploy-pages@main
+
 
 #      - name: Checkout Repository
 #        uses: actions/checkout@v4
