@@ -32,18 +32,19 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Pages
-        uses: actions/configure-pages@v1
-
+        uses: actions/configure-pages@v5
       - name: Upload artifact
-#        uses: actions/upload-pages-artifact@v1 #Pages 的专用版本
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-pages-artifact@v3 #Pages 的专用版本
+#        uses: actions/upload-artifact@v4
         with:
           name: github-pages  # 明确指定 artifact 的名称为 github-pages
           path: '.'
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@main
+        uses: actions/deploy-pages@v4  # 使用官方推荐的 deploy-pages@v4
+#        uses: actions/deploy-pages@main
+
 
 #      - name: Checkout Repository
 #        uses: actions/checkout@v4
