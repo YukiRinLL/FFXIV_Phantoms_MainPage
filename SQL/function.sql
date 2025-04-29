@@ -64,3 +64,27 @@ $$ LANGUAGE plpgsql;
 -- =============================================
 -- memfireDB schema changes end here
 -- =============================================
+
+
+-- =============================================
+-- supabase schema changes begin here
+-- =============================================
+
+CREATE OR REPLACE FUNCTION update_legacy_user_id_and_uploaded_by()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- 从 users 表中查询对应的 id 和 username
+SELECT id, username
+INTO NEW.legacy_user_id, NEW.uploaded_by
+FROM users
+WHERE user_id = NEW.user_id;
+
+-- 如果没有找到对应的用户记录，可以选择抛出错误或设置默认值
+IF NOT FOUND THEN
+        RAISE EXCEPTION 'User with user_id % not found', NEW.user_id;
+END IF;
+
+    -- 返回新记录
+RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
