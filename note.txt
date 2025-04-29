@@ -1,29 +1,17 @@
-/your-repo-name
-|-- index.html // 主页
-|-- about.html // 关于页面
-|-- contact.html // 联系页面
-|-- blog/
-| |-- post1.html // 博客文章1
-| |-- post2.html // 博客文章2
-|-- assets/
-| |-- css/
-| | |-- styles.css // 样式表
-| |-- js/
-| | |-- script.js // JavaScript 文件
-| |-- images/
-| |-- pic1.jpg // 图片文件
-| |-- pic2.png // 图片文件
-|-- _layouts/
-| |-- default.html // 默认页面布局
-|-- _includes/
-| |-- header.html // 页面头部
-| |-- footer.html // 页面底部
-|-- _posts/
-| |-- 2022-01-01-post1.md // 博客文章1（使用Markdown）
-| |-- 2022-02-15-post2.md // 博客文章2（使用Markdown）
-|-- CNAME // 自定义域名配置文件（如果有）
-|-- README.md // 项目说明文档
-|-- .gitignore // Git 忽略文件配置
-|-- .github/
-| |-- workflows/
-| |-- deploy.yml // GitHub Actions 部署配置文件
+/repo
+Branches:
+    Active:
+        main:
+            Github Pages: yukirinll.github.io/FFXIV_Phantoms_MainPage
+            Vercel Prod: ffxiv-phantoms-main-page.vercel.app
+        none-25M-for-deployment
+            Cloudflare Prod: ffxiv-phantoms-mainpage.pages.dev
+        redefine_url_new:
+            Github Pages: yukirinll.github.io/FFXIV_Phantoms_MainPage
+
+
+    Not Active:
+        redefine_url
+        backup_refactored_file_structure
+        test_code_import
+
