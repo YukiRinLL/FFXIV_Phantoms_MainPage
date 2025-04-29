@@ -183,6 +183,31 @@
         errorMessage.innerText = '';
     }
 
+    // Function to disable upload button
+    function disableUploadButton() {
+        const uploadButton = document.getElementById('upload-button');
+        uploadButton.disabled = true;
+        uploadButton.title = 'You are not logged in. Please log in to upload images.';
+    }
+
+    // Function to enable upload button
+    function enableUploadButton() {
+        const uploadButton = document.getElementById('upload-button');
+        uploadButton.disabled = false;
+        uploadButton.title = '';
+    }
+
+    // Check if user is logged in when the page loads
+    window.onload = function() {
+        const userData = getUserDataFromCookies();
+        if (!userData.access_token) {
+            showError('You are not logged in. Please log in to upload images.');
+            disableUploadButton();
+        } else {
+            enableUploadButton();
+        }
+    };
+
     // Function to handle image preview
     document.getElementById('image').addEventListener('change', function(event) {
         const input = event.target;
