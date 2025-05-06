@@ -46,11 +46,13 @@
 		}
 
 		.card img {
-			width: 100px;
+			width: 100%;
 			height: auto;
 			margin-bottom: 20px;
-			border-radius: 5px;
+			border-radius: 10px;
 			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 轻微阴影 */
+			filter: blur(1px); /* 添加轻微模糊效果 */
+			animation: floatImage 10s ease-in-out infinite; /* 图片飘动效果 */
 		}
 
 		.card button {
@@ -119,14 +121,23 @@
 				transform: translateY(-20px);
 			}
 		}
+
+		@keyframes floatImage {
+			0%, 100% {
+				transform: translateY(0);
+			}
+			50% {
+				transform: translateY(-30px);
+			}
+		}
 	</style>
 </head>
 <body>
 <div class="container">
 	<div class="card">
 		<h1>生日快乐</h1>
-		<p>亲爱的[名字]，愿你的每一天都充满阳光和欢笑！</p>
-		<img src="https://via.placeholder.com/100x100?text=Birthday+Cake" alt="生日蛋糕">
+		<p id="message">亲爱的[名字]，愿你的每一天都充满阳光和欢笑！</p>
+		<img id="message-image" src="https://via.placeholder.com/400x200?text=Friend+1+Photo" alt="Friend 1 Photo">
 		<button onclick="changeMessage()">点击更换祝福语</button>
 	</div>
 	<div class="emoji">🎉</div>
@@ -136,16 +147,27 @@
 </div>
 <script>
 	let messages = [
-		"愿你的生活如诗如画，岁岁欢愉，年年皆胜意！",
-		"愿你的世界永远充满爱与希望，梦想成真！",
-		"愿你笑口常开，好运常在，幸福满满！"
+		{
+			text: "愿你的生活如诗如画，岁岁欢愉，年年皆胜意！",
+			image: "https://via.placeholder.com/400x200?text=Friend+1+Photo"
+		},
+		{
+			text: "愿你的世界永远充满爱与希望，梦想成真！",
+			image: "https://via.placeholder.com/400x200?text=Friend+2+Photo"
+		},
+		{
+			text: "愿你笑口常开，好运常在，幸福满满！",
+			image: "https://via.placeholder.com/400x200?text=Friend+3+Photo"
+		}
 	];
 	let currentMessageIndex = 0;
 
 	function changeMessage() {
-		const messageElement = document.querySelector('.card p');
+		const messageElement = document.getElementById('message');
+		const imageElement = document.getElementById('message-image');
 		currentMessageIndex = (currentMessageIndex + 1) % messages.length;
-		messageElement.textContent = messages[currentMessageIndex];
+		messageElement.textContent = messages[currentMessageIndex].text;
+		imageElement.src = messages[currentMessageIndex].image;
 	}
 </script>
 </body>
