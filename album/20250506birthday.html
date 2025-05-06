@@ -46,12 +46,11 @@
 		}
 
 		.card img {
-			width: 100%;
+			width: 100px;
 			height: auto;
 			margin-bottom: 20px;
-			border-radius: 10px;
+			border-radius: 5px;
 			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 轻微阴影 */
-			filter: blur(1px); /* 添加轻微模糊效果 */
 		}
 
 		.card button {
@@ -120,43 +119,6 @@
 				transform: translateY(-20px);
 			}
 		}
-
-		/* 新增图片展示区域 */
-		.image-gallery {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			position: absolute;
-			bottom: -100px; /* 初始位置在屏幕下方 */
-			width: 100%;
-			transition: bottom 2s ease-in-out;
-		}
-
-		.image-gallery img {
-			width: 80%; /* 根据需要调整图片宽度 */
-			height: auto;
-			border-radius: 15px;
-			filter: blur(2px); /* 添加模糊效果 */
-			margin: 0 10px;
-		}
-
-		.image-gallery img:hover {
-			filter: blur(0); /* 鼠标悬停时取消模糊 */
-		}
-
-		/* 动画：图片缓慢飘动 */
-		@keyframes floatImage {
-			0%, 100% {
-				transform: translateY(0);
-			}
-			50% {
-				transform: translateY(-50px);
-			}
-		}
-
-		.image-gallery img {
-			animation: floatImage 10s ease-in-out infinite;
-		}
 	</style>
 </head>
 <body>
@@ -171,12 +133,6 @@
 	<div class="emoji">🎈</div>
 	<div class="emoji">🎁</div>
 	<div class="emoji">💖</div>
-	<!-- 图片展示区域 -->
-	<div class="image-gallery">
-		<img src="https://via.placeholder.com/800x200?text=Friend+1+Photo" alt="Friend 1 Photo">
-		<img src="https://via.placeholder.com/800x200?text=Friend+2+Photo" alt="Friend 2 Photo">
-		<img src="https://via.placeholder.com/800x200?text=Friend+3+Photo" alt="Friend 3 Photo">
-	</div>
 </div>
 <script>
 	let messages = [
@@ -191,14 +147,6 @@
 		currentMessageIndex = (currentMessageIndex + 1) % messages.length;
 		messageElement.textContent = messages[currentMessageIndex];
 	}
-
-	// 图片展示区域动画
-	document.addEventListener("DOMContentLoaded", () => {
-		const imageGallery = document.querySelector(".image-gallery");
-		setTimeout(() => {
-			imageGallery.style.bottom = "0"; // 将图片展示区域移动到屏幕底部
-		}, 1000); // 延迟1秒后开始动画
-	});
 </script>
 </body>
 </html>
