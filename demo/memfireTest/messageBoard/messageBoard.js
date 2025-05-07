@@ -9,8 +9,8 @@ document.getElementById('messageForm').addEventListener('submit', function(event
     fetch(`https://clopdna5g6hclq1elc4g.baseapi.memfiredb.com/rest/v1/users?select=id&username=eq.${username}`, {
         method: 'GET',
         headers: {
-            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0eWx5d3ltam1penBqcm9qYnhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY1ODY5MjksImV4cCI6MjA2MjE2MjkyOX0.8HO_gvSofH87c6771WpTJOO5_J7jWx3dZ4fjw4UbiTY',
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0eWx5d3ltam1penBqcm9qYnhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY1ODY5MjksImV4cCI6MjA2MjE2MjkyOX0.8HO_gvSofH87c6771WpTJOO5_J7jWx3dZ4fjw4UbiTY',
+            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kdGNuc3hldnRsb3V4aWx2aXNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2MTEyNjQsImV4cCI6MjA2MjE4NzI2NH0.lQzKoW-SpDlQ1JqrbnwOo-3vTPI53hFMMWbkHzXy9f4',
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kdGNuc3hldnRsb3V4aWx2aXNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2MTEyNjQsImV4cCI6MjA2MjE4NzI2NH0.lQzKoW-SpDlQ1JqrbnwOo-3vTPI53hFMMWbkHzXy9f4',
             //'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzIzOTg2MzAwNSwiaWF0IjoxNzAxOTQzMDA1LCJpc3MiOiJzdXBhYmFzZSJ9.LYLqWA0Ov-yKdFBXksbu3JNnldMOM-7Kth3LPFhLmA8',
             //'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzIzOTg2MzAwNSwiaWF0IjoxNzAxOTQzMDA1LCJpc3MiOiJzdXBhYmFzZSJ9.LYLqWA0Ov-yKdFBXksbu3JNnldMOM-7Kth3LPFhLmA8',
             'Prefer': 'return=minimal'
@@ -30,8 +30,8 @@ document.getElementById('messageForm').addEventListener('submit', function(event
         fetch('https://clopdna5g6hclq1elc4g.baseapi.memfiredb.com/rest/v1/messages', {
             method: 'POST',
             headers: {
-                'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0eWx5d3ltam1penBqcm9qYnhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY1ODY5MjksImV4cCI6MjA2MjE2MjkyOX0.8HO_gvSofH87c6771WpTJOO5_J7jWx3dZ4fjw4UbiTY',
-                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0eWx5d3ltam1penBqcm9qYnhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY1ODY5MjksImV4cCI6MjA2MjE2MjkyOX0.8HO_gvSofH87c6771WpTJOO5_J7jWx3dZ4fjw4UbiTY',
+                'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kdGNuc3hldnRsb3V4aWx2aXNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2MTEyNjQsImV4cCI6MjA2MjE4NzI2NH0.lQzKoW-SpDlQ1JqrbnwOo-3vTPI53hFMMWbkHzXy9f4',
+                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kdGNuc3hldnRsb3V4aWx2aXNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2MTEyNjQsImV4cCI6MjA2MjE4NzI2NH0.lQzKoW-SpDlQ1JqrbnwOo-3vTPI53hFMMWbkHzXy9f4',
                 //'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzIzOTg2MzAwNSwiaWF0IjoxNzAxOTQzMDA1LCJpc3MiOiJzdXBhYmFzZSJ9.LYLqWA0Ov-yKdFBXksbu3JNnldMOM-7Kth3LPFhLmA8',
                 //'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzIzOTg2MzAwNSwiaWF0IjoxNzAxOTQzMDA1LCJpc3MiOiJzdXBhYmFzZSJ9.LYLqWA0Ov-yKdFBXksbu3JNnldMOM-7Kth3LPFhLmA8',
                 'Content-Type': 'application/json',
@@ -63,8 +63,8 @@ document.getElementById('messageForm').addEventListener('submit', function(event
 fetch('https://clopdna5g6hclq1elc4g.baseapi.memfiredb.com/rest/v1/messages', {
     method: 'GET',
     headers: {
-        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0eWx5d3ltam1penBqcm9qYnhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY1ODY5MjksImV4cCI6MjA2MjE2MjkyOX0.8HO_gvSofH87c6771WpTJOO5_J7jWx3dZ4fjw4UbiTY',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0eWx5d3ltam1penBqcm9qYnhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY1ODY5MjksImV4cCI6MjA2MjE2MjkyOX0.8HO_gvSofH87c6771WpTJOO5_J7jWx3dZ4fjw4UbiTY',
+        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kdGNuc3hldnRsb3V4aWx2aXNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2MTEyNjQsImV4cCI6MjA2MjE4NzI2NH0.lQzKoW-SpDlQ1JqrbnwOo-3vTPI53hFMMWbkHzXy9f4',
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kdGNuc3hldnRsb3V4aWx2aXNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2MTEyNjQsImV4cCI6MjA2MjE4NzI2NH0.lQzKoW-SpDlQ1JqrbnwOo-3vTPI53hFMMWbkHzXy9f4',
         //'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzIzOTg2MzAwNSwiaWF0IjoxNzAxOTQzMDA1LCJpc3MiOiJzdXBhYmFzZSJ9.LYLqWA0Ov-yKdFBXksbu3JNnldMOM-7Kth3LPFhLmA8',
         //'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzIzOTg2MzAwNSwiaWF0IjoxNzAxOTQzMDA1LCJpc3MiOiJzdXBhYmFzZSJ9.LYLqWA0Ov-yKdFBXksbu3JNnldMOM-7Kth3LPFhLmA8',
         'Prefer': 'return=minimal'
@@ -84,8 +84,8 @@ fetch('https://clopdna5g6hclq1elc4g.baseapi.memfiredb.com/rest/v1/messages', {
         fetch(`https://clopdna5g6hclq1elc4g.baseapi.memfiredb.com/rest/v1/users?select=username&id=eq.${message.user_id}`, {
             method: 'GET',
             headers: {
-                'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0eWx5d3ltam1penBqcm9qYnhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY1ODY5MjksImV4cCI6MjA2MjE2MjkyOX0.8HO_gvSofH87c6771WpTJOO5_J7jWx3dZ4fjw4UbiTY',
-                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0eWx5d3ltam1penBqcm9qYnhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY1ODY5MjksImV4cCI6MjA2MjE2MjkyOX0.8HO_gvSofH87c6771WpTJOO5_J7jWx3dZ4fjw4UbiTY',
+                'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kdGNuc3hldnRsb3V4aWx2aXNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2MTEyNjQsImV4cCI6MjA2MjE4NzI2NH0.lQzKoW-SpDlQ1JqrbnwOo-3vTPI53hFMMWbkHzXy9f4',
+                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kdGNuc3hldnRsb3V4aWx2aXNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2MTEyNjQsImV4cCI6MjA2MjE4NzI2NH0.lQzKoW-SpDlQ1JqrbnwOo-3vTPI53hFMMWbkHzXy9f4',
                 //'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzIzOTg2MzAwNSwiaWF0IjoxNzAxOTQzMDA1LCJpc3MiOiJzdXBhYmFzZSJ9.LYLqWA0Ov-yKdFBXksbu3JNnldMOM-7Kth3LPFhLmA8',
                 //'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzIzOTg2MzAwNSwiaWF0IjoxNzAxOTQzMDA1LCJpc3MiOiJzdXBhYmFzZSJ9.LYLqWA0Ov-yKdFBXksbu3JNnldMOM-7Kth3LPFhLmA8',
                 'Prefer': 'return=minimal'
@@ -123,8 +123,8 @@ function deleteMessage(messageId) {
     fetch(`https://clopdna5g6hclq1elc4g.baseapi.memfiredb.com/rest/v1/messages?id=eq.${messageId}`, {
         method: 'DELETE',
         headers: {
-            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0eWx5d3ltam1penBqcm9qYnhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY1ODY5MjksImV4cCI6MjA2MjE2MjkyOX0.8HO_gvSofH87c6771WpTJOO5_J7jWx3dZ4fjw4UbiTY',
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0eWx5d3ltam1penBqcm9qYnhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY1ODY5MjksImV4cCI6MjA2MjE2MjkyOX0.8HO_gvSofH87c6771WpTJOO5_J7jWx3dZ4fjw4UbiTY',
+            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kdGNuc3hldnRsb3V4aWx2aXNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2MTEyNjQsImV4cCI6MjA2MjE4NzI2NH0.lQzKoW-SpDlQ1JqrbnwOo-3vTPI53hFMMWbkHzXy9f4',
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kdGNuc3hldnRsb3V4aWx2aXNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2MTEyNjQsImV4cCI6MjA2MjE4NzI2NH0.lQzKoW-SpDlQ1JqrbnwOo-3vTPI53hFMMWbkHzXy9f4',
             //'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzIzOTg2MzAwNSwiaWF0IjoxNzAxOTQzMDA1LCJpc3MiOiJzdXBhYmFzZSJ9.LYLqWA0Ov-yKdFBXksbu3JNnldMOM-7Kth3LPFhLmA8',
             //'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzIzOTg2MzAwNSwiaWF0IjoxNzAxOTQzMDA1LCJpc3MiOiJzdXBhYmFzZSJ9.LYLqWA0Ov-yKdFBXksbu3JNnldMOM-7Kth3LPFhLmA8',
             'Prefer': 'return=minimal'
@@ -149,8 +149,8 @@ function updateMessage(messageId) {
         fetch(`https://clopdna5g6hclq1elc4g.baseapi.memfiredb.com/rest/v1/messages?id=eq.${messageId}`, {
             method: 'PATCH',
             headers: {
-                'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0eWx5d3ltam1penBqcm9qYnhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY1ODY5MjksImV4cCI6MjA2MjE2MjkyOX0.8HO_gvSofH87c6771WpTJOO5_J7jWx3dZ4fjw4UbiTY',
-                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0eWx5d3ltam1penBqcm9qYnhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY1ODY5MjksImV4cCI6MjA2MjE2MjkyOX0.8HO_gvSofH87c6771WpTJOO5_J7jWx3dZ4fjw4UbiTY',
+                'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kdGNuc3hldnRsb3V4aWx2aXNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2MTEyNjQsImV4cCI6MjA2MjE4NzI2NH0.lQzKoW-SpDlQ1JqrbnwOo-3vTPI53hFMMWbkHzXy9f4',
+                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kdGNuc3hldnRsb3V4aWx2aXNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2MTEyNjQsImV4cCI6MjA2MjE4NzI2NH0.lQzKoW-SpDlQ1JqrbnwOo-3vTPI53hFMMWbkHzXy9f4',
                 //'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzIzOTg2MzAwNSwiaWF0IjoxNzAxOTQzMDA1LCJpc3MiOiJzdXBhYmFzZSJ9.LYLqWA0Ov-yKdFBXksbu3JNnldMOM-7Kth3LPFhLmA8',
                 //'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzIzOTg2MzAwNSwiaWF0IjoxNzAxOTQzMDA1LCJpc3MiOiJzdXBhYmFzZSJ9.LYLqWA0Ov-yKdFBXksbu3JNnldMOM-7Kth3LPFhLmA8',
                 'Content-Type': 'application/json',

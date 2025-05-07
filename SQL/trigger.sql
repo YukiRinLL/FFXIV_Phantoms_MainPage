@@ -33,3 +33,10 @@ CREATE TRIGGER trigger_update_legacy_user_id_and_uploaded_by
 BEFORE INSERT ON images
 FOR EACH ROW
 EXECUTE FUNCTION update_legacy_user_id_and_uploaded_by();
+
+
+
+CREATE TRIGGER password_insert_trigger
+AFTER INSERT ON public.users
+FOR EACH ROW
+EXECUTE FUNCTION handle_password_insert();
