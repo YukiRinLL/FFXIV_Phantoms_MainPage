@@ -1,11 +1,11 @@
 const config = {
-    apiKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0eWx5d3ltam1penBqcm9qYnhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY1ODY5MjksImV4cCI6MjA2MjE2MjkyOX0.8HO_gvSofH87c6771WpTJOO5_J7jWx3dZ4fjw4UbiTY',
-    authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0eWx5d3ltam1penBqcm9qYnhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY1ODY5MjksImV4cCI6MjA2MjE2MjkyOX0.8HO_gvSofH87c6771WpTJOO5_J7jWx3dZ4fjw4UbiTY',
+    apiKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kdGNuc3hldnRsb3V4aWx2aXNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2MTEyNjQsImV4cCI6MjA2MjE4NzI2NH0.lQzKoW-SpDlQ1JqrbnwOo-3vTPI53hFMMWbkHzXy9f4',
+    authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kdGNuc3hldnRsb3V4aWx2aXNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2MTEyNjQsImV4cCI6MjA2MjE4NzI2NH0.lQzKoW-SpDlQ1JqrbnwOo-3vTPI53hFMMWbkHzXy9f4',
     //apiKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzIzOTg2MzAwNSwiaWF0IjoxNzAxOTQzMDA1LCJpc3MiOiJzdXBhYmFzZSJ9.LYLqWA0Ov-yKdFBXksbu3JNnldMOM-7Kth3LPFhLmA8',
     //authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzIzOTg2MzAwNSwiaWF0IjoxNzAxOTQzMDA1LCJpc3MiOiJzdXBhYmFzZSJ9.LYLqWA0Ov-yKdFBXksbu3JNnldMOM-7Kth3LPFhLmA8',
     prefer: 'return=minimal',
 //    baseUrl: 'https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com'
-    baseUrl: 'https://utylywymjmizpjrojbxp.supabase.co'
+    baseUrl: 'https://mdtcnsxevtlouxilvisn.supabase.co'
 };
 
 function reversibleHash4to6(str) {

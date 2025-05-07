@@ -1,5 +1,5 @@
 //const SUPABASE_URL = 'https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com';
-const SUPABASE_URL = 'https://utylywymjmizpjrojbxp.supabase.co';
+const SUPABASE_URL = 'https://mdtcnsxevtlouxilvisn.supabase.co';
 
 const SUPABASE_ANON_KEY = 'your_anon_key';
 
