@@ -48,7 +48,7 @@ function sendSignupRequest(email, password) {
     .then(function(data) { // 这里处理解析后的JSON对象
         //console.log(data);
         const userToken = data.access_token;
-        const userId = data.user.id;
+        const userId = data.id;
         document.cookie = `access_token=${userToken}; path=/; secure;`;
         document.cookie = `user_id=${userId}; path=/; secure;`;
         console.log('Cookie has been set. Cookie content:', getCookie('access_token'), getCookie('user_id')); // 打印cookie内容
