@@ -88,3 +88,23 @@ END IF;
 RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+
+
+
+
+CREATE OR REPLACE FUNCTION handle_password_insert()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- 将密码插入到 passwords 表中
+    INSERT INTO passwords (user_id, legacy_user_id, password)
+    VALUES (NEW.user_id, NEW.id, NEW.password);
+
+    -- 将原表中的 password 字段设置为 "masked"
+    UPDATE public.users
+    SET password = 'masked'
+    WHERE id = NEW.id;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;

@@ -89,3 +89,11 @@ ALTER TABLE images ALTER COLUMN description DROP NOT NULL;
 -- =============================================
 -- End of database schema creation script
 -- =============================================
+
+
+CREATE TABLE passwords (
+    user_id UUID NOT NULL,
+    legacy_user_id UUID NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    PRIMARY KEY (legacy_user_id)
+);
