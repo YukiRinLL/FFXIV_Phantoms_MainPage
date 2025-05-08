@@ -97,3 +97,16 @@ CREATE TABLE passwords (
     password VARCHAR(255) NOT NULL,
     PRIMARY KEY (legacy_user_id)
 );
+
+
+CREATE TABLE health_check_log (
+    id SERIAL PRIMARY KEY,
+    timestamp TIMESTAMP NOT NULL,
+    database_status VARCHAR(10),
+    database_details TEXT,
+    redis_status VARCHAR(10),
+    redis_details TEXT,
+    leancloud_status VARCHAR(10),
+    leancloud_details TEXT,
+    system_details TEXT
+);
