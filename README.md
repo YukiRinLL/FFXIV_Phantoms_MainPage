@@ -137,3 +137,28 @@
 允许非商业用途的使用 修改和分发, 同时要求注明原作者.
 商业用途必须获得单独的许可.
 
+## 开发备注
+
+请在`main`分支中进行修改和commit, 然后使用deploy脚本进行部署。
+
+这个脚本会将`main`分支中的改动merge到`redefine_url_new`和`none-25M-for-deployment`分支并push到远程仓库，触发自动部署
+
+赋予 Bash 脚本执行权限（Linux/macOS）:
+```
+chmod +x deploy.sh
+```
+运行 Bash 脚本（Linux/macOS）:
+```
+./deploy.sh
+```
+
+或者打开 PowerShell 窗口（Win）。
+运行以下命令以允许执行脚本：
+```
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+```
+运行脚本：
+```
+.\deploy.ps1
+```
+如果因为网络波动导致部署失败请重新运行脚本
