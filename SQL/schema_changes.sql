@@ -104,6 +104,7 @@ CREATE TABLE health_check_log (
     timestamp TIMESTAMP NOT NULL,
     database_status VARCHAR(10),
     database_details TEXT,
+    connection_pool_details TEXT,
     redis_status VARCHAR(10),
     redis_details TEXT,
     leancloud_status VARCHAR(10),
