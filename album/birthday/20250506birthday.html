@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>生日快乐</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background: linear-gradient(45deg, #f5deb3, #fffacd); /* 卡其色到米黄色 */
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+		}
+
+		.container {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+			position: relative;
+		}
+
+		.card {
+			background-color: #fff; /* 白色背景 */
+			border-radius: 15px;
+			box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* 轻微阴影 */
+			padding: 20px;
+			text-align: center;
+			width: 400px;
+			position: relative;
+			z-index: 2;
+		}
+
+		.card h1 {
+			font-size: 3em;
+			color: #8b4513; /* 深棕色 */
+			text-shadow: 0 0 10px rgba(139, 69, 19, 0.5); /* 深棕色阴影 */
+			animation: pulse 2s infinite;
+		}
+
+		.card img {
+			max-width: 400px;
+			max-height: 400px;
+			width: auto; /* 自动调整宽度以保持宽高比 */
+			height: auto; /* 自动调整高度以保持宽高比 */
+			margin-bottom: 20px;
+			border-radius: 10px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 轻微阴影 */
+			/*filter: blur(1px);*/
+			 /* 添加轻微模糊效果 */
+			animation: floatImage 10s ease-in-out infinite; /* 图片飘动效果 */
+		}
+
+		.message {
+			font-size: 1.2em;
+			color: #555; /* 深灰色 */
+			position: absolute;
+			width: max-content;
+			padding: 10px;
+			border-radius: 10px;
+			background-color: rgba(255, 255, 255, 0.8);
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			animation: floatMessage 10s ease-in-out infinite;
+			transform-origin: center;
+		}
+
+		@keyframes pulse {
+			0% {
+				transform: scale(1);
+			}
+			50% {
+				transform: scale(1.1);
+			}
+			100% {
+				transform: scale(1);
+			}
+		}
+
+		@keyframes float {
+			0%, 100% {
+				transform: translateY(0);
+			}
+			50% {
+				transform: translateY(-20px);
+			}
+		}
+
+		@keyframes floatImage {
+			0%, 100% {
+				transform: translateY(0);
+			}
+			50% {
+				transform: translateY(-30px);
+			}
+		}
+
+		@keyframes floatMessage {
+			0% {
+				transform: translateX(0) rotate(0deg);
+			}
+			25% {
+				transform: translateX(100px) translateY(-50px) rotate(10deg);
+			}
+			50% {
+				transform: translateX(-100px) translateY(50px) rotate(-10deg);
+			}
+			75% {
+				transform: translateX(50px) translateY(-30px) rotate(5deg);
+			}
+			100% {
+				transform: translateX(0) rotate(0deg);
+			}
+		}
+	</style>
+</head>
+<body>
+<div class="container">
+	<div class="card">
+		<h1>生日快乐</h1>
+		<img id="message-image" src="./becf418b6303a9605e69609d2c3d1c5.jpg" alt="Photo">
+	</div>
+</div>
+<script>
+	let messages = [
+        "生日快乐！！！",
+        "生日快乐~",
+        "生日快乐~！！！",
+        "部长生日快乐哇",
+        "生日快乐呀！！！",
+        "老大生日快乐！！！",
+        "部长生日快乐！！",
+        "yuki酱生日快乐！！",
+        "生日快乐喵",
+        "yuki酱生日快乐！！",
+        "泪目了xdm",
+        "生日快乐！！！",
+        "我超我要玩到停服",
+        "看看哭的照片",
+        "看看哭的视频",
+        "部长生日快乐！",
+        "送你365个祝福",
+        "看看哭",
+        "部长生日快乐！",
+        "看看部长哭哭",
+        "在吗看看自拍",
+        "部长生日快乐",
+        "盛世",
+        "可以录频",
+        "技能吟唱呢",
+        "施法前摇",
+        "哈哈哈哈",
+        "好多人hhh",
+        "可恶",
+        "开party",
+        "部长能不能天天生日",
+        "这张照片最满意",
+        "牛的牛的",
+        "因为是Boss",
+        "神秘感",
+        "Boss",
+        "@鲸波万仞 感觉很难打",
+        "狒生第一个绝本",
+        "非常好的吧台！谢谢部长",
+        "哦没得多哦没得多",
+		"我已经开始紧张了",
+		"部长偷偷擦眼泪辣",
+		"芜湖",
+		"好好看",
+		"黑帮phantom",
+		"哈哈哈哈刚好把C位的脸挡上了",
+		"史官记载",
+		"省流：哭了",
+		"咩",
+		"lucky~"
+    ];
+
+        let images = [
+            "./38ac71c1c7566cf3aab500f9e0058df.png",
+            "./becf418b6303a9605e69609d2c3d1c5.jpg"
+        ];
+
+        let currentImageIndex = 0;
+
+        function changeImage() {
+            const imageElement = document.getElementById('message-image');
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            imageElement.src = images[currentImageIndex];
+        }
+
+        // 自动轮换图片
+        setInterval(changeImage, 3000); // 每3秒切换一次图片
+
+        // 生成随机位置
+        function getRandomPosition() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const cardWidth = 400; // 中间图片的宽度
+            const cardHeight = 200; // 中间图片的高度
+            const cardTop = (height - cardHeight) / 2;
+            const cardLeft = (width - cardWidth) / 2;
+
+            let x, y;
+            do {
+                x = Math.random() * (width - 100) + 10; // 避免文字太靠近边缘
+                y = Math.random() * (height - 50) + 5; // 避免文字太靠近边缘
+            } while (
+                x > cardLeft && x < cardLeft + cardWidth && y > cardTop && y < cardTop + cardHeight
+            );
+
+            return { x, y };
+        }
+
+        // 创建并添加消息
+        function createMessage(text, delay) {
+            const message = document.createElement('div');
+            message.classList.add('message');
+            message.textContent = text;
+            message.style.animationDelay = `${delay}s`;
+
+            const { x, y } = getRandomPosition();
+            message.style.left = `${x}px`;
+            message.style.top = `${y}px`;
+
+            document.body.appendChild(message);
+        }
+
+        // 生成所有消息
+        messages.forEach((text, index) => {
+            createMessage(text, index * 0.1);
+        });
+</script>
+</body>
+</html>
