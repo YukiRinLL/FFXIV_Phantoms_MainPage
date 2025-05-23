@@ -33,12 +33,12 @@ if ((git rev-parse HEAD) -ne (git rev-parse "$REMOTE_NAME/main")) {
 # 合并 main 分支到 none-25M-for-deployment 分支
 Write-Host "Merging main into none-25M-for-deployment..."
 git checkout none-25M-for-deployment
-git merge main
+git merge --no-edit main
 
 # 合并 main 分支到 redefine_url_new 分支
 Write-Host "Merging main into redefine_url_new..."
 git checkout redefine_url_new
-git merge main
+git merge --no-edit main
 
 # 切换回 main 分支
 git checkout main
