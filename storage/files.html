@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase File Manager</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          margin: 20px;
+        }
+        .container {
+          max-width: 800px;
+          margin: 0 auto;
+        }
+        .file-list {
+          list-style: none;
+          padding: 0;
+        }
+        .file-list li {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 10px 0;
+          border-bottom: 1px solid #ccc;
+        }
+        .file-list li:last-child {
+          border-bottom: none;
+        }
+        .file-list li button {
+          margin-left: 10px;
+        }
+        .upload-form {
+          margin-bottom: 20px;
+        }
+        .upload-form input[type="file"] {
+          margin-right: 10px;
+        }
+        .buttons {
+          margin-top: 20px;
+        }
+        .buttons button {
+          margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Supabase File Manager</h1>
+    <div class="upload-form">
+        <input type="file" id="fileInput" multiple>
+        <button id="uploadButton">Upload</button>
+    </div>
+    <ul class="file-list" id="fileList"></ul>
+    <div class="buttons">
+        <button id="deleteSelectedButton">Delete Selected</button>
+        <button id="downloadSelectedButton">Download Selected</button>
+    </div>
+</div>
+
+<script>
+    const apiKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kdGNuc3hldnRsb3V4aWx2aXNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2MTEyNjQsImV4cCI6MjA2MjE4NzI2NH0.lQzKoW-SpDlQ1JqrbnwOo-3vTPI53hFMMWbkHzXy9f4';
+    const authorization = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kdGNuc3hldnRsb3V4aWx2aXNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2MTEyNjQsImV4cCI6MjA2MjE4NzI2NH0.lQzKoW-SpDlQ1JqrbnwOo-3vTPI53hFMMWbkHzXy9f4';
+    const baseUrl = 'https://mdtcnsxevtlouxilvisn.supabase.co/storage/v1';
+    const bucket = 'files';
+
+    const fileInput = document.getElementById('fileInput');
+    const uploadButton = document.getElementById('uploadButton');
+    const fileList = document.getElementById('fileList');
+    const deleteSelectedButton = document.getElementById('deleteSelectedButton');
+    const downloadSelectedButton = document.getElementById('downloadSelectedButton');
+
+    // Fetch files from Supabase Storage
+    async function fetchFiles() {
+      const response = await fetch(`${baseUrl}/object/list/${bucket}`, {
+        headers: {
+          'apikey': apiKey,
+          'Authorization': authorization,
+        },
+      });
+      const data = await response.json();
+      renderFileList(data);
+    }
+
+    // Render file list in the UI
+    function renderFileList(files) {
+      fileList.innerHTML = '';
+      files.forEach(file => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span>${file.name}</span>
+          <button class="download" data-name="${file.name}">Download</button>
+          <button class="delete" data-name="${file.name}">Delete</button>
+          <input type="checkbox" class="select" data-name="${file.name}">
+        `;
+        fileList.appendChild(li);
+      });
+    }
+
+    // Upload files to Supabase Storage
+    async function uploadFiles(files) {
+      for (const file of files) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await fetch(`${baseUrl}/object/${bucket}/${file.name}`, {
+          method: 'POST',
+          headers: {
+            'apikey': apiKey,
+            'Authorization': authorization,
+            'Prefer': 'return=minimal',
+          },
+          body: formData,
+        });
+
+        if (!response.ok) {
+          console.error('Failed to upload file:', file.name);
+        }
+      }
+      fetchFiles();
+    }
+
+    // Delete a single file
+    async function deleteFile(fileName) {
+      const response = await fetch(`${baseUrl}/object/${bucket}/${fileName}`, {
+        method: 'DELETE',
+        headers: {
+          'apikey': apiKey,
+          'Authorization': authorization,
+        },
+      });
+
+      if (!response.ok) {
+        console.error('Failed to delete file:', fileName);
+      }
+    }
+
+    // Download a single file
+    async function downloadFile(fileName) {
+      const response = await fetch(`${baseUrl}/object/${bucket}/${fileName}`, {
+        headers: {
+          'apikey': apiKey,
+          'Authorization': authorization,
+        },
+      });
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } else {
+        console.error('Failed to download file:', fileName);
+      }
+    }
+
+    // Handle file input change
+    fileInput.addEventListener('change', () => {
+      uploadFiles(fileInput.files);
+    });
+
+    // Handle upload button click
+    uploadButton.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    // Handle file list actions
+    fileList.addEventListener('click', (event) => {
+      if (event.target.classList.contains('delete')) {
+        const fileName = event.target.dataset.name;
+        deleteFile(fileName);
+        fetchFiles();
+      } else if (event.target.classList.contains('download')) {
+        const fileName = event.target.dataset.name;
+        downloadFile(fileName);
+      }
+    });
+
+    // Handle delete selected files
+    deleteSelectedButton.addEventListener('click', () => {
+      const selectedFiles = document.querySelectorAll('.select:checked');
+      selectedFiles.forEach((checkbox) => {
+        deleteFile(checkbox.dataset.name);
+      });
+      fetchFiles();
+    });
+
+    // Handle download selected files
+    downloadSelectedButton.addEventListener('click', () => {
+      const selectedFiles = document.querySelectorAll('.select:checked');
+      selectedFiles.forEach((checkbox) => {
+        downloadFile(checkbox.dataset.name);
+      });
+    });
+
+    // Initialize
+    fetchFiles();
+</script>
+</body>
+</html>
