@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FFXIV_Phantoms_MainPage</title>
+    <script>
+        function redirectToVueProject() {
+            const currentUrl = window.location.href;
+            let targetUrl;
+
+            if (currentUrl.includes('vercel.app')) {
+                targetUrl = 'https://ffxiv-phantoms-mainpage-vue.vercel.app/';
+            } else if (currentUrl.includes('onrender.com')) {
+                targetUrl = 'https://ffxiv-phantoms-mainpage-vue.onrender.com/';
+            } else if (currentUrl.includes('pages.dev')) {
+                targetUrl = 'https://ffxiv-phantoms-mainpage-vue.pages.dev/';
+            } else if (currentUrl.includes('github.io')) {
+                targetUrl = 'https://yukirinll.github.io/ffxiv_phantoms_mainpage_vue/';
+            } else {
+                targetUrl = 'https://ffxiv-phantoms-mainpage-vue.onrender.com/'; // 默认跳转地址
+            }
+
+            window.location.href = targetUrl;
+        }
+    </script>
+</head>
+<body>
+<h1>Welcome to FFXIV_Phantoms_MainPage</h1>
+<button onclick="redirectToVueProject()">Go to Vue Project</button>
+</body>
+</html>
