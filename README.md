@@ -1,8 +1,23 @@
+<div align="center">
+  <h1>Phantoms</h1>
+  <p>主页链接: <a href="https://yukirinll.github.io/FFXIV_Phantoms_MainPage">yukirinll.github.io/FFXIV_Phantoms_MainPage</a></p>
+
+[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![HTML](https://img.shields.io/badge/HTML-E34F26?logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
+[![CSS](https://img.shields.io/badge/CSS-1572B6?logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
+[![Supabase](https://img.shields.io/badge/Supabase-3FCF81?logo=supabase&logoColor=white)](https://supabase.com/)
+[![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?logo=cloudflare&logoColor=white)](https://www.cloudflare.com/)
+[![Postgres](https://img.shields.io/badge/Postgres-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Mobirise](https://img.shields.io/badge/Mobirise-FF5733?logo=mobirise&logoColor=white)](https://mobirise.com/)
+
+</div>
+
 ![FClogo](assets/images/logo.jpg)
 
 # FFXIV Phantoms FC & Linkshell
 
 欢迎来到我们的部队主页!这里是FC成员交流、分享和展示活动的场所。以下是关于这个项目的详细介绍
+这是一个专为最终幻想14 Phantoms部队打造的主页站点，用于成员交流、分享和展示活动，帮助玩家更好地享受艾欧泽亚冒险。
 
 ## 项目结构
 - **/.github**
@@ -101,7 +116,7 @@
 - **个性化相册**:对特殊内容设计了个性化风格的相册
 - **画展**:用于展览玩家创作的绘画作品
 
-## 联系方式
+## 联系我们
 
 - **FC name**:Phantom <虚妄>
 - **Server**:中国服务器-莫古力区（原电信二区）拂晓之间
