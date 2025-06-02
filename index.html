@@ -133,7 +133,7 @@
 
 
 <div id="videoContainer" style="display: none; position: fixed; top: 55%; left: 50%; transform: translate(-50%, -50%); z-index: 1; width: 80%; height: 80%; background: rgba(0,0,0,0.8);">
-    <iframe id="myVideo" src="" scrolling="no" border="0" frameborder="0" allowfullscreen="true"
+    <iframe id="myVideo" src="" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"
             style="width: 100%; height: 100%; object-fit: contain;"></iframe>
     <!--                            <video id="myVideo" controls>-->
     <!--                                <source src="./vedio/vedio.mp4" type="video/mp4">-->
@@ -168,7 +168,8 @@
                             });
                             document.getElementById('playVideo').addEventListener('click', function() {
                                 var iframe = document.getElementById('myVideo');
-                                iframe.src = '//player.bilibili.com/player.html?isOutside=true&aid=112932809740147&bvid=BV1cKYueqE5Z&cid=500001644042391&p=1';
+                                iframe.src = '//player.bilibili.com/player.html?isOutside=true&aid=114053359867102&bvid=BV1zsADezEbN&cid=28541192398&p=1';
+                                //iframe.src = '//player.bilibili.com/player.html?isOutside=true&aid=112932809740147&bvid=BV1cKYueqE5Z&cid=500001644042391&p=1';
                                 document.getElementById('videoContainer').style.display = 'flex';
                             });
                             document.getElementById('closeVideo').addEventListener('click', function() {
