@@ -69,10 +69,25 @@
             height: 100%;
             color: #666;
         }
+        #jumpButton {
+            background-color: #666666;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        #jumpButton:hover {
+            background-color: #333333;
+        }
     </style>
 </head>
 <body>
 <h1>Visitor Statistics Dashboard</h1>
+<button id="jumpButton" class="btn btn-primary">To Status Page</button>
 
 <div class="summary-cards">
     <div class="summary-card">
@@ -320,6 +335,12 @@
 
         // 每30秒刷新数据
         setInterval(fetchVisitorData, 30000);
+
+        // 添加跳转按钮的点击事件
+        document.getElementById('jumpButton').addEventListener('click', () => {
+            //window.location.href = 'https://06my3sw3.status.cron-job.org/';
+            window.open('https://06my3sw3.status.cron-job.org/', '_blank');
+        });
     });
 </script>
 </body>
