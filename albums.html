@@ -57,7 +57,24 @@
     }
 
     .menu-items {
+        max-height: 20vh;
+        overflow-y: scroll;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
         transition: all 0.3s ease;
+        width: 100%; /* 或者固定宽度如 300px */
+    }
+
+    .menu-items::-webkit-scrollbar {
+        display: none;
+    }
+
+    .menu-items a {
+        text-align: center;
+        white-space: nowrap; /* 防止按钮文字换行 */
+        display: inline-block;
+        width: auto;
+        min-width: 100%;
     }
 
     .menu-items a {
@@ -164,6 +181,7 @@
         if (menuItems.style.display === 'none') {
             menuItems.style.display = 'block';
             this.textContent = 'close';
+            menuItems.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         } else {
             menuItems.style.display = 'none';
             this.textContent = 'more';
