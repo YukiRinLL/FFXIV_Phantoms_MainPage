@@ -111,3 +111,19 @@ CREATE TABLE health_check_log (
     leancloud_details TEXT,
     system_details TEXT
 );
+
+
+CREATE SCHEMA IF NOT EXISTS onebot;
+CREATE TABLE onebot.chat_records (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(), -- 主键，使用UUID
+    message_type TEXT NOT NULL, -- 消息类型，如 'private' 或 'group'
+    qq_user_id BIGINT, -- 发送消息的用户ID
+    qq_group_id BIGINT, -- 消息所属的群ID，如果适用
+    message TEXT NOT NULL, -- 消息内容
+    timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW(), -- 消息发送的时间
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), -- 记录创建时间
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW() -- 记录更新时间
+);
+
+CREATE INDEX idx_chat_records_user_id ON onebot.chat_records (qq_user_id);
+CREATE INDEX idx_chat_records_group_id ON onebot.chat_records (qq_group_id);
