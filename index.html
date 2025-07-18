@@ -209,19 +209,40 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-12 col-lg-10">
-                <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="image-wrapper">
-                            <a href="index.html#features14-t" target="_blank">
-                                <img src="https://img.picgo.net/2024/10/18/FC-Card7560e3e54b2c639d.jpg"
-                                     onerror="this.onerror=null;this.src='./assets/images/FC-Card.jpg';"
-                                     style="max-width: 100%; align:center; padding:20px 0">
-                            </a>
-                        </div>
-                    </div>
+<!--                <div class="container">-->
+<!--                    <div class="row justify-content-center">-->
+<!--                        <div class="image-wrapper">-->
+<!--                            <a href="index.html#features14-t" target="_blank">-->
+<!--                                <img src="https://img.picgo.net/2024/10/18/FC-Card7560e3e54b2c639d.jpg"-->
+<!--                                     onerror="this.onerror=null;this.src='./assets/images/FC-Card.jpg';"-->
+<!--                                     style="max-width: 100%; align:center; padding:20px 0">-->
+<!--                            </a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+                <div class="image-wrapper" id="fcWrapper" style="position:relative; width:100%;">
+                    <iframe id="fcFrame"
+                            src="FC-Card.html"
+                            scrolling="no"
+                            frameborder="0"
+                            style="display:block; width:100%; height:auto; min-height:320px;">
+                    </iframe>
                 </div>
+                <script>
+                    /* 监听来自 FC-Card.html 的消息（postMessage）*/
+                    function resizeIframe(e) {
+                        if (e.origin !== location.origin) return; // 安全校验
+                        if (e.data && e.data.height) {
+                            document.getElementById('fcFrame').style.height = e.data.height + 'px';
+                        }
+                    }
+                    window.addEventListener('message', resizeIframe, false);
+                </script>
+
                 <div class="image-wrapper">
-                    <p class="mbr-description mbr-fonts-style mt-2 align-center display-4">Community Finder</p>
+                    <p class="mbr-description mbr-fonts-style mt-2 align-center display-4">
+                        Community Finder
+                    </p>
                 </div>
             </div>
         </div>
