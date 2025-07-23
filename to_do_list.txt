@@ -53,7 +53,7 @@ wallpaper engine内容加上
 招募查看和天气组件加进去
 自定义招募板页面
 更新部队历史内容
-后端jasper个人注册信息报表功能、
+后端jasper个人注册信息报表功能
 从QQ获取所有消息记录到DB的功能
 
 
@@ -61,6 +61,9 @@ wallpaper engine内容加上
 了解使用via.placeholder.com图床
 
 
+https://sj-club.github.io/
+https://sj-club.github.io/my/index.html
+https://guangshalt.icu/
 
 
 
