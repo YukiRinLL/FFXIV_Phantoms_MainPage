@@ -5,7 +5,7 @@ const config = {
     //authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzIzOTg2MzAwNSwiaWF0IjoxNzAxOTQzMDA1LCJpc3MiOiJzdXBhYmFzZSJ9.LYLqWA0Ov-yKdFBXksbu3JNnldMOM-7Kth3LPFhLmA8',
     prefer: 'return=minimal',
 //    baseUrl: 'https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com'
-    baseUrl: 'https://mdtcnsxevtlouxilvisn.supabase.co'
+    baseUrl: 'https://dshmbsawwrbuycnivcjs.supabase.co'
 };
 
 function reversibleHash4to6(str) {

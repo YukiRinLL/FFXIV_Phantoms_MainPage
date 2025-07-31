@@ -122,7 +122,7 @@ class VisitorTracker {
 // 创建默认实例并自动收集数据（如果配置了自动跟踪）
 if (typeof window !== 'undefined' && window.VisitorTrackerAutoInit !== false) {
     const defaultTracker = new VisitorTracker(
-        'https://mdtcnsxevtlouxilvisn.supabase.co',
+        'https://dshmbsawwrbuycnivcjs.supabase.co',
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kdGNuc3hldnRsb3V4aWx2aXNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2MTEyNjQsImV4cCI6MjA2MjE4NzI2NH0.lQzKoW-SpDlQ1JqrbnwOo-3vTPI53hFMMWbkHzXy9f4',
         {
             trackLocation: true,

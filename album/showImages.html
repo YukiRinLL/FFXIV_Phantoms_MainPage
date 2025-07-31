@@ -99,7 +99,7 @@
         document.getElementById('loading').style.display = 'block';
         document.getElementById('image-container').innerHTML = ''; // 清空图片容器
 
-        fetch(`https://mdtcnsxevtlouxilvisn.supabase.co/rest/v1/images?select=*&limit=${limit}&offset=${offset}`, {
+        fetch(`https://dshmbsawwrbuycnivcjs.supabase.co/rest/v1/images?select=*&limit=${limit}&offset=${offset}`, {
             method: 'GET',
             headers: {
                 'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kdGNuc3hldnRsb3V4aWx2aXNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2MTEyNjQsImV4cCI6MjA2MjE4NzI2NH0.lQzKoW-SpDlQ1JqrbnwOo-3vTPI53hFMMWbkHzXy9f4',
@@ -122,7 +122,7 @@
 
     // 获取总数据量
     function fetchTotalItems() {
-        fetch('https://mdtcnsxevtlouxilvisn.supabase.co/rest/v1/images?select=count', {
+        fetch('https://dshmbsawwrbuycnivcjs.supabase.co/rest/v1/images?select=count', {
             method: 'GET',
             headers: {
                 'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kdGNuc3hldnRsb3V4aWx2aXNuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2MTEyNjQsImV4cCI6MjA2MjE4NzI2NH0.lQzKoW-SpDlQ1JqrbnwOo-3vTPI53hFMMWbkHzXy9f4',
