@@ -75,6 +75,9 @@
     })
     .then(response => response.json())
     .then(data => {
+        // Randomize the order of the user list
+        data.sort(() => Math.random() - 0.5);
+
         var userListDiv = document.getElementById('userList');
         data.forEach(user => {
             var userProfileDiv = document.createElement('div');

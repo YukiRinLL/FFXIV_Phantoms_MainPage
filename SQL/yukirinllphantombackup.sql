@@ -1,6 +1,10 @@
-CREATE TABLE `yukirinllphantombackup`.`users` (
-    `id` CHAR(36) NOT NULL,
-    `instance_id` CHAR(36) NULL,
+ALTER DATABASE phantoms_db CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+--ALTER TABLE [TABLE NAME] CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+
+CREATE TABLE `phantoms_db`.`users` (
+    `id` VARCHAR(36) NOT NULL,
+    `instance_id` VARCHAR(36) NULL,
     `aud` VARCHAR(255) NULL,
     `role` VARCHAR(255) NULL,
     `email` VARCHAR(255) NULL,
@@ -37,8 +41,8 @@ CREATE TABLE `yukirinllphantombackup`.`users` (
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `yukirinllphantombackup`.`images` (
-    `id` CHAR(36) NOT NULL,
+CREATE TABLE `phantoms_db`.`images` (
+    `id` VARCHAR(36) NOT NULL,
     `name` VARCHAR(255) NOT NULL,
     `data` TEXT NOT NULL,
     `created_at` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -46,19 +50,19 @@ CREATE TABLE `yukirinllphantombackup`.`images` (
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `yukirinllphantombackup`.`messages` (
-    `id` CHAR(36) NOT NULL,
-    `legacy_user_id` CHAR(36) NULL,
-    `user_id` CHAR(36) NULL,
+CREATE TABLE `phantoms_db`.`messages` (
+    `id` VARCHAR(36) NOT NULL,
+    `legacy_user_id` VARCHAR(36) NULL,
+    `user_id` VARCHAR(36) NULL,
     `message` TEXT NOT NULL,
     `created_at` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `yukirinllphantombackup`.`user_profile` (
-    `id` CHAR(36) NOT NULL,
-    `legacy_user_id` CHAR(36) NULL,
-    `user_id` CHAR(36) NULL,
+CREATE TABLE `phantoms_db`.`user_profile` (
+    `id` VARCHAR(36) NOT NULL,
+    `legacy_user_id` VARCHAR(36) NULL,
+    `user_id` VARCHAR(36) NULL,
     `name` VARCHAR(255) NOT NULL,
     `data` TEXT NOT NULL,
     `created_at` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
@@ -66,7 +70,7 @@ CREATE TABLE `yukirinllphantombackup`.`user_profile` (
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE `yukirinllphantombackup`.`chat_records` (
+CREATE TABLE `phantoms_db`.`chat_records` (
     `id` CHAR(36) NOT NULL,
     `message_type` VARCHAR(255) NULL,
     `qq_user_id` BIGINT NULL,
