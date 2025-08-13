@@ -81,3 +81,21 @@ CREATE TABLE `phantoms_db`.`chat_records` (
     `updated_at` DATETIME(6) NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+CREATE TABLE phantoms_db.legacy_users (
+    id VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(255) UNIQUE,
+    user_id VARCHAR(255),
+    PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+CREATE TABLE phantoms_db.passwords (
+    user_id VARCHAR(36) NOT NULL,
+    legacy_user_id VARCHAR(36) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    PRIMARY KEY (user_id)
+);
