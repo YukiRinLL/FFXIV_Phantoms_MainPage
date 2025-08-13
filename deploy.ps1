@@ -40,6 +40,11 @@ Write-Host "Merging main into redefine_url_new..."
 git checkout redefine_url_new
 git merge --no-edit main
 
+# 合并 main 分支到 maoziyun 分支
+Write-Host "Merging main into maoziyun..."
+git checkout maoziyun
+git merge --no-edit main
+
 # 切换回 main 分支
 git checkout main
 
@@ -48,5 +53,6 @@ Write-Host "Pushing all branches to remote..."
 git push $REMOTE_NAME main
 git push $REMOTE_NAME none-25M-for-deployment
 git push $REMOTE_NAME redefine_url_new
+git push $REMOTE_NAME maoziyun
 
 Write-Host "Deployment script completed successfully."

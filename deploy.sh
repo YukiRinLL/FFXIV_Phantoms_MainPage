@@ -42,6 +42,11 @@ echo "Merging main into redefine_url_new..."
 git checkout redefine_url_new
 git merge main
 
+# 合并 main 分支到 maoziyun 分支
+echo "Merging main into maoziyun..."
+git checkout maoziyun
+git merge main
+
 # 切换回 main 分支
 git checkout main
 
@@ -50,5 +55,6 @@ echo "Pushing all branches to remote..."
 git push $REMOTE_NAME main
 git push $REMOTE_NAME none-25M-for-deployment
 git push $REMOTE_NAME redefine_url_new
+git push $REMOTE_NAME maoziyun
 
 echo "Deployment script completed successfully."
