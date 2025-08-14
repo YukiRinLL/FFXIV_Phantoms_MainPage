@@ -194,6 +194,9 @@
                     <a id="redirectButton5" class="redirect-button" href="https://ffxiv-phantoms-main-page.vercel.app/#" target="_blank">
                         Route 5: Vercel [AWS CloudFront]
                     </a>
+                    <a id="redirectButton6" class="redirect-button" href="https://phantoms-t65xf0p6.maozi.io/" target="_blank">
+                        Route 6: Maozi [Anycast]
+                    </a>
                 </div>
                 <script>
                     document.addEventListener('DOMContentLoaded', function () {
@@ -234,7 +237,8 @@
                                 'gitee.io': 'Gitee [阿里云]',
                                 'pages.dev': 'Cloudflare [Anycast]',
                                 'render.com': 'Render [AWS CloudFront]',
-                                'vercel.app': 'Vercel [AWS CloudFront]'
+                                'vercel.app': 'Vercel [AWS CloudFront]',
+                                'maozi.io': 'Maozi [Anycast]'
                             };
                             for (const [key, value] of Object.entries(routes)) {
                                 if (url.includes(key)) return value;
@@ -248,7 +252,8 @@
                             measureResponseTime('https://yukirinll.gitee.io/ffxiv_phantoms_mainpage/'),
                             measureResponseTime('https://ffxiv-phantoms-mainpage.pages.dev/'),
                             measureResponseTime('https://ffxiv-phantoms-mainpage.onrender.com/'),
-                            measureResponseTime('https://ffxiv-phantoms-main-page.vercel.app/')
+                            measureResponseTime('https://ffxiv-phantoms-main-page.vercel.app/'),
+                            measureResponseTime('https://phantoms-t65xf0p6.maozi.io/')
                         ]).then(function(results) {
                             var loadingMessage = document.getElementById('loadingMessage');
                             var resultsContainer = document.getElementById('resultsContainer');
