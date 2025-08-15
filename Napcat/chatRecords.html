@@ -8,18 +8,54 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .message-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         .message {
-            border: 1px solid #ccc;
+            border: 1px solid #ddd;
             padding: 10px;
             margin-bottom: 10px;
             border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .message:last-child {
+            margin-bottom: 0;
+        }
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .message-header .user {
+            font-weight: bold;
+        }
+        .message-header .timestamp {
+            font-size: 0.9em;
+            color: #888;
+        }
+        .message-content {
+            font-size: 1.1em;
+        }
+        .user-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
         }
     </style>
 </head>
 <body>
 <h1>实时消息展示</h1>
-<div id="message-container"></div>
+<div id="message-container" class="message-container"></div>
 
 <script>
     // 定义一个函数来获取最新消息
@@ -44,13 +80,56 @@
         messages.forEach(message => {
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message';
-            messageDiv.innerHTML = `
-                <p><strong>Message Type:</strong> ${message.messageType}</p>
-                <p><strong>User ID:</strong> ${message.userId}</p>
-                <p><strong>Group ID:</strong> ${message.groupId}</p>
-                <p><strong>Message:</strong> ${message.message}</p>
-                <p><strong>Timestamp:</strong> ${new Date(message.timestamp).toLocaleString()}</p>
-            `;
+
+            // 解析时间戳
+            const timestamp = new Date(
+                message.timestamp[0],
+                message.timestamp[1] - 1, // 月份从 0 开始
+                message.timestamp[2],
+                message.timestamp[3],
+                message.timestamp[4],
+                message.timestamp[5],
+                message.timestamp[6]
+            ).toLocaleString();
+
+            // 解析消息内容
+            let displayMessage = message.message;
+            if (message.message.startsWith("{type=text, data={text=")) {
+                const start = message.message.indexOf("{text=") + 6;
+                const end = message.message.indexOf("}}", start);
+                displayMessage = message.message.substring(start, end);
+            }
+
+            // 创建消息头部
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'message-header';
+
+            // 创建用户头像
+            const avatarImg = document.createElement('img');
+            avatarImg.className = 'user-avatar';
+            avatarImg.src = `http://q1.qlogo.cn/g?b=qq&nk=${message.userId}&s=100`;
+
+            const userSpan = document.createElement('span');
+            userSpan.className = 'user';
+            userSpan.textContent = `User ID: ${message.userId}`;
+
+            const timestampSpan = document.createElement('span');
+            timestampSpan.className = 'timestamp';
+            timestampSpan.textContent = timestamp;
+
+            headerDiv.appendChild(avatarImg);
+            headerDiv.appendChild(userSpan);
+            headerDiv.appendChild(timestampSpan);
+
+            // 创建消息内容
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.textContent = displayMessage;
+
+            // 将头部和内容添加到消息容器中
+            messageDiv.appendChild(headerDiv);
+            messageDiv.appendChild(contentDiv);
+
             container.appendChild(messageDiv);
         });
     }
