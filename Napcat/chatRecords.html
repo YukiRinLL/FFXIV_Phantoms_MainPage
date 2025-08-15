@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实时消息展示</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .message {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<h1>实时消息展示</h1>
+<div id="message-container"></div>
+
+<script>
+    // 定义一个函数来获取最新消息
+    async function fetchLatestMessages() {
+        try {
+            const response = await fetch('http://localhost:8080/onebot/latest?limit=10');
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            const messages = await response.json();
+            console.log('Received messages:', messages); // 调试信息
+            displayMessages(messages);
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+        }
+    }
+
+    // 定义一个函数来展示消息
+    function displayMessages(messages) {
+        const container = document.getElementById('message-container');
+        container.innerHTML = ''; // 清空之前的记录
+        messages.forEach(message => {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            messageDiv.innerHTML = `
+                <p><strong>Message Type:</strong> ${message.messageType}</p>
+                <p><strong>User ID:</strong> ${message.userId}</p>
+                <p><strong>Group ID:</strong> ${message.groupId}</p>
+                <p><strong>Message:</strong> ${message.message}</p>
+                <p><strong>Timestamp:</strong> ${new Date(message.timestamp).toLocaleString()}</p>
+            `;
+            container.appendChild(messageDiv);
+        });
+    }
+
+    // 每 5 秒钟调用一次 fetchLatestMessages 函数
+    setInterval(fetchLatestMessages, 5000);
+
+    // 页面加载时立即获取一次消息
+    fetchLatestMessages();
+</script>
+</body>
+</html>
