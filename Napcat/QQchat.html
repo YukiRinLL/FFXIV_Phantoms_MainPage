@@ -193,6 +193,29 @@
         // 格式化消息
         const formattedMessage = `[${signature}] ${message}`;
 
+        // 立即将消息显示在聊天记录中
+        const container = document.getElementById('message-container');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message';
+
+        const avatarImg = document.createElement('img');
+        avatarImg.className = 'user-avatar';
+        avatarImg.src = `http://q1.qlogo.cn/g?b=qq&nk=${signature}&s=100`;
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        contentDiv.textContent = formattedMessage;
+
+        const timestampSpan = document.createElement('span');
+        timestampSpan.className = 'timestamp';
+        timestampSpan.textContent = new Date().toLocaleString();
+
+        messageDiv.appendChild(avatarImg);
+        messageDiv.appendChild(contentDiv);
+        messageDiv.appendChild(timestampSpan);
+
+        container.appendChild(messageDiv);
+
         // 收集系统信息
         const systemInfo = {
             browser: {
