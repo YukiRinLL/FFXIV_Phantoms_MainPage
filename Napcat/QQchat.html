@@ -111,113 +111,18 @@
 </div>
 
 <script>
-    // 定义一个函数来获取最新消息
-    async function fetchLatestMessages() {
-        try {
-            const response = await fetch('https://phantoms-backend.onrender.com/onebot/latest?limit=15');
-            if (!response.ok) {
-                throw new Error('Network response was not ok ' + response.statusText);
-            }
-            const messages = await response.json();
-            console.log('Received messages:', messages); // 调试信息
-            displayMessages(messages);
-        } catch (error) {
-            console.error('Error fetching messages:', error);
-        }
-    }
+    // 定义一个集合来存储已经显示过的消息ID
+    const displayedMessages = new Set();
 
-    // 定义一个函数来展示消息
-    function displayMessages(messages) {
-        const container = document.getElementById('message-container');
-        container.innerHTML = ''; // 清空之前的记录
-        messages.forEach(message => {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message';
+    // 定义一个变量来存储定时器ID
+    let fetchIntervalId;
 
-            // 解析时间戳
-            const timestamp = new Date(
-                message.timestamp[0],
-                message.timestamp[1] - 1, // 月份从 0 开始
-                message.timestamp[2],
-                message.timestamp[3],
-                message.timestamp[4],
-                message.timestamp[5],
-                message.timestamp[6]
-            ).toLocaleString();
+    // 定义一个变量来存储系统信息
+    let systemInfo;
 
-            // 解析消息内容
-            let displayMessage = message.message;
-            if (message.message.startsWith("{type=text, data={text=")) {
-                const start = message.message.indexOf("{text=") + 6;
-                const end = message.message.indexOf("}}", start);
-                displayMessage = message.message.substring(start, end);
-            }
-
-            // 创建用户头像
-            const avatarImg = document.createElement('img');
-            avatarImg.className = 'user-avatar';
-            avatarImg.src = `http://q1.qlogo.cn/g?b=qq&nk=${message.userId}&s=100`;
-
-            // 创建消息内容
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'message-content';
-            contentDiv.textContent = displayMessage;
-
-            // 创建时间戳
-            const timestampSpan = document.createElement('span');
-            timestampSpan.className = 'timestamp';
-            timestampSpan.textContent = timestamp;
-
-            // 将头像、消息内容和时间戳添加到消息容器中
-            messageDiv.appendChild(avatarImg);
-            messageDiv.appendChild(contentDiv);
-            messageDiv.appendChild(timestampSpan);
-
-            container.appendChild(messageDiv);
-        });
-    }
-
-    // 每 5 秒钟调用一次 fetchLatestMessages 函数
-    setInterval(fetchLatestMessages, 5000);
-
-    // 页面加载时立即获取一次消息
-    fetchLatestMessages();
-
-    // 监听发送消息表单的提交事件
-    document.getElementById('messageForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-
-        const message = document.getElementById('message').value;
-        const signature = document.getElementById('signature').value;
-
-        // 格式化消息
-        const formattedMessage = `[${signature}] ${message}`;
-
-        // 立即将消息显示在聊天记录中
-        const container = document.getElementById('message-container');
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'message';
-
-        const avatarImg = document.createElement('img');
-        avatarImg.className = 'user-avatar';
-        avatarImg.src = `http://q1.qlogo.cn/g?b=qq&nk=${signature}&s=100`;
-
-        const contentDiv = document.createElement('div');
-        contentDiv.className = 'message-content';
-        contentDiv.textContent = formattedMessage;
-
-        const timestampSpan = document.createElement('span');
-        timestampSpan.className = 'timestamp';
-        timestampSpan.textContent = new Date().toLocaleString();
-
-        messageDiv.appendChild(avatarImg);
-        messageDiv.appendChild(contentDiv);
-        messageDiv.appendChild(timestampSpan);
-
-        container.appendChild(messageDiv);
-
-        // 收集系统信息
-        const systemInfo = {
+    // 页面加载时获取系统信息
+    function fetchSystemInfo() {
+        systemInfo = {
             browser: {
                 userAgent: navigator.userAgent,
                 appName: navigator.appName,
@@ -275,36 +180,171 @@
                     speed: position.coords.speed,
                     timestamp: position.timestamp,
                 };
-
-                // 发送消息和系统信息到服务器
-                fetch('https://phantoms-backend.onrender.com/onebot/send-to-group', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ message: formattedMessage, systemInfo: systemInfo })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'ok') {
-                        // alert('Message sent successfully!');
-                        document.getElementById('message').value = ''; // 清空输入框
-                    } else {
-                        alert('Failed to send message: ' + data.error);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred while sending the message.');
-                });
             }, error => {
                 console.error('Geolocation error:', error);
-                alert('Failed to get geolocation information.');
             });
         } else {
             console.error('Geolocation is not supported by this browser.');
-            alert('Geolocation is not supported by this browser.');
         }
+    }
+
+    // 定义一个函数来启动定时器
+    function startFetchInterval() {
+        // 清除之前的定时器
+        if (fetchIntervalId) {
+            clearInterval(fetchIntervalId);
+        }
+        // 设置新的定时器
+        fetchIntervalId = setInterval(fetchLatestMessages, 5000);
+    }
+
+    // 定义一个函数来获取最新消息
+    async function fetchLatestMessages() {
+        try {
+            const response = await fetch('https://phantoms-backend.onrender.com/onebot/latest?limit=15');
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            const messages = await response.json();
+            console.log('Received messages:', messages); // 调试信息
+            displayMessages(messages);
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+        }
+    }
+
+    // 定义一个函数来展示消息
+    function displayMessages(messages) {
+        const container = document.getElementById('message-container');
+        container.innerHTML = ''; // 清空之前的记录
+
+        // 按时间戳从小到大排序
+        messages.reverse();
+
+        messages.forEach(message => {
+            // 检查消息是否已经显示过
+            const isDisplayed = displayedMessages.has(message.id);
+            // 检查这个id是否对应多条消息
+            const hasMultipleMessages = messages.filter(msg => msg.id === message.id).length > 1;
+            // 如果消息已经显示过，并且头像是腾讯的头像，并且这个id对应的消息还有另外一条，则跳过
+            if (isDisplayed && hasMultipleMessages) {
+                return;
+            }
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+
+            // 解析时间戳
+            const timestamp = new Date(
+                message.timestamp[0],
+                message.timestamp[1] - 1, // 月份从 0 开始
+                message.timestamp[2],
+                message.timestamp[3],
+                message.timestamp[4],
+                message.timestamp[5],
+                message.timestamp[6]
+            ).toLocaleString();
+
+            // 解析消息内容
+            let displayMessage = message.message;
+            if (message.message.startsWith("{type=text, data={text=")) {
+                const start = message.message.indexOf("{text=") + 6;
+                const end = message.message.indexOf("}}", start);
+                displayMessage = message.message.substring(start, end);
+            }
+
+            // 创建用户头像
+            const avatarImg = document.createElement('img');
+            avatarImg.className = 'user-avatar';
+            avatarImg.src = `http://q1.qlogo.cn/g?b=qq&nk=${message.userId}&s=100`;
+
+            // 创建消息内容
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.textContent = displayMessage;
+
+            // 创建时间戳
+            const timestampSpan = document.createElement('span');
+            timestampSpan.className = 'timestamp';
+            timestampSpan.textContent = timestamp;
+
+            // 将头像、消息内容和时间戳添加到消息容器中
+            messageDiv.appendChild(avatarImg);
+            messageDiv.appendChild(contentDiv);
+            messageDiv.appendChild(timestampSpan);
+
+            container.appendChild(messageDiv);
+        });
+    }
+
+    // 页面加载时立即获取系统信息和消息
+    window.onload = () => {
+        fetchSystemInfo();
+        fetchLatestMessages();
+        startFetchInterval();
+    };
+
+    // 监听发送消息表单的提交事件
+    document.getElementById('messageForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const message = document.getElementById('message').value;
+        const signature = document.getElementById('signature').value;
+
+        // 格式化消息
+        const formattedMessage = `[${signature}] ${message}`;
+
+        // 重新启动定时器
+        startFetchInterval();
+
+        // 立即将消息显示在聊天记录中
+        const container = document.getElementById('message-container');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'message';
+
+        const avatarImg = document.createElement('img');
+        avatarImg.className = 'user-avatar';
+        avatarImg.src = `http://q1.qlogo.cn/g?b=qq&nk=${signature}&s=100`;
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        contentDiv.textContent = formattedMessage;
+
+        const timestampSpan = document.createElement('span');
+        timestampSpan.className = 'timestamp';
+        timestampSpan.textContent = new Date().toLocaleString();
+
+        messageDiv.appendChild(avatarImg);
+        messageDiv.appendChild(contentDiv);
+        messageDiv.appendChild(timestampSpan);
+
+        // 记录已经显示过的消息ID（从页面发送的）
+        displayedMessages.add(message.id);
+
+        container.appendChild(messageDiv);
+
+        // 发送消息和系统信息到服务器
+        const url = new URL('https://phantoms-backend.onrender.com/onebot/send-to-group');
+        url.searchParams.append('groupId', '787909466');
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: formattedMessage, systemInfo: systemInfo })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                document.getElementById('message').value = ''; // 清空输入框
+            } else {
+                alert('Failed to send message: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while sending the message.');
+        });
     });
 </script>
 </body>
