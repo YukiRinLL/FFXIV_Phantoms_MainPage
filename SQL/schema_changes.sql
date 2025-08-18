@@ -127,3 +127,45 @@ CREATE TABLE onebot.chat_records (
 
 CREATE INDEX idx_chat_records_user_id ON onebot.chat_records (qq_user_id);
 CREATE INDEX idx_chat_records_group_id ON onebot.chat_records (qq_group_id);
+
+
+CREATE TABLE onebot.user_messages (
+    id SERIAL PRIMARY KEY,
+    message TEXT NOT NULL,
+    group_id BIGINT NOT NULL,
+    user_agent TEXT,
+    app_name TEXT,
+    app_version TEXT,
+    platform TEXT,
+    language TEXT,
+    cookies_enabled BOOLEAN,
+    do_not_track TEXT,
+    java_enabled BOOLEAN,
+    on_line BOOLEAN,
+    screen_width INT,
+    screen_height INT,
+    color_depth INT,
+    pixel_ratio FLOAT,
+    orientation TEXT,
+    available_memory INT,
+    hardware_concurrency INT,
+    connection_type TEXT,
+    downlink FLOAT,
+    effective_type TEXT,
+    rtt FLOAT,
+    battery_charging BOOLEAN,
+    battery_level FLOAT,
+    battery_charging_time FLOAT,
+    battery_discharging_time FLOAT,
+    time_zone TEXT,
+    plugins TEXT[],
+    mime_types TEXT[],
+    latitude FLOAT,
+    longitude FLOAT,
+    accuracy FLOAT,
+    altitude FLOAT,
+    altitude_accuracy FLOAT,
+    heading FLOAT,
+    speed FLOAT,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
