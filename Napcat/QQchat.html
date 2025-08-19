@@ -89,6 +89,34 @@
         #signature {
             width: 50%; /* 缩小输入框宽度 */
         }
+        .message img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        .message .at {
+            color: #007bff;
+            font-weight: bold;
+        }
+        .message .reply {
+            color: #007bff;
+            font-weight: bold;
+        }
+        .user-info {
+            display: inline-block;
+            margin-left: 5px;
+        }
+        .user-info img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            vertical-align: middle;
+        }
+        .user-info span {
+            margin-left: 5px;
+            vertical-align: middle;
+        }
     </style>
 </head>
 <body>
@@ -201,8 +229,8 @@
     // 定义一个函数来获取最新消息
     async function fetchLatestMessages() {
         try {
-            // const response = await fetch('https://phantoms-backend.onrender.com/onebot/latest?limit=15');
-            const response = await fetch('http://localhost:8080/onebot/latest?limit=15');
+            // const response = await fetch('http://localhost:8080/onebot/latest?limit=30');
+            const response = await fetch('https://phantoms-backend.onrender.com/onebot/latest?limit=30');
             if (!response.ok) {
                 throw new Error('Network response was not ok ' + response.statusText);
             }
@@ -255,22 +283,48 @@
             } else if (message.message.startsWith("{type=face, data={id=")) {
                 const faceId = message.message.match(/id=(\d+)/)[1];
                 displayMessage = `[表情 ${faceId}]`;
+                // 使用后端代理接口获取 QQ 表情图片
+                // TODO: URL status code 400
+                // displayMessage = `<img src="http://localhost:8080/proxy/qqemoji?faceId=${faceId}" alt="表情" style="width: 24px; height: 24px;">`;
             } else if (message.message.startsWith("{type=image, data={")) {
                 // 使用正则表达式提取图片链接
                 const imageUrlMatch = message.message.match(/url=(https?:\/\/[^,]+)/);
                 if (imageUrlMatch) {
                     // const imageUrl = `http://localhost:8080/proxy/image?url=${encodeURIComponent(imageUrlMatch[1])}`; // 使用代理路径
-                    const imageUrl = `http://localhost:8080/proxy/image?url=${encodeURIComponent(imageUrlMatch[1])}`; // 使用代理路径
-                    displayMessage = `<img src="${imageUrl}" alt="Image" style="max-width: 200px; max-height: 200px;">`;
+                    const imageUrl = `https://phantoms-backend.onrender.com/proxy/image?url=${encodeURIComponent(imageUrlMatch[1])}`; // 使用代理路径
+                    displayMessage = `<img src="${imageUrl}" alt="Image">`;
                 } else {
                     displayMessage = "[图片链接提取失败]";
                 }
             } else if (message.message.startsWith("{type=at, data={qq=")) {
                 const atUserId = message.message.match(/qq=(\d+)/)[1];
-                displayMessage = `@${atUserId}`;
+                displayMessage = `<span class="at">@${atUserId}</span>`;
+                const userInfo = getUserInfo(atUserId);
+                displayMessage += ` <span class="user-info"><img src="http://q1.qlogo.cn/g?b=qq&nk=${atUserId}&s=100"><span>${userInfo.nickname}</span></span>`;
             } else if (message.message.startsWith("{type=reply, data={id=")) {
                 const replyId = message.message.match(/id=(\d+)/)[1];
-                displayMessage = `[回复 ${replyId}]`;
+                displayMessage = `<span class="reply">[回复 ${replyId}]</span>`;
+                const userInfo = getUserInfo(replyId);
+                // TODO: replyId 不是 QQ ID
+                // displayMessage += ` <span class="user-info"><img src="http://q1.qlogo.cn/g?b=qq&nk=${replyId}&s=100"><span>${userInfo.nickname}</span></span>`;
+            } else if (message.message.startsWith("{type=json, data={")) {
+                try {
+                    // 提取 JSON 数据
+                    const jsonData = JSON.parse(message.message.match(/{type=json, data=({.*})}/)[1]);
+                    const meta = jsonData.data.meta.news;
+
+                    // 构建显示内容
+                    displayMessage = `<div class="json-message">
+                        <a href="${meta.jumpUrl}" target="_blank">
+                            <img src="${meta.preview}" alt="${meta.title}" style="max-width: 200px; max-height: 200px; border-radius: 8px;">
+                            <div style="font-weight: bold;">${meta.title}</div>
+                            <div>${meta.desc}</div>
+                        </a>
+                    </div>`;
+                } catch (error) {
+                    console.error('Error parsing JSON message:', error);
+                    displayMessage = "[JSON 消息解析失败]";
+                }
             } else {
                 displayMessage = message.message; // 其他类型的消息直接显示原始内容
             }
@@ -300,6 +354,47 @@
             // 记录已经显示过的消息ID
             displayedMessages.add(message.id);
         });
+    }
+
+    // 获取用户信息
+    async function getUserInfo(userId) {
+        // 构造请求URL
+        const avatarUrl = `http://q1.qlogo.cn/g?b=qq&nk=${userId}&s=100`;
+
+        // TODO nicknameUrl 返回 404
+        const nicknameUrl = `https://r.qzone.qq.com/cgi-bin/user/cgi_userinfo_get_all?uin=${userId}`;
+
+        try {
+            // 获取用户头像
+            const avatarResponse = await fetch(avatarUrl);
+            if (!avatarResponse.ok) {
+                throw new Error(`Network response was not ok: ${avatarResponse.statusText}`);
+            }
+
+            // 获取用户昵称
+            const nicknameResponse = await fetch(nicknameUrl);
+            if (!nicknameResponse.ok) {
+                throw new Error(`Network response was not ok: ${nicknameResponse.statusText}`);
+            }
+            const nicknameData = await nicknameResponse.json();
+
+            // 检查返回状态码
+            if (nicknameData.retcode === 0) {
+                // 获取成功，返回用户信息
+                return {
+                    nickname: nicknameData.data.nickname,
+                    faceimg: avatarUrl
+                };
+            } else {
+                // 获取失败，返回默认信息
+                console.error('Failed to get user info:', nicknameData.message);
+                return { nickname: "未知用户", faceimg: avatarUrl };
+            }
+        } catch (error) {
+            // 捕获错误，返回默认信息
+            console.error('Error fetching user info:', error);
+            return { nickname: "未知用户", faceimg: avatarUrl };
+        }
     }
 
     // 页面加载时立即获取系统信息和消息
