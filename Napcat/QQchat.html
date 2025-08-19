@@ -201,7 +201,8 @@
     // 定义一个函数来获取最新消息
     async function fetchLatestMessages() {
         try {
-            const response = await fetch('https://phantoms-backend.onrender.com/onebot/latest?limit=15');
+            // const response = await fetch('https://phantoms-backend.onrender.com/onebot/latest?limit=15');
+            const response = await fetch('http://localhost:8080/onebot/latest?limit=15');
             if (!response.ok) {
                 throw new Error('Network response was not ok ' + response.statusText);
             }
@@ -251,6 +252,27 @@
                 const start = message.message.indexOf("{text=") + 6;
                 const end = message.message.indexOf("}}", start);
                 displayMessage = message.message.substring(start, end);
+            } else if (message.message.startsWith("{type=face, data={id=")) {
+                const faceId = message.message.match(/id=(\d+)/)[1];
+                displayMessage = `[表情 ${faceId}]`;
+            } else if (message.message.startsWith("{type=image, data={")) {
+                // 使用正则表达式提取图片链接
+                const imageUrlMatch = message.message.match(/url=(https?:\/\/[^,]+)/);
+                if (imageUrlMatch) {
+                    // const imageUrl = `http://localhost:8080/proxy/image?url=${encodeURIComponent(imageUrlMatch[1])}`; // 使用代理路径
+                    const imageUrl = `http://localhost:8080/proxy/image?url=${encodeURIComponent(imageUrlMatch[1])}`; // 使用代理路径
+                    displayMessage = `<img src="${imageUrl}" alt="Image" style="max-width: 200px; max-height: 200px;">`;
+                } else {
+                    displayMessage = "[图片链接提取失败]";
+                }
+            } else if (message.message.startsWith("{type=at, data={qq=")) {
+                const atUserId = message.message.match(/qq=(\d+)/)[1];
+                displayMessage = `@${atUserId}`;
+            } else if (message.message.startsWith("{type=reply, data={id=")) {
+                const replyId = message.message.match(/id=(\d+)/)[1];
+                displayMessage = `[回复 ${replyId}]`;
+            } else {
+                displayMessage = message.message; // 其他类型的消息直接显示原始内容
             }
 
             // 创建用户头像
@@ -261,7 +283,7 @@
             // 创建消息内容
             const contentDiv = document.createElement('div');
             contentDiv.className = 'message-content';
-            contentDiv.textContent = displayMessage;
+            contentDiv.innerHTML = displayMessage; // 使用 innerHTML 支持 HTML 内容
 
             // 创建时间戳
             const timestampSpan = document.createElement('span');
@@ -274,6 +296,9 @@
             messageDiv.appendChild(timestampSpan);
 
             container.appendChild(messageDiv);
+
+            // 记录已经显示过的消息ID
+            displayedMessages.add(message.id);
         });
     }
 
