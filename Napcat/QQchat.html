@@ -125,11 +125,11 @@
 <div class="container">
     <form id="messageForm">
         <div class="form-group">
-            <label for="message">Message:</label>
+            <label for="message">Message[消息正文]:</label>
             <textarea id="message" name="message" required style="width: 100%; height: 150px;"></textarea>
         </div>
         <div class="form-group">
-            <label for="signature">Signature:</label>
+            <label for="signature">Signature[署名]:</label>
             <input type="text" id="signature" name="signature" required style="width: 50%;">
         </div>
         <div class="form-group">
@@ -142,11 +142,28 @@
     // 定义一个集合来存储已经显示过的消息ID
     const displayedMessages = new Set();
 
+    // 定义一个集合来存储已经获取过的图片URL
+    const fetchedImages = new Set();
+
     // 定义一个变量来存储定时器ID
     let fetchIntervalId;
 
     // 定义一个变量来存储系统信息
     let systemInfo;
+
+    // 定义一个变量来存储图片代理服务的URL
+    // const imageProxyUrl = 'http://localhost:8080/proxy/image?url=';
+    const imageProxyUrl = 'https://phantoms-backend.onrender.com/proxy/image?url=';
+
+    // 辅助函数：将图片存储到本地缓存
+    function cacheImage(proxyUrl, originalUrl) {
+        localStorage.setItem(originalUrl, proxyUrl);
+    }
+
+    // 辅助函数：回退到代理URL
+    function fallbackToProxy(imgElement, proxyUrl) {
+        imgElement.src = proxyUrl;
+    }
 
     // 页面加载时获取系统信息
     function fetchSystemInfo() {
@@ -255,7 +272,7 @@
             const isDisplayed = displayedMessages.has(message.id);
             // 检查这个id是否对应多条消息
             const hasMultipleMessages = messages.filter(msg => msg.id === message.id).length > 1;
-            // 如果消息已经显示过，并且头像是腾讯的头像，并且这个id对应的消息还有另外一条，则跳过
+            // 如果消息已经显示过，并且这个id对应的消息还有另外一条，则跳过
             if (isDisplayed && hasMultipleMessages) {
                 return;
             }
@@ -290,9 +307,21 @@
                 // 使用正则表达式提取图片链接
                 const imageUrlMatch = message.message.match(/url=(https?:\/\/[^,]+)/);
                 if (imageUrlMatch) {
-                    // const imageUrl = `http://localhost:8080/proxy/image?url=${encodeURIComponent(imageUrlMatch[1])}`; // 使用代理路径
-                    const imageUrl = `https://phantoms-backend.onrender.com/proxy/image?url=${encodeURIComponent(imageUrlMatch[1])}`; // 使用代理路径
-                    displayMessage = `<img src="${imageUrl}" alt="Image">`;
+                    const imageUrl = imageUrlMatch[1];
+                    // 检查是否已经获取过该图片
+                    if (!fetchedImages.has(imageUrl)) {
+                        fetchedImages.add(imageUrl);
+                        // 使用代理路径获取图片
+                        displayMessage = `<img src="${imageProxyUrl}${encodeURIComponent(imageUrl)}" alt="Image" onload="cacheImage('${imageProxyUrl}${encodeURIComponent(imageUrl)}', '${imageUrl}')">`;
+                    } else {
+                        // 如果已经获取过，尝试从本地缓存中获取图片
+                        const cachedUrl = localStorage.getItem(imageUrl);
+                        if (cachedUrl) {
+                            displayMessage = `<img src="${cachedUrl}" alt="Image">`;
+                        } else {
+                            displayMessage = `<img src="${imageUrl}" alt="Image" onerror="fallbackToProxy(this, '${imageProxyUrl}${encodeURIComponent(imageUrl)}')">`;
+                        }
+                    }
                 } else {
                     displayMessage = "[图片链接提取失败]";
                 }
