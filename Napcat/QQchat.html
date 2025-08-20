@@ -139,6 +139,10 @@
 </div>
 
 <script>
+    // 定义 Supabase 的 URL 和 API 密钥
+    const supabaseURL = 'https://dshmbsawwrbuycnivcjs.supabase.co';
+    const supabaseAPIKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzaG1ic2F3d3JidXljbml2Y2pzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5Mjg2OTAsImV4cCI6MjA2OTUwNDY5MH0.fwRJD-WuST7mCbJf9h2i2Xk0z6mtCMCeV--JGUecC6A';
+
     // 定义一个集合来存储已经显示过的消息ID
     const displayedMessages = new Set();
 
@@ -422,7 +426,7 @@
             }
         } catch (error) {
             // 捕获错误，返回默认信息
-            console.error('Error fetching user info:', error);
+            // console.error('Error fetching user info:', error);
             return { nickname: "未知用户", faceimg: avatarUrl };
         }
     }
@@ -432,7 +436,53 @@
         fetchSystemInfo();
         fetchLatestMessages();
         startFetchInterval();
+        fetchUserProfile();
     };
+
+    // 获取用户信息并自动填写署名
+    function fetchUserProfile() {
+        const userId = getCookie('user_id'); // 从cookie中获取user_id
+
+        if (!userId) {
+            console.log('No user_id found in cookies.');
+            return;
+        }
+
+        fetch(`${supabaseURL}/rest/v1/users?select=username&user_id=eq.${userId}`, {
+            method: 'GET',
+            headers: {
+                'apikey': supabaseAPIKey
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.length > 0 && data[0].username) { // 确保返回的数据中有username字段
+                updateSignature(data[0].username); // 使用username更新署名
+            } else {
+                console.log('No username found for the user.');
+                updateSignature("匿名用户"); // 如果没有找到用户名，使用默认值
+            }
+        })
+        .catch(error => console.error('Error fetching user profile:', error));
+    }
+
+    // 更新署名
+    function updateSignature(username) {
+        const signatureInput = document.getElementById('signature');
+        signatureInput.value = username; // 设置署名为用户名
+    }
+
+    // 获取cookie
+    function getCookie(name) {
+        let cookieArray = document.cookie.split(';');
+        for (let i = 0; i < cookieArray.length; i++) {
+            let cookie = cookieArray[i].trim();
+            if (cookie.indexOf(name + "=") == 0) {
+                return cookie.substring(name.length + 1, cookie.length);
+            }
+        }
+        return "";
+    }
 
     // 监听发送消息表单的提交事件
     document.getElementById('messageForm').addEventListener('submit', function(event) {
