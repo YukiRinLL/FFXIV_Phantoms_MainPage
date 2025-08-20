@@ -152,8 +152,18 @@
     let systemInfo;
 
     // 定义一个变量来存储图片代理服务的URL
-    const imageProxyUrl = 'http://localhost:8080/proxy/image?url=';
-    // const imageProxyUrl = 'https://phantoms-backend.onrender.com/proxy/image?url=';
+    // const imageProxyUrl = 'http://localhost:8080/proxy/image?url=';
+    const imageProxyUrl = 'https://phantoms-backend.onrender.com/proxy/image?url=';
+
+    // 辅助函数：将图片存储到本地缓存
+    function cacheImage(proxyUrl, originalUrl) {
+        localStorage.setItem(originalUrl, proxyUrl);
+    }
+
+    // 辅助函数：回退到代理URL
+    function fallbackToProxy(imgElement, proxyUrl) {
+        imgElement.src = proxyUrl;
+    }
 
     // 页面加载时获取系统信息
     function fetchSystemInfo() {
@@ -299,9 +309,19 @@
                 if (imageUrlMatch) {
                     const imageUrl = imageUrlMatch[1];
                     // 检查是否已经获取过该图片
+                    if (!fetchedImages.has(imageUrl)) {
                         fetchedImages.add(imageUrl);
                         // 使用代理路径获取图片
-                        displayMessage = `<img src="${imageProxyUrl}${encodeURIComponent(imageUrl)}" alt="Image">`;
+                        displayMessage = `<img src="${imageProxyUrl}${encodeURIComponent(imageUrl)}" alt="Image" onload="cacheImage('${imageProxyUrl}${encodeURIComponent(imageUrl)}', '${imageUrl}')">`;
+                    } else {
+                        // 如果已经获取过，尝试从本地缓存中获取图片
+                        const cachedUrl = localStorage.getItem(imageUrl);
+                        if (cachedUrl) {
+                            displayMessage = `<img src="${cachedUrl}" alt="Image">`;
+                        } else {
+                            displayMessage = `<img src="${imageUrl}" alt="Image" onerror="fallbackToProxy(this, '${imageProxyUrl}${encodeURIComponent(imageUrl)}')">`;
+                        }
+                    }
                 } else {
                     displayMessage = "[图片链接提取失败]";
                 }
