@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Dynamic Wallpaper Downloads</title>
+	<style>
+		body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .button-group {
+            margin-top: 20px;
+        }
+        .button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #555;
+        }
+        .language-switch {
+            margin-bottom: 20px;
+        }
+        .language-switch label {
+            margin-right: 10px;
+        }
+        .language-switch input {
+            margin-right: 5px;
+        }
+	</style>
+</head>
+<body>
+<div class="container">
+	<div class="language-switch">
+		<label for="lang-zh">中文</label>
+		<input type="radio" id="lang-zh" name="language" value="zh" checked>
+		<label for="lang-en">English</label>
+		<input type="radio" id="lang-en" name="language" value="en">
+	</div>
+	<h1 id="title">Dynamic Wallpaper Downloads</h1>
+	<p id="description">Click the buttons below to download the dynamic wallpapers from Steam Workshop.</p>
+	<div class="button-group">
+		<a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3272715540" target="_blank" class="button" id="button1">Download Phantoms FC_1</a>
+		<a href="https://steamcommunity.com/sharedfiles/filedetails/?id=3272725659" target="_blank" class="button" id="button2">Download Phantoms FC_2</a>
+	</div>
+</div>
+
+<script>
+	// 中英双语内容
+    const translations = {
+        zh: {
+            title: "动态壁纸下载",
+            description: "点击下方按钮下载 Steam 创意工坊中的动态壁纸。",
+            button1: "下载 Phantoms FC_1",
+            button2: "下载 Phantoms FC_2"
+        },
+        en: {
+            title: "Dynamic Wallpaper Downloads",
+            description: "Click the buttons below to download the dynamic wallpapers from Steam Workshop.",
+            button1: "Download Phantoms FC_1",
+            button2: "Download Phantoms FC_2"
+        }
+    };
+
+    // 获取当前语言
+    function getLanguage() {
+        return document.querySelector('input[name="language"]:checked').value;
+    }
+
+    // 更新内容
+    function updateContent() {
+        const lang = getLanguage();
+        document.getElementById('title').textContent = translations[lang].title;
+        document.getElementById('description').textContent = translations[lang].description;
+        document.getElementById('button1').textContent = translations[lang].button1;
+        document.getElementById('button2').textContent = translations[lang].button2;
+    }
+
+    // 监听语言切换
+    document.querySelectorAll('input[name="language"]').forEach(input => {
+        input.addEventListener('change', updateContent);
+    });
+
+    // 初始化内容
+    updateContent();
+</script>
+</body>
+</html>
