@@ -177,7 +177,7 @@ function displayMessages(messages) {
                     if (cachedUrl) {
                         displayMessage = `<img src="${cachedUrl}" alt="Image">`;
                     } else {
-                        displayMessage = `<img src="${imageUrl}" alt="Image" onerror="fallbackToProxy(this, '${imageProxyUrl}${encodeURIComponent(imageUrl)}')">`;
+                        displayMessage = `<img src="placeholder.png" alt="Image">`;
                     }
                 }
             } else {
