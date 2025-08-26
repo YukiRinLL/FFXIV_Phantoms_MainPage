@@ -131,6 +131,11 @@
             color: #333;
             margin: 20px 0 10px;
         }
+        .loading {
+            text-align: center;
+            font-size: 1.2em;
+            color: #777;
+        }
     </style>
 </head>
 <body>
@@ -152,6 +157,7 @@
             <p id="modalLastDynamic">Last Dynamic: No recent activity</p>
             <h3>Achievements</h3>
             <p id="modalAchievements">No achievements</p>
+            <div class="loading" id="loadingMessage">Loading...</div>
         </div>
     </div>
 </div>
@@ -202,6 +208,7 @@
 
         // 添加点击事件
         card.addEventListener('click', () => {
+            showModal();
             fetchUserInfo(member.uuid);
         });
 
@@ -219,16 +226,17 @@
             displayUserInfo(data.data);
         } catch (error) {
             console.error('There has been a problem with your fetch operation:', error);
+            displayError('Failed to load user information.');
         }
     }
 
     // Function to display user info in the modal
     function displayUserInfo(userInfo) {
-        const modal = document.getElementById('myModal');
         const modalTitle = document.querySelector('.modal-title');
         const modalProfile = document.getElementById('modalProfile');
         const modalLastDynamic = document.getElementById('modalLastDynamic');
         const modalAchievements = document.getElementById('modalAchievements');
+        const loadingMessage = document.getElementById('loadingMessage');
 
         modalTitle.textContent = userInfo.character_name || 'N/A';
         modalProfile.textContent = `Profile: ${userInfo.profile || 'No profile'}`;
@@ -240,7 +248,32 @@
         }).join('<br>');
         modalAchievements.innerHTML = `Achievements: ${achievements || 'No achievements'}`;
 
+        // Hide loading message
+        loadingMessage.style.display = 'none';
+    }
+
+    // Function to display error message in the modal
+
+
+    function displayError(message) {
+        const modalTitle = document.querySelector('.modal-title');
+        const loadingMessage = document.getElementById('loadingMessage');
+
+        modalTitle.textContent = 'Error';
+        loadingMessage.textContent = message;
+        loadingMessage.style.display = 'block';
+    }
+
+    // Function to show the modal
+    function showModal() {
+        const modal = document.getElementById('myModal');
         modal.style.display = 'block';
+    }
+
+    // Function to hide the modal
+    function hideModal() {
+        const modal = document.getElementById('myModal');
+        modal.style.display = 'none';
     }
 
     // Function to populate the member list
@@ -280,14 +313,12 @@
     const span = document.getElementsByClassName('close')[0];
 
     // When the user clicks on <span> (x), close the modal
-    span.onclick = function() {
-        modal.style.display = 'none';
-    };
+    span.onclick = hideModal;
 
     // When the user clicks anywhere outside of the modal, close it
     window.onclick = function(event) {
         if (event.target == modal) {
-            modal.style.display = 'none';
+            hideModal();
         }
     };
 </script>
