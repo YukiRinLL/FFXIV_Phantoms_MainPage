@@ -64,11 +64,17 @@
             font-size: 0.8em;
             color: #999;
         }
+        .member-card.no-avatar {
+            background: #f0f0f0; /* 灰色背景 */
+        }
+        .member-card.no-avatar img {
+            border: 2px solid #ddd; /* 添加边框 */
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>Guild Members</h1>
+<!--    <h1>Guild Members</h1>-->
     <div class="member-list" id="memberList">
         <!-- Member cards will be inserted here by JavaScript -->
     </div>
@@ -88,6 +94,11 @@
     function createMemberCard(member) {
         const card = document.createElement('div');
         card.className = 'member-card';
+
+        // 检查是否有头像
+        if (!member.avatar) {
+            card.classList.add('no-avatar'); // 添加无头像的样式
+        }
 
         // Avatar
         const avatar = document.createElement('img');
