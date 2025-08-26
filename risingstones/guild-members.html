@@ -42,6 +42,11 @@
             width: calc(25% - 20px);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .member-card:hover {
+            transform: scale(1.02);
         }
         .member-card img {
             width: 100px;
@@ -70,6 +75,62 @@
         .member-card.no-avatar img {
             border: 2px solid #ddd; /* 添加边框 */
         }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .modal-title {
+            font-size: 1.5em;
+            color: #333;
+        }
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+        }
+        .modal-body {
+            padding: 20px 0;
+        }
+        .modal-body p {
+            margin: 10px 0;
+            font-size: 1em;
+            color: #555;
+        }
+        .modal-body h3 {
+            font-size: 1.2em;
+            color: #333;
+            margin: 20px 0 10px;
+        }
     </style>
 </head>
 <body>
@@ -77,6 +138,21 @@
 <!--    <h1>Guild Members</h1>-->
     <div class="member-list" id="memberList">
         <!-- Member cards will be inserted here by JavaScript -->
+    </div>
+</div>
+
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Member Details</h2>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p id="modalProfile">Profile: No profile</p>
+            <p id="modalLastDynamic">Last Dynamic: No recent activity</p>
+            <h3>Achievements</h3>
+            <p id="modalAchievements">No achievements</p>
+        </div>
     </div>
 </div>
 
@@ -94,6 +170,7 @@
     function createMemberCard(member) {
         const card = document.createElement('div');
         card.className = 'member-card';
+        card.dataset.uuid = member.uuid; // 添加UUID到数据属性
 
         // 检查是否有头像
         if (!member.avatar) {
@@ -123,7 +200,47 @@
         lastDynamic.textContent = member.last_dynamic || 'No recent activity';
         card.appendChild(lastDynamic);
 
+        // 添加点击事件
+        card.addEventListener('click', () => {
+            fetchUserInfo(member.uuid);
+        });
+
         return card;
+    }
+
+    // Function to fetch user info from the API
+    async function fetchUserInfo(uuid) {
+        try {
+            const response = await fetch(`https://phantoms-backend.onrender.com/api/risingstones/user-info?uuid=${uuid}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            displayUserInfo(data.data);
+        } catch (error) {
+            console.error('There has been a problem with your fetch operation:', error);
+        }
+    }
+
+    // Function to display user info in the modal
+    function displayUserInfo(userInfo) {
+        const modal = document.getElementById('myModal');
+        const modalTitle = document.querySelector('.modal-title');
+        const modalProfile = document.getElementById('modalProfile');
+        const modalLastDynamic = document.getElementById('modalLastDynamic');
+        const modalAchievements = document.getElementById('modalAchievements');
+
+        modalTitle.textContent = userInfo.character_name || 'N/A';
+        modalProfile.textContent = `Profile: ${userInfo.profile || 'No profile'}`;
+        modalLastDynamic.textContent = `Last Dynamic: ${userInfo.last_dynamic || 'No recent activity'}`;
+
+        // Format achievements
+        const achievements = userInfo.achieveInfo.map(achieve => {
+            return `${achieve.achieve_name}: ${achieve.achieve_detail} (${achieve.achieve_time})`;
+        }).join('<br>');
+        modalAchievements.innerHTML = `Achievements: ${achievements || 'No achievements'}`;
+
+        modal.style.display = 'block';
     }
 
     // Function to populate the member list
@@ -155,6 +272,24 @@
 
     // Fetch data when the document is ready
     document.addEventListener('DOMContentLoaded', fetchData);
+
+    // Get the modal
+    const modal = document.getElementById('myModal');
+
+    // Get the <span> element that closes the modal
+    const span = document.getElementsByClassName('close')[0];
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = 'none';
+    };
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    };
 </script>
 </body>
 </html>
