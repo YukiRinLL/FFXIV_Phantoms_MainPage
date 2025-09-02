@@ -167,3 +167,7 @@ https://github.com/Tnze/ffxiv-best-craft/tree/cb27b5c6644e79dbc6f84b46dff3ab7a20
 
 tools加上招募板：
 https://xivpf.ff14.xin/
+
+
+监控面板（已添加）
+https://06my3sw3.status.cron-job.org/
