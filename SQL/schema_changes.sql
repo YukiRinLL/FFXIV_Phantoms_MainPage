@@ -169,3 +169,23 @@ CREATE TABLE onebot.user_messages (
     speed FLOAT,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE recruitments (
+    id INT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    created_world VARCHAR(255),
+    created_world_id INT,
+    home_world VARCHAR(255),
+    home_world_id INT,
+    category VARCHAR(255),
+    category_id INT,
+    duty VARCHAR(255),
+    min_item_level INT,
+    slots_filled INT,
+    slots_available INT,
+    time_left DOUBLE PRECISION,
+    updated_at TIMESTAMP(6),
+    is_cross_world BOOLEAN,
+    datacenter VARCHAR(255)
+);
