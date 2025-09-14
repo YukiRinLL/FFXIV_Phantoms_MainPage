@@ -7,7 +7,6 @@ body {
 
 .message-container {
     max-width: 100%;
-    min-width: 600px;
     margin: 0 auto;
     background-color: #fff; /* 白色容器 */
     padding: 20px;
@@ -49,7 +48,7 @@ body {
 }
 
 .container {
-    max-width: 600px;
+    max-width: 100%;
     margin: 0 auto;
     background-color: #fff; /* 白色容器 */
     padding: 20px;
@@ -89,16 +88,8 @@ body {
     background-color: #555; /* 悬停时更深的灰色 */
 }
 
-#message {
-    height: 100px; /* 增加输入框高度 */
-}
-
-#signature {
-    width: 50%; /* 缩小输入框宽度 */
-}
-
 .message img {
-    max-width: 200px;
+    max-width: 100%;
     max-height: 200px;
     border-radius: 8px;
     margin-top: 10px;
@@ -129,4 +120,27 @@ body {
 .user-info span {
     margin-left: 5px;
     vertical-align: middle;
+}
+
+@media (max-width: 600px) {
+    .user-avatar {
+        width: 30px;
+        height: 30px;
+    }
+
+    .message-content {
+        font-size: 1em;
+    }
+
+    .timestamp {
+        font-size: 0.8em;
+    }
+
+    .form-group input, .form-group textarea {
+        font-size: 1em;
+    }
+
+    .form-group button {
+        font-size: 1em;
+    }
 }
