@@ -189,3 +189,20 @@ CREATE TABLE recruitments (
     is_cross_world BOOLEAN,
     datacenter VARCHAR(255)
 );
+
+CREATE TABLE expeditionary_team (
+    uuid UUID PRIMARY KEY DEFAULT gen_random_uuid(), -- 主键，使用UUID，自动生成
+    name TEXT NOT NULL,                             -- 名字，非空
+    free_start_time TIME,                           -- 空闲开始时间（时分秒）
+    free_end_time TIME,                             -- 空闲结束时间（时分秒）
+    occupation TEXT,                                -- 职业
+    notes TEXT,                                     -- 备注
+    volunteer_dungeon TEXT,                         -- 志愿副本
+    level INTEGER,                                  -- 玩家等级
+    guild_name TEXT DEFAULT 'Phantom',              -- 所属公会名称，默认为'Phantom'
+    online_status BOOLEAN DEFAULT FALSE,            -- 在线状态，默认为离线
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 记录创建时间
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP  -- 记录更新时间
+);
+
+
