@@ -171,3 +171,7 @@ https://xivpf.ff14.xin/
 
 监控面板（已添加）
 https://06my3sw3.status.cron-job.org/
+
+战术板
+https://ff14.toolboxgaming.space/
+https://stratmaker.est.institute/
