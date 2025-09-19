@@ -4,7 +4,7 @@ var ctx;
 
 //实例化img对象
 var img = new Image();
-img.src = 'image/star.png';
+img.src = './images/star.png';
 
 //定义星星类
 var stars = [];
