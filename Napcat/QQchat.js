@@ -332,19 +332,8 @@ document.getElementById('messageForm').addEventListener('submit', function(event
     const message = document.getElementById('message').value;
     const signature = document.getElementById('signature').value;
 
-    // 格式化消息 - 确保没有无效字符
+    // 格式化消息
     const formattedMessage = `[${signature}] ${message}`;
-
-    // 使用try-catch包装URL构造
-    let url;
-    try {
-        url = new URL('https://phantoms-backend.onrender.com/onebot/send-to-group');
-        url.searchParams.append('groupId', '787909466');
-    } catch (error) {
-        console.error('URL construction error:', error);
-        alert('URL构造错误: ' + error.message);
-        return;
-    }
 
     // 重新启动定时器
     startFetchInterval();
@@ -356,9 +345,7 @@ document.getElementById('messageForm').addEventListener('submit', function(event
 
     const avatarImg = document.createElement('img');
     avatarImg.className = 'user-avatar';
-    // 确保URL有效
-    const avatarUrl = `https://q1.qlogo.cn/g?b=qq&nk=${encodeURIComponent(signature)}&s=100`;
-    avatarImg.src = avatarUrl;
+    avatarImg.src = `http://q1.qlogo.cn/g?b=qq&nk=${signature}&s=100`;
 
     const contentDiv = document.createElement('div');
     contentDiv.className = 'message-content';
@@ -377,36 +364,26 @@ document.getElementById('messageForm').addEventListener('submit', function(event
 
     container.appendChild(messageDiv);
 
-    // 发送消息到服务器
+    // 发送消息和系统信息到服务器
+    const url = new URL('https://phantoms-backend.onrender.com/onebot/send-to-group');
+    url.searchParams.append('groupId', '787909466');
     fetch(url, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'User-Agent': navigator.userAgent // 使用实际用户代理
+            'Content-Type': 'application/json'
         },
-        mode: 'cors',
-        credentials: 'omit',
-        body: JSON.stringify({
-            message: formattedMessage,
-            systemInfo: systemInfo
-        })
+        body: JSON.stringify({ message: formattedMessage, systemInfo: systemInfo })
     })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP错误! 状态码: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.status === 'ok') {
-                document.getElementById('message').value = ''; // 清空输入框
-                console.log('消息发送成功');
-            } else {
-                throw new Error(data.error || '未知服务器错误');
-            }
-        })
-        .catch(error => {
-            console.error('错误详情:', error);
-            alert('发送消息失败: ' + error.message);
-        });
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'ok') {
+            document.getElementById('message').value = ''; // 清空输入框
+        } else {
+            alert('Failed to send message: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while sending the message.'+ error.message);
+    });
 });
