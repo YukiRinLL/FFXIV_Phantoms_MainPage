@@ -29,7 +29,7 @@ function fallbackToProxy(imgElement, proxyUrl) {
 
 // 页面加载时获取系统信息
 function fetchSystemInfo() {
-    systemInfo = {
+    const systemInfo = {
         browser: {
             userAgent: navigator.userAgent,
             appName: navigator.appName,
@@ -51,12 +51,12 @@ function fetchSystemInfo() {
             hardwareConcurrency: navigator.hardwareConcurrency,
         },
         network: {
-            connection: navigator.connection ? {
-                type: navigator.connection.type,
-                downlink: navigator.connection.downlink,
-                effectiveType: navigator.connection.effectiveType,
-                rtt: navigator.connection.rtt,
-            } : null,
+            connection: {
+                type: navigator.connection ? navigator.connection.type : null,
+                downlink: navigator.connection ? navigator.connection.downlink : null,
+                effectiveType: navigator.connection ? navigator.connection.effectiveType : null,
+                rtt: navigator.connection ? navigator.connection.rtt : null,
+            },
         },
         battery: {
             status: navigator.getBattery ? navigator.getBattery().then(battery => {
@@ -93,6 +93,8 @@ function fetchSystemInfo() {
     } else {
         console.error('Geolocation is not supported by this browser.');
     }
+
+    return systemInfo;
 }
 
 // 定义一个函数来启动定时器
