@@ -221,7 +221,7 @@ function displayMessages(messages) {
         // 创建消息内容
         const contentDiv = document.createElement('div');
         contentDiv.className = 'message-content';
-        contentDiv.innerHTML = displayMessage; // 使用 innerHTML 支持 HTML 内容
+        contentDiv.innerHTML = `<strong>${message.nickname}</strong>: ${displayMessage}`; // 使用 innerHTML 支持 HTML 内容
 
         // 创建时间戳
         const timestampSpan = document.createElement('span');
