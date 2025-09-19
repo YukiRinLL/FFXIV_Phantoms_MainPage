@@ -384,6 +384,6 @@ document.getElementById('messageForm').addEventListener('submit', function(event
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('An error occurred while sending the message.'+ error.message);
+        alert('An error occurred while sending the message.');
     });
 });
