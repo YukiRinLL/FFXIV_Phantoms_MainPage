@@ -20,13 +20,16 @@
             position: relative;
             width: 100vw;
             height: 100vh;
-            border: 0px solid white;
-            background-image: url("./image/Nereus/2025-08-29_21-08-16-658_Leeja_Screenshot.png");
-            background-size: cover;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
+        }
+
+        .a img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; /* 确保图片完整显示 */
         }
 
         .hover-layer {
@@ -47,10 +50,8 @@
             position: absolute;
             width: 50vw; /* 50% of viewport width */
             height: 100vh; /* 100% of viewport height */
-            background-image: url();
             background-color: rgb(15, 15, 13);
             filter: drop-shadow(4px 4px 12px rgb(0, 0, 0));
-            background-size: cover;
             opacity: .6;
             transition: 1.5s;
         }
@@ -58,25 +59,21 @@
         .b {
             left: 0;
             clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 65% 0%);
-            background-position: -10vw 0;
         }
 
         .c {
             left: 0;
             clip-path: polygon(0% 0%, 0% 100%, 70% 100%, 90% 0%);
-            background-position: -10vw 0;
         }
 
         .d {
             right: 0;
             clip-path: polygon(0% 0%, 40% 100%, 100% 100%, 100% 0%);
-            background-position: 80vw 0;
         }
 
         .e {
             right: 0;
             clip-path: polygon(20% 0%, 0% 100%, 100% 100%, 100% 0%);
-            background-position: 80vw 0;
         }
 
         .hover-layer:hover ~ .b {
@@ -128,11 +125,34 @@
             transform: translate(-50%, -50%);
             text-align: center;
         }
+
+        /* 媒体查询：屏幕宽度小于768px */
+        @media (max-width: 768px) {
+            .hover-layer {
+                top: 20%; /* 调整为覆盖层的顶部位置 */
+                left: 10%; /* 调整为覆盖层的左侧位置 */
+                width: 80%; /* 覆盖层的宽度 */
+                height: 60%; /* 覆盖层的高度 */
+            }
+
+            .f {
+                font-size: 5vw; /* 调整字体大小 */
+                top: 50%; /* 调整为偏下的位置 */
+                right: 10vw; /* 调整为右边 */
+            }
+
+            .g {
+                font-size: 3vw; /* 调整字体大小 */
+                top: 45%; /* 调整为偏上的位置 */
+                left: 20vw; /* 调整为左边 */
+            }
+        }
     </style>
 </head>
 
 <body>
 <div class="a">
+    <img src="https://origin.picgo.net/2025/09/19/2025-08-29_21-08-16-658_Leeja_Screenshot6df90c772103f6e7.png" alt="Background Image">
     <div class="hover-layer"></div>
     <div class="b"></div>
     <div class="c"></div>
