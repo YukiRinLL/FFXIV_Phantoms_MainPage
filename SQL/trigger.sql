@@ -40,3 +40,18 @@ CREATE TRIGGER password_insert_trigger
 AFTER INSERT ON public.users
 FOR EACH ROW
 EXECUTE FUNCTION handle_password_insert();
+
+
+
+CREATE OR REPLACE FUNCTION update_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER update_system_config_timestamp
+    BEFORE UPDATE ON system_config
+    FOR EACH ROW
+    EXECUTE FUNCTION update_timestamp();
