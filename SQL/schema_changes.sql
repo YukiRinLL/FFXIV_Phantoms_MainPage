@@ -206,3 +206,10 @@ CREATE TABLE expeditionary_team (
 );
 
 
+CREATE TABLE system_config (
+    key VARCHAR(255) PRIMARY KEY,
+    value TEXT NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
