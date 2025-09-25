@@ -114,6 +114,8 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: transform 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .stat-card:hover {
@@ -144,9 +146,55 @@
             background: linear-gradient(135deg, #4cc9f0, #4361ee);
         }
 
+        /* 自定义滚动容器样式 */
+        .scroll-container {
+            position: relative;
+            max-height: 400px;
+            overflow: hidden;
+        }
+
         .ranking-list {
             max-height: 400px;
             overflow-y: auto;
+            padding-right: 10px;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+
+        /* 隐藏默认滚动条 */
+        .ranking-list::-webkit-scrollbar {
+            display: none; /* Chrome, Safari and Opera */
+        }
+
+        /* 自定义滚动条轨道 */
+        .custom-scrollbar {
+            position: absolute;
+            right: 5px;
+            top: 0;
+            bottom: 0;
+            width: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-card:hover .custom-scrollbar {
+            opacity: 1;
+        }
+
+        /* 自定义滚动条滑块 */
+        .custom-scrollbar-thumb {
+            position: absolute;
+            width: 100%;
+            background: linear-gradient(to bottom, #4cc9f0, #4361ee);
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .custom-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, #3ab0d9, #3255d6);
         }
 
         .ranking-item {
@@ -189,11 +237,15 @@
 
         .user-info {
             flex: 1;
+            min-width: 0; /* 防止文本溢出 */
         }
 
         .user-name {
             font-weight: 500;
             margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .user-id {
@@ -205,6 +257,7 @@
             font-weight: bold;
             font-size: 1.1rem;
             margin-left: 10px;
+            white-space: nowrap;
         }
 
         .chart-container {
@@ -244,6 +297,14 @@
 
             .search-box {
                 width: 100%;
+            }
+
+            .custom-scrollbar {
+                display: none; /* 在移动设备上隐藏自定义滚动条 */
+            }
+
+            .ranking-list {
+                padding-right: 0;
             }
         }
     </style>
@@ -287,8 +348,13 @@
                         <i class="fas fa-comment-alt"></i>
                     </div>
                 </div>
-                <div class="ranking-list" id="messageRanking">
-                    <!-- 动态生成 -->
+                <div class="scroll-container">
+                    <div class="ranking-list" id="messageRanking">
+                        <!-- 动态生成 -->
+                    </div>
+                    <div class="custom-scrollbar">
+                        <div class="custom-scrollbar-thumb"></div>
+                    </div>
                 </div>
             </div>
 
@@ -300,8 +366,13 @@
                         <i class="fas fa-image"></i>
                     </div>
                 </div>
-                <div class="ranking-list" id="imageRanking">
-                    <!-- 动态生成 -->
+                <div class="scroll-container">
+                    <div class="ranking-list" id="imageRanking">
+                        <!-- 动态生成 -->
+                    </div>
+                    <div class="custom-scrollbar">
+                        <div class="custom-scrollbar-thumb"></div>
+                    </div>
                 </div>
             </div>
 
@@ -313,8 +384,13 @@
                         <i class="fas fa-chart-pie"></i>
                     </div>
                 </div>
-                <div class="ranking-list" id="ratioRanking">
-                    <!-- 动态生成 -->
+                <div class="scroll-container">
+                    <div class="ranking-list" id="ratioRanking">
+                        <!-- 动态生成 -->
+                    </div>
+                    <div class="custom-scrollbar">
+                        <div class="custom-scrollbar-thumb"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -376,6 +452,7 @@
 
             statsData = await response.json();
             displayData();
+            initCustomScrollbars();
 
             // 隐藏加载提示，显示内容
             document.getElementById('loading').style.display = 'none';
@@ -388,6 +465,91 @@
             document.getElementById('loading').style.display = 'none';
             document.getElementById('error').style.display = 'block';
         }
+    }
+
+    // 初始化自定义滚动条
+    function initCustomScrollbars() {
+        document.querySelectorAll('.scroll-container').forEach(container => {
+            const list = container.querySelector('.ranking-list');
+            const scrollbar = container.querySelector('.custom-scrollbar');
+            const thumb = container.querySelector('.custom-scrollbar-thumb');
+
+            // 设置滚动条高度
+            function updateScrollbar() {
+                const scrollRatio = list.clientHeight / list.scrollHeight;
+                const thumbHeight = Math.max(scrollRatio * scrollbar.clientHeight, 20); // 最小高度20px
+
+                thumb.style.height = thumbHeight + 'px';
+
+                // 设置初始位置
+                updateThumbPosition();
+            }
+
+            // 更新滑块位置
+            function updateThumbPosition() {
+                const scrollRatio = list.scrollTop / (list.scrollHeight - list.clientHeight);
+                const thumbPosition = scrollRatio * (scrollbar.clientHeight - thumb.clientHeight);
+
+                thumb.style.top = thumbPosition + 'px';
+            }
+
+            // 列表滚动时更新滑块位置
+            list.addEventListener('scroll', updateThumbPosition);
+
+            // 滑块拖动功能
+            let isDragging = false;
+
+            thumb.addEventListener('mousedown', function(e) {
+                isDragging = true;
+                const startY = e.clientY;
+                const startTop = parseInt(thumb.style.top) || 0;
+
+                function onMouseMove(e) {
+                    if (!isDragging) return;
+
+                    const deltaY = e.clientY - startY;
+                    const newTop = Math.max(0, Math.min(startTop + deltaY, scrollbar.clientHeight - thumb.clientHeight));
+
+                    thumb.style.top = newTop + 'px';
+
+                    // 更新列表滚动位置
+                    const scrollRatio = newTop / (scrollbar.clientHeight - thumb.clientHeight);
+                    list.scrollTop = scrollRatio * (list.scrollHeight - list.clientHeight);
+                }
+
+                function onMouseUp() {
+                    isDragging = false;
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                }
+
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+
+                e.preventDefault();
+            });
+
+            // 点击滚动条轨道跳转
+            scrollbar.addEventListener('click', function(e) {
+                if (e.target === thumb) return;
+
+                const clickY = e.clientY - scrollbar.getBoundingClientRect().top;
+                const thumbHeight = thumb.clientHeight;
+                const newTop = Math.max(0, Math.min(clickY - thumbHeight / 2, scrollbar.clientHeight - thumbHeight));
+
+                thumb.style.top = newTop + 'px';
+
+                // 更新列表滚动位置
+                const scrollRatio = newTop / (scrollbar.clientHeight - thumbHeight);
+                list.scrollTop = scrollRatio * (list.scrollHeight - list.clientHeight);
+            });
+
+            // 监听窗口大小变化
+            window.addEventListener('resize', updateScrollbar);
+
+            // 初始更新
+            updateScrollbar();
+        });
     }
 
     // 显示数据
@@ -420,7 +582,7 @@
             itemElement.innerHTML = `
                     <div class="rank ${rankClass}">${index + 1}</div>
                     <div class="user-info">
-                        <div class="user-name">${item.nickname}</div>
+                        <div class="user-name" title="${item.nickname}">${item.nickname}</div>
                         <div class="user-id">ID: ${item.userId}</div>
                     </div>
                     <div class="stat-value">${item[countField].toLocaleString()}${unit}</div>
@@ -443,7 +605,7 @@
             itemElement.innerHTML = `
                     <div class="rank ${rankClass}">${index + 1}</div>
                     <div class="user-info">
-                        <div class="user-name">${item.nickname}</div>
+                        <div class="user-name" title="${item.nickname}">${item.nickname}</div>
                         <div class="user-id">消息: ${item.totalMessages}条, 图片: ${item.totalImages}张</div>
                     </div>
                     <div class="stat-value">${item.imageRatio}</div>
