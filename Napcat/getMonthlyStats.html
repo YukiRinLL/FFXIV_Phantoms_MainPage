@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phantoms群聊月度数据统计</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e6e6e6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #4cc9f0, #4361ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 8px 15px;
+            width: 300px;
+        }
+
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 8px;
+            width: 100%;
+            outline: none;
+        }
+
+        .search-box i {
+            margin-right: 10px;
+            opacity: 0.7;
+        }
+
+        .tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 5px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background: #4361ee;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #4cc9f0, #4361ee);
+        }
+
+        .ranking-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .ranking-item:last-child {
+            border-bottom: none;
+        }
+
+        .rank {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .rank-1 {
+            background: linear-gradient(135deg, #ffd700, #ffa500);
+            color: #333;
+        }
+
+        .rank-2 {
+            background: linear-gradient(135deg, #c0c0c0, #a0a0a0);
+            color: #333;
+        }
+
+        .rank-3 {
+            background: linear-gradient(135deg, #cd7f32, #a56a2b);
+            color: #333;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .user-id {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .stat-value {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-left: 10px;
+        }
+
+        .chart-container {
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2rem;
+        }
+
+        .error {
+            text-align: center;
+            padding: 20px;
+            color: #ff6b6b;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Phantoms群聊月度数据统计</h1>
+        <p class="subtitle">消息、图片发送量及图片比例排行榜</p>
+    </header>
+
+    <div class="controls">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="搜索用户昵称或ID...">
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="all">全部数据</div>
+            <div class="tab" data-tab="messages">消息排行</div>
+            <div class="tab" data-tab="images">图片排行</div>
+            <div class="tab" data-tab="ratio">图片比例</div>
+        </div>
+    </div>
+
+    <div id="loading" class="loading">
+        <i class="fas fa-spinner fa-spin"></i> 正在加载数据...
+    </div>
+
+    <div id="error" class="error" style="display: none;">
+        <i class="fas fa-exclamation-triangle"></i> 数据加载失败，请刷新页面重试
+    </div>
+
+    <div id="content" style="display: none;">
+        <div class="stats-container">
+            <!-- 消息排行榜 -->
+            <div class="stat-card" data-category="messages">
+                <div class="card-header">
+                    <h2 class="card-title">消息发送排行榜</h2>
+                    <div class="card-icon">
+                        <i class="fas fa-comment-alt"></i>
+                    </div>
+                </div>
+                <div class="ranking-list" id="messageRanking">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+
+            <!-- 图片排行榜 -->
+            <div class="stat-card" data-category="images">
+                <div class="card-header">
+                    <h2 class="card-title">图片发送排行榜</h2>
+                    <div class="card-icon">
+                        <i class="fas fa-image"></i>
+                    </div>
+                </div>
+                <div class="ranking-list" id="imageRanking">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+
+            <!-- 图片比例排行榜 -->
+            <div class="stat-card" data-category="ratio">
+                <div class="card-header">
+                    <h2 class="card-title">图片比例排行榜</h2>
+                    <div class="card-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                </div>
+                <div class="ranking-list" id="ratioRanking">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="card-header">
+                <h2 class="card-title">数据可视化</h2>
+                <div class="card-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="statsChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>数据来源: Phantoms群聊 • 更新时间: <span id="updateTime"></span></p>
+    </footer>
+</div>
+
+<script>
+    // API端点
+    const API_URL = 'https://phantoms-backend.onrender.com/onebot/monthly-stats';
+
+    // 全局数据存储
+    let statsData = null;
+
+    // 页面加载完成后获取数据
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchData();
+
+        // 搜索功能
+        document.getElementById('searchInput').addEventListener('input', function() {
+            filterData(this.value);
+        });
+
+        // 标签切换功能
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                const category = this.getAttribute('data-tab');
+                filterByCategory(category);
+            });
+        });
+    });
+
+    // 获取数据
+    async function fetchData() {
+        try {
+            const response = await fetch(API_URL);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            statsData = await response.json();
+            displayData();
+
+            // 隐藏加载提示，显示内容
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+
+            // 更新页面时间
+            document.getElementById('updateTime').textContent = new Date().toLocaleDateString();
+        } catch (error) {
+            console.error('获取数据失败:', error);
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+        }
+    }
+
+    // 显示数据
+    function displayData() {
+        if (!statsData) return;
+
+        // 显示消息排行榜
+        displayRanking('messageRanking', statsData.messageRanking, 'messageCount', '条消息');
+
+        // 显示图片排行榜
+        displayRanking('imageRanking', statsData.imageRanking, 'imageCount', '张图片');
+
+        // 显示图片比例排行榜
+        displayRatioRanking('ratioRanking', statsData.ratioRanking);
+
+        // 创建图表
+        createChart();
+    }
+
+    // 显示排行榜
+    function displayRanking(containerId, data, countField, unit) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+
+        data.forEach((item, index) => {
+            const rankClass = index < 3 ? `rank-${index + 1}` : '';
+
+            const itemElement = document.createElement('div');
+            itemElement.className = 'ranking-item';
+            itemElement.innerHTML = `
+                    <div class="rank ${rankClass}">${index + 1}</div>
+                    <div class="user-info">
+                        <div class="user-name">${item.nickname}</div>
+                        <div class="user-id">ID: ${item.userId}</div>
+                    </div>
+                    <div class="stat-value">${item[countField].toLocaleString()}${unit}</div>
+                `;
+
+            container.appendChild(itemElement);
+        });
+    }
+
+    // 显示图片比例排行榜
+    function displayRatioRanking(containerId, data) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+
+        data.forEach((item, index) => {
+            const rankClass = index < 3 ? `rank-${index + 1}` : '';
+
+            const itemElement = document.createElement('div');
+            itemElement.className = 'ranking-item';
+            itemElement.innerHTML = `
+                    <div class="rank ${rankClass}">${index + 1}</div>
+                    <div class="user-info">
+                        <div class="user-name">${item.nickname}</div>
+                        <div class="user-id">消息: ${item.totalMessages}条, 图片: ${item.totalImages}张</div>
+                    </div>
+                    <div class="stat-value">${item.imageRatio}</div>
+                `;
+
+            container.appendChild(itemElement);
+        });
+    }
+
+    // 创建图表
+    function createChart() {
+        const ctx = document.getElementById('statsChart').getContext('2d');
+
+        // 提取前5名用户的数据
+        const topUsers = statsData.messageRanking.slice(0, 5);
+        const labels = topUsers.map(user => user.nickname);
+
+        // 获取每个用户的消息数和图片数
+        const messageCounts = topUsers.map(user => user.messageCount);
+
+        // 获取每个用户的图片数（需要从imageRanking中查找）
+        const imageCounts = topUsers.map(user => {
+            const imageUser = statsData.imageRanking.find(imgUser => imgUser.userId === user.userId);
+            return imageUser ? imageUser.imageCount : 0;
+        });
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: '消息数',
+                        data: messageCounts,
+                        backgroundColor: 'rgba(76, 201, 240, 0.7)',
+                        borderColor: 'rgba(76, 201, 240, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: '图片数',
+                        data: imageCounts,
+                        backgroundColor: 'rgba(67, 97, 238, 0.7)',
+                        borderColor: 'rgba(67, 97, 238, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // 筛选数据
+    function filterData(searchTerm) {
+        if (!statsData) return;
+
+        const lowerSearchTerm = searchTerm.toLowerCase();
+
+        // 筛选消息排行榜
+        const filteredMessages = statsData.messageRanking.filter(item =>
+            item.nickname.toLowerCase().includes(lowerSearchTerm) ||
+            item.userId.toString().includes(lowerSearchTerm)
+        );
+        displayRanking('messageRanking', filteredMessages, 'messageCount', '条消息');
+
+        // 筛选图片排行榜
+        const filteredImages = statsData.imageRanking.filter(item =>
+            item.nickname.toLowerCase().includes(lowerSearchTerm) ||
+            item.userId.toString().includes(lowerSearchTerm)
+        );
+        displayRanking('imageRanking', filteredImages, 'imageCount', '张图片');
+
+        // 筛选图片比例排行榜
+        const filteredRatios = statsData.ratioRanking.filter(item =>
+            item.nickname.toLowerCase().includes(lowerSearchTerm) ||
+            item.userId.toString().includes(lowerSearchTerm)
+        );
+        displayRatioRanking('ratioRanking', filteredRatios);
+    }
+
+    // 按类别筛选
+    function filterByCategory(category) {
+        const cards = document.querySelectorAll('.stat-card');
+
+        if (category === 'all') {
+            cards.forEach(card => card.style.display = 'block');
+        } else {
+            cards.forEach(card => {
+                if (card.getAttribute('data-category') === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    }
+</script>
+</body>
+</html>
