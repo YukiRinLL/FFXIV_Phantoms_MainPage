@@ -13,6 +13,52 @@
 
 
     <title>FCの歴史</title>
+    <style>
+        /* 折叠功能相关样式 */
+        .member-toggle {
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+            border-radius: 4px;
+            width: 100%;
+            text-align: left;
+            font-weight: bold;
+            color: #4a6fa5;
+            cursor: pointer;
+            margin: 15px 0;
+            position: relative;
+            transition: background-color 0.3s;
+        }
+        .member-toggle:hover {
+            background-color: #e0e0e0;
+        }
+        .member-toggle:after {
+            content: '▼';
+            position: absolute;
+            right: 15px;
+            transition: transform 0.3s;
+        }
+        .member-toggle.expanded:after {
+            transform: rotate(180deg);
+        }
+        .member-list {
+            margin: 10px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            display: none;
+            border-left: 3px solid #4a6fa5;
+        }
+        .member-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .member-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+    </style>
     <link rel="stylesheet" href="assets/web/assets/mobirise-icons2/mobirise2.css">
     <link rel="stylesheet" href="assets/tether/tether.min.css">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
@@ -35,28 +81,27 @@
 
     <!--load scripts first in index & history-->
     <script src="assets/web/assets/jquery/jquery.min.js">
-
     </script>
-<script src="assets/popper/popper.min.js">
-</script>
-<script src="assets/tether/tether.min.js">
-</script>
-<script src="assets/bootstrap/js/bootstrap.min.js">
-</script>
-<script src="assets/smoothscroll/smooth-scroll.js">
-</script>
-<script src="assets/ytplayer/jquery.mb.ytplayer.min.js">
-</script>
-<script src="assets/vimeoplayer/jquery.mb.vimeo_player.js">
-</script>
-<script src="assets/dropdown/js/nav-dropdown.js">
-</script>
-<script src="assets/dropdown/js/navbar-dropdown.js">
-</script>
-<script src="assets/touchswipe/jquery.touch-swipe.min.js">
-</script>
-<script src="assets/theme/js/script.js">
-</script>
+    <script src="assets/popper/popper.min.js">
+    </script>
+    <script src="assets/tether/tether.min.js">
+    </script>
+    <script src="assets/bootstrap/js/bootstrap.min.js">
+    </script>
+    <script src="assets/smoothscroll/smooth-scroll.js">
+    </script>
+    <script src="assets/ytplayer/jquery.mb.ytplayer.min.js">
+    </script>
+    <script src="assets/vimeoplayer/jquery.mb.vimeo_player.js">
+    </script>
+    <script src="assets/dropdown/js/nav-dropdown.js">
+    </script>
+    <script src="assets/dropdown/js/navbar-dropdown.js">
+    </script>
+    <script src="assets/touchswipe/jquery.touch-swipe.min.js">
+    </script>
+    <script src="assets/theme/js/script.js">
+    </script>
 
 </head>
 <body>
@@ -102,12 +147,13 @@
                         <img src="https://img.picgo.net/2024/10/18/CLf695492da2b9de0f.png" alt="FC設立日" title="">
 <!--                        <img src="assets/images/mbr-948x597.jpg" alt="FC設立日" title="">-->
                     </div>
-                    <p class="mbr-text mbr-fonts-style display-7"></p>
-                    <p class="mbr-text mbr-fonts-style display-7">创建人(Astral):<strong>绯雪yuki</strong></p>
-                    <p class="mbr-text mbr-fonts-style display-7">署名人(Umbral):<strong>舞九</strong></p>
-                    <p class="mbr-text mbr-fonts-style display-7">署名人(Umbral):<strong>咸鱼ab</strong></p>
-                    <p class="mbr-text mbr-fonts-style display-7">署名人(Umbral):<strong>珂露西亚原木(一颗李子)</strong></p>
-
+                    <button class="member-toggle">人员名单</button>
+                    <div class="member-list">
+                        <p class="mbr-text mbr-fonts-style display-7">创建人(Astral):<strong>绯雪yuki</strong></p>
+                        <p class="mbr-text mbr-fonts-style display-7">署名人(Umbral):<strong>舞九</strong></p>
+                        <p class="mbr-text mbr-fonts-style display-7">署名人(Umbral):<strong>咸鱼ab</strong></p>
+                        <p class="mbr-text mbr-fonts-style display-7">署名人(Umbral):<strong>珂露西亚原木(一颗李子)</strong></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -115,11 +161,21 @@
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员</strong></h4>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>爱瑠</strong> 加入了FC</p>
-                    <p>部队创始人</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>虫语</strong> 加入了FC</p>
-                    <p>部队创始人，兼部队管理员</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>Theyu</strong> 加入了FC</p>
+                    <button class="member-toggle">人员名单</button>
+                    <div class="member-list">
+                        <div class="member-item">
+                            <p class="mbr-text mbr-fonts-style display-7"><strong>爱瑠</strong> 加入了FC</p>
+                            <p>部队创始人</p>
+                        </div>
+                        <div class="member-item">
+                            <p class="mbr-text mbr-fonts-style display-7"><strong>虫语</strong> 加入了FC</p>
+                            <p>部队创始人，兼部队管理员</p>
+
+                        </div>
+                        <div class="member-item">
+                            <p class="mbr-text mbr-fonts-style display-7"><strong>Theyu</strong> 加入了FC</p>
+                        </div>
+                    </div>
                 </div>
             </div>
             <span class="iconBackground"></span>
@@ -128,12 +184,15 @@
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员</strong></h4>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>Endker(恩克)</strong> 加入了FC</p>
-                    <p>名副其实的版本最强冒险者，初期带队导师</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>独步寻花</strong> 加入了FC</p>
-                    <p>人族男性，两个月通关三绝の最速传说。
-                        <br>不知为何他的周围总是美女相伴。
-                    </p>
+                    <button class="member-toggle">人员名单</button>
+                    <div class="member-list">
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Endker(恩克)</strong> 加入了FC</p>
+                        <p>名副其实的版本最强冒险者，初期带队导师</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>独步寻花</strong> 加入了FC</p>
+                        <p>人族男性，两个月通关三绝の最速传说。
+                            <br>不知为何他的周围总是美女相伴。
+                        </p>
+                    </div>
                 </div>
             </div>
             <span class="iconBackground"></span>
@@ -161,23 +220,26 @@
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员</strong></h4>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>Fleabag</strong> 加入了FC</p>
-                    <p>话糙理不糙的老哥</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>Rikki</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>Ancel(Ancerise-Lecna)</strong> 加入了FC</p>
-                    <p>所在地总是位于狼狱停船场的PVP高手，
-                        <br>你去老地方大概率能看见他。
-                    </p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>雨雪琉璃</strong> 加入了FC</p>
-                     <p class="mbr-text mbr-fonts-style display-7"><strong>沐雪茗</strong> 加入了FC</p>
-                    <p>生活玩家，生产和采集的爱好者，
-                        <br>主职业-采矿工(国一矿)。
-                        <br>“这个人他越挖越精神的。”
-                    </p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>尤納恩</strong> 加入了Link-shell</p>
-                    <p>原服务器 电信一区 神意之地</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>Riyuu</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>香茗</strong> 加入了FC</p>
+                    <button class="member-toggle">人员名单</button>
+                    <div class="member-list">
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Fleabag</strong> 加入了FC</p>
+                        <p>话糙理不糙的老哥</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Rikki</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Ancel(Ancerise-Lecna)</strong> 加入了FC</p>
+                        <p>所在地总是位于狼狱停船场的PVP高手，
+                            <br>你去老地方大概率能看见他。
+                        </p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>雨雪琉璃</strong> 加入了FC</p>
+                         <p class="mbr-text mbr-fonts-style display-7"><strong>沐雪茗</strong> 加入了FC</p>
+                        <p>生活玩家，生产和采集的爱好者，
+                            <br>主职业-采矿工(国一矿)。
+                            <br>“这个人他越挖越精神的。”
+                        </p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>尤納恩</strong> 加入了Link-shell</p>
+                        <p>原服务器 电信一区 神意之地</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Riyuu</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>香茗</strong> 加入了FC</p>
+                    </div>
                 </div>
             </div>
             <span class="iconBackground"></span>
@@ -205,18 +267,21 @@
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员</strong></h4>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>德蕾洛斯</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>阿黎</strong> 加入了Link-shell</p>
-                    <p>原服务器 豆豆柴区 伊修加德</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>小怪兽</strong> 加入了Link-shell</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>月凛</strong> 加入了Link-shell</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>终末之冬</strong> 加入了Link-shell</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>明堂</strong> 加入了FC</p>
-                    <p>后来他成为了非常老练の百科全书级导师。</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>休斯</strong> 加入了FC</p>
-                    <p>面具下的神秘男人，没有人见过他的真实面目。
-                        <br>部队房木人的伤痕曾经一半是他的武士刀留下的。
-                    </p>
+                    <button class="member-toggle">人员名单</button>
+                    <div class="member-list">
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>德蕾洛斯</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>阿黎</strong> 加入了Link-shell</p>
+                        <p>原服务器 豆豆柴区 伊修加德</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>小怪兽</strong> 加入了Link-shell</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>月凛</strong> 加入了Link-shell</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>终末之冬</strong> 加入了Link-shell</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>明堂</strong> 加入了FC</p>
+                        <p>后来他成为了非常老练の百科全书级导师。</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>休斯</strong> 加入了FC</p>
+                        <p>面具下的神秘男人，没有人见过他的真实面目。
+                            <br>部队房木人的伤痕曾经一半是他的武士刀留下的。
+                        </p>
+                    </div>
                 </div>
             </div>
             <span class="iconBackground"></span>
@@ -226,18 +291,21 @@
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员</strong></h4>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>Luluba(露露白)</strong> 加入了FC</p>
-                    <p>熟识的人都称赞她甜美的嗓音和其平和包容的印象。
-                        <br>或许温柔的女性描述的就是她吧。
-                    </p>
-                    <p></p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>雲天</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>Hssssy</strong> 加入了FC</p>
-                    <p>时不时的能发现他在身后不远处平静的看着你</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>蜘蛛zz</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>Zwei</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>幻泷</strong> 加入了FC</p>
-                    <p>那天我最后一次见他，后来他走了再也没回来过</p>
+                    <button class="member-toggle">人员名单</button>
+                    <div class="member-list">
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Luluba(露露白)</strong> 加入了FC</p>
+                        <p>熟识的人都称赞她甜美的嗓音和其平和包容的印象。
+                            <br>或许温柔的女性描述的就是她吧。
+                        </p>
+                        <p></p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>雲天</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Hssssy</strong> 加入了FC</p>
+                        <p>时不时的能发现他在身后不远处平静的看着你</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>蜘蛛zz</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Zwei</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>幻泷</strong> 加入了FC</p>
+                        <p>那天我最后一次见他，后来他走了再也没回来过</p>
+                    </div>
                 </div>
             </div>
             <span class="iconBackground"></span>
@@ -247,18 +315,21 @@
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员</strong></h4>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>Renow</strong> 加入了FC</p>
-                    <p>
-                        后来被Sia问了:"我弟怎么在你部队里？"
-                    </p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>龙吟之魂</strong> 加入了Linkshell</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>恩佐斯爱吃饭</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>栗伽</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>Meilu</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>尤玛妮</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>阿尔蒂娅</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>沐梨</strong> 加入了Linkshell</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>柚缕缕</strong> 加入了FC</p>
+                    <button class="member-toggle">人员名单</button>
+                    <div class="member-list">
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Renow</strong> 加入了FC</p>
+                        <p>
+                            后来被Sia问了:"我弟怎么在你部队里？"
+                        </p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>龙吟之魂</strong> 加入了Linkshell</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>恩佐斯爱吃饭</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>栗伽</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Meilu</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>尤玛妮</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>阿尔蒂娅</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>沐梨</strong> 加入了Linkshell</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>柚缕缕</strong> 加入了FC</p>
+                    </div>
                 </div>
             </div>
             <span class="iconBackground"></span>
@@ -288,25 +359,28 @@
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员</strong></h4>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>Yan</strong> 加入了FC</p>
-                    <p>其名为“焰”</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>沧月</strong> 加入了FC</p>
-                    <p>Logs100的T0玩家，精通黑魔法和白魔法的大魔导士</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>澪溚</strong> 加入了FC</p>
-                    <p>她在利姆萨罗敏萨的甲板上平静的伫立着，
-                        <br>无言仿佛大理石的艺术品，
-                        <br>而当你看向她时，她总能用耳边的低语回应你
-                    </p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>Ryan·</strong> 加入了FC</p>
-                    <p>Ryan偶尔会回来做主线任务，
-                        <br>看到他的话就叫上他一起玩吧。
-                    </p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>易拉罐罐</strong> 加入了FC</p>
-                    <p>他是罐仔,我们的小伙伴</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>直到世界尽头</strong> 加入了FC</p>
-                    <p>我进入屋内，在阴暗中看见这位擅闯的Viera族女性。
-                        <br>我告诉她这是Phantoms的公共设施。
-                    </p>
+                    <button class="member-toggle">人员名单</button>
+                    <div class="member-list">
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Yan</strong> 加入了FC</p>
+                        <p>其名为“焰”</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>沧月</strong> 加入了FC</p>
+                        <p>Logs100的T0玩家，精通黑魔法和白魔法的大魔导士</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>澪溚</strong> 加入了FC</p>
+                        <p>她在利姆萨罗敏萨的甲板上平静的伫立着，
+                            <br>无言仿佛大理石的艺术品，
+                            <br>而当你看向她时，她总能用耳边的低语回应你
+                        </p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Ryan·</strong> 加入了FC</p>
+                        <p>Ryan偶尔会回来做主线任务，
+                            <br>看到他的话就叫上他一起玩吧。
+                        </p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>易拉罐罐</strong> 加入了FC</p>
+                        <p>他是罐仔,我们的小伙伴</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>直到世界尽头</strong> 加入了FC</p>
+                        <p>我进入屋内，在阴暗中看见这位擅闯的Viera族女性。
+                            <br>我告诉她这是Phantoms的公共设施。
+                        </p>
+                    </div>
                 </div>
             </div>
             <span class="iconBackground"></span>
@@ -315,43 +389,46 @@
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员</strong></h4>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>鲸波万仞</strong> 加入了FC</p>
-                    <p>富有魅力的Miqo'te族女性。
-                        <br>她充满知性的平和的声音偶尔会讲述一些压箱底的冷笑话，
-                        <br>作为喜欢悬疑恐怖的人我很享受这些故事。
-                    </p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>Jill(朝夕优)</strong> 加入了FC</p>
-                    <p>独行的捕鱼人，
-                        <br>后来她去经营了一家氛围很不错的酒吧。
-                        <br>有机会请一定去坐一坐
-                    </p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>Xiao布丁</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>无敌的果子哟</strong> 加入了FC</p>
-                    <p>有爱的拉拉肥</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>世代圈(Qvancc)</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>梅贝尔</strong> 加入了FC</p>
-                    <p>穿着很暴露的超大只粉嫩可爱兔娘</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>皮皮橙子</strong> 加入了FC</p>
+                    <button class="member-toggle">人员名单</button>
+                    <div class="member-list">
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>鲸波万仞</strong> 加入了FC</p>
+                        <p>富有魅力的Miqo'te族女性。
+                            <br>她充满知性的平和的声音偶尔会讲述一些压箱底的冷笑话，
+                            <br>作为喜欢悬疑恐怖的人我很享受这些故事。
+                        </p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Jill(朝夕优)</strong> 加入了FC</p>
+                        <p>独行的捕鱼人，
+                            <br>后来她去经营了一家氛围很不错的酒吧。
+                            <br>有机会请一定去坐一坐
+                        </p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Xiao布丁</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>无敌的果子哟</strong> 加入了FC</p>
+                        <p>有爱的拉拉肥</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>世代圈(Qvancc)</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>梅贝尔</strong> 加入了FC</p>
+                        <p>穿着很暴露的超大只粉嫩可爱兔娘</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>皮皮橙子</strong> 加入了FC</p>
 
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>花巳</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>Ncesut</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>Unvoler</strong> 加入了FC</p>
-                    <p>危险又迷人的Viera族男性，
-                        <br>双刃的暗杀者，让人心动的帅气角色
-                    </p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>鲨鱼辣椒出动 & 蝎子莱莱出动</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>青蛙呱呱</strong> 加入了Linkshell</p>
-                    <p>相貌英俊，技艺高超，乐于助人的青年人族。
-                        <br>可惜是个衣品奇怪，从来不好好穿衣服的赤裸变态。
-                    </p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>Aivd</strong> 加入了FC</p>
-                    <p>艾与独，你也可以叫他小艾同学</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>幽靈花(莓夢)</strong><br>加入了FC</p>
-                    <p>地雷系穿搭可爱风的时髦女性。
-                        <br>她是小桃，她的身边总是有一位神秘的护花使者
-                    </br>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>两仪梦月</strong> 加入了FC</p>
-                    <p>最有潜力的新人，她以后会变得很强的</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>花巳</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Ncesut</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Unvoler</strong> 加入了FC</p>
+                        <p>危险又迷人的Viera族男性，
+                            <br>双刃的暗杀者，让人心动的帅气角色
+                        </p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>鲨鱼辣椒出动 & 蝎子莱莱出动</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>青蛙呱呱</strong> 加入了Linkshell</p>
+                        <p>相貌英俊，技艺高超，乐于助人的青年人族。
+                            <br>可惜是个衣品奇怪，从来不好好穿衣服的赤裸变态。
+                        </p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Aivd</strong> 加入了FC</p>
+                        <p>艾与独，你也可以叫他小艾同学</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>幽靈花(莓夢)</strong><br>加入了FC</p>
+                        <p>地雷系穿搭可爱风的时髦女性。
+                            <br>她是小桃，她的身边总是有一位神秘的护花使者</br>
+                        </p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>两仪梦月</strong> 加入了FC</p>
+                        <p>很强的白魔法师</p>
+                    </div>
                 </div>
             </div>
             <span class="iconBackground"></span>
@@ -392,19 +469,20 @@
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员</strong></h4>
+                    <button class="member-toggle">人员名单</button>
+                    <div class="member-list">
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>浪漫運作(守墓人)</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>羡</strong> 加入了FC</p>
 
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>浪漫運作(守墓人)</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>羡</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>采药人</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>卷心酸菜鱼</strong> 加入了FC</p>
 
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>采药人</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>卷心酸菜鱼</strong> 加入了FC</p>
-
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>芬代尔</strong> 加入了FC</p>
-                    <p>Elezen族男性，黑色皮肤的银发男子，
-                        <br>手持巨剑的传奇骑士
-                    </p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>S</strong> 加入了FC</p>
-
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>芬代尔</strong> 加入了FC</p>
+                        <p>Elezen族男性，黑色皮肤的银发男子，
+                            <br>手持巨剑的传奇骑士
+                        </p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>S</strong> 加入了FC</p>
+                    </div>
                 </div>
             </div>
             <span class="iconBackground"></span>
@@ -433,26 +511,29 @@
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员</strong></h4>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>大白鹅</strong> 加入了FC</p>
-                    <p>Viera族女性，宝藏探索的专家。
-                        <br>同时也是艾欧泽亚金融市场中那双无形的大手。
-                        <br>传闻她有数亿的资产。
-                    </p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>乌冬杏梨(药娘)</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>风与温柔皆伴(安稳)</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>菠萝芒(芒果橙)</strong> 加入了FC</p>
-                    <p>原服务器 电信一区 神意之地
-                        <br>既是菠萝又是芒果也是橙
-                    </p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>埃迦菲尔</strong> 加入了FC</p>
-                    <p>她的名字是"I-caffee-er",
-                        <br>我是说她真的很喜欢咖啡,以及角色扮演。
-                    </p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>VillagerA(村人A)</strong> 加入了FC</p>
-                    <p>我只是个普通的NPC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>伊格斯博露</strong> 加入了FC</p>
-                    <p>黑魔法的使者</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>郁仔深爱着你</strong> 加入了Link-shell</p>
+                    <button class="member-toggle">人员名单</button>
+                    <div class="member-list">
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>大白鹅</strong> 加入了FC</p>
+                        <p>Viera族女性，宝藏探索的专家。
+                            <br>同时也是艾欧泽亚金融市场中那双无形的大手。
+                            <br>传闻她有数亿的资产。
+                        </p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>乌冬杏梨(药娘)</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>风与温柔皆伴(安稳)</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>菠萝芒(芒果橙)</strong> 加入了FC</p>
+                        <p>原服务器 电信一区 神意之地
+                            <br>既是菠萝又是芒果也是橙
+                        </p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>埃迦菲尔</strong> 加入了FC</p>
+                        <p>她的名字是"I-caffee-er",
+                            <br>我是说她真的很喜欢咖啡,以及角色扮演。
+                        </p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>VillagerA(村人A)</strong> 加入了FC</p>
+                        <p>我只是个普通的NPC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>伊格斯博露</strong> 加入了FC</p>
+                        <p>黑魔法的使者</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>郁仔深爱着你</strong> 加入了Link-shell</p>
+                    </div>
                 </div>
             </div>
             <span class="iconBackground"></span>
@@ -481,30 +562,33 @@
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员</strong></h4>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>隼人</strong> 加入了FC</p>
-                    <p>现在他已经是土豆猪咪了</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>包心小鱼丸</strong> 加入了FC</p>
-                    <p>非常友善的朋友，不论做什么都可以约上他，
-                        <br>——他总是很乐意参与的。
-                    </p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>奈奈生(机智的土豆)</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>褚梨梨</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>帕特里克w(Patric)</strong> 加入了FC</p>
-                    <p>Lalafell族男性: 睿智的贤者、独当一面的冒险者
-                        <br>以及我们和睦亲切的友人
-                    </p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>狸狸狸丶</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>金羊毛</strong> 加入了FC</p>
-                    <p>其名源于伊阿宋的希腊神话典故</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>焰光(夏娜)</strong> 加入了FC</p>
-                    <p>玩高难的朋友。
-                        <br>不幸被卷入了某次风波之后买了¥100赎罪券。
-                    </p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>玄离卦心</strong> 加入了FC</p>
-                    <p>高难玩家。
-                        <br>朋友们都钦佩他乐于助人的热心和过人的实力，
-                        <br>正所谓可靠的同伴。
-                    </p>
+                    <button class="member-toggle">人员名单</button>
+                    <div class="member-list">
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>隼人</strong> 加入了FC</p>
+                        <p>现在他已经是土豆猪咪了</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>包心小鱼丸</strong> 加入了FC</p>
+                        <p>非常友善的朋友，不论做什么都可以约上他，
+                            <br>——他总是很乐意参与的。
+                        </p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>奈奈生(机智的土豆)</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>褚梨梨</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>帕特里克w(Patric)</strong> 加入了FC</p>
+                        <p>Lalafell族男性: 睿智的贤者、独当一面的冒险者
+                            <br>以及我们和睦亲切的友人
+                        </p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>狸狸狸丶</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>金羊毛</strong> 加入了FC</p>
+                        <p>其名源于伊阿宋的希腊神话典故</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>焰光(夏娜)</strong> 加入了FC</p>
+                        <p>玩高难的朋友。
+                            <br>不幸被卷入了某次风波之后买了¥100赎罪券。
+                        </p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>玄离卦心</strong> 加入了FC</p>
+                        <p>高难玩家。
+                            <br>朋友们都钦佩他乐于助人的热心和过人的实力，
+                            <br>正所谓可靠的同伴。
+                        </p>
+                    </div>
                 </div>
             </div>
             <span class="iconBackground"></span>
@@ -513,22 +597,25 @@
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员</strong></h4>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>Vricr</strong> 加入了FC</p>
-                    <p>这位女士的才能不在于高超的技艺和知识,
-                        <br>而在于交往和谈吐之间。
-                    </p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>苹果热橙茶</strong> 加入了FC</p>
-                    <p>她的笑声总是富有活力而安抚人心。
-                        <br>这种能力正是成为卓越冒险者的前提，
-                        <br>——而另一个前提是得先跑主线。
-                    </p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>木头睦头(风希)</strong> 加入了FC</p>
-                    <p>木头老师也是高难玩家</p>
+                    <button class="member-toggle">人员名单</button>
+                    <div class="member-list">
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Vricr</strong> 加入了FC</p>
+                        <p>这位女士的才能不在于高超的技艺和知识,
+                            <br>而在于交往和谈吐之间。
+                        </p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>苹果热橙茶</strong> 加入了FC</p>
+                        <p>她的笑声总是富有活力而安抚人心。
+                            <br>这种能力正是成为卓越冒险者的前提，
+                            <br>——而另一个前提是得先跑主线。
+                        </p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>木头睦头(风希)</strong> 加入了FC</p>
+                        <p>木头老师也是高难玩家</p>
 
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>栗子lz & 栗山香橙</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>Eika大雪</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>邑小小干</strong> 加入了FC</p>
-                    <p>帅气的酷酷的女性角色</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>栗子lz & 栗山香橙</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Eika大雪</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>邑小小干</strong> 加入了FC</p>
+                        <p>帅气的酷酷的女性角色</p>
+                    </div>
                 </div>
             </div>
             <span class="iconBackground"></span>
@@ -575,27 +662,30 @@
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员</strong></h4>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>猫猫土司</strong> 加入了Link-shell</p>
-                    <p>——"豆芽问你有多抽象。"</p>
-                    <p>——"真的要抽吗？"</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>网友小雨</strong> 加入了Link-shell</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>锦鲤</strong> 加入了Link-shell</p>
+                    <button class="member-toggle">人员名单</button>
+                    <div class="member-list">
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>猫猫土司</strong> 加入了Link-shell</p>
+                        <p>——"豆芽问你有多抽象。"</p>
+                        <p>——"真的要抽吗？"</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>网友小雨</strong> 加入了Link-shell</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>锦鲤</strong> 加入了Link-shell</p>
 
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>千绘o</strong> 加入了FC</p>
-                    <p>这个豆芽稀里糊涂说自己是女生，
-                        <br>直到后来我们一起连麦才发现是个xd。
-                    </p>
-                    <p>
-                        <br>(再后来他因为到处找群友借RMB并且没有按约定偿还，被驱逐了。)
-                    </p>
-                    <p style="color: red;">
-                        <strong>PS：
-                            <br>如果群友向你借现金，不论什么理由，多少金额，请不要借。
-                            <br>朋友就是一起玩的关系，不允许私下找群友借现金。
-                            <br>
-                            <br>真正互相珍视的朋友是不会让金钱利益来威胁友谊的。
-                        </strong>
-                    </p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>千绘o</strong> 加入了FC</p>
+                        <p>这个豆芽稀里糊涂说自己是女生，
+                            <br>直到后来我们一起连麦才发现是个xd。
+                        </p>
+                        <p>
+                            <br>(再后来他因为到处找群友借RMB并且没有按约定偿还，被驱逐了。)
+                        </p>
+                        <p style="color: red;">
+                            <strong>PS：
+                                <br>如果群友向你借现金，不论什么理由，多少金额，请不要借。
+                                <br>朋友就是一起玩的关系，不允许私下找群友借现金。
+                                <br>
+                                <br>真正互相珍视的朋友是不会让金钱利益来威胁友谊的。
+                            </strong>
+                        </p>
+                    </div>
                 </div>
             </div>
             <span class="iconBackground"></span>
@@ -604,44 +694,47 @@
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员</strong></h4>
+                    <button class="member-toggle">人员名单</button>
+                    <div class="member-list">
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>摆烂の雪华</strong> 加入了FC</p>
+                        <p>话比较少，但是表情很多</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Nxy(鹿泽野)</strong> 加入了FC</p>
+                        <p>她是鹿泽野，Nxy是她的OC。这个名称本来应该是希腊神话中某位神祇的名讳，但是她打错字了。</p>
+                        <p>
+                            <br>主职是秘术双子。
+                        </p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>怜愛</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>夜谈问饭</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>迪布瓦</strong> 加入了Link-shell</p>
 
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>摆烂の雪华</strong> 加入了FC</p>
-                    <p>话比较少，但是表情很多</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>Nxy(鹿泽野)</strong> 加入了FC</p>
-                    <p>她是鹿泽野，Nxy是她的OC。这个名称本来应该是希腊神话中某位神祇的名讳，但是她打错字了。</p>
-                    <p>
-                        <br>主职是秘术双子。
-                    </p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>怜愛</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>夜谈问饭</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>迪布瓦</strong> 加入了Link-shell</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>村里最靓的仔</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>墨蓝鳞</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>卡卡莫拉</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>雪晴cc</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>兔兔赖赖 & 梦游清清</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>杰弦</strong> 加入了FC</p>
 
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>村里最靓的仔</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>墨蓝鳞</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>卡卡莫拉</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>雪晴cc</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>兔兔赖赖 & 梦游清清</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>杰弦</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>伏見学</strong> 加入了FC</p>
 
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>伏見学</strong> 加入了FC</p>
-
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>Utonia</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>Haiwen</strong> 加入了FC</p>
-                    <p>据说是因为在好友列表里面看见我们部队后缀很炫酷</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>反义词(Nox)</strong> 加入了FC</p>
-                    <p>社恐犯了> <</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>海鲜拉面侠</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>祢衡</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>婭咪</strong> 加入了FC</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>觉醒吧鳕鱼王</strong> 加入了FC</p>
-                    <p>"欸" "原来如此"</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>北村秋成</strong> 加入了FC</p>
-                    <p>wwww</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>玛格利安</strong> 加入了FC</p>
-                    <p>"袜！什么老大"</p>
-                    <p class="mbr-text mbr-fonts-style display-7"><strong>鱿鱿</strong> 加入了FC</p>
-                    <p>今天也是在跟着车头打纷争前线</p>
-
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Utonia</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Haiwen</strong> 加入了FC</p>
+                        <p>据说是因为在好友列表里面看见我们部队后缀很炫酷</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>反义词(Nox)</strong> 加入了FC</p>
+                        <p>社恐犯了> <</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>海鲜拉面侠</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>祢衡</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>婭咪</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>觉醒吧鳕鱼王</strong> 加入了FC</p>
+                        <p>"欸" "原来如此"</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>北村秋成</strong> 加入了FC</p>
+                        <p>wwww</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>玛格利安</strong> 加入了FC</p>
+                        <p>"袜！什么老大"</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>鱿鱿</strong> 加入了FC</p>
+                        <p>今天也是在跟着车头打纷争前线</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>哈克mon(rks)</strong> 加入了Link-shell</p>
+                        <p>好胜心很强 执着于攒金币成为首富的哈导</p>
+                    </div>
                 </div>
             </div>
             <span class="iconBackground"></span>
@@ -871,6 +964,32 @@
                         $i.remove();
                     });
             });
+        });
+    </script>
+
+    <script>
+        // 简单的折叠功能实现
+        document.addEventListener('DOMContentLoaded', function() {
+            var toggleButtons = document.querySelectorAll('.member-toggle');
+
+            toggleButtons.forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var memberList = this.nextElementSibling;
+
+                    if (memberList.style.display === 'block') {
+                        memberList.style.display = 'none';
+                        this.classList.remove('expanded');
+                    } else {
+                        memberList.style.display = 'block';
+                        this.classList.add('expanded');
+                    }
+                });
+            });
+
+            // 默认展开第一个成员列表
+            if (toggleButtons.length > 0) {
+                toggleButtons[0].click();
+            }
         });
     </script>
 
