@@ -99,3 +99,25 @@ CREATE TABLE phantoms_db.passwords (
     password VARCHAR(255) NOT NULL,
     PRIMARY KEY (user_id)
 );
+
+
+-- 创建 expeditionary_team 表
+CREATE TABLE `expeditionary_team` (
+    `uuid` VARCHAR(36) NOT NULL,
+    `name` VARCHAR(255) NOT NULL, -- 使用VARCHAR代替TEXT，便于索引
+    `free_start_time` TIME NULL,
+    `free_end_time` TIME NULL,
+    `occupation` VARCHAR(100) NULL, -- 职业名称通常不会太长
+    `notes` TEXT NULL, -- 备注可能较长，使用TEXT
+    `volunteer_dungeon` VARCHAR(200) NULL, -- 副本名称通常有长度限制
+    `level` INT NULL,
+    `guild_name` VARCHAR(100) NULL DEFAULT 'Phantom',
+    `online_status` TINYINT(1) NULL DEFAULT 0,
+    `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`uuid`),
+    INDEX `idx_online_status` (`online_status`),
+    INDEX `idx_guild_name` (`guild_name`),
+    INDEX `idx_level` (`level`),
+    INDEX `idx_name` (`name`(50)) -- 前缀索引
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='远征军信息表';
