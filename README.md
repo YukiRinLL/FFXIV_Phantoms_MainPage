@@ -40,33 +40,46 @@
     - 音频文件
 - **/cloud functions**
     - 用于MemfireDB的云函数的代码和配置文件(归档)
-- **/demo**
-    - 用于测试和模拟效果的功能模块
+- **/expeditionary**
+    - 高难副本攻略组相关
 - **/history**
+- **/InteractiveMap**
+    - 交互式地图
 - **/lib**
     - **`browser-image-compression`**:用于浏览器端图片压缩的库
     - **`discussbase`**:用于讨论区功能的代码库
     - **`supabase-js`**:用于与Supabase后端服务交互的JavaScript库
+- **/mail_templates**
+  - email模板
 - **/messageBoard**
     - **`messageBoard`**:消息板功能相关的HTML页面和资源
     - **`registerUser`**:用户注册页面
     - **`updateProfiliel`**:用户头像资料更新
     - **`userListWithProfile`**:显示用户列表&用户资料
     - **`asserts`**:存放消息板相关的静态资源
+- **/Napcat**
+    - QQ聊天工具相关
 - **/profiles**
     - 成员相关资料的展示模块
+- **/risingstones**
+    - 石之家社区相关功能
 - **/SQL**
     - SQL脚本文件, 用于数据库的表结构定义、函数、触发器等(归档)
+- **/storage**
+    - 存储工具相关(不再维护)
 - **/tools**
     - FFXIV工具相关的HTML页面
 - **/vedio**
     - 视频播放相关的配置
+- **/vocechat**
+    - vocechat服务相关(不再维护)
 - **/XIVAPI**
     - 与FFXIV API交互的模块
 - **根目录**
     - **`index.html`**:主页文件
     - **`albums.html`**:相册功能的主页面
     - **`artExhibition.html`**:艺术展览相关的页面
+    - **`chatRecords_formed.html`**:QQ聊天室
     - **`history.html`**:历史活动记录的页面
     - **`tools.html`**:工具集合的主页面
     - **`tools-mobile.html`**:工具集合的主页面(移动端)
@@ -76,8 +89,8 @@
     - **`http_test.html`**:用于发送HTTP请求测试延迟并重定向到最快URL
     - **`cookie_test.html`**:用于测试Cookie
     - **`visitor-stats.html`**:用于显示访问者统计信息
+    - **`uploadImage_formed.html`**:图片上传(测试功能)
     - **`visitor-tracker.js`**:用于跟踪访问者的JavaScript脚本
-    - **`_config.yml`**:框架配置文件
 
 ## FC介绍
 
