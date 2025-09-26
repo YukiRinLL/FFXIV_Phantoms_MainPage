@@ -12,11 +12,37 @@
             font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
         }
 
+        /* 美化滚动条 */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0f3460;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #e94560;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d63447;
+        }
+
+        /* Firefox滚动条样式 */
+        html {
+            scrollbar-width: thin;
+            scrollbar-color: #e94560 #0f3460;
+        }
+
         body {
             background-color: #1a1a2e;
             color: #e6e6e6;
             line-height: 1.6;
             padding: 20px;
+            overflow-x: hidden;
         }
 
         .container {
@@ -373,6 +399,22 @@
             margin-top: 5px;
         }
 
+        /* 标签样式 */
+        .label-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .label {
+            background-color: #e94560;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
         @media (max-width: 768px) {
             .activity-list {
                 grid-template-columns: 1fr;
@@ -710,6 +752,12 @@
 
         const { title, content, coverImage } = getActivityDetails(activity);
 
+        // 处理HTML内容中的图片代理
+        let processedContent = content;
+        if (content && content.includes('<img')) {
+            processedContent = processHtmlImages(content);
+        }
+
         // 处理图片
         let imagesHtml = '';
         if (coverImage) {
@@ -724,7 +772,7 @@
         section.innerHTML = `
             <h3>内容详情</h3>
             ${title ? `<div class="modal-field"><div class="modal-field-value" style="font-weight: bold; font-size: 1.2rem; margin-bottom: 10px;">${title}</div></div>` : ''}
-            ${content ? `<div class="modal-content-text">${content}</div>` : '<div class="modal-content-text">暂无详细内容</div>'}
+            ${processedContent ? `<div class="modal-content-text">${processedContent}</div>` : '<div class="modal-content-text">暂无详细内容</div>'}
             ${imagesHtml}
         `;
 
@@ -762,7 +810,7 @@
                     detailsHtml += `<div class="modal-field"><div class="modal-field-value">攻略：${activity.from_info.strategy}</div></div>`;
                 }
                 if (activity.from_info.labelInfo) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">攻略：${activity.from_info.labelInfo}</div></div>`;//todo 这里没正常获取到标签
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">标签：</div><div class="label-container">${activity.from_info.labelInfo.map(label => `<span class="label">${label.name}</span>`).join('')}</div></div>`;
                 }
                 break;
 
@@ -783,7 +831,8 @@
                     detailsHtml += `<div class="modal-field"><div class="modal-field-value">开放时间：${activity.from_info.open_time}</div></div>`;
                 }
                 if (activity.from_info.custom_label) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">标签：${activity.from_info.custom_label}</div></div>`;// todo 标签按照标签样式显示
+                    const labels = activity.from_info.custom_label.split(',');
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">标签：</div><div class="label-container">${labels.map(label => `<span class="label">${label}</span>`).join('')}</div></div>`;
                 }
                 break;
 
@@ -832,6 +881,16 @@
 
         // 使用Cloudinary代理服务
         return `${IMAGE_PROXY_URL}${encodeURIComponent(originalUrl)}`;
+    }
+
+    // 处理HTML内容中的图片，添加代理
+    function processHtmlImages(htmlContent) {
+        // 使用正则表达式匹配所有img标签
+        return htmlContent.replace(/<img[^>]+src="([^">]+)"/g, (match, src) => {
+            // 对每个图片URL应用代理
+            const proxiedSrc = getProxiedImageUrl(src);
+            return match.replace(src, proxiedSrc);
+        });
     }
 
     // 获取活动详情
