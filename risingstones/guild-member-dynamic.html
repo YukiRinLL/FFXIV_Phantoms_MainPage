@@ -479,6 +479,57 @@
             font-weight: 500;
         }
 
+        /* 滚动加载相关样式 */
+        .load-more-container {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .load-more-btn {
+            padding: 12px 30px;
+            background-color: #606060;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .load-more-btn:hover {
+            background-color: #707070;
+            transform: translateY(-2px);
+        }
+
+        .load-more-btn:disabled {
+            background-color: #404040;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading-more {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #ffffff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .no-more-data {
+            color: #b0b0b0;
+            font-size: 1rem;
+            padding: 20px;
+            text-align: center;
+        }
+
         @media (max-width: 768px) {
             .activity-list {
                 grid-template-columns: 1fr;
@@ -570,6 +621,15 @@
     <div id="activity-container">
         <div class="loading">正在加载数据...</div>
     </div>
+
+    <!-- 滚动加载更多区域 -->
+    <div id="load-more-container" class="load-more-container" style="display: none;">
+        <button id="load-more-btn" class="load-more-btn">
+            <span class="loading-more" style="display: none;"></span>
+            加载更多
+        </button>
+        <div id="no-more-data" class="no-more-data" style="display: none;">没有更多数据了</div>
+    </div>
 </div>
 
 <!-- 弹窗 -->
@@ -599,14 +659,45 @@
     let activitiesData = [];
     let filteredData = [];
 
+    // 分页相关变量
+    let currentPage = 1;
+    let hasMoreData = true;
+    let isLoading = false;
+    let currentFilterType = 'all';
+    let currentSortBy = 'newest';
+
     // 页面加载完成后获取数据
     document.addEventListener('DOMContentLoaded', function() {
-        fetchData();
+        // 初始加载第一页数据
+        fetchData(1, true);
 
         // 添加事件监听器
-        document.getElementById('filter-type').addEventListener('change', filterActivities);
-        document.getElementById('sort-by').addEventListener('change', sortActivities);
-        document.getElementById('refresh-btn').addEventListener('click', fetchData);
+        document.getElementById('filter-type').addEventListener('change', function() {
+            currentFilterType = this.value;
+            currentPage = 1;
+            hasMoreData = true;
+            filterAndSortActivities(true);
+        });
+
+        document.getElementById('sort-by').addEventListener('change', function() {
+            currentSortBy = this.value;
+            currentPage = 1;
+            hasMoreData = true;
+            filterAndSortActivities(true);
+        });
+
+        document.getElementById('refresh-btn').addEventListener('click', function() {
+            currentPage = 1;
+            hasMoreData = true;
+            fetchData(1, true);
+        });
+
+        // 加载更多按钮事件
+        document.getElementById('load-more-btn').addEventListener('click', function() {
+            if (!isLoading && hasMoreData) {
+                fetchData(currentPage + 1, false);
+            }
+        });
 
         // 弹窗关闭事件
         document.querySelector('.close').addEventListener('click', closeModal);
@@ -616,30 +707,94 @@
                 closeModal();
             }
         });
+
+        // 滚动加载监听
+        window.addEventListener('scroll', handleScroll);
     });
 
-    // 获取数据函数
-    async function fetchData() {
-        const container = document.getElementById('activity-container');
-        container.innerHTML = '<div class="loading">正在加载数据...</div>';
+    // 滚动加载处理
+    function handleScroll() {
+        // 如果正在加载或没有更多数据，则不处理
+        if (isLoading || !hasMoreData) return;
+
+        // 计算距离底部的距离
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+
+        // 当滚动到距离底部200px以内时，自动加载更多
+        if (scrollTop + windowHeight >= documentHeight - 200) {
+            fetchData(currentPage + 1, false);
+        }
+    }
+
+    // 获取数据函数 - 修复版本
+    async function fetchData(page = 1, isRefresh = false) {
+        // 防止重复请求
+        if (isLoading) return;
+
+        isLoading = true;
+
+        // 显示加载状态
+        if (isRefresh) {
+            const container = document.getElementById('activity-container');
+            container.innerHTML = '<div class="loading">正在加载数据...</div>';
+            hideLoadMoreButton();
+        } else {
+            showLoadingMore();
+        }
 
         try {
-            const response = await fetch(API_URL);
+            const response = await fetch(`${API_URL}?page=${page}&limit=10`);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
 
             if (data.code === 10000) {
-                activitiesData = data.data.rows;
-                updateStats();
-                filterActivities();
+                const newActivities = data.data.rows;
+
+                // 检查是否还有更多数据
+                if (newActivities.length === 0) {
+                    hasMoreData = false;
+                    showNoMoreData();
+                } else {
+                    currentPage = page;
+
+                    if (isRefresh) {
+                        // 刷新时替换所有数据
+                        activitiesData = newActivities;
+                        updateStats();
+                        filterAndSortActivities(true); // 重置分页状态
+                    } else {
+                        // 加载更多时追加数据
+                        activitiesData = [...activitiesData, ...newActivities];
+                        updateStats();
+                        filterAndSortActivities(false); // 不重置分页状态
+                    }
+
+                    // 重要：如果有新数据，确保hasMoreData为true
+                    hasMoreData = true;
+                }
             } else {
                 throw new Error(`API error: ${data.msg}`);
             }
         } catch (error) {
             console.error('Error fetching data:', error);
-            container.innerHTML = `<div class="error">加载数据失败: ${error.message}</div>`;
+            if (isRefresh) {
+                const container = document.getElementById('activity-container');
+                container.innerHTML = `<div class="error">加载数据失败: ${error.message}</div>`;
+            }
+            // 出错时也重置hasMoreData，允许重试
+            hasMoreData = true;
+        } finally {
+            isLoading = false;
+            hideLoadingMore();
+
+            // 如果有更多数据，显示加载更多按钮
+            if (hasMoreData) {
+                showLoadMoreButton();
+            }
         }
     }
 
@@ -657,33 +812,31 @@
         document.getElementById('rp-count').textContent = rpCount;
     }
 
-    // 过滤活动
-    function filterActivities() {
-        const filterType = document.getElementById('filter-type').value;
+    // 过滤和排序活动
+    function filterAndSortActivities(resetPagination = true) {
+        if (resetPagination) {
+            currentPage = 1;
+            hasMoreData = true; // 重置为true，允许加载更多
+        }
 
-        if (filterType === 'all') {
+        // 过滤数据
+        if (currentFilterType === 'all') {
             filteredData = [...activitiesData];
-        } else if (filterType === 'post') {
+        } else if (currentFilterType === 'post') {
             filteredData = activitiesData.filter(activity => activity.from === 2);
-        } else if (filterType === 'recruit') {
+        } else if (currentFilterType === 'recruit') {
             filteredData = activitiesData.filter(activity =>
                 activity.from === 5 || activity.from === 6 || activity.from === 9);
-        } else if (filterType === 'rp') {
+        } else if (currentFilterType === 'rp') {
             filteredData = activitiesData.filter(activity => activity.from === 8);
         }
 
-        sortActivities();
-    }
-
-    // 排序活动
-    function sortActivities() {
-        const sortBy = document.getElementById('sort-by').value;
-
-        if (sortBy === 'newest') {
+        // 排序数据
+        if (currentSortBy === 'newest') {
             filteredData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-        } else if (sortBy === 'oldest') {
+        } else if (currentSortBy === 'oldest') {
             filteredData.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-        } else if (sortBy === 'popular') {
+        } else if (currentSortBy === 'popular') {
             filteredData.sort((a, b) => {
                 const aLikes = parseInt(a.like_count) || 0;
                 const bLikes = parseInt(b.like_count) || 0;
@@ -700,6 +853,7 @@
 
         if (filteredData.length === 0) {
             container.innerHTML = '<div class="loading">没有找到匹配的活动</div>';
+            hideLoadMoreButton();
             return;
         }
 
@@ -710,6 +864,13 @@
             const activityCard = createActivityCard(activity);
             activityList.appendChild(activityCard);
         });
+
+        // 如果有更多数据，显示加载更多按钮
+        if (hasMoreData) {
+            showLoadMoreButton();
+        } else {
+            showNoMoreData();
+        }
     }
 
     // 创建活动卡片
@@ -955,7 +1116,6 @@
                 break;
         }
 
-        // 如果没有详细信息，则不显示此部分
         if (!detailsHtml) return null;
 
         section.innerHTML = `
@@ -1056,7 +1216,7 @@
 
     // 获取活动详情
     function getActivityDetails(activity) {
-        let typeText = '';
+        let typeText = '未知';
         let title = '';
         let content = '';
         let coverImage = '';
@@ -1124,7 +1284,57 @@
         return { typeText, title, content, coverImage };
     }
 
-    // 格式化日期（简短）
+    // 处理HTML内容中的图片
+    function processHtmlImages(html) {
+        // 创建一个临时div来解析HTML
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = html;
+
+        // 处理所有图片标签
+        const images = tempDiv.querySelectorAll('img');
+        images.forEach(img => {
+            const src = img.getAttribute('src');
+            if (src) {
+                // 使用代理处理图片URL
+                img.setAttribute('src', getProxiedImageUrl(src));
+
+                // 为表情图片设置合适的大小
+                if (src.includes('emoji') || img.getAttribute('width') === '40') {
+                    img.style.maxWidth = '40px';
+                    img.style.height = 'auto';
+                    img.style.display = 'inline-block';
+                    img.style.verticalAlign = 'middle';
+                } else {
+                    // 为其他图片设置最大宽度
+                    img.style.maxWidth = '100%';
+                    img.style.height = 'auto';
+                }
+
+                // 添加错误处理
+                img.onerror = function() {
+                    this.style.display = 'none';
+                };
+            }
+        });
+
+        return tempDiv.innerHTML;
+    }
+
+    // 获取代理后的图片URL
+    function getProxiedImageUrl(url) {
+        if (!url) return '';
+
+        // 如果已经是代理URL或base64图片，直接返回
+        if (url.startsWith('data:') || url.includes('images.weserv.nl')) {
+            return url;
+        }
+
+        // 对URL进行编码并添加代理前缀
+        const encodedUrl = encodeURIComponent(url);
+        return `${IMAGE_PROXY_URL}${encodedUrl}&w=800&h=600&fit=cover`;
+    }
+
+    // 日期格式化函数
     function formatDate(dateString) {
         const date = new Date(dateString);
         const now = new Date();
@@ -1133,18 +1343,24 @@
         const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
         const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-        if (diffMins < 60) {
+        if (diffMins < 1) {
+            return '刚刚';
+        } else if (diffMins < 60) {
             return `${diffMins}分钟前`;
         } else if (diffHours < 24) {
             return `${diffHours}小时前`;
         } else if (diffDays < 7) {
             return `${diffDays}天前`;
         } else {
-            return date.toLocaleDateString('zh-CN');
+            return date.toLocaleDateString('zh-CN', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
         }
     }
 
-    // 格式化完整日期
+    // 完整日期格式化函数
     function formatFullDate(dateString) {
         const date = new Date(dateString);
         return date.toLocaleString('zh-CN', {
@@ -1154,6 +1370,163 @@
             hour: '2-digit',
             minute: '2-digit'
         });
+    }
+
+    // 显示加载更多按钮
+    function showLoadMoreButton() {
+        const container = document.getElementById('load-more-container');
+        const button = document.getElementById('load-more-btn');
+        const noMoreData = document.getElementById('no-more-data');
+
+        container.style.display = 'block';
+        button.style.display = 'inline-block';
+        noMoreData.style.display = 'none';
+    }
+
+    // 隐藏加载更多按钮
+    function hideLoadMoreButton() {
+        const container = document.getElementById('load-more-container');
+        container.style.display = 'none';
+    }
+
+    // 显示加载中状态
+    function showLoadingMore() {
+        const button = document.getElementById('load-more-btn');
+        // 检查按钮是否存在且可见
+        if (!button || button.style.display === 'none') {
+            return; // 如果按钮不存在或隐藏，直接返回
+        }
+
+        const loadingIcon = button.querySelector('.loading-more');
+
+        button.disabled = true;
+        if (loadingIcon) {
+            loadingIcon.style.display = 'inline-block';
+        }
+        button.innerHTML = '<span class="loading-more"></span> 加载中...';
+    }
+
+    // 隐藏加载中状态
+    function hideLoadingMore() {
+        const button = document.getElementById('load-more-btn');
+        // 检查按钮是否存在
+        if (!button) {
+            return;
+        }
+
+        button.disabled = false;
+        button.innerHTML = '加载更多';
+    }
+
+    // 修改滚动加载处理函数，添加更严格的检查
+    function handleScroll() {
+        // 如果正在加载或没有更多数据，或加载更多按钮不存在，则不处理
+        if (isLoading || !hasMoreData) return;
+
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        if (!loadMoreBtn || loadMoreBtn.style.display === 'none') {
+            return;
+        }
+
+        // 计算距离底部的距离
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+
+        // 当滚动到距离底部200px以内时，自动加载更多
+        if (scrollTop + windowHeight >= documentHeight - 200) {
+            fetchData(currentPage + 1, false);
+        }
+    }
+
+    // 同时修改fetchData函数中的加载状态处理
+    async function fetchData(page = 1, isRefresh = false) {
+        // 防止重复请求
+        if (isLoading) return;
+
+        isLoading = true;
+
+        // 显示加载状态
+        if (isRefresh) {
+            const container = document.getElementById('activity-container');
+            container.innerHTML = '<div class="loading">正在加载数据...</div>';
+            hideLoadMoreButton();
+        } else {
+            // 只有在有加载更多按钮时才显示加载状态
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            if (loadMoreBtn && loadMoreBtn.style.display !== 'none') {
+                showLoadingMore();
+            }
+        }
+
+        try {
+            const response = await fetch(`${API_URL}?page=${page}&limit=10`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+
+            if (data.code === 10000) {
+                const newActivities = data.data.rows;
+
+                // 检查是否还有更多数据
+                if (newActivities.length === 0) {
+                    hasMoreData = false;
+                    showNoMoreData();
+                } else {
+                    currentPage = page;
+
+                    if (isRefresh) {
+                        // 刷新时替换所有数据
+                        activitiesData = newActivities;
+                        updateStats();
+                        filterAndSortActivities(true);
+                    } else {
+                        // 加载更多时追加数据
+                        activitiesData = [...activitiesData, ...newActivities];
+                        updateStats();
+                        filterAndSortActivities(false);
+                    }
+
+                    hasMoreData = true;
+                }
+            } else {
+                throw new Error(`API error: ${data.msg}`);
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            if (isRefresh) {
+                const container = document.getElementById('activity-container');
+                container.innerHTML = `<div class="error">加载数据失败: ${error.message}</div>`;
+            }
+            hasMoreData = true;
+        } finally {
+            isLoading = false;
+            hideLoadingMore();
+
+            // 只有在有更多数据且不是刷新操作时才显示加载更多按钮
+            if (hasMoreData && !isRefresh) {
+                showLoadMoreButton();
+            }
+        }
+    }
+
+    // 隐藏加载中状态
+    function hideLoadingMore() {
+        const button = document.getElementById('load-more-btn');
+        button.disabled = false;
+        button.innerHTML = '加载更多';
+    }
+
+    // 显示没有更多数据
+    function showNoMoreData() {
+        const container = document.getElementById('load-more-container');
+        const button = document.getElementById('load-more-btn');
+        const noMoreData = document.getElementById('no-more-data');
+
+        container.style.display = 'block';
+        button.style.display = 'none';
+        noMoreData.style.display = 'block';
     }
 </script>
 </body>
