@@ -743,25 +743,8 @@
         // 根据活动类型显示不同的详细信息
         switch(activity.from) {
             case 2: // 帖子
-                if (activity.from_info.topic_name) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">话题：${activity.from_info.topic_name}</div></div>`;
-                }
-                if (activity.from_info.view_count) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">浏览数：${activity.from_info.view_count}</div></div>`;
-                }
-                break;
-
             case 5: // 导师招募
             case 9: // 其他招募
-                if (activity.from_info.detail_mask) {
-                    const cleanDetail = activity.from_info.detail_mask.replace(/<[^>]*>/g, '');
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">${cleanDetail}</div></div>`;
-                }
-                if (activity.from_info.class_job) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">职业：${activity.from_info.class_job}</div></div>`;
-                }
-                break;
-
             case 6: // 副本招募
                 if (activity.from_info.fb_name) {
                     detailsHtml += `<div class="modal-field"><div class="modal-field-value">副本：${activity.from_info.fb_name}</div></div>`;
@@ -770,7 +753,16 @@
                     detailsHtml += `<div class="modal-field"><div class="modal-field-value">进度：${activity.from_info.progress}</div></div>`;
                 }
                 if (activity.from_info.class_job) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">需求职业：${activity.from_info.class_job}</div></div>`;
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">时间：${activity.from_info.fb_time}</div></div>`;
+                }
+                if (activity.from_info.team_composition) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">队伍构成：${activity.from_info.team_composition}</div></div>`;
+                }
+                if (activity.from_info.strategy) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">攻略：${activity.from_info.strategy}</div></div>`;
+                }
+                if (activity.from_info.labelInfo) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">攻略：${activity.from_info.labelInfo}</div></div>`;//todo 这里没正常获取到标签
                 }
                 break;
 
@@ -784,6 +776,15 @@
                 if (activity.from_info.start_time) {
                     detailsHtml += `<div class="modal-field"><div class="modal-field-value">开始时间：${formatFullDate(activity.from_info.start_time)}</div></div>`;
                 }
+                if (activity.from_info.address) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">地址：${activity.from_info.address}</div></div>`;
+                }
+                if (activity.from_info.open_time) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">开放时间：${activity.from_info.open_time}</div></div>`;
+                }
+                if (activity.from_info.custom_label) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">标签：${activity.from_info.custom_label}</div></div>`;// todo 标签按照标签样式显示
+                }
                 break;
 
             case 7: // 分享招募
@@ -792,6 +793,15 @@
                 }
                 if (activity.from_info.guild_tag) {
                     detailsHtml += `<div class="modal-field"><div class="modal-field-value">部队简称：${activity.from_info.guild_tag}</div></div>`;
+                }
+                if (activity.from_info.weekend_time) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">周末活跃时间：${activity.from_info.weekend_time}</div></div>`;
+                }
+                if (activity.from_info.weekday_time) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">工作日活跃时间：${activity.from_info.weekday_time}</div></div>`;
+                }
+                if (activity.from_info.detail_mask) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">详情：${activity.from_info.detail_mask}</div></div>`;
                 }
                 break;
         }
