@@ -14,17 +14,18 @@
 
         /* 美化滚动条 */
         ::-webkit-scrollbar {
-            width: 10px;
+            width: 12px;
         }
 
         ::-webkit-scrollbar-track {
             background: #0f3460;
-            border-radius: 5px;
+            border-radius: 6px;
         }
 
         ::-webkit-scrollbar-thumb {
             background: #e94560;
-            border-radius: 5px;
+            border-radius: 6px;
+            border: 2px solid #0f3460;
         }
 
         ::-webkit-scrollbar-thumb:hover {
@@ -510,8 +511,10 @@
     // API端点
     const API_URL = 'https://phantoms-backend.onrender.com/api/risingstones/guild-member-dynamic';
 
+    // 使用images.weserv.nl代理服务
+    const IMAGE_PROXY_URL = 'https://images.weserv.nl/?url=';
     // 图片代理服务 - 使用Cloudinary作为示例
-    const IMAGE_PROXY_URL = 'https://res.cloudinary.com/your-cloud-name/image/fetch/';
+    // const IMAGE_PROXY_URL = 'https://res.cloudinary.com/your-cloud-name/image/fetch/';
 
     // 默认头像
     const DEFAULT_AVATAR = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiByeD0iMzAiIGZpbGw9IiMyNjJmNDkiLz4KPHN2ZyB4PSIxNSIgeT0iMTUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNlOTQ1NjAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KPHBhdGggZD0iTTIwIDIxdi0yYTQgNCAwIDAgMC00LTRINGE0IDQgMCAwIDAtNCA0djIiLz4KPGNpcmNsZSBjeD0iMTIiIGN5PSI3IiByPSI0Ii8+Cjwvc3ZnPgo8L3N2Zz4K';
@@ -754,7 +757,7 @@
 
         // 处理HTML内容中的图片代理
         let processedContent = content;
-        if (content && content.includes('<img')) {
+        if (content && (content.includes('<img') || content.includes('src='))) {
             processedContent = processHtmlImages(content);
         }
 
@@ -764,7 +767,10 @@
             const images = coverImage.split(',');
             imagesHtml = `
                 <div class="modal-images">
-                    ${images.map(img => `<img src="${getProxiedImageUrl(img)}" class="modal-image" alt="内容图片">`).join('')}
+                    ${images.map(img => `
+                        <img src="${getProxiedImageUrl(img)}" class="modal-image" alt="内容图片"
+                             onerror="this.style.display='none'">
+                    `).join('')}
                 </div>
             `;
         }
@@ -800,7 +806,7 @@
                 if (activity.from_info.progress) {
                     detailsHtml += `<div class="modal-field"><div class="modal-field-value">进度：${activity.from_info.progress}</div></div>`;
                 }
-                if (activity.from_info.class_job) {
+                if (activity.from_info.fb_time) {
                     detailsHtml += `<div class="modal-field"><div class="modal-field-value">时间：${activity.from_info.fb_time}</div></div>`;
                 }
                 if (activity.from_info.team_composition) {
@@ -810,7 +816,7 @@
                     detailsHtml += `<div class="modal-field"><div class="modal-field-value">攻略：${activity.from_info.strategy}</div></div>`;
                 }
                 if (activity.from_info.labelInfo) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">标签：</div><div class="label-container">${activity.from_info.labelInfo.map(label => `<span class="label">${label.name}</span>`).join('')}</div></div>`;
+                    detailsHtml += `<div class="label-container">${activity.from_info.labelInfo.map(label => `<span class="label">${label.name}</span>`).join('')}</div></div>`;
                 }
                 break;
 
@@ -832,7 +838,7 @@
                 }
                 if (activity.from_info.custom_label) {
                     const labels = activity.from_info.custom_label.split(',');
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">标签：</div><div class="label-container">${labels.map(label => `<span class="label">${label}</span>`).join('')}</div></div>`;
+                    detailsHtml += `<div class="label-container">${labels.map(label => `<span class="label">${label}</span>`).join('')}</div></div>`;
                 }
                 break;
 
@@ -875,22 +881,44 @@
     // 获取代理图片URL
     function getProxiedImageUrl(originalUrl) {
         // 如果已经是代理URL，直接返回
-        if (originalUrl.includes('res.cloudinary.com')) {
+        if (originalUrl.includes('weserv.nl')) {
             return originalUrl;
         }
 
-        // 使用Cloudinary代理服务
+        // 使用代理服务
         return `${IMAGE_PROXY_URL}${encodeURIComponent(originalUrl)}`;
     }
 
-    // 处理HTML内容中的图片，添加代理
+    // 处理HTML内容中的图片代理
     function processHtmlImages(htmlContent) {
-        // 使用正则表达式匹配所有img标签
-        return htmlContent.replace(/<img[^>]+src="([^">]+)"/g, (match, src) => {
-            // 对每个图片URL应用代理
-            const proxiedSrc = getProxiedImageUrl(src);
-            return match.replace(src, proxiedSrc);
+        if (!htmlContent) return htmlContent;
+
+        // 创建临时DOM元素来解析和修改HTML
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = htmlContent;
+
+        // 处理所有img标签
+        const images = tempDiv.querySelectorAll('img');
+        images.forEach(img => {
+            const originalSrc = img.getAttribute('src');
+            if (originalSrc && !originalSrc.startsWith('data:')) { // 排除data URI
+                const proxiedSrc = getProxiedImageUrl(originalSrc);
+                img.setAttribute('src', proxiedSrc);
+
+                // 添加错误处理
+                img.onerror = function() {
+                    console.warn('代理图片加载失败，尝试使用原始URL:', originalSrc);
+                    this.setAttribute('src', originalSrc);
+
+                    // 如果原始图片也加载失败，隐藏图片
+                    this.onerror = function() {
+                        this.style.display = 'none';
+                    };
+                };
+            }
         });
+
+        return tempDiv.innerHTML;
     }
 
     // 获取活动详情
@@ -925,7 +953,7 @@
                     content = activity.from_info.progress || '';
                 }
                 break;
-            case 8: // RP活动
+            case 8: // RP活动 - 修复这里！
                 typeText = '发布了RP活动';
                 if (activity.from_info) {
                     title = activity.from_info.rp_name;
