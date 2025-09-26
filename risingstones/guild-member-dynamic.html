@@ -1369,11 +1369,123 @@
     // 显示加载中状态
     function showLoadingMore() {
         const button = document.getElementById('load-more-btn');
+        // 检查按钮是否存在且可见
+        if (!button || button.style.display === 'none') {
+            return; // 如果按钮不存在或隐藏，直接返回
+        }
+
         const loadingIcon = button.querySelector('.loading-more');
 
         button.disabled = true;
-        loadingIcon.style.display = 'inline-block';
-        button.innerHTML = loadingIcon.outerHTML + ' 加载中...';
+        if (loadingIcon) {
+            loadingIcon.style.display = 'inline-block';
+        }
+        button.innerHTML = '<span class="loading-more"></span> 加载中...';
+    }
+
+    // 隐藏加载中状态
+    function hideLoadingMore() {
+        const button = document.getElementById('load-more-btn');
+        // 检查按钮是否存在
+        if (!button) {
+            return;
+        }
+
+        button.disabled = false;
+        button.innerHTML = '加载更多';
+    }
+
+    // 修改滚动加载处理函数，添加更严格的检查
+    function handleScroll() {
+        // 如果正在加载或没有更多数据，或加载更多按钮不存在，则不处理
+        if (isLoading || !hasMoreData) return;
+
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        if (!loadMoreBtn || loadMoreBtn.style.display === 'none') {
+            return;
+        }
+
+        // 计算距离底部的距离
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+
+        // 当滚动到距离底部200px以内时，自动加载更多
+        if (scrollTop + windowHeight >= documentHeight - 200) {
+            fetchData(currentPage + 1, false);
+        }
+    }
+
+    // 同时修改fetchData函数中的加载状态处理
+    async function fetchData(page = 1, isRefresh = false) {
+        // 防止重复请求
+        if (isLoading) return;
+
+        isLoading = true;
+
+        // 显示加载状态
+        if (isRefresh) {
+            const container = document.getElementById('activity-container');
+            container.innerHTML = '<div class="loading">正在加载数据...</div>';
+            hideLoadMoreButton();
+        } else {
+            // 只有在有加载更多按钮时才显示加载状态
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            if (loadMoreBtn && loadMoreBtn.style.display !== 'none') {
+                showLoadingMore();
+            }
+        }
+
+        try {
+            const response = await fetch(`${API_URL}?page=${page}&limit=10`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+
+            if (data.code === 10000) {
+                const newActivities = data.data.rows;
+
+                // 检查是否还有更多数据
+                if (newActivities.length === 0) {
+                    hasMoreData = false;
+                    showNoMoreData();
+                } else {
+                    currentPage = page;
+
+                    if (isRefresh) {
+                        // 刷新时替换所有数据
+                        activitiesData = newActivities;
+                        updateStats();
+                        filterAndSortActivities(true);
+                    } else {
+                        // 加载更多时追加数据
+                        activitiesData = [...activitiesData, ...newActivities];
+                        updateStats();
+                        filterAndSortActivities(false);
+                    }
+
+                    hasMoreData = true;
+                }
+            } else {
+                throw new Error(`API error: ${data.msg}`);
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            if (isRefresh) {
+                const container = document.getElementById('activity-container');
+                container.innerHTML = `<div class="error">加载数据失败: ${error.message}</div>`;
+            }
+            hasMoreData = true;
+        } finally {
+            isLoading = false;
+            hideLoadingMore();
+
+            // 只有在有更多数据且不是刷新操作时才显示加载更多按钮
+            if (hasMoreData && !isRefresh) {
+                showLoadMoreButton();
+            }
+        }
     }
 
     // 隐藏加载中状态
