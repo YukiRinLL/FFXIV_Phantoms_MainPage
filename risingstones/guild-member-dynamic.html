@@ -841,7 +841,7 @@
                     detailsHtml += `<div class="modal-field"><div class="modal-field-value">攻略：${activity.from_info.strategy}</div></div>`;
                 }
                 if (activity.from_info.labelInfo) {
-                    detailsHtml += `<div class="label-container">${activity.from_info.labelInfo.map(label => `<span class="label">${label.name}</span>`).join('')}</div></div>`;
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">标签：</div><div class="label-container">${activity.from_info.labelInfo.map(label => `<span class="label">${label.name}</span>`).join('')}</div></div>`;
                 }
                 break;
 
@@ -850,7 +850,7 @@
                     detailsHtml += `<div class="modal-field"><div class="modal-field-value">活动名称：${activity.from_info.rp_name}</div></div>`;
                 }
                 if (activity.from_info.profile) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">活动简介：${activity.from_info.detail_mask}</div></div>`;
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">活动简介：${activity.from_info.profile}</div></div>`;
                 }
                 if (activity.from_info.start_time) {
                     detailsHtml += `<div class="modal-field"><div class="modal-field-value">开始时间：${formatFullDate(activity.from_info.start_time)}</div></div>`;
@@ -863,7 +863,18 @@
                 }
                 if (activity.from_info.custom_label) {
                     const labels = activity.from_info.custom_label.split(',');
-                    detailsHtml += `<div class="label-container">${labels.map(label => `<span class="label">${label}</span>`).join('')}</div></div>`;
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">标签：</div><div class="label-container">${labels.map(label => `<span class="label">${label}</span>`).join('')}</div></div>`;
+                }
+                // 处理detail_mask中的图片
+                if (activity.from_info.detail_mask) {
+                    detailsHtml += `
+                    <div class="modal-field">
+                        <div class="modal-field-value">活动详情：</div>
+                        <div class="modal-content-text" id="detail-mask-content-${activity.id}">
+                            ${activity.from_info.detail_mask}
+                        </div>
+                    </div>
+                `;
                 }
                 break;
 
@@ -881,7 +892,14 @@
                     detailsHtml += `<div class="modal-field"><div class="modal-field-value">工作日活跃时间：${activity.from_info.weekday_time}</div></div>`;
                 }
                 if (activity.from_info.detail_mask) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">详情：${activity.from_info.detail_mask}</div></div>`;
+                    detailsHtml += `
+                    <div class="modal-field">
+                        <div class="modal-field-value">详情：</div>
+                        <div class="modal-content-text" id="detail-mask-content-${activity.id}">
+                            ${activity.from_info.detail_mask}
+                        </div>
+                    </div>
+                `;
                 }
                 break;
         }
@@ -894,7 +912,42 @@
             ${detailsHtml}
         `;
 
+        // 在DOM插入后处理图片
+        setTimeout(() => {
+            processImagesInElement(section, activity.id);
+        }, 0);
+
         return section;
+    }
+
+    // 处理元素内的所有图片
+    function processImagesInElement(element, activityId) {
+        const contentElement = element.querySelector(`#detail-mask-content-${activityId}`);
+        if (!contentElement) return;
+
+        const images = contentElement.querySelectorAll('img');
+        images.forEach(img => {
+            const originalSrc = img.getAttribute('src');
+            if (originalSrc && !originalSrc.startsWith('data:') && !originalSrc.includes('weserv.nl')) {
+                const proxiedSrc = getProxiedImageUrl(originalSrc);
+                img.setAttribute('src', proxiedSrc);
+
+                // 移除原有的width/height属性，让CSS控制尺寸
+                img.removeAttribute('width');
+                img.removeAttribute('height');
+
+                // 添加错误处理
+                img.onerror = function() {
+                    console.warn('代理图片加载失败，尝试使用原始URL:', originalSrc);
+                    this.setAttribute('src', originalSrc);
+
+                    // 如果原始图片也加载失败，隐藏图片
+                    this.onerror = function() {
+                        this.style.display = 'none';
+                    };
+                };
+            }
+        });
     }
 
     // 关闭弹窗
