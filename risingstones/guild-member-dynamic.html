@@ -358,6 +358,26 @@
             padding: 15px;
             border-radius: 5px;
             margin-top: 10px;
+            overflow: hidden;
+        }
+
+        /* HTML内容中的图片样式 */
+        .modal-content-text img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: block;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 表情图片特殊处理 */
+        .modal-content-text img[width="40"],
+        .modal-content-text img[height="auto"] {
+            max-width: 40px;
+            display: inline-block;
+            vertical-align: middle;
+            margin: 0 2px;
         }
 
         .modal-character-info {
@@ -432,6 +452,7 @@
             .modal-content {
                 width: 95%;
                 margin: 5% auto;
+                padding: 15px;
             }
 
             .modal-character-info {
@@ -442,6 +463,12 @@
             .modal-character-avatar {
                 margin-right: 0;
                 margin-bottom: 15px;
+            }
+
+            /* 移动端图片样式调整 */
+            .modal-content-text img {
+                max-width: 100%;
+                height: auto;
             }
         }
     </style>
@@ -511,10 +538,8 @@
     // API端点
     const API_URL = 'https://phantoms-backend.onrender.com/api/risingstones/guild-member-dynamic';
 
-    // 使用images.weserv.nl代理服务
+    // 图片代理服务 - 使用images.weserv.nl
     const IMAGE_PROXY_URL = 'https://images.weserv.nl/?url=';
-    // 图片代理服务 - 使用Cloudinary作为示例
-    // const IMAGE_PROXY_URL = 'https://res.cloudinary.com/your-cloud-name/image/fetch/';
 
     // 默认头像
     const DEFAULT_AVATAR = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiByeD0iMzAiIGZpbGw9IiMyNjJmNDkiLz4KPHN2ZyB4PSIxNSIgeT0iMTUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNlOTQ1NjAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KPHBhdGggZD0iTTIwIDIxdi0yYTQgNCAwIDAgMC00LTRINGE0IDQgMCAwIDAtNCA0djIiLz4KPGNpcmNsZSBjeD0iMTIiIGN5PSI3IiByPSI0Ii8+Cjwvc3ZnPgo8L3N2Zz4K';
@@ -755,13 +780,13 @@
 
         const { title, content, coverImage } = getActivityDetails(activity);
 
-        // 处理HTML内容中的图片代理
+        // 处理HTML内容中的图片代理和样式
         let processedContent = content;
         if (content && (content.includes('<img') || content.includes('src='))) {
             processedContent = processHtmlImages(content);
         }
 
-        // 处理图片
+        // 处理封面图片
         let imagesHtml = '';
         if (coverImage) {
             const images = coverImage.split(',');
@@ -885,11 +910,11 @@
             return originalUrl;
         }
 
-        // 使用代理服务
+        // 使用images.weserv.nl代理服务
         return `${IMAGE_PROXY_URL}${encodeURIComponent(originalUrl)}`;
     }
 
-    // 处理HTML内容中的图片代理
+    // 处理HTML内容中的图片代理和样式
     function processHtmlImages(htmlContent) {
         if (!htmlContent) return htmlContent;
 
@@ -904,6 +929,10 @@
             if (originalSrc && !originalSrc.startsWith('data:')) { // 排除data URI
                 const proxiedSrc = getProxiedImageUrl(originalSrc);
                 img.setAttribute('src', proxiedSrc);
+
+                // 移除原有的width/height属性，让CSS控制尺寸
+                img.removeAttribute('width');
+                img.removeAttribute('height');
 
                 // 添加错误处理
                 img.onerror = function() {
@@ -953,7 +982,7 @@
                     content = activity.from_info.progress || '';
                 }
                 break;
-            case 8: // RP活动 - 修复这里！
+            case 8: // RP活动
                 typeText = '发布了RP活动';
                 if (activity.from_info) {
                     title = activity.from_info.rp_name;
