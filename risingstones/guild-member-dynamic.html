@@ -14,33 +14,33 @@
 
         /* 美化滚动条 */
         ::-webkit-scrollbar {
-            width: 12px;
+            width: 10px;
         }
 
         ::-webkit-scrollbar-track {
-            background: #0f3460;
-            border-radius: 6px;
+            background: #404040;
+            border-radius: 5px;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #e94560;
-            border-radius: 6px;
-            border: 2px solid #0f3460;
+            background: #707070;
+            border-radius: 5px;
+            border: 2px solid #404040;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #d63447;
+            background: #808080;
         }
 
         /* Firefox滚动条样式 */
         html {
             scrollbar-width: thin;
-            scrollbar-color: #e94560 #0f3460;
+            scrollbar-color: #707070 #404040;
         }
 
         body {
-            background-color: #1a1a2e;
-            color: #e6e6e6;
+            background-color: #1a1a1a;
+            color: #e0e0e0;
             line-height: 1.6;
             padding: 20px;
             overflow-x: hidden;
@@ -54,120 +54,145 @@
         header {
             text-align: center;
             margin-bottom: 30px;
-            padding: 20px;
-            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            padding: 25px;
+            background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+            border: 1px solid #404040;
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             margin-bottom: 10px;
-            color: #e94560;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            color: #ffffff;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            letter-spacing: 1px;
         }
 
         .subtitle {
-            font-size: 1.2rem;
-            color: #a9a9a9;
+            font-size: 1.3rem;
+            color: #b0b0b0;
+            font-weight: 300;
         }
 
         .controls {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 15px;
         }
 
         .filter-controls {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             flex-wrap: wrap;
         }
 
         select, button {
-            padding: 10px 15px;
+            padding: 12px 18px;
             border: none;
-            border-radius: 5px;
-            background-color: #0f3460;
-            color: white;
+            border-radius: 8px;
+            background-color: #404040;
+            color: #f0f0f0;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-size: 1rem;
+            border: 1px solid #555;
         }
 
         select:hover, button:hover {
-            background-color: #16213e;
+            background-color: #505050;
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         button {
-            background-color: #e94560;
+            background-color: #606060;
+            font-weight: 600;
         }
 
         button:hover {
-            background-color: #d63447;
+            background-color: #707070;
         }
 
         .stats {
             display: flex;
             justify-content: space-around;
-            background-color: #0f3460;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            background-color: #2a2a2a;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
             flex-wrap: wrap;
+            border: 1px solid #404040;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
         .stat-item {
             text-align: center;
-            padding: 10px;
+            padding: 15px;
         }
 
         .stat-value {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: bold;
-            color: #e94560;
+            color: #ffffff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         .stat-label {
-            font-size: 0.9rem;
-            color: #a9a9a9;
+            font-size: 1rem;
+            color: #b0b0b0;
+            margin-top: 5px;
         }
 
         .activity-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 25px;
         }
 
         .activity-card {
-            background-color: #16213e;
-            border-radius: 10px;
-            padding: 20px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(145deg, #2a2a2a, #333333);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
             cursor: pointer;
+            border: 1px solid #404040;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .activity-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #808080, #a0a0a0);
         }
 
         .activity-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
         }
 
         .activity-header {
             display: flex;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
 
         .avatar {
-            width: 60px;
-            height: 60px;
+            width: 65px;
+            height: 65px;
             border-radius: 50%;
             object-fit: cover;
-            margin-right: 15px;
-            border: 2px solid #e94560;
+            margin-right: 18px;
+            border: 3px solid #707070;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
         }
 
         .character-info {
@@ -175,40 +200,44 @@
         }
 
         .character-name {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: bold;
-            color: #e94560;
+            color: #ffffff;
+            margin-bottom: 5px;
         }
 
         .server-info {
-            font-size: 0.9rem;
-            color: #a9a9a9;
+            font-size: 0.95rem;
+            color: #b0b0b0;
         }
 
         .activity-type {
             display: inline-block;
-            padding: 3px 8px;
-            background-color: #0f3460;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            margin-top: 5px;
+            padding: 5px 12px;
+            background-color: #505050;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            color: #e0e0e0;
+            font-weight: 500;
         }
 
         .activity-content {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
 
         .activity-title {
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             color: #ffffff;
+            font-size: 1.2rem;
         }
 
         .activity-preview {
-            font-size: 0.9rem;
-            color: #b8b8b8;
-            line-height: 1.4;
-            max-height: 60px;
+            font-size: 1rem;
+            color: #c0c0c0;
+            line-height: 1.5;
+            max-height: 72px;
             overflow: hidden;
             text-overflow: ellipsis;
             display: -webkit-box;
@@ -219,45 +248,48 @@
         .activity-meta {
             display: flex;
             justify-content: space-between;
-            font-size: 0.8rem;
-            color: #888;
-            border-top: 1px solid #2d3746;
-            padding-top: 10px;
+            font-size: 0.9rem;
+            color: #a0a0a0;
+            border-top: 1px solid #404040;
+            padding-top: 15px;
         }
 
         .badges {
             display: flex;
             flex-wrap: wrap;
-            gap: 5px;
-            margin-top: 10px;
+            gap: 8px;
+            margin-top: 15px;
         }
 
         .badge {
-            background-color: #0f3460;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 0.7rem;
+            background-color: #505050;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: #e0e0e0;
         }
 
         .loading {
             text-align: center;
-            padding: 40px;
-            font-size: 1.2rem;
+            padding: 50px;
+            font-size: 1.3rem;
+            color: #b0b0b0;
         }
 
         .error {
             text-align: center;
-            padding: 40px;
-            color: #e94560;
-            font-size: 1.2rem;
+            padding: 50px;
+            color: #d0d0d0;
+            font-size: 1.3rem;
         }
 
         .cover-image {
             max-width: 100%;
-            margin-top: 10px;
-            border-radius: 5px;
-            max-height: 200px;
+            margin-top: 15px;
+            border-radius: 8px;
+            max-height: 220px;
             object-fit: cover;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
         }
 
         /* 弹窗样式 */
@@ -270,105 +302,112 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.85);
         }
 
         .modal-content {
-            background-color: #16213e;
-            margin: 2% auto;
-            padding: 25px;
-            border-radius: 10px;
+            background: linear-gradient(145deg, #2a2a2a, #333333);
+            margin: 3% auto;
+            padding: 30px;
+            border-radius: 15px;
             width: 90%;
-            max-width: 800px;
+            max-width: 850px;
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            border: 1px solid #505050;
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #2d3746;
-            padding-bottom: 15px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #505050;
+            padding-bottom: 20px;
         }
 
         .modal-title {
-            font-size: 1.5rem;
-            color: #e94560;
+            font-size: 1.8rem;
+            color: #ffffff;
+            font-weight: 600;
         }
 
         .close {
-            color: #aaa;
-            font-size: 28px;
+            color: #b0b0b0;
+            font-size: 32px;
             font-weight: bold;
             cursor: pointer;
+            transition: color 0.3s;
         }
 
         .close:hover,
         .close:focus {
-            color: #e94560;
+            color: #ffffff;
             text-decoration: none;
         }
 
         .modal-body {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 25px;
         }
 
         .modal-section {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .modal-section h3 {
-            font-size: 1.1rem;
-            color: #e94560;
-            margin-bottom: 8px;
-            border-bottom: 1px solid #2d3746;
-            padding-bottom: 5px;
+            font-size: 1.3rem;
+            color: #ffffff;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #505050;
+            padding-bottom: 8px;
+            font-weight: 600;
         }
 
         .modal-field {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
 
         .modal-field-value {
             word-break: break-word;
-            line-height: 1.5;
+            line-height: 1.6;
+            color: #e0e0e0;
         }
 
         .modal-images {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 10px;
+            gap: 12px;
+            margin-top: 15px;
         }
 
         .modal-image {
-            max-width: 150px;
-            max-height: 150px;
-            border-radius: 5px;
+            max-width: 160px;
+            max-height: 160px;
+            border-radius: 8px;
             object-fit: cover;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
         }
 
         .modal-content-text {
-            background-color: #0f3460;
-            padding: 15px;
-            border-radius: 5px;
-            margin-top: 10px;
+            background-color: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
             overflow: hidden;
+            border: 1px solid #404040;
         }
 
         /* HTML内容中的图片样式 */
         .modal-content-text img {
             max-width: 100%;
             height: auto;
-            border-radius: 5px;
-            margin: 10px 0;
+            border-radius: 6px;
+            margin: 12px 0;
             display: block;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
         }
 
         /* 表情图片特殊处理 */
@@ -377,22 +416,23 @@
             max-width: 40px;
             display: inline-block;
             vertical-align: middle;
-            margin: 0 2px;
+            margin: 0 4px;
         }
 
         .modal-character-info {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .modal-character-avatar {
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
             object-fit: cover;
-            margin-right: 20px;
-            border: 3px solid #e94560;
+            margin-right: 25px;
+            border: 4px solid #707070;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
 
         .modal-character-details {
@@ -400,40 +440,43 @@
         }
 
         .modal-character-name {
-            font-size: 1.5rem;
+            font-size: 1.7rem;
             font-weight: bold;
-            color: #e94560;
-            margin-bottom: 5px;
+            color: #ffffff;
+            margin-bottom: 8px;
         }
 
         .modal-character-server {
-            font-size: 1rem;
-            color: #a9a9a9;
+            font-size: 1.1rem;
+            color: #b0b0b0;
         }
 
         .modal-activity-type {
             display: inline-block;
-            padding: 5px 10px;
-            background-color: #e94560;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            margin-top: 5px;
+            padding: 6px 14px;
+            background-color: #606060;
+            border-radius: 6px;
+            font-size: 1rem;
+            margin-top: 8px;
+            color: #ffffff;
+            font-weight: 500;
         }
 
         /* 标签样式 */
         .label-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 5px;
-            margin-top: 10px;
+            gap: 8px;
+            margin-top: 12px;
         }
 
         .label {
-            background-color: #e94560;
-            color: white;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 0.8rem;
+            background-color: #606060;
+            color: #ffffff;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 500;
         }
 
         @media (max-width: 768px) {
@@ -452,7 +495,7 @@
             .modal-content {
                 width: 95%;
                 margin: 5% auto;
-                padding: 15px;
+                padding: 20px;
             }
 
             .modal-character-info {
@@ -462,7 +505,7 @@
 
             .modal-character-avatar {
                 margin-right: 0;
-                margin-bottom: 15px;
+                margin-bottom: 20px;
             }
 
             /* 移动端图片样式调整 */
@@ -470,14 +513,22 @@
                 max-width: 100%;
                 height: auto;
             }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .subtitle {
+                font-size: 1.1rem;
+            }
         }
     </style>
 </head>
 <body>
 <div class="container">
     <header>
-        <h1>FF14 部队成员动态</h1>
-        <p class="subtitle">拂晓之间 - Phantom 部队成员最新活动</p>
+        <h1>Feed & Post</h1>
+        <p class="subtitle">Phantoms FC 成员最新动态</p>
     </header>
 
     <div class="controls">
@@ -500,19 +551,19 @@
     <div class="stats">
         <div class="stat-item">
             <div class="stat-value" id="total-count">0</div>
-            <div class="stat-label">总动态数</div>
+            <div class="stat-label">Total</div>
         </div>
         <div class="stat-item">
             <div class="stat-value" id="post-count">0</div>
-            <div class="stat-label">帖子数</div>
+            <div class="stat-label">帖子</div>
         </div>
         <div class="stat-item">
             <div class="stat-value" id="recruit-count">0</div>
-            <div class="stat-label">招募数</div>
+            <div class="stat-label">招募</div>
         </div>
         <div class="stat-item">
             <div class="stat-value" id="rp-count">0</div>
-            <div class="stat-label">RP活动数</div>
+            <div class="stat-label">RP活动</div>
         </div>
     </div>
 
