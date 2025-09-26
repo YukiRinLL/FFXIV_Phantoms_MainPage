@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phantoms群聊月度数据统计</title>
+    <title>Phantoms水群报告</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -312,8 +312,8 @@
 <body>
 <div class="container">
     <header>
-        <h1>Phantoms群聊月度数据统计</h1>
-        <p class="subtitle">消息、图片发送量及图片比例排行榜</p>
+        <h1>Phantoms水群报告</h1>
+        <p class="subtitle">群聊月度数据统计</p>
     </header>
 
     <div class="controls">
@@ -324,9 +324,9 @@
 
         <div class="tabs">
             <div class="tab active" data-tab="all">全部数据</div>
-            <div class="tab" data-tab="messages">消息排行</div>
-            <div class="tab" data-tab="images">图片排行</div>
-            <div class="tab" data-tab="ratio">图片比例</div>
+            <div class="tab" data-tab="messages">消息数量</div>
+            <div class="tab" data-tab="images">图片数量</div>
+            <div class="tab" data-tab="ratio">图片占总消息比例</div>
         </div>
     </div>
 
@@ -343,7 +343,7 @@
             <!-- 消息排行榜 -->
             <div class="stat-card" data-category="messages">
                 <div class="card-header">
-                    <h2 class="card-title">消息发送排行榜</h2>
+                    <h2 class="card-title">消息发送数量</h2>
                     <div class="card-icon">
                         <i class="fas fa-comment-alt"></i>
                     </div>
@@ -361,7 +361,7 @@
             <!-- 图片排行榜 -->
             <div class="stat-card" data-category="images">
                 <div class="card-header">
-                    <h2 class="card-title">图片发送排行榜</h2>
+                    <h2 class="card-title">图片发送数量</h2>
                     <div class="card-icon">
                         <i class="fas fa-image"></i>
                     </div>
@@ -379,7 +379,7 @@
             <!-- 图片比例排行榜 -->
             <div class="stat-card" data-category="ratio">
                 <div class="card-header">
-                    <h2 class="card-title">图片比例排行榜</h2>
+                    <h2 class="card-title">图片占总消息比例</h2>
                     <div class="card-icon">
                         <i class="fas fa-chart-pie"></i>
                     </div>
@@ -397,7 +397,7 @@
 
         <div class="stat-card">
             <div class="card-header">
-                <h2 class="card-title">数据可视化</h2>
+                <h2 class="card-title">数据可视化(本月开始至今)</h2>
                 <div class="card-icon">
                     <i class="fas fa-chart-bar"></i>
                 </div>
