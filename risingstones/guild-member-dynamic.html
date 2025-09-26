@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FF14 部队成员动态</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: #1a1a2e;
+            color: #e6e6e6;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #16213e 0%, #0f3460 100%);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #e94560;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a9a9a9;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        select, button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #0f3460;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        select:hover, button:hover {
+            background-color: #16213e;
+            transform: translateY(-2px);
+        }
+
+        button {
+            background-color: #e94560;
+        }
+
+        button:hover {
+            background-color: #d63447;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background-color: #0f3460;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #e94560;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #a9a9a9;
+        }
+
+        .activity-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .activity-card {
+            background-color: #16213e;
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+        }
+
+        .activity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .activity-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+            border: 2px solid #e94560;
+        }
+
+        .character-info {
+            flex: 1;
+        }
+
+        .character-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #e94560;
+        }
+
+        .server-info {
+            font-size: 0.9rem;
+            color: #a9a9a9;
+        }
+
+        .activity-type {
+            display: inline-block;
+            padding: 3px 8px;
+            background-color: #0f3460;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+
+        .activity-content {
+            margin-bottom: 15px;
+        }
+
+        .activity-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .activity-preview {
+            font-size: 0.9rem;
+            color: #b8b8b8;
+            line-height: 1.4;
+            max-height: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+
+        .activity-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #888;
+            border-top: 1px solid #2d3746;
+            padding-top: 10px;
+        }
+
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .badge {
+            background-color: #0f3460;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.7rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 1.2rem;
+        }
+
+        .error {
+            text-align: center;
+            padding: 40px;
+            color: #e94560;
+            font-size: 1.2rem;
+        }
+
+        .cover-image {
+            max-width: 100%;
+            margin-top: 10px;
+            border-radius: 5px;
+            max-height: 200px;
+            object-fit: cover;
+        }
+
+        /* 弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-content {
+            background-color: #16213e;
+            margin: 2% auto;
+            padding: 25px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #2d3746;
+            padding-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: #e94560;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #e94560;
+            text-decoration: none;
+        }
+
+        .modal-body {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .modal-section {
+            margin-bottom: 15px;
+        }
+
+        .modal-section h3 {
+            font-size: 1.1rem;
+            color: #e94560;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #2d3746;
+            padding-bottom: 5px;
+        }
+
+        .modal-field {
+            margin-bottom: 15px;
+        }
+
+        .modal-field-value {
+            word-break: break-word;
+            line-height: 1.5;
+        }
+
+        .modal-images {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .modal-image {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 5px;
+            object-fit: cover;
+        }
+
+        .modal-content-text {
+            background-color: #0f3460;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .modal-character-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-character-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 20px;
+            border: 3px solid #e94560;
+        }
+
+        .modal-character-details {
+            flex: 1;
+        }
+
+        .modal-character-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e94560;
+            margin-bottom: 5px;
+        }
+
+        .modal-character-server {
+            font-size: 1rem;
+            color: #a9a9a9;
+        }
+
+        .modal-activity-type {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #e94560;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .activity-list {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .filter-controls {
+                justify-content: center;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 5% auto;
+            }
+
+            .modal-character-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .modal-character-avatar {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>FF14 部队成员动态</h1>
+        <p class="subtitle">拂晓之间 - Phantom 部队成员最新活动</p>
+    </header>
+
+    <div class="controls">
+        <div class="filter-controls">
+            <select id="filter-type">
+                <option value="all">全部类型</option>
+                <option value="post">帖子</option>
+                <option value="recruit">招募</option>
+                <option value="rp">RP活动</option>
+            </select>
+            <select id="sort-by">
+                <option value="newest">最新发布</option>
+                <option value="oldest">最早发布</option>
+                <option value="popular">最受欢迎</option>
+            </select>
+        </div>
+        <button id="refresh-btn">刷新数据</button>
+    </div>
+
+    <div class="stats">
+        <div class="stat-item">
+            <div class="stat-value" id="total-count">0</div>
+            <div class="stat-label">总动态数</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="post-count">0</div>
+            <div class="stat-label">帖子数</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="recruit-count">0</div>
+            <div class="stat-label">招募数</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="rp-count">0</div>
+            <div class="stat-label">RP活动数</div>
+        </div>
+    </div>
+
+    <div id="activity-container">
+        <div class="loading">正在加载数据...</div>
+    </div>
+</div>
+
+<!-- 弹窗 -->
+<div id="detailModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">动态详情</h2>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body" id="modalBody">
+            <!-- 动态详情内容将通过JavaScript填充 -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // API端点
+    const API_URL = 'https://phantoms-backend.onrender.com/api/risingstones/guild-member-dynamic';
+
+    // 图片代理服务 - 使用Cloudinary作为示例
+    const IMAGE_PROXY_URL = 'https://res.cloudinary.com/your-cloud-name/image/fetch/';
+
+    // 默认头像
+    const DEFAULT_AVATAR = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiByeD0iMzAiIGZpbGw9IiMyNjJmNDkiLz4KPHN2ZyB4PSIxNSIgeT0iMTUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNlOTQ1NjAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KPHBhdGggZD0iTTIwIDIxdi0yYTQgNCAwIDAgMC00LTRINGE0IDQgMCAwIDAtNCA0djIiLz4KPGNpcmNsZSBjeD0iMTIiIGN5PSI3IiByPSI0Ii8+Cjwvc3ZnPgo8L3N2Zz4K';
+
+    // 全局变量存储数据
+    let activitiesData = [];
+    let filteredData = [];
+
+    // 页面加载完成后获取数据
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchData();
+
+        // 添加事件监听器
+        document.getElementById('filter-type').addEventListener('change', filterActivities);
+        document.getElementById('sort-by').addEventListener('change', sortActivities);
+        document.getElementById('refresh-btn').addEventListener('click', fetchData);
+
+        // 弹窗关闭事件
+        document.querySelector('.close').addEventListener('click', closeModal);
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('detailModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+    });
+
+    // 获取数据函数
+    async function fetchData() {
+        const container = document.getElementById('activity-container');
+        container.innerHTML = '<div class="loading">正在加载数据...</div>';
+
+        try {
+            const response = await fetch(API_URL);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+
+            if (data.code === 10000) {
+                activitiesData = data.data.rows;
+                updateStats();
+                filterActivities();
+            } else {
+                throw new Error(`API error: ${data.msg}`);
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            container.innerHTML = `<div class="error">加载数据失败: ${error.message}</div>`;
+        }
+    }
+
+    // 更新统计信息
+    function updateStats() {
+        document.getElementById('total-count').textContent = activitiesData.length;
+
+        const postCount = activitiesData.filter(activity => activity.from === 2).length;
+        const recruitCount = activitiesData.filter(activity =>
+            activity.from === 5 || activity.from === 6 || activity.from === 9).length;
+        const rpCount = activitiesData.filter(activity => activity.from === 8).length;
+
+        document.getElementById('post-count').textContent = postCount;
+        document.getElementById('recruit-count').textContent = recruitCount;
+        document.getElementById('rp-count').textContent = rpCount;
+    }
+
+    // 过滤活动
+    function filterActivities() {
+        const filterType = document.getElementById('filter-type').value;
+
+        if (filterType === 'all') {
+            filteredData = [...activitiesData];
+        } else if (filterType === 'post') {
+            filteredData = activitiesData.filter(activity => activity.from === 2);
+        } else if (filterType === 'recruit') {
+            filteredData = activitiesData.filter(activity =>
+                activity.from === 5 || activity.from === 6 || activity.from === 9);
+        } else if (filterType === 'rp') {
+            filteredData = activitiesData.filter(activity => activity.from === 8);
+        }
+
+        sortActivities();
+    }
+
+    // 排序活动
+    function sortActivities() {
+        const sortBy = document.getElementById('sort-by').value;
+
+        if (sortBy === 'newest') {
+            filteredData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        } else if (sortBy === 'oldest') {
+            filteredData.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+        } else if (sortBy === 'popular') {
+            filteredData.sort((a, b) => {
+                const aLikes = parseInt(a.like_count) || 0;
+                const bLikes = parseInt(b.like_count) || 0;
+                return bLikes - aLikes;
+            });
+        }
+
+        displayActivities();
+    }
+
+    // 显示活动
+    function displayActivities() {
+        const container = document.getElementById('activity-container');
+
+        if (filteredData.length === 0) {
+            container.innerHTML = '<div class="loading">没有找到匹配的活动</div>';
+            return;
+        }
+
+        container.innerHTML = '<div class="activity-list"></div>';
+        const activityList = container.querySelector('.activity-list');
+
+        filteredData.forEach(activity => {
+            const activityCard = createActivityCard(activity);
+            activityList.appendChild(activityCard);
+        });
+    }
+
+    // 创建活动卡片
+    function createActivityCard(activity) {
+        const card = document.createElement('div');
+        card.className = 'activity-card';
+        card.dataset.activity = JSON.stringify(activity);
+
+        // 解析徽章数据
+        let badges = [];
+        try {
+            badges = JSON.parse(activity.badge);
+        } catch (e) {
+            console.error('Error parsing badges:', e);
+        }
+
+        // 获取活动类型和内容
+        const { typeText, title, content, coverImage } = getActivityDetails(activity);
+
+        // 使用代理处理图片URL
+        const avatarUrl = activity.avatar ? getProxiedImageUrl(activity.avatar) : DEFAULT_AVATAR;
+        const coverUrl = coverImage ? getProxiedImageUrl(coverImage) : null;
+
+        card.innerHTML = `
+            <div class="activity-header">
+                <img src="${avatarUrl}" alt="头像" class="avatar" onerror="this.src='${DEFAULT_AVATAR}'">
+                <div class="character-info">
+                    <div class="character-name">${activity.character_name}</div>
+                    <div class="server-info">${activity.area_name} · ${activity.group_name}</div>
+                    <span class="activity-type">${typeText}</span>
+                </div>
+            </div>
+
+            <div class="activity-content">
+                <div class="activity-title">${title || '无标题'}</div>
+                <div class="activity-preview">${content}</div>
+                ${coverUrl ? `<img src="${coverUrl}" class="cover-image" alt="封面" onerror="this.style.display='none'">` : ''}
+            </div>
+
+            ${badges.length > 0 ? `
+            <div class="badges">
+                ${badges.slice(0, 3).map(badge =>
+            `<span class="badge">${badge.badgeName}</span>`
+        ).join('')}
+                ${badges.length > 3 ? `<span class="badge">+${badges.length - 3}更多</span>` : ''}
+            </div>
+            ` : ''}
+
+            <div class="activity-meta">
+                <div>${formatDate(activity.created_at)}</div>
+                <div>❤️ ${activity.like_count} · 💬 ${activity.comment_count}</div>
+            </div>
+        `;
+
+        // 添加点击事件打开弹窗
+        card.addEventListener('click', function() {
+            openModal(activity);
+        });
+
+        return card;
+    }
+
+    // 打开弹窗显示详细信息
+    function openModal(activity) {
+        const modal = document.getElementById('detailModal');
+        const modalBody = document.getElementById('modalBody');
+
+        // 清空之前的内容
+        modalBody.innerHTML = '';
+
+        // 创建角色信息部分
+        const characterInfoSection = createCharacterInfoSection(activity);
+        modalBody.appendChild(characterInfoSection);
+
+        // 创建活动内容部分
+        const contentSection = createContentSection(activity);
+        modalBody.appendChild(contentSection);
+
+        // 如果有额外信息，创建详细信息部分
+        const detailSection = createDetailSection(activity);
+        if (detailSection) {
+            modalBody.appendChild(detailSection);
+        }
+
+        // 显示弹窗
+        modal.style.display = 'block';
+    }
+
+    // 创建角色信息部分
+    function createCharacterInfoSection(activity) {
+        const section = document.createElement('div');
+        section.className = 'modal-section';
+
+        const avatarUrl = activity.avatar ? getProxiedImageUrl(activity.avatar) : DEFAULT_AVATAR;
+        const { typeText } = getActivityDetails(activity);
+
+        section.innerHTML = `
+            <div class="modal-character-info">
+                <img src="${avatarUrl}" alt="头像" class="modal-character-avatar" onerror="this.src='${DEFAULT_AVATAR}'">
+                <div class="modal-character-details">
+                    <div class="modal-character-name">${activity.character_name}</div>
+                    <div class="modal-character-server">${activity.area_name} · ${activity.group_name}</div>
+                    <span class="modal-activity-type">${typeText}</span>
+                </div>
+            </div>
+            <div class="activity-meta">
+                <div>发布于 ${formatFullDate(activity.created_at)}</div>
+                <div>❤️ ${activity.like_count} 个赞 · 💬 ${activity.comment_count} 条评论</div>
+            </div>
+        `;
+
+        return section;
+    }
+
+    // 创建内容部分
+    function createContentSection(activity) {
+        const section = document.createElement('div');
+        section.className = 'modal-section';
+
+        const { title, content, coverImage } = getActivityDetails(activity);
+
+        // 处理图片
+        let imagesHtml = '';
+        if (coverImage) {
+            const images = coverImage.split(',');
+            imagesHtml = `
+                <div class="modal-images">
+                    ${images.map(img => `<img src="${getProxiedImageUrl(img)}" class="modal-image" alt="内容图片">`).join('')}
+                </div>
+            `;
+        }
+
+        section.innerHTML = `
+            <h3>内容详情</h3>
+            ${title ? `<div class="modal-field"><div class="modal-field-value" style="font-weight: bold; font-size: 1.2rem; margin-bottom: 10px;">${title}</div></div>` : ''}
+            ${content ? `<div class="modal-content-text">${content}</div>` : '<div class="modal-content-text">暂无详细内容</div>'}
+            ${imagesHtml}
+        `;
+
+        return section;
+    }
+
+    // 创建详细信息部分
+    function createDetailSection(activity) {
+        if (!activity.from_info) return null;
+
+        const section = document.createElement('div');
+        section.className = 'modal-section';
+
+        let detailsHtml = '';
+
+        // 根据活动类型显示不同的详细信息
+        switch(activity.from) {
+            case 2: // 帖子
+                if (activity.from_info.topic_name) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">话题：${activity.from_info.topic_name}</div></div>`;
+                }
+                if (activity.from_info.view_count) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">浏览数：${activity.from_info.view_count}</div></div>`;
+                }
+                break;
+
+            case 5: // 导师招募
+            case 9: // 其他招募
+                if (activity.from_info.detail_mask) {
+                    const cleanDetail = activity.from_info.detail_mask.replace(/<[^>]*>/g, '');
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">${cleanDetail}</div></div>`;
+                }
+                if (activity.from_info.class_job) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">职业：${activity.from_info.class_job}</div></div>`;
+                }
+                break;
+
+            case 6: // 副本招募
+                if (activity.from_info.fb_name) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">副本：${activity.from_info.fb_name}</div></div>`;
+                }
+                if (activity.from_info.progress) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">进度：${activity.from_info.progress}</div></div>`;
+                }
+                if (activity.from_info.class_job) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">需求职业：${activity.from_info.class_job}</div></div>`;
+                }
+                break;
+
+            case 8: // RP活动
+                if (activity.from_info.rp_name) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">活动名称：${activity.from_info.rp_name}</div></div>`;
+                }
+                if (activity.from_info.profile) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">活动简介：${activity.from_info.detail_mask}</div></div>`;
+                }
+                if (activity.from_info.start_time) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">开始时间：${formatFullDate(activity.from_info.start_time)}</div></div>`;
+                }
+                break;
+
+            case 7: // 分享招募
+                if (activity.from_info.guild_name) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">部队：${activity.from_info.guild_name}</div></div>`;
+                }
+                if (activity.from_info.guild_tag) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">部队简称：${activity.from_info.guild_tag}</div></div>`;
+                }
+                break;
+        }
+
+        // 如果没有详细信息，则不显示此部分
+        if (!detailsHtml) return null;
+
+        section.innerHTML = `
+            <h3>活动详情</h3>
+            ${detailsHtml}
+        `;
+
+        return section;
+    }
+
+    // 关闭弹窗
+    function closeModal() {
+        const modal = document.getElementById('detailModal');
+        modal.style.display = 'none';
+    }
+
+    // 获取代理图片URL
+    function getProxiedImageUrl(originalUrl) {
+        // 如果已经是代理URL，直接返回
+        if (originalUrl.includes('res.cloudinary.com')) {
+            return originalUrl;
+        }
+
+        // 使用Cloudinary代理服务
+        return `${IMAGE_PROXY_URL}${encodeURIComponent(originalUrl)}`;
+    }
+
+    // 获取活动详情
+    function getActivityDetails(activity) {
+        let typeText = '';
+        let title = '';
+        let content = '';
+        let coverImage = '';
+
+        // 根据from字段判断活动类型
+        switch(activity.from) {
+            case 2: // 帖子
+                typeText = '发表了帖子';
+                if (activity.from_info) {
+                    title = activity.from_info.title;
+                    content = activity.from_info.content_pre || '';
+                    coverImage = activity.from_info.cover_pic || '';
+                }
+                break;
+            case 5: // 导师招募
+                typeText = '发布了导师招募';
+                if (activity.from_info) {
+                    title = activity.from_info.title;
+                    content = activity.from_info.detail_mask ?
+                        activity.from_info.detail_mask.replace(/<[^>]*>/g, '').substring(0, 100) + '...' : '';
+                }
+                break;
+            case 6: // 副本招募
+                typeText = '发布了副本招募';
+                if (activity.from_info) {
+                    title = activity.from_info.fb_name;
+                    content = activity.from_info.progress || '';
+                }
+                break;
+            case 8: // RP活动
+                typeText = '发布了RP活动';
+                if (activity.from_info) {
+                    title = activity.from_info.rp_name;
+                    content = activity.from_info.profile || '';
+                    coverImage = activity.from_info.cover_pic || '';
+                }
+                break;
+            case 9: // 其他招募
+                typeText = '发布了招募';
+                if (activity.from_info) {
+                    title = activity.from_info.title;
+                    content = activity.from_info.detail_mask ?
+                        activity.from_info.detail_mask.replace(/<[^>]*>/g, '').substring(0, 100) + '...' : '';
+                }
+                break;
+            case 7: // 分享招募
+                typeText = '分享了招募';
+                if (activity.from_info) {
+                    title = activity.from_info.guild_name + ' - ' + activity.from_info.guild_tag;
+                    content = activity.from_info.detail_mask ?
+                        activity.from_info.detail_mask.replace(/<[^>]*>/g, '').substring(0, 100) + '...' : '';
+                    coverImage = activity.from_info.cover_pic || '';
+                }
+                break;
+            default:
+                typeText = activity.mask_content || '发布了内容';
+        }
+
+        // 如果内容为空，使用mask_content
+        if (!content && activity.mask_content && activity.mask_content !== '发表了帖子：' &&
+            activity.mask_content !== '发布了招募：' && activity.mask_content !== '发布了RP：') {
+            content = activity.mask_content;
+        }
+
+        return { typeText, title, content, coverImage };
+    }
+
+    // 格式化日期（简短）
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffMs = now - date;
+        const diffMins = Math.floor(diffMs / (1000 * 60));
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+        if (diffMins < 60) {
+            return `${diffMins}分钟前`;
+        } else if (diffHours < 24) {
+            return `${diffHours}小时前`;
+        } else if (diffDays < 7) {
+            return `${diffDays}天前`;
+        } else {
+            return date.toLocaleDateString('zh-CN');
+        }
+    }
+
+    // 格式化完整日期
+    function formatFullDate(dateString) {
+        const date = new Date(dateString);
+        return date.toLocaleString('zh-CN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
+</script>
+</body>
+</html>
