@@ -1224,38 +1224,61 @@
         // 根据from字段判断活动类型
         switch(activity.from) {
             case 2: // 帖子
-                typeText = '帖子';
-                title = activity.from_info?.title || '';
-                content = activity.from_info?.content || '';
-                coverImage = activity.from_info?.cover || '';
+                typeText = '发表了帖子';
+                if (activity.from_info) {
+                    title = activity.from_info.title;
+                    content = activity.from_info.content_pre || '';
+                    coverImage = activity.from_info.cover_pic || '';
+                }
                 break;
             case 5: // 导师招募
-                typeText = '导师招募';
-                title = activity.from_info?.title || '';
-                content = activity.from_info?.content || '';
-                coverImage = activity.from_info?.cover || '';
-                break;
-            case 9: // 其他招募
-                typeText = '其他招募';
-                title = activity.from_info?.title || '';
-                content = activity.from_info?.content || '';
-                coverImage = activity.from_info?.cover || '';
+                typeText = '发布了导师招募';
+                if (activity.from_info) {
+                    title = activity.from_info.title;
+                    content = activity.from_info.detail_mask ?
+                        activity.from_info.detail_mask.replace(/<[^>]*>/g, '').substring(0, 100) + '...' : '';
+                }
                 break;
             case 6: // 副本招募
-                typeText = '副本招募';
-                title = activity.from_info?.title || '';
-                content = activity.from_info?.content || '';
-                coverImage = activity.from_info?.cover || '';
+                typeText = '发布了副本招募';
+                if (activity.from_info) {
+                    title = activity.from_info.fb_name;
+                    content = activity.from_info.progress || '';
+                }
                 break;
             case 8: // RP活动
-                typeText = 'RP活动';
-                title = activity.from_info?.rp_name || '';
-                content = activity.from_info?.profile || '';
-                coverImage = activity.from_info?.cover || '';
+                typeText = '发布了RP活动';
+                if (activity.from_info) {
+                    title = activity.from_info.rp_name;
+                    content = activity.from_info.profile || '';
+                    coverImage = activity.from_info.cover_pic || '';
+                }
+                break;
+            case 9: // 其他招募
+                typeText = '发布了招募';
+                if (activity.from_info) {
+                    title = activity.from_info.title;
+                    content = activity.from_info.detail_mask ?
+                        activity.from_info.detail_mask.replace(/<[^>]*>/g, '').substring(0, 100) + '...' : '';
+                }
+                break;
+            case 7: // 分享招募
+                typeText = '分享了招募';
+                if (activity.from_info) {
+                    title = activity.from_info.guild_name + ' - ' + activity.from_info.guild_tag;
+                    content = activity.from_info.detail_mask ?
+                        activity.from_info.detail_mask.replace(/<[^>]*>/g, '').substring(0, 100) + '...' : '';
+                    coverImage = activity.from_info.cover_pic || '';
+                }
                 break;
             default:
-                typeText = '其他';
-                content = activity.content || '';
+                typeText = activity.mask_content || '发布了内容';
+        }
+
+        // 如果内容为空，使用mask_content
+        if (!content && activity.mask_content && activity.mask_content !== '发表了帖子：' &&
+            activity.mask_content !== '发布了招募：' && activity.mask_content !== '发布了RP：') {
+            content = activity.mask_content;
         }
 
         return { typeText, title, content, coverImage };
