@@ -816,7 +816,7 @@
     function filterAndSortActivities(resetPagination = true) {
         if (resetPagination) {
             currentPage = 1;
-            hasMoreData = true; // 重置为true，允许加载更多
+            hasMoreData = true;
         }
 
         // 过滤数据
@@ -826,7 +826,7 @@
             filteredData = activitiesData.filter(activity => activity.from === 2);
         } else if (currentFilterType === 'recruit') {
             filteredData = activitiesData.filter(activity =>
-                activity.from === 5 || activity.from === 6 || activity.from === 9);
+                activity.from === 5 || activity.from === 6 || activity.from === 9 || activity.from === 7);
         } else if (currentFilterType === 'rp') {
             filteredData = activitiesData.filter(activity => activity.from === 8);
         }
@@ -882,9 +882,12 @@
         // 解析徽章数据
         let badges = [];
         try {
-            badges = JSON.parse(activity.badge);
+            if (activity.badge && activity.badge !== '[]') {
+                badges = JSON.parse(activity.badge);
+            }
         } catch (e) {
             console.error('Error parsing badges:', e);
+            badges = [];
         }
 
         // 获取活动类型和内容
@@ -1033,6 +1036,31 @@
 
         // 根据活动类型显示不同的详细信息
         switch(activity.from) {
+            case 1: // 普通动态
+                if (activity.mask_content) {
+                    detailsHtml += `
+                    <div class="modal-field">
+                        <div class="modal-field-value">动态内容：</div>
+                        <div class="modal-content-text">${activity.mask_content}</div>
+                    </div>
+                    `;
+                            }
+                            // 处理动态图片
+                            if (activity.pic_url) {
+                                const images = activity.pic_url.split(',');
+                                detailsHtml += `
+                    <div class="modal-field">
+                        <div class="modal-field-value">图片：</div>
+                        <div class="modal-images">
+                            ${images.map(img => `
+                                <img src="${getProxiedImageUrl(img)}" class="modal-image" alt="动态图片"
+                                     onerror="this.style.display='none'">
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                }
+                break;
             case 2: // 帖子
             case 5: // 导师招募
             case 9: // 其他招募
@@ -1054,6 +1082,40 @@
                 }
                 if (activity.from_info.labelInfo) {
                     detailsHtml += `<div class="modal-field"><div class="modal-field-value">标签：</div><div class="label-container">${activity.from_info.labelInfo.map(label => `<span class="label">${label.name}</span>`).join('')}</div></div>`;
+                }
+                break;
+
+            case 7: // 分享招募
+                if (activity.from_info.guild_name) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">部队：${activity.from_info.guild_name}</div></div>`;
+                }
+                if (activity.from_info.guild_tag) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">部队简称：${activity.from_info.guild_tag}</div></div>`;
+                }
+                if (activity.from_info.active_member_num) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">活跃成员：${activity.from_info.active_member_num}人</div></div>`;
+                }
+                if (activity.from_info.target_recruit_num) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">目标招募：${activity.from_info.target_recruit_num}人</div></div>`;
+                }
+                if (activity.from_info.weekend_time && activity.from_info.weekend_time !== '00:00-00:00') {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">周末活跃时间：${activity.from_info.weekend_time}</div></div>`;
+                }
+                if (activity.from_info.weekday_time && activity.from_info.weekday_time !== '00:00-00:00') {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">工作日活跃时间：${activity.from_info.weekday_time}</div></div>`;
+                }
+                if (activity.from_info.labelInfo && activity.from_info.labelInfo.length > 0) {
+                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">标签：</div><div class="label-container">${activity.from_info.labelInfo.map(label => `<span class="label">${label.name}</span>`).join('')}</div></div>`;
+                }
+                if (activity.from_info.detail_mask) {
+                    detailsHtml += `
+                    <div class="modal-field">
+                        <div class="modal-field-value">详情：</div>
+                        <div class="modal-content-text" id="detail-mask-content-${activity.id}">
+                            ${activity.from_info.detail_mask}
+                        </div>
+                    </div>
+                `;
                 }
                 break;
 
@@ -1223,6 +1285,11 @@
 
         // 根据from字段判断活动类型
         switch(activity.from) {
+            case 1: // 普通动态
+                typeText = '发布了动态';
+                content = activity.mask_content || '';
+                coverImage = activity.pic_url || '';
+                break;
             case 2: // 帖子
                 typeText = '发表了帖子';
                 if (activity.from_info) {
@@ -1246,6 +1313,15 @@
                     content = activity.from_info.progress || '';
                 }
                 break;
+            case 7: // 分享招募
+                typeText = '分享了招募';
+                if (activity.from_info) {
+                    title = (activity.from_info.guild_name || '') + (activity.from_info.guild_tag ? ` <${activity.from_info.guild_tag}>` : '');
+                    content = activity.from_info.detail_mask ?
+                        activity.from_info.detail_mask.replace(/<[^>]*>/g, '').substring(0, 100) + '...' : '';
+                    coverImage = activity.from_info.cover_pic || '';
+                }
+                break;
             case 8: // RP活动
                 typeText = '发布了RP活动';
                 if (activity.from_info) {
@@ -1262,23 +1338,28 @@
                         activity.from_info.detail_mask.replace(/<[^>]*>/g, '').substring(0, 100) + '...' : '';
                 }
                 break;
-            case 7: // 分享招募
-                typeText = '分享了招募';
-                if (activity.from_info) {
-                    title = activity.from_info.guild_name + ' - ' + activity.from_info.guild_tag;
-                    content = activity.from_info.detail_mask ?
-                        activity.from_info.detail_mask.replace(/<[^>]*>/g, '').substring(0, 100) + '...' : '';
-                    coverImage = activity.from_info.cover_pic || '';
-                }
-                break;
             default:
                 typeText = activity.mask_content || '发布了内容';
         }
 
-        // 如果内容为空，使用mask_content
-        if (!content && activity.mask_content && activity.mask_content !== '发表了帖子：' &&
-            activity.mask_content !== '发布了招募：' && activity.mask_content !== '发布了RP：') {
-            content = activity.mask_content;
+        // 如果内容为空，使用mask_content（但需要过滤掉无意义的默认文本）
+        if (!content && activity.mask_content) {
+            const meaninglessTexts = ['发表了帖子：', '发布了招募：', '发布了RP：', '上架了招募：', '分享招募-'];
+            const isMeaningless = meaninglessTexts.some(text => activity.mask_content.includes(text));
+
+            if (!isMeaningless) {
+                content = activity.mask_content;
+            }
+        }
+
+        // 处理HTML标签，提取纯文本用于预览
+        if (content && content.includes('<')) {
+            content = content.replace(/<[^>]*>/g, '');
+        }
+
+        // 限制内容长度
+        if (content && content.length > 100) {
+            content = content.substring(0, 100) + '...';
         }
 
         return { typeText, title, content, coverImage };
