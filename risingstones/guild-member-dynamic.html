@@ -728,7 +728,7 @@
         }
     }
 
-    // 获取数据函数 - 修复版本
+    // 获取数据函数
     async function fetchData(page = 1, isRefresh = false) {
         // 防止重复请求
         if (isLoading) return;
@@ -741,7 +741,11 @@
             container.innerHTML = '<div class="loading">正在加载数据...</div>';
             hideLoadMoreButton();
         } else {
-            showLoadingMore();
+            // 只有在有加载更多按钮时才显示加载状态
+            const loadMoreBtn = document.getElementById('load-more-btn');
+            if (loadMoreBtn && loadMoreBtn.style.display !== 'none') {
+                showLoadingMore();
+            }
         }
 
         try {
@@ -764,16 +768,16 @@
                     if (isRefresh) {
                         // 刷新时替换所有数据
                         activitiesData = newActivities;
-                        updateStats();
-                        filterAndSortActivities(true); // 重置分页状态
+                        updateStats(data); // 传入完整的data对象
+                        filterAndSortActivities(true);
                     } else {
                         // 加载更多时追加数据
                         activitiesData = [...activitiesData, ...newActivities];
-                        updateStats();
-                        filterAndSortActivities(false); // 不重置分页状态
+                        // 对于加载更多，我们仍然使用API返回的总数
+                        updateStats(data);
+                        filterAndSortActivities(false);
                     }
 
-                    // 重要：如果有新数据，确保hasMoreData为true
                     hasMoreData = true;
                 }
             } else {
@@ -785,26 +789,33 @@
                 const container = document.getElementById('activity-container');
                 container.innerHTML = `<div class="error">加载数据失败: ${error.message}</div>`;
             }
-            // 出错时也重置hasMoreData，允许重试
             hasMoreData = true;
         } finally {
             isLoading = false;
             hideLoadingMore();
 
-            // 如果有更多数据，显示加载更多按钮
-            if (hasMoreData) {
+            // 只有在有更多数据且不是刷新操作时才显示加载更多按钮
+            if (hasMoreData && !isRefresh) {
                 showLoadMoreButton();
             }
         }
     }
 
     // 更新统计信息
-    function updateStats() {
-        document.getElementById('total-count').textContent = activitiesData.length;
+    function updateStats(data) {
+        // 使用API返回的count作为Total值，添加安全检查
+        let totalCount = 0;
+        if (data && data.data && data.data.count) {
+            totalCount = parseInt(data.data.count);
+        } else {
+            totalCount = activitiesData.length;
+        }
+        document.getElementById('total-count').textContent = totalCount;
 
+        // 其他统计保持不变
         const postCount = activitiesData.filter(activity => activity.from === 2).length;
         const recruitCount = activitiesData.filter(activity =>
-            activity.from === 5 || activity.from === 6 || activity.from === 9).length;
+            activity.from === 5 || activity.from === 6 || activity.from === 9 || activity.from === 7).length;
         const rpCount = activitiesData.filter(activity => activity.from === 8).length;
 
         document.getElementById('post-count').textContent = postCount;
@@ -1520,77 +1531,6 @@
         }
     }
 
-    // 同时修改fetchData函数中的加载状态处理
-    async function fetchData(page = 1, isRefresh = false) {
-        // 防止重复请求
-        if (isLoading) return;
-
-        isLoading = true;
-
-        // 显示加载状态
-        if (isRefresh) {
-            const container = document.getElementById('activity-container');
-            container.innerHTML = '<div class="loading">正在加载数据...</div>';
-            hideLoadMoreButton();
-        } else {
-            // 只有在有加载更多按钮时才显示加载状态
-            const loadMoreBtn = document.getElementById('load-more-btn');
-            if (loadMoreBtn && loadMoreBtn.style.display !== 'none') {
-                showLoadingMore();
-            }
-        }
-
-        try {
-            const response = await fetch(`${API_URL}?page=${page}&limit=10`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-
-            if (data.code === 10000) {
-                const newActivities = data.data.rows;
-
-                // 检查是否还有更多数据
-                if (newActivities.length === 0) {
-                    hasMoreData = false;
-                    showNoMoreData();
-                } else {
-                    currentPage = page;
-
-                    if (isRefresh) {
-                        // 刷新时替换所有数据
-                        activitiesData = newActivities;
-                        updateStats();
-                        filterAndSortActivities(true);
-                    } else {
-                        // 加载更多时追加数据
-                        activitiesData = [...activitiesData, ...newActivities];
-                        updateStats();
-                        filterAndSortActivities(false);
-                    }
-
-                    hasMoreData = true;
-                }
-            } else {
-                throw new Error(`API error: ${data.msg}`);
-            }
-        } catch (error) {
-            console.error('Error fetching data:', error);
-            if (isRefresh) {
-                const container = document.getElementById('activity-container');
-                container.innerHTML = `<div class="error">加载数据失败: ${error.message}</div>`;
-            }
-            hasMoreData = true;
-        } finally {
-            isLoading = false;
-            hideLoadingMore();
-
-            // 只有在有更多数据且不是刷新操作时才显示加载更多按钮
-            if (hasMoreData && !isRefresh) {
-                showLoadMoreButton();
-            }
-        }
-    }
 
     // 隐藏加载中状态
     function hideLoadingMore() {
