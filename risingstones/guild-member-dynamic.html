@@ -411,8 +411,7 @@
         }
 
         /* 表情图片特殊处理 */
-        .modal-content-text img[width="40"],
-        .modal-content-text img[height="auto"] {
+        .modal-content-text img.emoji {
             max-width: 40px;
             display: inline-block;
             vertical-align: middle;
@@ -1008,8 +1007,24 @@
 
         // 处理HTML内容中的图片代理和样式
         let processedContent = content;
-        if (content && (content.includes('<img') || content.includes('src='))) {
-            processedContent = processHtmlImages(content);
+        if (processedContent) {
+            // 先处理表情标记
+            processedContent = convertEmojiTags(processedContent);
+
+            // 再处理其他HTML内容
+            if (processedContent.includes('<img') || processedContent.includes('src=')) {
+                processedContent = processHtmlImages(processedContent);
+            }
+        }
+
+        // 对于mask_content也需要单独处理（针对case 1的情况）
+        let maskContentHtml = '';
+        if (activity.mask_content) {
+            let processedMaskContent = convertEmojiTags(activity.mask_content);
+            if (processedMaskContent.includes('<img') || processedMaskContent.includes('src=')) {
+                processedMaskContent = processHtmlImages(processedMaskContent);
+            }
+            maskContentHtml = processedMaskContent;
         }
 
         // 处理封面图片
@@ -1029,7 +1044,11 @@
         section.innerHTML = `
             <h3>内容详情</h3>
             ${title ? `<div class="modal-field"><div class="modal-field-value" style="font-weight: bold; font-size: 1.2rem; margin-bottom: 10px;">${title}</div></div>` : ''}
-            ${processedContent ? `<div class="modal-content-text">${processedContent}</div>` : '<div class="modal-content-text">暂无详细内容</div>'}
+            ${processedContent || maskContentHtml ? `
+                <div class="modal-content-text">
+                    ${processedContent || maskContentHtml}
+                </div>
+            ` : '<div class="modal-content-text">暂无详细内容</div>'}
             ${imagesHtml}
         `;
 
@@ -1049,17 +1068,23 @@
         switch(activity.from) {
             case 1: // 普通动态
                 if (activity.mask_content) {
+                    // 处理表情标记
+                    let processedMaskContent = convertEmojiTags(activity.mask_content);
+                    if (processedMaskContent.includes('<img') || processedMaskContent.includes('src=')) {
+                        processedMaskContent = processHtmlImages(processedMaskContent);
+                    }
+
                     detailsHtml += `
                     <div class="modal-field">
                         <div class="modal-field-value">动态内容：</div>
-                        <div class="modal-content-text">${activity.mask_content}</div>
+                        <div class="modal-content-text">${processedMaskContent}</div>
                     </div>
                     `;
-                            }
-                            // 处理动态图片
-                            if (activity.pic_url) {
-                                const images = activity.pic_url.split(',');
-                                detailsHtml += `
+                }
+                // 处理动态图片
+                if (activity.pic_url) {
+                    const images = activity.pic_url.split(',');
+                    detailsHtml += `
                     <div class="modal-field">
                         <div class="modal-field-value">图片：</div>
                         <div class="modal-images">
@@ -1069,7 +1094,7 @@
                             `).join('')}
                         </div>
                     </div>
-                `;
+                    `;
                 }
                 break;
             case 2: // 帖子
@@ -1119,14 +1144,20 @@
                     detailsHtml += `<div class="modal-field"><div class="modal-field-value">标签：</div><div class="label-container">${activity.from_info.labelInfo.map(label => `<span class="label">${label.name}</span>`).join('')}</div></div>`;
                 }
                 if (activity.from_info.detail_mask) {
+                    // 处理detail_mask中的表情标记
+                    let processedDetailMask = convertEmojiTags(activity.from_info.detail_mask);
+                    if (processedDetailMask.includes('<img') || processedDetailMask.includes('src=')) {
+                        processedDetailMask = processHtmlImages(processedDetailMask);
+                    }
+
                     detailsHtml += `
                     <div class="modal-field">
                         <div class="modal-field-value">详情：</div>
                         <div class="modal-content-text" id="detail-mask-content-${activity.id}">
-                            ${activity.from_info.detail_mask}
+                            ${processedDetailMask}
                         </div>
                     </div>
-                `;
+                    `;
                 }
                 break;
 
@@ -1150,41 +1181,22 @@
                     const labels = activity.from_info.custom_label.split(',');
                     detailsHtml += `<div class="modal-field"><div class="modal-field-value">标签：</div><div class="label-container">${labels.map(label => `<span class="label">${label}</span>`).join('')}</div></div>`;
                 }
-                // 处理detail_mask中的图片
+                // 处理detail_mask中的图片和表情
                 if (activity.from_info.detail_mask) {
+                    // 处理detail_mask中的表情标记
+                    let processedDetailMask = convertEmojiTags(activity.from_info.detail_mask);
+                    if (processedDetailMask.includes('<img') || processedDetailMask.includes('src=')) {
+                        processedDetailMask = processHtmlImages(processedDetailMask);
+                    }
+
                     detailsHtml += `
                     <div class="modal-field">
                         <div class="modal-field-value">活动详情：</div>
                         <div class="modal-content-text" id="detail-mask-content-${activity.id}">
-                            ${activity.from_info.detail_mask}
+                            ${processedDetailMask}
                         </div>
                     </div>
-                `;
-                }
-                break;
-
-            case 7: // 分享招募
-                if (activity.from_info.guild_name) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">部队：${activity.from_info.guild_name}</div></div>`;
-                }
-                if (activity.from_info.guild_tag) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">部队简称：${activity.from_info.guild_tag}</div></div>`;
-                }
-                if (activity.from_info.weekend_time) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">周末活跃时间：${activity.from_info.weekend_time}</div></div>`;
-                }
-                if (activity.from_info.weekday_time) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">工作日活跃时间：${activity.from_info.weekday_time}</div></div>`;
-                }
-                if (activity.from_info.detail_mask) {
-                    detailsHtml += `
-                    <div class="modal-field">
-                        <div class="modal-field-value">详情：</div>
-                        <div class="modal-content-text" id="detail-mask-content-${activity.id}">
-                            ${activity.from_info.detail_mask}
-                        </div>
-                    </div>
-                `;
+                    `;
                 }
                 break;
         }
@@ -1238,6 +1250,23 @@
     function closeModal() {
         const modal = document.getElementById('detailModal');
         modal.style.display = 'none';
+    }
+
+    // 表情标记转换函数
+    function convertEmojiTags(text) {
+        if (!text) return text;
+
+        // 将表情标记 [emo19] 转换为图片标签
+        // 正则表达式匹配 [emo数字] 格式
+        return text.replace(/\[emo(\d+)\]/g, function(match, emojiId) {
+            // 构建表情图片URL
+            const emojiUrl = `https://static.web.sdo.com/jijiamobile/pic/ff14/2023ffstone/emo${emojiId}.png`;
+            // 使用代理URL
+            const proxiedUrl = getProxiedImageUrl(emojiUrl);
+
+            // 返回图片标签，设置合适的大小
+            return `<img src="${proxiedUrl}" alt="表情${emojiId}" class="emoji" onerror="this.style.display='none'">`;
+        });
     }
 
     // 获取代理图片URL
@@ -1298,7 +1327,9 @@
         switch(activity.from) {
             case 1: // 普通动态
                 typeText = '发布了动态';
-                content = activity.mask_content || '';
+                // 移除表情标记用于预览
+                content = activity.mask_content ?
+                    activity.mask_content.replace(/\[emo\d+\]/g, '[表情]') : '';
                 coverImage = activity.pic_url || '';
                 break;
             case 2: // 帖子
@@ -1374,56 +1405,6 @@
         }
 
         return { typeText, title, content, coverImage };
-    }
-
-    // 处理HTML内容中的图片
-    function processHtmlImages(html) {
-        // 创建一个临时div来解析HTML
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = html;
-
-        // 处理所有图片标签
-        const images = tempDiv.querySelectorAll('img');
-        images.forEach(img => {
-            const src = img.getAttribute('src');
-            if (src) {
-                // 使用代理处理图片URL
-                img.setAttribute('src', getProxiedImageUrl(src));
-
-                // 为表情图片设置合适的大小
-                if (src.includes('emoji') || img.getAttribute('width') === '40') {
-                    img.style.maxWidth = '40px';
-                    img.style.height = 'auto';
-                    img.style.display = 'inline-block';
-                    img.style.verticalAlign = 'middle';
-                } else {
-                    // 为其他图片设置最大宽度
-                    img.style.maxWidth = '100%';
-                    img.style.height = 'auto';
-                }
-
-                // 添加错误处理
-                img.onerror = function() {
-                    this.style.display = 'none';
-                };
-            }
-        });
-
-        return tempDiv.innerHTML;
-    }
-
-    // 获取代理后的图片URL
-    function getProxiedImageUrl(url) {
-        if (!url) return '';
-
-        // 如果已经是代理URL或base64图片，直接返回
-        if (url.startsWith('data:') || url.includes('images.weserv.nl')) {
-            return url;
-        }
-
-        // 对URL进行编码并添加代理前缀
-        const encodedUrl = encodeURIComponent(url);
-        return `${IMAGE_PROXY_URL}${encodedUrl}&w=800&h=600&fit=cover`;
     }
 
     // 日期格式化函数
@@ -1529,14 +1510,6 @@
         if (scrollTop + windowHeight >= documentHeight - 200) {
             fetchData(currentPage + 1, false);
         }
-    }
-
-
-    // 隐藏加载中状态
-    function hideLoadingMore() {
-        const button = document.getElementById('load-more-btn');
-        button.disabled = false;
-        button.innerHTML = '加载更多';
     }
 
     // 显示没有更多数据
