@@ -173,16 +173,16 @@ https://github.com/Tnze/ffxiv-best-craft/tree/cb27b5c6644e79dbc6f84b46dff3ab7a20
 
 
 
-tools加上招募板：
+tools加上招募板：（已完成）
 https://xivpf.ff14.xin/
 
 
 监控面板（已添加）
 https://06my3sw3.status.cron-job.org/
 
-战术板
+战术板（已添加）
 https://ff14.toolboxgaming.space/
 https://stratmaker.est.institute/
 
 
-工具链接增加新零式英雄榜，新月岛工具集，正统尤雷卡榜单
+工具链接增加新零式英雄榜，新月岛工具集，正统尤雷卡榜单（已完成）
