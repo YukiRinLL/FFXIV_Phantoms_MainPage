@@ -158,9 +158,6 @@ https://github.com/SapphireServer/Sapphire/wiki
 BOT
 https://xn--v9x.net/tata/
 
-AsoulBot
-https://github.com/Suika99/AsoulBot
-asoul相关的qq机器人
 
 pamo-nonebot-ff14Tools
 帕沫的FF14工具包
