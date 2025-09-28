@@ -50,6 +50,42 @@
             opacity: 0.8;
         }
 
+        /* 统计概览样式 */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, #4cc9f0, #4361ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
         .controls {
             display: flex;
             justify-content: space-between;
@@ -287,6 +323,10 @@
         }
 
         @media (max-width: 768px) {
+            .stats-overview {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
             .stats-container {
                 grid-template-columns: 1fr;
             }
@@ -307,6 +347,16 @@
                 padding-right: 0;
             }
         }
+
+        @media (max-width: 480px) {
+            .stats-overview {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -315,6 +365,26 @@
         <h1>Phantoms水群报告</h1>
         <p class="subtitle">群聊月度数据统计</p>
     </header>
+
+    <!-- 统计概览 -->
+    <div class="stats-overview">
+        <div class="stat-item">
+            <div class="stat-number" id="monthlyMessageCount">0</div>
+            <div class="stat-label">本月消息总数</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" id="monthlyImageCount">0</div>
+            <div class="stat-label">本月图片总数</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" id="totalMessageCount">0</div>
+            <div class="stat-label">群消息总数</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" id="totalImageCount">0</div>
+            <div class="stat-label">群图片总数</div>
+        </div>
+    </div>
 
     <div class="controls">
         <div class="search-box">
@@ -556,6 +626,9 @@
     function displayData() {
         if (!statsData) return;
 
+        // 显示概览数据
+        displayOverviewData();
+
         // 显示消息排行榜
         displayRanking('messageRanking', statsData.messageRanking, 'messageCount', '条消息');
 
@@ -567,6 +640,22 @@
 
         // 创建图表
         createChart();
+    }
+
+    // 显示概览数据
+    function displayOverviewData() {
+        if (!statsData) return;
+
+        // 检查数据是否存在，如果不存在则显示0
+        const monthlyMessageCount = statsData.monthlyMessageCount || 0;
+        const monthlyImageCount = statsData.monthlyImageCount || 0;
+        const totalMessageCount = statsData.totalMessageCount || 0;
+        const totalImageCount = statsData.totalImageCount || 0;
+
+        document.getElementById('monthlyMessageCount').textContent = monthlyMessageCount.toLocaleString();
+        document.getElementById('monthlyImageCount').textContent = monthlyImageCount.toLocaleString();
+        document.getElementById('totalMessageCount').textContent = totalMessageCount.toLocaleString();
+        document.getElementById('totalImageCount').textContent = totalImageCount.toLocaleString();
     }
 
     // 显示排行榜
