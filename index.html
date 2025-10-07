@@ -56,7 +56,140 @@
     <script src="assets/touchswipe/jquery.touch-swipe.min.js">
     </script>
 
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
 
+        body {
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .language-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .lang-btn {
+            padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.15);
+            color: #000000;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .lang-btn.active {
+            background: rgba(255, 255, 255, 0.35);
+            font-weight: bold;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 900px;
+            max-width: 90%; /* 在小屏幕上保持响应式 */
+            margin: 0 auto; /* 水平居中 */
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            color: #1c1c1c;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eaeaea;
+        }
+
+        .content-item {
+            margin-bottom: 20px;
+        }
+
+        .content-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .chinese-text {
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .foreign-text {
+            font-size: 0.7rem;
+            color: #666;
+            padding-left: 15px;
+            margin-bottom: 10px;
+            border-left: 2px solid #eaeaea;
+        }
+
+        .english-text {
+            color: #1a274b;
+        }
+
+        .japanese-text {
+            color: #5b1d1d;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #2c2c2c;
+            font-size: 0.9rem;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .language-controls {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
 </head>
 
 
@@ -259,6 +392,7 @@
         <div class="row">
             <div class="col-12">
                 <h3 class="mbr-section-title align-center mb-4 mbr-fonts-style display-2"><strong>About FC/CWLS</strong></h3>
+                <p class="mbr-section-title align-center">Phantom 部队风格与管理运营</p>
             </div>
             <div class="card col-12 col-md-4 col-lg-2 p-3">
                 <div class="card-wrapper">
@@ -285,60 +419,176 @@
                     <div class="card-box align-center">
                         <span class="mbr-iconfont mobi-mbri-hearth mobi-mbri"></span>
                         <h4 class="card-title align-center mbr-black mbr-fonts-style display-7">
-                            <strong>平和友善 相互尊重</strong></h4>
+                            <strong>友善尊重</strong></h4>
                         <strong>強要しない</strong></h4>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</section>
-
-
-<section class="content9 cid-seeQh9r2n0" id="content9-s">
-    <div class="mbr-overlay" style="opacity: 1; background-color: rgb(240,240,240);">
-
-    </div>
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="counter-container col-md-12 col-lg-10">
+        <header>
+            <div class="language-controls">
+                <button class="lang-btn active" data-lang="all">全部语言</button>
+                <button class="lang-btn" data-lang="chinese">CN</button>
+                <button class="lang-btn" data-lang="english">EN</button>
+                <button class="lang-btn" data-lang="japanese">JP</button>
+            </div>
+        </header>
 
-                <div class="mbr-text mbr-fonts-style display-7">
-                    <ol>
-                        <li><strong>共同运营</strong>
-                            <br>
-                            组内讨论氛围良好, 有许多热心的艾欧泽亚冒险者。
-                            <br>
-                            讨论话题多为FF14游戏玩法机制/剧情/世界观设定/游戏环境 等内容。
-                            <br>
-                            部队房装潢设施齐全，公会相关设定精细，
-                            部队箱各类宠物坐骑消耗品免费供给！
-                            <br>
-                            可以一起体验各类副本攻略、宝物探索、出海垂钓等团队活动。
-                            <br>
-                            萌新大佬都可以开诚布公，共同打造良好环境，一起建设一个更好的FC。&nbsp;
-                        </li>
+        <div class="content-wrapper">
+            <!-- 卡片1: 共同运营 -->
+            <div class="card">
+                <h2 class="card-title">共同运营 / Community Management / コミュニティ運営</h2>
 
-                        <li><strong>一起Happy&nbsp;</strong>
-                            <br>
-                            找朋友们一起玩!在FC聊天频道中问问“玩点什么？”,我当然会邀请你！
-                            <br>
-                            FC不限制视频拍摄、直播、社交平台上的截屏投稿等共享手段，请自由享受。
-                        </li>
+                <div class="content-item" data-lang="all">
+                    <div class="chinese-text">· 本部队氛围融洽，汇聚了众多热心的艾欧泽亚冒险者。</div>
+                    <div class="foreign-text english-text">· Our Free Company boasts a harmonious atmosphere, filled with numerous helpful adventurers of Eorzea.</div>
+                    <div class="foreign-text japanese-text">· 当フリーカンパニー（FC）には、熱心なエオルゼアの冒険者が多数在籍し、和やかな雰囲気が広がっています。</div>
+                </div>
 
-                        <li><strong>平和友善 相互尊重</strong>
-                            <br>
-                            玩游戏开心第一！
-                            <br>
-                            在MMORPG里也请保持自己的独立性，互相尊重和换位思考,不要将自己的想法强加对方。
-                            请重视对方的想法，然后试着请求或者帮忙，了解对方是避免强迫的最好的行为，注意不要因为自我深信而让对方不愉快。
-                            在不强迫的游戏中开心同乐才是最好的。
-                        </li>
-                    </ol>
+                <div class="content-item" data-lang="all">
+                    <div class="chinese-text">· 主要讨论 FF14以及FF系列/联动IP/游戏内容/玩法机制/剧情/社群动态 等相关话题。</div>
+                    <div class="foreign-text english-text">· Discussions primarily focus on FF14 game mechanics, storylines, worldview, and the in-game environment.</div>
+                    <div class="foreign-text japanese-text">· FF14のゲームシステム、ストーリー、世界観、ゲーム環境などに関する議論が主な話題です。</div>
+                </div>
+
+                <div class="content-item" data-lang="all">
+                    <div class="chinese-text">· 部队房装潢精美、设施齐全，公会设定详尽。部队箱免费提供多种收集品/消耗品。</div>
+                    <div class="foreign-text english-text">· The FC estate is fully furnished and well-equipped, with detailed guild settings. The FC chest freely provides various minions, mounts, and consumables.</div>
+                    <div class="foreign-text japanese-text">· FCハウスは設備が整い、装飾も充実。ギルドの設定も細やかで、FCチェストではさまざまなミニオン、マウント、消耗品を無料で提供しています。</div>
+                </div>
+
+                <div class="content-item" data-lang="all">
+                    <div class="chinese-text">· 诚邀您一同参与 副本/宝物探索/垂钓 等丰富的团队活动。</div>
+                    <div class="foreign-text english-text">· Join us for diverse group activities such as dungeon raids, treasure hunts, and deep-sea fishing.</div>
+                    <div class="foreign-text japanese-text">· ダンジョン攻略、宝探し、釣りなど、様々なチーム活動を一緒に楽しみましょう。</div>
+                </div>
+
+                <div class="content-item" data-lang="all">
+                    <div class="chinese-text">· 无论新老玩家，均可开诚布公，共同营造良好环境，一起建设一个更好的FC。</div>
+                    <div class="foreign-text english-text">· Both new and experienced players are encouraged to communicate openly, working together to foster a positive environment and build a better FC.</div>
+                    <div class="foreign-text japanese-text">· 新人ベテラン問わず、オープンに意見を交わし、良好な環境を共に築き、より良いFC作りにご参加ください。</div>
+                </div>
+            </div>
+
+            <!-- 卡片2: 欢乐共游 -->
+            <div class="card">
+                <h2 class="card-title">一起Happy / Enjoy Together / 一緒に楽しむ</h2>
+
+                <div class="content-item" data-lang="all">
+                    <div class="chinese-text">· 欢迎随时在部队频道发起邀约！发送一句"玩点什么？"找朋友们一起娱乐!。</div>
+                    <div class="foreign-text english-text">· Feel free to ask "What shall we do?" in the FC chat! Sure I will gladly invite you.</div>
+                    <div class="foreign-text japanese-text">· FCチャットで「何かやることある？」と気軽に声をかけてみてください。もちろんご招待します！</div>
+                </div>
+
+                <div class="content-item" data-lang="all">
+                    <div class="chinese-text">· 本部队不限制视频录制、直播或社交媒体截图分享，敬请自由享受游戏乐趣。</div>
+                    <div class="foreign-text english-text">· The FC does not restrict video recording, live streaming, or sharing screenshots on social media. Please feel free to enjoy and share your experiences.</div>
+                    <div class="foreign-text japanese-text">· 当FCでは、動画撮影、生配信、SNSへのスクリーンショット投稿など、自由に行っていただいて結構です。自由にゲームをお楽しみください。</div>
+                </div>
+            </div>
+
+            <!-- 卡片3: 友善尊重 -->
+            <div class="card">
+                <h2 class="card-title">平和友善 相互尊重 / Friendliness & Respect / 親しみと尊重</h2>
+
+                <div class="content-item" data-lang="all">
+                    <div class="chinese-text">· 玩游戏开心第一！</div>
+                    <div class="foreign-text english-text">· The ultimate goal is enjoyment.</div>
+                    <div class="foreign-text japanese-text">· ゲームでは楽しむことが第一です。</div>
+                </div>
+
+                <div class="content-item" data-lang="all">
+                    <div class="chinese-text">· 在MMORPG里，也请保持自我独立性，秉持互相尊重与换位思考的原则，勿将个人想法强加于人。</div>
+                    <div class="foreign-text english-text">· Even in an MMORPG, please maintain your independence, practice mutual respect and empathy, and avoid imposing your views on others.</div>
+                    <div class="foreign-text japanese-text">· MMORPGの中でも、自分らしさを保ち、互いを尊重し、立場を理解することを心がけ、自身の考えを相手に強要しないでください。</div>
+                </div>
+
+                <div class="content-item" data-lang="all">
+                    <div class="chinese-text">· 请珍视友谊彼此信任，遇到观点分歧，遵循求同存异的和平共处方式。</div>
+                    <div class="foreign-text english-text">· Cherish mutual trust. In case of differing opinions, adhere to the principle of "seeking common ground while reserving differences" for peaceful coexistence.</div>
+                    <div class="foreign-text japanese-text">· 互いを大切に信頼し、意見が食い違った時は「共通点を求め、相違点を残す」という平和共存の原則に従いましょう。</div>
+                </div>
+
+                <div class="content-item" data-lang="all">
+                    <div class="chinese-text">· 重视对方想法，尝试以请求或协助代替要求，理解彼此是避免强加于人的最佳方式。</div>
+                    <div class="foreign-text english-text">· Value others' perspectives, and try requesting or assisting instead of demanding. Understanding each other is the best way to avoid coercion.</div>
+                    <div class="foreign-text japanese-text">· 相手の考えを重視し、要求するのではなく、依頼や手助けを試みてください。相手を理解することが、強要を避ける最善の方法です。</div>
+                </div>
+
+                <div class="content-item" data-lang="all">
+                    <div class="chinese-text">· 切勿因个人执念造成他人不快。在无压力的环境中共同游戏，才能收获最纯粹的快乐。</div>
+                    <div class="foreign-text english-text">· Refrain from causing displeasure due to strong personal convictions. The best experiences come from playing together in a pressure-free and enjoyable atmosphere.</div>
+                    <div class="foreign-text japanese-text">· 自身の信念を頑なに押し通して相手を不快にさせないように注意し、強要のないゲームの中で共に楽しむことが最も素晴らしいことです。</div>
                 </div>
             </div>
         </div>
+
+        <div class="footer">
+            <p>期待和各位一起创造美好经历</p>
+        </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const langButtons = document.querySelectorAll('.lang-btn');
+
+            // 语言显示/隐藏函数
+            function updateLanguageDisplay(selectedLang) {
+                const contentItems = document.querySelectorAll('.content-item');
+
+                contentItems.forEach(item => {
+                    const chineseText = item.querySelector('.chinese-text');
+                    const englishText = item.querySelector('.english-text');
+                    const japaneseText = item.querySelector('.japanese-text');
+
+                    // 重置所有显示状态
+                    if (chineseText) chineseText.style.display = 'block';
+                    if (englishText) englishText.style.display = 'block';
+                    if (japaneseText) japaneseText.style.display = 'block';
+
+                    // 根据选择的语言隐藏不需要的内容
+                    switch(selectedLang) {
+                        case 'chinese':
+                            if (englishText) englishText.style.display = 'none';
+                            if (japaneseText) japaneseText.style.display = 'none';
+                            break;
+                        case 'english':
+                            if (chineseText) chineseText.style.display = 'none';
+                            if (japaneseText) japaneseText.style.display = 'none';
+                            break;
+                        case 'japanese':
+                            if (chineseText) chineseText.style.display = 'none';
+                            if (englishText) englishText.style.display = 'none';
+                            break;
+                        // 'all' 情况下保持所有显示
+                    }
+                });
+            }
+
+            // 初始化 - 默认显示中文
+            updateLanguageDisplay('chinese');
+
+            // 设置中文按钮为默认激活状态
+            const chineseBtn = document.querySelector('.lang-btn[data-lang="chinese"]');
+            if (chineseBtn) {
+                langButtons.forEach(btn => btn.classList.remove('active'));
+                chineseBtn.classList.add('active');
+            }
+
+            // 按钮点击事件
+            langButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 更新按钮状态
+                    langButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+
+                    const selectedLang = this.getAttribute('data-lang');
+                    updateLanguageDisplay(selectedLang);
+                });
+            });
+        });
+    </script>
 </section>
 
 <section class="image3 cid-seogusrmXz">
