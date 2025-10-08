@@ -17,6 +17,9 @@ let systemInfo;
 // 定义一个变量来存储图片代理服务的URL
 const imageProxyUrl = 'https://res.cloudinary.com/your-cloud-name/image/fetch/';
 
+// 语音消息代理服务（将AMR转换为MP3）
+const audioProxyUrl = 'https://audio-converter.example.com/convert?url=';
+
 // 辅助函数：将图片存储到本地缓存
 function cacheImage(proxyUrl, originalUrl) {
     localStorage.setItem(originalUrl, proxyUrl);
@@ -185,6 +188,39 @@ function displayMessages(messages) {
             } else {
                 displayMessage = "[图片链接提取失败]";
             }
+        } else if (message.message.startsWith("{type=record, data={")) {
+            // 处理录音消息
+            const urlMatch = message.message.match(/url=(https?:\/\/[^,]+)/);
+            const fileSizeMatch = message.message.match(/file_size=(\d+)/);
+
+            if (urlMatch) {
+                const audioUrl = urlMatch[1];
+                const fileSize = fileSizeMatch ? parseInt(fileSizeMatch[1]) : 0;
+                const fileSizeText = fileSize > 0 ? ` (${formatFileSize(fileSize)})` : '';
+
+                displayMessage = `
+                    <div class="audio-message">
+                        <!-- TODO 这里获取不到音频文件，提示"file has expired"
+                        <div class="audio-player">
+                            <audio controls>
+                                <source src="${audioProxyUrl}${encodeURIComponent(audioUrl)}&format=mp3" type="audio/mpeg">
+                                <source src="${audioUrl}" type="audio/amr">
+                                您的浏览器不支持音频播放
+                            </audio>
+                        </div>
+                        -->
+                        <div class="audio-info">
+                            <span class="audio-icon">🎤</span>
+                            <span class="audio-text">语音消息${fileSizeText}</span>
+                        <!--
+                            <button class="download-btn" onclick="downloadAudio('${audioUrl}', 'voice_message')">下载</button>
+                        -->
+                        </div>
+                    </div>
+                `;
+            } else {
+                displayMessage = "🎤 [语音消息]";
+            }
         } else if (message.message.startsWith("{type=at, data={qq=")) {
             const atUserId = message.message.match(/qq=(\d+)/)[1];
             displayMessage = `<span class="at">@${atUserId}</span>`;
@@ -240,6 +276,26 @@ function displayMessages(messages) {
         // 记录已经显示过的消息ID
         displayedMessages.add(message.id);
     });
+}
+
+// 格式化文件大小
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+// 下载音频文件
+function downloadAudio(url, filename) {
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename + '.amr';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 }
 
 // 获取用户信息
