@@ -22,7 +22,7 @@ body {
     border-radius: 5px;
     background-color: #f9f9f9;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .message:last-child {
@@ -34,17 +34,21 @@ body {
     height: 40px;
     border-radius: 50%;
     margin-right: 10px;
+    flex-shrink: 0;
 }
 
 .message-content {
     flex: 1;
     font-size: 1.1em;
+    min-width: 0; /* 防止内容溢出 */
 }
 
 .timestamp {
     font-size: 0.9em;
     color: #888;
     margin-top: 5px;
+    flex-shrink: 0;
+    margin-left: 10px;
 }
 
 .container {
@@ -122,6 +126,82 @@ body {
     vertical-align: middle;
 }
 
+/* 语音消息样式 */
+.audio-message {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    max-width: 300px;
+}
+
+.audio-player {
+    width: 100%;
+}
+
+.audio-player audio {
+    width: 100%;
+    height: 40px;
+    border-radius: 20px;
+}
+
+.audio-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9em;
+}
+
+.audio-icon {
+    font-size: 1.2em;
+}
+
+.audio-text {
+    color: #666;
+    flex: 1;
+}
+
+.download-btn {
+    padding: 4px 8px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+}
+
+.download-btn:hover {
+    background-color: #218838;
+}
+
+/* JSON 消息样式 */
+.json-message {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    background-color: #fff;
+    max-width: 300px;
+}
+
+.json-message a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.json-message img {
+    max-width: 100%;
+    border-radius: 6px;
+    margin-bottom: 8px;
+}
+
+.json-message div {
+    margin-bottom: 4px;
+}
+
 @media (max-width: 600px) {
     .user-avatar {
         width: 30px;
@@ -142,5 +222,9 @@ body {
 
     .form-group button {
         font-size: 1em;
+    }
+
+    .audio-message {
+        max-width: 250px;
     }
 }
