@@ -1,3 +1,53 @@
+<!-- 在现有的样式表之后添加 -->
+<link rel="stylesheet" href="./assets/thewakingsands/axis-font-icons/axis-font-icons@0.4.0.css">
+
+<!-- 引入 EorzeaTime.js -->
+<script src="../assets/thewakingsands/EorzeaTime.js"></script>
+
+<!-- 添加时间栏 -->
+<div class="time-bar" style="position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(0,0,0,0.9); color: white; text-align: center; padding: 8px 0; font-size: 0.9rem; z-index: 9999; box-shadow: 0 2px 10px rgba(0,0,0,0.3);">
+    <i class="xiv local-time"></i>
+    <span id="current-time">加载中...</span>
+    <i class="xiv eorzea-time"></i>
+    <span id="eorzea-time">加载中...</span>
+    <span style="margin: 0 10px;">|</span>
+    <span id="current-date">加载中...</span>
+    <span style="margin: 0 10px;">|</span>
+    <span id="day-of-week">加载中...</span>
+</div>
+
+<style>
+    /* 时间栏样式 */
+    .time-bar {
+        background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 30%, #4a1e6b 100%);
+        color: white;
+        text-align: center;
+        padding: 8px 0;
+        font-size: 0.9rem;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        position: relative;
+        z-index: 1000;
+    }
+
+    .time-bar span {
+        margin: 0 8px;
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+        .time-bar {
+            font-size: 0.8rem;
+            padding: 6px 0;
+        }
+
+        .time-bar span {
+            margin: 0 4px;
+        }
+    }
+</style>
+
 <section class="menu cid-s48OLK6784" once="menu" id="menu1-h">
     <nav class="navbar navbar-dropdown navbar-fixed-top navbar-expand-lg">
         <div class="container">
@@ -108,6 +158,59 @@
 </section>
 
 <script>
+    // 更新时间函数
+    function updateTime() {
+        const now = new Date();
+
+        // 格式化本地时间
+        const timeString = now.toLocaleTimeString('zh-CN', {
+            hour12: false,
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+
+        // 格式化日期
+        const dateString = now.toLocaleDateString('zh-CN', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+
+        // 星期几
+        const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+        const dayOfWeek = weekdays[now.getDay()];
+
+        // 更新本地时间显示
+        document.getElementById('current-time').textContent = timeString;
+        document.getElementById('current-date').textContent = dateString;
+        document.getElementById('day-of-week').textContent = dayOfWeek;
+
+        // 计算并更新艾欧泽亚时间
+        updateEorzeaTime(now);
+    }
+
+    // 更新艾欧泽亚时间函数
+    function updateEorzeaTime(realTime) {
+        try {
+            const et = new EorzeaTime(realTime.getTime());
+            const eorzeaHour = et.getHour().toString().padStart(2, '0');
+            const eorzeaMinute = et.getMinute().toString().padStart(2, '0');
+            const eorzeaTimeString = `${eorzeaHour}:${eorzeaMinute}`;
+
+            document.getElementById('eorzea-time').textContent = eorzeaTimeString;
+        } catch (error) {
+            console.error('计算艾欧泽亚时间时出错:', error);
+            document.getElementById('eorzea-time').textContent = '计算错误';
+        }
+    }
+
+    // 页面加载时立即更新时间
+    updateTime();
+
+    // 每秒更新一次时间
+    setInterval(updateTime, 1000);
+
     function adjustLinks() {
         var links = document.querySelectorAll('a[data-mobile-href]');
         links.forEach(function(link) {
