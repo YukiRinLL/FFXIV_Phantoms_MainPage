@@ -10,7 +10,6 @@
           onerror="this.onerror=null;this.src='./assets/images/frame-1-121x121.png';"
           type="image/x-icon">
 
-
     <link rel="stylesheet" href="assets/web/assets/mobirise-icons2/mobirise2.css">
     <link rel="stylesheet" href="assets/tether/tether.min.css">
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
@@ -31,6 +30,70 @@
     <link rel="stylesheet" href="additions/mouse.css">
     <!--added by Yuki 20221002-->
 
+    <!-- 悬浮按钮样式 -->
+    <style>
+        .floating-btn {
+            position: fixed;
+            bottom: 50px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #656565 0%, #313131 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 4px 20px rgba(136, 136, 136, 0.3);
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            border: none;
+        }
+
+        .floating-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 4px 20px rgba(136, 136, 136, 0.3);
+            background: linear-gradient(135deg, #656565 0%, #313131 100%);
+        }
+
+        .floating-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .tooltip {
+            position: absolute;
+            bottom: 85px;
+            right: 0;
+            background: rgba(77, 77, 77, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .floating-btn:hover .tooltip {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .floating-btn {
+                width: 40px;
+                height: 40px;
+                bottom: 50px;
+                right: 20px;
+                font-size: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -63,6 +126,11 @@
 </div>
 <!--plugin end-->
 
+<!-- 悬浮按钮 -->
+<button class="floating-btn" onclick="window.open('Napcat/getMonthlyStats.html', '_blank')" title="查看消息统计">
+    <i class="mbri-chat"></i>
+    <span class="tooltip">消息统计</span>
+</button>
 
 <section class="footer7 cid-seeJHoNSny" once="footers" id="footer7-p">
     <div class="container">
