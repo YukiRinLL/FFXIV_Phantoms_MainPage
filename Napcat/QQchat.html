@@ -7,25 +7,31 @@
     <link rel="stylesheet" href="QQchat.css">
 </head>
 <body>
-<div class="message-container" id="message-container"></div>
+<div class="main-container">
+    <!-- 消息显示区域 - 可滚动 -->
+    <div class="message-container" id="message-container"></div>
 
-<div class="container">
-    <form id="messageForm">
-        <div class="form-group">
-            <label for="message">Message[消息正文]:</label>
-            <textarea id="message" name="message" required style="width: 100%; height: 150px;"></textarea>
-        </div>
-        <div class="form-group">
-            <label for="signature">Signature[署名]:</label>
-            <input type="text" id="signature" name="signature" required style="width: 100%;">
-        </div>
-        <div class="form-group">
-            <button type="submit">Send</button>
-        </div>
-        <div class="form-group">
-            <p style="color: gray">音频/图片/链接相关功能不可用，仅发送文字消息</p>
-        </div>
-    </form>
+    <!-- 固定底部表单区域 -->
+    <div class="fixed-form-container">
+        <form id="messageForm">
+            <div class="form-group">
+                <label for="message">Message[消息正文]:</label>
+                <textarea id="message" name="message" required placeholder="请输入消息内容..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="signature">Signature[署名]:</label>
+                <input type="text" id="signature" name="signature" required placeholder="请输入您的署名">
+            </div>
+            <div class="form-group">
+                <button type="submit">Send</button>
+            </div>
+            <div class="form-group">
+                <p style="color: gray; font-size: 0.9em; margin: 0; text-align: center;">
+                    音频/图片/链接相关功能不可用，仅发送文字消息
+                </p>
+            </div>
+        </form>
+    </div>
 </div>
 
 <script src="QQchat.js"></script>

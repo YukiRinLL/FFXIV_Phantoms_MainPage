@@ -251,23 +251,33 @@ function displayMessages(messages) {
             displayMessage = message.message; // 其他类型的消息直接显示原始内容
         }
 
-        // 创建用户头像
+        // 创建消息头部（头像和用户名）
+        const messageHeader = document.createElement('div');
+        messageHeader.className = 'message-header';
+
         const avatarImg = document.createElement('img');
         avatarImg.className = 'user-avatar';
         avatarImg.src = `http://q1.qlogo.cn/g?b=qq&nk=${message.userId}&s=100`;
 
+        const userName = document.createElement('strong');
+        userName.textContent = message.nickname;
+        userName.style.marginLeft = '8px';
+
+        messageHeader.appendChild(avatarImg);
+        messageHeader.appendChild(userName);
+
         // 创建消息内容
         const contentDiv = document.createElement('div');
         contentDiv.className = 'message-content';
-        contentDiv.innerHTML = `<strong>${message.nickname}</strong>: ${displayMessage}`; // 使用 innerHTML 支持 HTML 内容
+        contentDiv.innerHTML = displayMessage; // 使用 innerHTML 支持 HTML 内容
 
         // 创建时间戳
         const timestampSpan = document.createElement('span');
         timestampSpan.className = 'timestamp';
         timestampSpan.textContent = timestamp;
 
-        // 将头像、消息内容和时间戳添加到消息容器中
-        messageDiv.appendChild(avatarImg);
+        // 将各部分添加到消息容器中
+        messageDiv.appendChild(messageHeader);
         messageDiv.appendChild(contentDiv);
         messageDiv.appendChild(timestampSpan);
 
@@ -353,16 +363,16 @@ function fetchUserProfile() {
             'apikey': supabaseAPIKey
         }
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.length > 0 && data[0].username) { // 确保返回的数据中有username字段
-            updateSignature(data[0].username); // 使用username更新署名
-        } else {
-            console.log('No username found for the user.');
-            updateSignature("匿名用户"); // 如果没有找到用户名，使用默认值
-        }
-    })
-    .catch(error => console.error('Error fetching user profile:', error));
+        .then(response => response.json())
+        .then(data => {
+            if (data.length > 0 && data[0].username) { // 确保返回的数据中有username字段
+                updateSignature(data[0].username); // 使用username更新署名
+            } else {
+                console.log('No username found for the user.');
+                updateSignature("匿名用户"); // 如果没有找到用户名，使用默认值
+            }
+        })
+        .catch(error => console.error('Error fetching user profile:', error));
 }
 
 // 更新署名
@@ -401,9 +411,20 @@ document.getElementById('messageForm').addEventListener('submit', function(event
     const messageDiv = document.createElement('div');
     messageDiv.className = 'message';
 
+    // 创建消息头部
+    const messageHeader = document.createElement('div');
+    messageHeader.className = 'message-header';
+
     const avatarImg = document.createElement('img');
     avatarImg.className = 'user-avatar';
     avatarImg.src = `http://q1.qlogo.cn/g?b=qq&nk=${signature}&s=100`;
+
+    const userName = document.createElement('strong');
+    userName.textContent = signature;
+    userName.style.marginLeft = '8px';
+
+    messageHeader.appendChild(avatarImg);
+    messageHeader.appendChild(userName);
 
     const contentDiv = document.createElement('div');
     contentDiv.className = 'message-content';
@@ -413,7 +434,7 @@ document.getElementById('messageForm').addEventListener('submit', function(event
     timestampSpan.className = 'timestamp';
     timestampSpan.textContent = new Date().toLocaleString();
 
-    messageDiv.appendChild(avatarImg);
+    messageDiv.appendChild(messageHeader);
     messageDiv.appendChild(contentDiv);
     messageDiv.appendChild(timestampSpan);
 
@@ -432,16 +453,16 @@ document.getElementById('messageForm').addEventListener('submit', function(event
         },
         body: JSON.stringify({ message: formattedMessage, systemInfo: systemInfo })
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'ok') {
-            document.getElementById('message').value = ''; // 清空输入框
-        } else {
-            alert('Failed to send message: ' + data.error);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while sending the message.'+ error.message);
-    });
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                document.getElementById('message').value = ''; // 清空输入框
+            } else {
+                alert('Failed to send message: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while sending the message.'+ error.message);
+        });
 });
