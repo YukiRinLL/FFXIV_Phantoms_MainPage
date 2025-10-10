@@ -23,6 +23,7 @@ body {
     background-color: #f9f9f9;
     display: flex;
     align-items: flex-start;
+    position: relative; /* 为时间戳绝对定位做准备 */
 }
 
 .message:last-child {
@@ -41,6 +42,8 @@ body {
     flex: 1;
     font-size: 1.1em;
     min-width: 0; /* 防止内容溢出 */
+    word-wrap: break-word; /* 允许长单词换行 */
+    overflow-wrap: break-word; /* 现代浏览器的换行方式 */
 }
 
 .timestamp {
@@ -49,6 +52,7 @@ body {
     margin-top: 5px;
     flex-shrink: 0;
     margin-left: 10px;
+    white-space: nowrap; /* 防止时间戳换行 */
 }
 
 .container {
@@ -202,29 +206,144 @@ body {
     margin-bottom: 4px;
 }
 
+/* 移动端优化 */
+@media (max-width: 768px) {
+    body {
+        margin: 10px;
+    }
+
+    .message-container {
+        padding: 15px;
+    }
+
+    .message {
+        flex-direction: column; /* 改为垂直布局 */
+        padding: 12px;
+        position: relative;
+    }
+
+    .user-avatar {
+        width: 35px;
+        height: 35px;
+        margin-right: 8px;
+        margin-bottom: 8px;
+    }
+
+    .message-content {
+        font-size: 1em;
+        width: 100%;
+        margin-bottom: 8px;
+        line-height: 1.4;
+    }
+
+    .timestamp {
+        font-size: 0.75em;
+        margin-left: 0;
+        align-self: flex-end; /* 时间戳靠右 */
+        color: #999;
+        background: rgba(255, 255, 255, 0.8);
+        padding: 2px 6px;
+        border-radius: 10px;
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+    }
+
+    .container {
+        padding: 15px;
+    }
+
+    .form-group input, .form-group textarea {
+        font-size: 16px; /* 防止iOS缩放 */
+    }
+
+    /* 移动端头像和用户信息在一行 */
+    .message-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+        width: 100%;
+    }
+
+    .user-avatar {
+        margin-bottom: 0;
+    }
+
+    .message-content {
+        margin-bottom: 0;
+    }
+}
+
 @media (max-width: 600px) {
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+    }
+
+    .message-content {
+        font-size: 0.95em;
+    }
+
+    .timestamp {
+        font-size: 0.7em;
+        bottom: 6px;
+        right: 6px;
+    }
+
+    .audio-message {
+        max-width: 100%; /* 移动端语音消息占满宽度 */
+    }
+
+    .json-message {
+        max-width: 100%; /* 移动端JSON消息占满宽度 */
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        margin: 5px;
+    }
+
+    .message-container {
+        padding: 10px;
+    }
+
+    .message {
+        padding: 10px;
+    }
+
     .user-avatar {
         width: 30px;
         height: 30px;
     }
 
     .message-content {
-        font-size: 1em;
+        font-size: 0.9em;
     }
 
     .timestamp {
-        font-size: 0.8em;
+        font-size: 0.65em;
+        bottom: 5px;
+        right: 5px;
     }
 
-    .form-group input, .form-group textarea {
-        font-size: 1em;
+    .container {
+        padding: 10px;
+    }
+}
+
+/* 超小屏幕优化 */
+@media (max-width: 360px) {
+    .user-avatar {
+        width: 28px;
+        height: 28px;
     }
 
-    .form-group button {
-        font-size: 1em;
+    .message-content {
+        font-size: 0.85em;
     }
 
-    .audio-message {
-        max-width: 250px;
+    .timestamp {
+        font-size: 0.6em;
     }
 }
