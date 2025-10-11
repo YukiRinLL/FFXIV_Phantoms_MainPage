@@ -4,73 +4,124 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visitor Statistics</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+    <!-- 预连接关键域名 -->
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preconnect" href="https://dshmbsawwrbuycnivcjs.supabase.co">
+    <link rel="preconnect" href="https://tile.openstreetmap.org">
+
+    <!-- 关键CSS内联 -->
     <style>
+        :root {
+            --primary-color: #666;
+            --primary-hover: #333;
+            --card-bg: white;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --border-radius: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
+            background-color: #f5f5f5;
         }
+
         .dashboard {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
+
         .card {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
             padding: 20px;
             margin-bottom: 20px;
         }
+
         #map {
             height: 400px;
             width: 100%;
-            border-radius: 8px;
-            background-color: #f8f9fa; /* 添加备用背景色 */
+            border-radius: var(--border-radius);
+            background-color: #f8f9fa;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
         }
+
         th, td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
+
         th {
             background-color: #f2f2f2;
         }
+
         .summary-cards {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
             margin-bottom: 20px;
         }
+
         .summary-card {
             background: #f8f9fa;
             padding: 15px;
-            border-radius: 8px;
+            border-radius: var(--border-radius);
             text-align: center;
+            transition: transform 0.2s;
         }
+
+        .summary-card:hover {
+            transform: translateY(-2px);
+        }
+
         .summary-card h3 {
             margin-top: 0;
             color: #6c757d;
+            font-size: 14px;
         }
+
         .summary-card p {
             font-size: 24px;
             font-weight: bold;
             margin: 10px 0 0;
+            color: var(--primary-color);
         }
-        .map-loading {
+
+        .loading {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100%;
             color: #666;
+            flex-direction: column;
         }
+
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
         #jumpButton {
-            background-color: #666666;
+            background-color: var(--primary-color);
             color: white;
             border: none;
             padding: 10px 20px;
@@ -79,269 +130,504 @@
             font-size: 16px;
             margin-top: 20px;
             margin-bottom: 20px;
+            transition: background-color 0.3s;
         }
+
         #jumpButton:hover {
-            background-color: #333333;
+            background-color: var(--primary-hover);
+        }
+
+        .error-message {
+            background: #fee;
+            border: 1px solid #fcc;
+            color: #c00;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .map-container {
+            position: relative;
+            height: 400px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: 10px;
+            }
         }
     </style>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 </head>
 <body>
 <h1>Visitor Statistics Dashboard</h1>
-<button id="jumpButton" class="btn btn-primary">To Status Page</button>
+<button id="jumpButton">To Status Page</button>
 
 <div class="summary-cards">
     <div class="summary-card">
         <h3>Total Visitors</h3>
-        <p id="totalVisitors">0</p>
+        <p id="totalVisitors">
+            <span class="skeleton" style="display: inline-block; width: 60px; height: 24px;"></span>
+        </p>
     </div>
     <div class="summary-card">
         <h3>Countries</h3>
-        <p id="totalCountries">0</p>
+        <p id="totalCountries">
+            <span class="skeleton" style="display: inline-block; width: 40px; height: 24px;"></span>
+        </p>
     </div>
     <div class="summary-card">
         <h3>Devices</h3>
-        <p id="totalDevices">0</p>
+        <p id="totalDevices">
+            <span class="skeleton" style="display: inline-block; width: 30px; height: 24px;"></span>
+        </p>
     </div>
     <div class="summary-card">
         <h3>Browsers</h3>
-        <p id="totalBrowsers">0</p>
+        <p id="totalBrowsers">
+            <span class="skeleton" style="display: inline-block; width: 30px; height: 24px;"></span>
+        </p>
     </div>
 </div>
 
 <div class="dashboard">
     <div class="card">
         <h2>Visitor Locations</h2>
-        <div id="map">
-            <div class="map-loading">Loading map...</div>
+        <div class="map-container">
+            <div id="map" class="loading">
+                <div>Loading map...</div>
+                <div style="font-size: 12px; margin-top: 10px;">This may take a few moments</div>
+            </div>
         </div>
     </div>
 
     <div class="card">
         <h2>Recent Visitors</h2>
-        <table id="visitorsTable">
-            <thead>
-            <tr>
-                <th>Country</th>
-                <th>City</th>
-                <th>Device</th>
-                <th>Browser</th>
-                <th>Time</th>
-            </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+        <div id="visitorsTableContainer">
+            <table id="visitorsTable">
+                <thead>
+                <tr>
+                    <th>Country</th>
+                    <th>City</th>
+                    <th>Device</th>
+                    <th>Browser</th>
+                    <th>Time</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr><td colspan="5" class="loading">Loading data...</td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <div class="card">
     <h2>Visitor Statistics by Country</h2>
-    <table id="countryTable">
-        <thead>
-        <tr>
-            <th>Country</th>
-            <th>Visitors</th>
-            <th>Percentage</th>
-        </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
+    <div id="countryTableContainer">
+        <table id="countryTable">
+            <thead>
+            <tr>
+                <th>Country</th>
+                <th>Visitors</th>
+                <th>Percentage</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr><td colspan="3" class="loading">Loading data...</td></tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
+<!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/ua-parser-js@1.0.2/src/ua-parser.min.js"></script>
+
 <script>
-    const anonPubKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzaG1ic2F3d3JidXljbml2Y2pzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5Mjg2OTAsImV4cCI6MjA2OTUwNDY5MH0.fwRJD-WuST7mCbJf9h2i2Xk0z6mtCMCeV--JGUecC6A';
-    const apiURL = 'https://dshmbsawwrbuycnivcjs.supabase.co/rest/v1/visitor_stats?select=*';
+    // 配置常量
+    const CONFIG = {
+        anonPubKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzaG1ic2F3d3JidXljbml2Y2pzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5Mjg2OTAsImV4cCI6MjA2OTUwNDY5MH0.fwRJD-WuST7mCbJf9h2i2Xk0z6mtCMCeV--JGUecC6A',
+        apiURL: 'https://dshmbsawwrbuycnivcjs.supabase.co/rest/v1/visitor_stats',
+        refreshInterval: 60000, // 60秒刷新
+        maxMarkers: 100, // 最大标记数量
+        cacheTimeout: 30000 // 缓存30秒
+    };
 
-    let map;
-    let markers = [];
+    // 状态管理
+    const state = {
+        map: null,
+        markers: [],
+        dataCache: null,
+        cacheTimestamp: 0,
+        isMapReady: false,
+        isDataLoading: false,
+        mapRetryCount: 0,
+        maxMapRetries: 3
+    };
 
-    // 初始化地图
+    // 错误处理
+    function handleError(error, context) {
+        console.error(`Error in ${context}:`, error);
+
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.textContent = `Failed to load ${context}. Please try refreshing the page.`;
+        errorDiv.style.margin = '10px 0';
+
+        const firstCard = document.querySelector('.card');
+        if (firstCard) {
+            firstCard.parentNode.insertBefore(errorDiv, firstCard);
+        }
+
+        setTimeout(() => {
+            if (errorDiv.parentNode) {
+                errorDiv.parentNode.removeChild(errorDiv);
+            }
+        }, 5000);
+    }
+
+    // 数据缓存
+    function getCachedData() {
+        const now = Date.now();
+        if (state.dataCache && (now - state.cacheTimestamp) < CONFIG.cacheTimeout) {
+            return state.dataCache;
+        }
+        return null;
+    }
+
+    function setCachedData(data) {
+        state.dataCache = data;
+        state.cacheTimestamp = Date.now();
+    }
+
+    // 初始化地图（修复版本）
     function initMap() {
-        // 移除加载提示
-        const loadingElement = document.querySelector('#map .map-loading');
-        if (loadingElement) {
-            loadingElement.remove();
-        }
-
-        // 确保地图容器存在
-        const mapElement = document.getElementById('map');
-        if (!mapElement) {
-            console.error('Map container not found');
-            return;
-        }
-
-        // 检查容器是否有高度
-        if (mapElement.offsetHeight <= 0) {
-            mapElement.style.height = '400px';
-        }
+        if (state.map) return;
 
         try {
-            map = L.map('map').setView([20, 0], 2);
+            const mapElement = document.getElementById('map');
+            if (!mapElement) {
+                console.error('Map container not found');
+                return;
+            }
 
-            // 主地图图层
-            const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                maxZoom: 19
-            }).addTo(map);
+            // 确保地图容器有正确的高度
+            if (mapElement.offsetHeight <= 0) {
+                mapElement.style.height = '400px';
+            }
 
-            // 备用地图图层
-            const hotLayer = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Tiles style by <a href="https://www.hotosm.org/" target="_blank">Humanitarian OpenStreetMap Team</a>',
-                maxZoom: 19
+            // 移除加载提示
+            const loadingElement = mapElement.querySelector('.loading');
+            if (loadingElement) {
+                loadingElement.remove();
+            }
+
+            // 初始化地图 - 使用更简单的配置
+            state.map = L.map('map', {
+                center: [20, 0],
+                zoom: 2,
+                zoomControl: true,
+                attributionControl: true
             });
 
-            // 监听主图层错误
-            osmLayer.on('tileerror', function() {
-                console.log('Error loading OSM tiles, switching to HOT');
-                map.removeLayer(osmLayer);
-                hotLayer.addTo(map);
+            // 添加多个地图源作为备用
+            const baseLayers = {
+                "OpenStreetMap": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                    maxZoom: 19
+                }),
+                "OpenStreetMap HOT": L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+                    attribution: '&copy; OpenStreetMap contributors, Tiles style by Humanitarian OpenStreetMap Team',
+                    maxZoom: 19
+                }),
+                "CartoDB Positron": L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                    maxZoom: 20
+                })
+            };
+
+            // 添加默认图层
+            baseLayers["OpenStreetMap"].addTo(state.map);
+
+            // 监听瓦片错误
+            baseLayers["OpenStreetMap"].on('tileerror', function() {
+                console.log('OSM tiles failed, trying HOT layer');
+                state.map.removeLayer(baseLayers["OpenStreetMap"]);
+                baseLayers["OpenStreetMap HOT"].addTo(state.map);
             });
 
-            // 监听窗口大小变化
+            baseLayers["OpenStreetMap HOT"].on('tileerror', function() {
+                console.log('HOT tiles failed, trying CartoDB');
+                state.map.removeLayer(baseLayers["OpenStreetMap HOT"]);
+                baseLayers["CartoDB Positron"].addTo(state.map);
+            });
+
+            // 添加图层控制
+            L.control.layers(baseLayers).addTo(state.map);
+
+            // 窗口调整大小事件
             window.addEventListener('resize', function() {
-                map.invalidateSize();
+                setTimeout(() => {
+                    if (state.map) {
+                        state.map.invalidateSize();
+                    }
+                }, 100);
             });
+
+            state.isMapReady = true;
+            console.log('Map initialized successfully');
+
+            // 如果有缓存数据，更新地图
+            if (state.dataCache) {
+                updateMap(state.dataCache);
+            }
 
         } catch (error) {
-            console.error('Map initialization error:', error);
-            mapElement.innerHTML = '<div class="map-loading">Failed to load map. Please refresh the page.</div>';
+            state.mapRetryCount++;
+            if (state.mapRetryCount <= state.maxMapRetries) {
+                console.log(`Retrying map initialization (${state.mapRetryCount}/${state.maxMapRetries})...`);
+                setTimeout(initMap, 1000 * state.mapRetryCount);
+            } else {
+                handleError(error, 'map initialization');
+                const mapElement = document.getElementById('map');
+                if (mapElement) {
+                    mapElement.innerHTML = '<div class="error-message">Failed to load map. Please check your internet connection and refresh the page.</div>';
+                }
+            }
         }
     }
 
-    // 获取并展示访客数据
+    // 获取访客数据
     async function fetchVisitorData() {
+        if (state.isDataLoading) return;
+
+        state.isDataLoading = true;
+
         try {
-            const response = await fetch(apiURL, {
+            // 检查缓存
+            const cachedData = getCachedData();
+            if (cachedData) {
+                updateDashboard(cachedData);
+                if (state.isMapReady) {
+                    updateMap(cachedData);
+                }
+                state.isDataLoading = false;
+                return;
+            }
+
+            const response = await fetch(`${CONFIG.apiURL}?select=*`, {
                 method: 'GET',
                 headers: {
-                    'apikey': anonPubKey,
-                    'Authorization': `Bearer ${anonPubKey}`,
+                    'apikey': CONFIG.anonPubKey,
+                    'Authorization': `Bearer ${CONFIG.anonPubKey}`,
                     'Content-Type': 'application/json'
                 }
             });
 
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
             const data = await response.json();
+
+            // 缓存数据
+            setCachedData(data);
+
+            // 更新界面
             updateDashboard(data);
-            updateMap(data);
+            if (state.isMapReady) {
+                updateMap(data);
+            }
             updateTables(data);
+
         } catch (error) {
-            console.error('Error fetching visitor data:', error);
+            handleError(error, 'data fetching');
+        } finally {
+            state.isDataLoading = false;
         }
     }
 
     // 更新仪表板摘要卡片
     function updateDashboard(data) {
-        // 总访客数
-        document.getElementById('totalVisitors').textContent = data.length;
+        if (!data || !data.length) return;
 
-        // 国家数量
-        const countries = [...new Set(data.filter(v => v.country).map(v => v.country))];
-        document.getElementById('totalCountries').textContent = countries.length;
+        try {
+            // 总访客数
+            document.getElementById('totalVisitors').textContent = data.length.toLocaleString();
 
-        // 设备类型数量
-        const devices = [...new Set(data.filter(v => v.device_type).map(v => v.device_type))];
-        document.getElementById('totalDevices').textContent = devices.length;
+            // 国家数量
+            const countries = new Set(data.filter(v => v.country).map(v => v.country));
+            document.getElementById('totalCountries').textContent = countries.size;
 
-        // 浏览器数量
-        const browsers = [...new Set(data.filter(v => v.browser).map(v => v.browser))];
-        document.getElementById('totalBrowsers').textContent = browsers.length;
+            // 设备类型数量
+            const devices = new Set(data.filter(v => v.device_type).map(v => v.device_type));
+            document.getElementById('totalDevices').textContent = devices.size;
+
+            // 浏览器数量
+            const browsers = new Set(data.filter(v => v.browser).map(v => v.browser));
+            document.getElementById('totalBrowsers').textContent = browsers.size;
+        } catch (error) {
+            handleError(error, 'dashboard update');
+        }
     }
 
     // 更新地图标记
     function updateMap(data) {
-        if (!map) {
-            console.warn('Map not initialized');
-            return;
+        if (!state.map || !data || !data.length) return;
+
+        try {
+            // 清除现有标记
+            state.markers.forEach(marker => state.map.removeLayer(marker));
+            state.markers = [];
+
+            // 筛选有效位置数据
+            const validLocations = data
+                .filter(v => v.latitude && v.longitude)
+                .slice(0, CONFIG.maxMarkers);
+
+            if (validLocations.length === 0) {
+                console.log('No valid location data to display on map');
+                return;
+            }
+
+            // 创建标记
+            validLocations.forEach(visitor => {
+                const marker = L.marker([visitor.latitude, visitor.longitude])
+                    .addTo(state.map)
+                    .bindPopup(`
+                            <div style="min-width: 200px;">
+                                <b>${visitor.city || 'Unknown'}, ${visitor.country || 'Unknown'}</b><br>
+                                Device: ${visitor.device_type || 'Unknown'}<br>
+                                Browser: ${visitor.browser || 'Unknown'}<br>
+                                Time: ${new Date(visitor.created_at).toLocaleString()}
+                            </div>
+                        `);
+                state.markers.push(marker);
+            });
+
+            // 调整视图以包含所有标记
+            if (state.markers.length > 0) {
+                const group = new L.featureGroup(state.markers);
+                state.map.fitBounds(group.getBounds().pad(0.1));
+            }
+
+            console.log(`Added ${state.markers.length} markers to map`);
+
+        } catch (error) {
+            handleError(error, 'map update');
         }
-
-        // 清除现有标记
-        markers.forEach(marker => map.removeLayer(marker));
-        markers = [];
-
-        // 添加新标记
-        const validLocations = data.filter(v => v.latitude && v.longitude);
-
-        if (validLocations.length === 0) {
-            console.log('No valid location data to display');
-            return;
-        }
-
-        validLocations.forEach(visitor => {
-            const marker = L.marker([visitor.latitude, visitor.longitude])
-                .addTo(map)
-                .bindPopup(`
-                    <b>${visitor.city || 'Unknown'}, ${visitor.country || 'Unknown'}</b><br>
-                    Device: ${visitor.device_type || 'Unknown'}<br>
-                    Browser: ${visitor.browser || 'Unknown'}<br>
-                    OS: ${visitor.os || 'Unknown'}<br>
-                    Time: ${new Date(visitor.created_at).toLocaleString()}
-                `);
-            markers.push(marker);
-        });
-
-        // 调整视图以包含所有标记
-        const group = new L.featureGroup(markers);
-        map.fitBounds(group.getBounds().pad(0.1));
     }
 
     // 更新表格
     function updateTables(data) {
-        // 更新最近访客表
-        const recentVisitors = [...data].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 10);
-        const visitorsTable = document.getElementById('visitorsTable').querySelector('tbody');
-        visitorsTable.innerHTML = '';
+        if (!data || !data.length) return;
 
-        recentVisitors.forEach(visitor => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${visitor.country || 'Unknown'}</td>
-                <td>${visitor.city || 'Unknown'}</td>
-                <td>${visitor.device_type || 'Unknown'}</td>
-                <td>${visitor.browser || 'Unknown'}</td>
-                <td>${new Date(visitor.created_at).toLocaleString()}</td>
-            `;
-            visitorsTable.appendChild(row);
-        });
+        try {
+            // 更新最近访客表
+            const recentVisitors = [...data]
+                .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                .slice(0, 10);
 
-        // 更新国家统计表
-        const countryStats = {};
-        data.forEach(visitor => {
-            const country = visitor.country || 'Unknown';
-            countryStats[country] = (countryStats[country] || 0) + 1;
-        });
+            const visitorsTable = document.getElementById('visitorsTable').querySelector('tbody');
+            visitorsTable.innerHTML = '';
 
-        const countryTable = document.getElementById('countryTable').querySelector('tbody');
-        countryTable.innerHTML = '';
-
-        Object.entries(countryStats)
-            .sort((a, b) => b[1] - a[1])
-            .forEach(([country, count]) => {
-                const percentage = ((count / data.length) * 100).toFixed(1);
+            recentVisitors.forEach(visitor => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${country}</td>
-                    <td>${count}</td>
-                    <td>${percentage}%</td>
-                `;
-                countryTable.appendChild(row);
+                        <td>${visitor.country || 'Unknown'}</td>
+                        <td>${visitor.city || 'Unknown'}</td>
+                        <td>${visitor.device_type || 'Unknown'}</td>
+                        <td>${visitor.browser || 'Unknown'}</td>
+                        <td>${new Date(visitor.created_at).toLocaleString()}</td>
+                    `;
+                visitorsTable.appendChild(row);
             });
+
+            // 更新国家统计表
+            const countryStats = {};
+            data.forEach(visitor => {
+                const country = visitor.country || 'Unknown';
+                countryStats[country] = (countryStats[country] || 0) + 1;
+            });
+
+            const countryTable = document.getElementById('countryTable').querySelector('tbody');
+            countryTable.innerHTML = '';
+
+            Object.entries(countryStats)
+                .sort((a, b) => b[1] - a[1])
+                .forEach(([country, count]) => {
+                    const percentage = ((count / data.length) * 100).toFixed(1);
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                            <td>${country}</td>
+                            <td>${count}</td>
+                            <td>${percentage}%</td>
+                        `;
+                    countryTable.appendChild(row);
+                });
+
+        } catch (error) {
+            handleError(error, 'table update');
+        }
     }
 
-    // 初始化页面
-    document.addEventListener('DOMContentLoaded', () => {
-        initMap();
+    // 检查Leaflet是否加载完成
+    function waitForLeaflet(callback) {
+        if (typeof L !== 'undefined') {
+            callback();
+        } else {
+            setTimeout(() => waitForLeaflet(callback), 100);
+        }
+    }
+
+    // 页面初始化
+    function initPage() {
+        console.log('Initializing page...');
+
+        // 立即加载数据
         fetchVisitorData();
 
-        // 每30秒刷新数据
-        setInterval(fetchVisitorData, 30000);
+        // 等待Leaflet加载完成后初始化地图
+        waitForLeaflet(() => {
+            console.log('Leaflet loaded, initializing map...');
+            initMap();
+        });
 
-        // 添加跳转按钮的点击事件
+        // 设置定期刷新
+        setInterval(fetchVisitorData, CONFIG.refreshInterval);
+
+        // 跳转按钮事件
         document.getElementById('jumpButton').addEventListener('click', () => {
-            //window.location.href = 'https://06my3sw3.status.cron-job.org/';
             window.open('https://06my3sw3.status.cron-job.org/', '_blank');
         });
-    });
+    }
+
+    // DOM加载完成后初始化
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initPage);
+    } else {
+        initPage();
+    }
 </script>
 </body>
 </html>
