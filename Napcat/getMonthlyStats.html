@@ -322,6 +322,79 @@
             font-size: 1.2rem;
         }
 
+        /* 用户统计控件样式 */
+        .user-stats-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .time-range select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            color: white;
+            padding: 10px 15px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .search-btn {
+            background: linear-gradient(135deg, #4cc9f0, #4361ee);
+            border: none;
+            border-radius: 20px;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .search-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .user-stats-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .user-info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .stats-summary {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9rem;
+        }
+
+        .stats-summary span {
+            opacity: 0.8;
+        }
+
+        .stats-summary strong {
+            color: #4cc9f0;
+            opacity: 1;
+        }
+
         @media (max-width: 768px) {
             .stats-overview {
                 grid-template-columns: repeat(2, 1fr);
@@ -346,6 +419,22 @@
             .ranking-list {
                 padding-right: 0;
             }
+
+            .user-stats-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .user-info-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .stats-summary {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
         }
 
         @media (max-width: 480px) {
@@ -355,6 +444,12 @@
 
             .stat-number {
                 font-size: 1.5rem;
+            }
+
+            .stats-summary {
+                flex-direction: column;
+                gap: 10px;
+                align-items: center;
             }
         }
     </style>
@@ -476,6 +571,45 @@
                 <canvas id="statsChart"></canvas>
             </div>
         </div>
+
+        <br>
+        <!-- 用户消息统计 -->
+        <div class="stat-card">
+            <div class="card-header">
+                <h2 class="card-title">用户消息统计</h2>
+                <div class="card-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+            </div>
+            <div class="user-stats-controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="userSearchInput" placeholder="输入用户ID或昵称...">
+                </div>
+                <div class="time-range">
+                    <select id="timeRangeSelect">
+                        <option value="7">最近一周</option>
+                        <option value="30" selected>最近一个月</option>
+                    </select>
+                </div>
+                <button id="searchUserStats" class="search-btn">
+                    <i class="fas fa-chart-bar"></i> 查询
+                </button>
+            </div>
+            <div class="chart-container">
+                <canvas id="userStatsChart"></canvas>
+            </div>
+            <div id="userStatsInfo" class="user-stats-info" style="display: none;">
+                <div class="user-info-header">
+                    <h3 id="userInfoName"></h3>
+                    <div class="stats-summary">
+                        <span>总消息数: <strong id="totalUserMessages">0</strong></span>
+                        <span>日均消息: <strong id="avgDailyMessages">0</strong></span>
+                        <span>最活跃日: <strong id="mostActiveDay">-</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <footer>
@@ -486,6 +620,7 @@
 <script>
     // API端点
     const API_URL = 'https://phantoms-backend.onrender.com/onebot/monthly-stats';
+    const USER_STATS_API_URL = 'https://phantoms-backend.onrender.com/onebot/user-stats';
 
     // 全局数据存储
     let statsData = null;
@@ -508,6 +643,26 @@
                 const category = this.getAttribute('data-tab');
                 filterByCategory(category);
             });
+        });
+
+        // 用户消息统计功能
+        document.getElementById('searchUserStats').addEventListener('click', function() {
+            const searchTerm = document.getElementById('userSearchInput').value.trim();
+            const timeRange = document.getElementById('timeRangeSelect').value;
+
+            if (!searchTerm) {
+                alert('请输入用户ID或昵称');
+                return;
+            }
+
+            fetchUserStats(searchTerm, timeRange);
+        });
+
+        // 回车键搜索
+        document.getElementById('userSearchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('searchUserStats').click();
+            }
         });
     });
 
@@ -818,6 +973,130 @@
                 }
             });
         }
+    }
+
+    // 获取用户统计数据的函数
+    async function fetchUserStats(searchTerm, days) {
+        try {
+            const searchBtn = document.getElementById('searchUserStats');
+            const originalText = searchBtn.innerHTML;
+            searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 查询中...';
+            searchBtn.disabled = true;
+
+            const response = await fetch(`${USER_STATS_API_URL}?search=${encodeURIComponent(searchTerm)}&days=${days}`);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const userStats = await response.json();
+            displayUserStatsChart(userStats);
+
+            searchBtn.innerHTML = originalText;
+            searchBtn.disabled = false;
+
+        } catch (error) {
+            console.error('获取用户统计数据失败:', error);
+            alert('获取用户统计数据失败，请重试');
+
+            const searchBtn = document.getElementById('searchUserStats');
+            searchBtn.innerHTML = '<i class="fas fa-chart-bar"></i> 查询';
+            searchBtn.disabled = false;
+        }
+    }
+
+    // 显示用户统计图表
+    function displayUserStatsChart(userStats) {
+        const ctx = document.getElementById('userStatsChart').getContext('2d');
+
+        // 销毁现有的图表实例
+        if (window.userStatsChartInstance) {
+            window.userStatsChartInstance.destroy();
+        }
+
+        // 反转数据顺序，让时间靠前的在左边，时间靠后的在右边
+        const reversedDailyStats = [...userStats.dailyStats].reverse();
+        const labels = reversedDailyStats.map(stat => stat.date);
+        const data = reversedDailyStats.map(stat => stat.messageCount);
+
+        // 计算统计信息（使用原始数据计算，不要用反转后的）
+        const totalMessages = userStats.dailyStats.reduce((sum, stat) => sum + stat.messageCount, 0);
+        const avgDailyMessages = (totalMessages / userStats.dailyStats.length).toFixed(1);
+
+        // 找到最活跃日（使用原始数据）
+        let maxMessages = 0;
+        let mostActiveDay = '-';
+        userStats.dailyStats.forEach(stat => {
+            if (stat.messageCount > maxMessages) {
+                maxMessages = stat.messageCount;
+                mostActiveDay = stat.date;
+            }
+        });
+
+        // 更新统计信息
+        document.getElementById('userInfoName').textContent = `${userStats.nickname} (ID: ${userStats.userId})`;
+        document.getElementById('totalUserMessages').textContent = totalMessages.toLocaleString();
+        document.getElementById('avgDailyMessages').textContent = avgDailyMessages;
+        document.getElementById('mostActiveDay').textContent = mostActiveDay;
+        document.getElementById('userStatsInfo').style.display = 'block';
+
+        window.userStatsChartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: '每日消息数量',
+                    data: data,
+                    borderColor: 'rgba(76, 201, 240, 1)',
+                    backgroundColor: 'rgba(76, 201, 240, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(76, 201, 240, 1)',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: 'rgba(255, 255, 255, 0.9)',
+                        bodyColor: 'rgba(255, 255, 255, 0.9)',
+                        borderColor: 'rgba(76, 201, 240, 0.5)',
+                        borderWidth: 1
+                    }
+                }
+            }
+        });
     }
 </script>
 </body>

@@ -1,0 +1,44 @@
+--清理健康日志表中状态全部为UP的记录
+delete from health_check_log where database_status = 'UP' and redis_status = 'UP' and leancloud_status = 'UP'
+
+-- --去重备份recruitments表
+-- INSERT INTO recruitments_dedup (
+--     id, name, description, duty, category, home_world, datacenter,
+--     created_world, created_world_id, home_world_id, category_id,
+--     min_item_level, slots_filled, slots_available, time_left, updated_at, is_cross_world
+-- )
+-- SELECT
+--     id, name, description, duty, category, home_world, datacenter,
+--     created_world, created_world_id, home_world_id, category_id,
+--     min_item_level, slots_filled, slots_available, time_left, updated_at, is_cross_world
+-- FROM recruitments
+--     ON CONFLICT ON CONSTRAINT uk_important_fields DO NOTHING;
+-- --清空原表
+-- --TRUNCATE TABLE recruitments;
+
+
+-- -- 创建备份表
+-- CREATE TABLE recruitments_backup (
+--     id INT PRIMARY KEY,
+--     name VARCHAR(255) NOT NULL,
+--     description TEXT,
+--     created_world VARCHAR(255),
+--     created_world_id INT,
+--     home_world VARCHAR(255),
+--     home_world_id INT,
+--     category VARCHAR(255),
+--     category_id INT,
+--     duty VARCHAR(255),
+--     min_item_level INT,
+--     slots_filled INT,
+--     slots_available INT,
+--     time_left DOUBLE PRECISION,
+--     updated_at TIMESTAMP(6),
+--     is_cross_world BOOLEAN,
+--     datacenter VARCHAR(255)
+-- );
+-- -- 插入数据到备份表
+-- INSERT INTO recruitments_backup
+-- SELECT * FROM recruitments;
+-- -- 清空原表
+-- TRUNCATE TABLE recruitments;

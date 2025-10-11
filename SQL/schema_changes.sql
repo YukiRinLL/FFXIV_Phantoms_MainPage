@@ -213,3 +213,35 @@ CREATE TABLE system_config (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+
+
+-- -- 创建新的去重表
+-- CREATE TABLE recruitments_dedup (
+--     id BIGINT PRIMARY KEY,
+--     name VARCHAR(255) NOT NULL,
+--     description TEXT,
+--     duty VARCHAR(255),
+--     category VARCHAR(100),
+--     home_world VARCHAR(100),
+--     datacenter VARCHAR(100),
+--     -- 添加唯一约束，防止重要字段重复
+--     CONSTRAINT uk_important_fields UNIQUE (name, description, duty, category, home_world, datacenter),
+--     -- 保留其他字段但不作为重要字段
+--     created_world VARCHAR(100),
+--     created_world_id INTEGER,
+--     home_world_id INTEGER,
+--     category_id INTEGER,
+--     min_item_level INTEGER DEFAULT 0,
+--     slots_filled INTEGER DEFAULT 0,
+--     slots_available INTEGER DEFAULT 1,
+--     time_left DOUBLE PRECISION,
+--     updated_at TIMESTAMP,
+--     is_cross_world BOOLEAN DEFAULT false
+-- );
+-- -- 创建索引优化查询性能
+-- CREATE INDEX idx_recruitments_dedup_name ON recruitments_dedup(name);
+-- CREATE INDEX idx_recruitments_dedup_duty ON recruitments_dedup(duty);
+-- CREATE INDEX idx_recruitments_dedup_category ON recruitments_dedup(category);
+-- CREATE INDEX idx_recruitments_dedup_home_world ON recruitments_dedup(home_world);
+-- CREATE INDEX idx_recruitments_dedup_datacenter ON recruitments_dedup(datacenter);
