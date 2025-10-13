@@ -133,7 +133,24 @@
             transition: background-color 0.3s;
         }
 
+        #jumpButton2 {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            transition: background-color 0.3s;
+        }
+
         #jumpButton:hover {
+            background-color: var(--primary-hover);
+        }
+
+        #jumpButton2:hover {
             background-color: var(--primary-hover);
         }
 
@@ -181,7 +198,8 @@
 </head>
 <body>
 <h1>Visitor Statistics Dashboard</h1>
-<button id="jumpButton">To Status Page</button>
+<button id="jumpButton">To Backend Status Page</button>
+<button id="jumpButton2">To Frontend Status Page</button>
 
 <div class="summary-cards">
     <div class="summary-card">
@@ -619,6 +637,11 @@
         // 跳转按钮事件
         document.getElementById('jumpButton').addEventListener('click', () => {
             window.open('https://06my3sw3.status.cron-job.org/', '_blank');
+        });
+
+        // 跳转按钮事件
+        document.getElementById('jumpButton').addEventListener('click', () => {
+            window.open('https://ggpx90d7.status.cron-job.org/', '_blank');
         });
     }
 
