@@ -247,6 +247,16 @@ function displayMessages(messages) {
                 console.error('Error parsing JSON message:', error);
                 displayMessage = "[JSON 消息解析失败]";
             }
+        } else if (message.message.startsWith("{type=forward, data={")) {
+            // 处理合并转发消息
+            displayMessage = `
+                <div class="forward-message">
+                    <div class="forward-header">
+                        <span class="forward-icon">✉</span>
+                        <span class="forward-text">[合并转发消息]</span>
+                    </div>
+                </div>
+            `;
         } else {
             displayMessage = message.message; // 其他类型的消息直接显示原始内容
         }
