@@ -120,9 +120,9 @@
             min-width: 0;
         }
 
-        /* 图片消息样式 */
-        .chat-message-image {
-            max-width: 100%;
+        /* 图片消息样式 - 保持原始大小，只限制最大尺寸 */
+        .chat-message-content img {
+            max-width: 30%;
             max-height: 400px;
             border-radius: 6px;
             margin-top: 8px;
@@ -131,12 +131,16 @@
             background-color: #f8f9fa;
         }
 
-        /* 文本消息中的小图片（如表情等） */
-        .chat-message-content img:not(.chat-message-image) {
-            max-width: 120px;
-            max-height: 120px;
+        /* 小图片（表情包等）保持原始大小 */
+        .chat-message-content img.emoji,
+        .chat-message-content img[src*="face"],
+        .chat-message-content img[width][height] {
+            max-width: none;
+            max-height: none;
+            width: auto;
+            height: auto;
+            display: inline-block;
             vertical-align: middle;
-            border-radius: 4px;
         }
 
         .chat-timestamp {
@@ -184,7 +188,7 @@
         .chat-form-group button {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: Black;
             color: white;
             border: none;
             cursor: pointer;
@@ -294,8 +298,6 @@
             max-width: 100%;
             border-radius: 6px;
             margin-bottom: 8px;
-            object-fit: contain;
-            background-color: #f8f9fa;
         }
 
         .chat-json-message div {
@@ -343,12 +345,20 @@
                 font-size: 0.95em;
             }
 
-            .chat-message-image {
+            .chat-message-content img {
                 max-height: 300px;
             }
 
             .chat-timestamp {
                 font-size: 0.7em;
+                margin-left: 0;
+                color: #999;
+                background: rgba(255, 255, 255, 0.8);
+                padding: 2px 6px;
+                border-radius: 10px;
+                position: absolute;
+                bottom: 8px;
+                right: 8px;
             }
 
             .chat-form-group {
@@ -402,12 +412,14 @@
                 font-size: 0.9em;
             }
 
-            .chat-message-image {
+            .chat-message-content img {
                 max-height: 250px;
             }
 
             .chat-timestamp {
                 font-size: 0.65em;
+                bottom: 6px;
+                right: 6px;
             }
         }
 
@@ -434,8 +446,14 @@
                 font-size: 0.85em;
             }
 
-            .chat-message-image {
+            .chat-message-content img {
                 max-height: 200px;
+            }
+
+            .chat-timestamp {
+                font-size: 0.65em;
+                bottom: 5px;
+                right: 5px;
             }
 
             .chat-form-group textarea {
@@ -457,6 +475,10 @@
 
             .chat-message-content {
                 font-size: 0.8em;
+            }
+
+            .chat-timestamp {
+                font-size: 0.6em;
             }
         }
 
@@ -788,7 +810,7 @@
                         if (cachedUrl) {
                             displayMessage = `<img src="${cachedUrl}" alt="Image">`;
                         } else {
-                            displayMessage = `<img src="placeholder.png" alt="Image">`;
+                            displayMessage = `<img src="./Napcat/placeholder.png" alt="Image">`;
                         }
                     }
                 } else {
