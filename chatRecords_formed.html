@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html  >
+<html>
 <head>
     <!-- Site made with Mobirise Website Builder v5.2.0, https://mobirise.com -->
     <meta charset="UTF-8">
@@ -30,8 +30,478 @@
     <link rel="stylesheet" href="additions/mouse.css">
     <!--added by Yuki 20221002-->
 
-    <!-- 悬浮按钮样式 -->
+    <!-- QQchat 样式 -->
     <style>
+        /* QQchat 样式 */
+        .chat-body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 主容器 */
+        .chat-main-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* 消息容器 - 可滚动区域 */
+        .chat-message-container {
+            flex: 1;
+            overflow-y: auto;
+            background-color: #fff;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* 固定底部表单区域 */
+        .chat-fixed-form-container {
+            background-color: #fff;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
+        }
+
+        /* 消息项样式 */
+        .chat-message {
+            border: 1px solid #e1e1e1;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .chat-message:last-child {
+            margin-bottom: 0;
+        }
+
+        /* 消息头部 - 头像和昵称 */
+        .chat-message-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            min-width: 0; /* 防止昵称过长溢出 */
+        }
+
+        .chat-user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            object-fit: cover;
+        }
+
+        .chat-user-name {
+            margin-left: 10px;
+            font-weight: bold;
+            color: #333;
+            font-size: 0.95em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px; /* 限制昵称最大宽度 */
+        }
+
+        /* 消息内容区域 */
+        .chat-message-content {
+            font-size: 1em;
+            line-height: 1.4;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            text-align: left;
+            min-width: 0;
+        }
+
+        /* 图片消息样式 - 保持原始大小，只限制最大尺寸 */
+        .chat-message-content img {
+            max-width: 30%;
+            max-height: 400px;
+            border-radius: 6px;
+            margin-top: 8px;
+            display: block;
+            object-fit: contain;
+            background-color: #f8f9fa;
+        }
+
+        /* 小图片（表情包等）保持原始大小 */
+        .chat-message-content img.emoji,
+        .chat-message-content img[src*="face"],
+        .chat-message-content img[width][height] {
+            max-width: none;
+            max-height: none;
+            width: auto;
+            height: auto;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .chat-timestamp {
+            font-size: 0.75em;
+            color: #999;
+            margin-top: 8px;
+            text-align: right;
+        }
+
+        /* 表单样式 */
+        .chat-form-group {
+            margin-bottom: 12px;
+        }
+
+        .chat-form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .chat-form-group input, .chat-form-group textarea {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #fafafa;
+            transition: border-color 0.2s;
+        }
+
+        .chat-form-group input:focus, .chat-form-group textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            background-color: #fff;
+        }
+
+        .chat-form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .chat-form-group button {
+            width: 100%;
+            padding: 12px;
+            background: Black;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .chat-form-group button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .chat-form-group button:active {
+            transform: translateY(0);
+        }
+
+        /* 特殊消息类型 */
+        .chat-message .at {
+            color: #007bff;
+            font-weight: bold;
+            background-color: #e3f2fd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin: 0 2px;
+        }
+
+        .chat-message .reply {
+            color: #28a745;
+            font-weight: bold;
+            background-color: #e8f5e8;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin: 0 2px;
+        }
+
+        .chat-user-info {
+            display: inline-flex;
+            align-items: center;
+            margin-left: 5px;
+            background-color: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .chat-user-info img {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .chat-user-info span {
+            margin-left: 4px;
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        /* 语音消息样式 */
+        .chat-audio-message {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 12px;
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            max-width: 280px;
+            text-align: left;
+        }
+
+        .chat-audio-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+        }
+
+        .chat-audio-icon {
+            font-size: 1.2em;
+            color: #666;
+        }
+
+        .chat-audio-text {
+            color: #666;
+            flex: 1;
+        }
+
+        /* JSON 消息样式 */
+        .chat-json-message {
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+            padding: 12px;
+            background-color: #fff;
+            max-width: 320px;
+            text-align: left;
+        }
+
+        .chat-json-message a {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .chat-json-message img {
+            max-width: 100%;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .chat-json-message div {
+            margin-bottom: 4px;
+        }
+
+        /* 表情消息 */
+        .chat-face-message {
+            font-size: 1.5em;
+            display: inline-block;
+            margin: 0 2px;
+        }
+
+        /* 移动端优化 */
+        @media (max-width: 768px) {
+            .chat-main-container {
+                height: 100vh;
+            }
+
+            .chat-message-container {
+                padding: 12px;
+            }
+
+            .chat-fixed-form-container {
+                padding: 12px;
+            }
+
+            .chat-message {
+                padding: 10px;
+                margin-bottom: 10px;
+            }
+
+            .chat-user-avatar {
+                width: 32px;
+                height: 32px;
+            }
+
+            .chat-user-name {
+                font-size: 0.9em;
+                max-width: 150px;
+                margin-left: 8px;
+            }
+
+            .chat-message-content {
+                font-size: 0.95em;
+            }
+
+            .chat-message-content img {
+                max-height: 300px;
+            }
+
+            .chat-timestamp {
+                font-size: 0.7em;
+                margin-left: 0;
+                color: #999;
+                background: rgba(255, 255, 255, 0.8);
+                padding: 2px 6px;
+                border-radius: 10px;
+                position: absolute;
+                bottom: 8px;
+                right: 8px;
+            }
+
+            .chat-form-group {
+                margin-bottom: 10px;
+            }
+
+            .chat-form-group input, .chat-form-group textarea {
+                padding: 8px;
+                font-size: 16px; /* 防止iOS缩放 */
+            }
+
+            .chat-form-group button {
+                padding: 10px;
+            }
+
+            .chat-json-message {
+                max-width: 100%;
+            }
+
+            .chat-audio-message {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .chat-message-container {
+                padding: 10px;
+            }
+
+            .chat-fixed-form-container {
+                padding: 10px;
+            }
+
+            .chat-message {
+                padding: 8px;
+                margin-bottom: 8px;
+            }
+
+            .chat-user-avatar {
+                width: 30px;
+                height: 30px;
+            }
+
+            .chat-user-name {
+                font-size: 0.85em;
+                max-width: 120px;
+                margin-left: 6px;
+            }
+
+            .chat-message-content {
+                font-size: 0.9em;
+            }
+
+            .chat-message-content img {
+                max-height: 250px;
+            }
+
+            .chat-timestamp {
+                font-size: 0.65em;
+                bottom: 6px;
+                right: 6px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .chat-message-container {
+                padding: 8px;
+            }
+
+            .chat-fixed-form-container {
+                padding: 8px;
+            }
+
+            .chat-user-avatar {
+                width: 28px;
+                height: 28px;
+            }
+
+            .chat-user-name {
+                max-width: 100px;
+                font-size: 0.8em;
+            }
+
+            .chat-message-content {
+                font-size: 0.85em;
+            }
+
+            .chat-message-content img {
+                max-height: 200px;
+            }
+
+            .chat-timestamp {
+                font-size: 0.65em;
+                bottom: 5px;
+                right: 5px;
+            }
+
+            .chat-form-group textarea {
+                min-height: 60px;
+            }
+        }
+
+        /* 超小屏幕优化 */
+        @media (max-width: 360px) {
+            .chat-user-avatar {
+                width: 26px;
+                height: 26px;
+            }
+
+            .chat-user-name {
+                max-width: 80px;
+                font-size: 0.75em;
+            }
+
+            .chat-message-content {
+                font-size: 0.8em;
+            }
+
+            .chat-timestamp {
+                font-size: 0.6em;
+            }
+        }
+
+        /* 自定义滚动条样式 */
+        .chat-message-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-message-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .chat-message-container::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        .chat-message-container::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        /* 悬浮按钮样式 */
         .floating-btn {
             position: fixed;
             bottom: 50px;
@@ -109,13 +579,39 @@
 </script>
 
 <!--plugin began-->
-<section class="header1 cid-s48MCQYojq mbr-fullscreen" id="chatRecords-f" >
+<section class="header1 cid-s48MCQYojq mbr-fullscreen" id="chatRecords-f">
     <div class="mbr-overlay" style="opacity:1; background-color: #ffffff;"></div>
     <div class="align-center container-fluid">
-        <iframe id="chatRecords" src="Napcat/QQchat.html" seamless frameborder=0 style="min-width: 100%; min-height: 1000px; max-width: 100%;
-        max-height: 100%; align:center; background-color: #ffffff;"></iframe>
+        <!-- 替换为 QQchat 的内容 -->
+        <div class="chat-main-container">
+            <!-- 消息显示区域 - 可滚动 -->
+            <div class="chat-message-container" id="chat-message-container"></div>
+
+            <!-- 固定底部表单区域 -->
+            <div class="chat-fixed-form-container">
+                <form id="chat-messageForm">
+                    <div class="chat-form-group">
+                        <label for="chat-message">Message[消息正文]:</label>
+                        <textarea id="chat-message" name="message" required placeholder="请输入消息内容..."></textarea>
+                    </div>
+                    <div class="chat-form-group">
+                        <label for="chat-signature">Signature[署名]:</label>
+                        <input type="text" id="chat-signature" name="signature" required placeholder="请输入您的署名">
+                    </div>
+                    <div class="chat-form-group">
+                        <button type="submit">Send</button>
+                    </div>
+                    <div class="chat-form-group">
+                        <p style="color: gray; font-size: 0.9em; margin: 0; text-align: center;">
+                            音频/图片/链接相关功能不可用，仅发送文字消息
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 </section>
+
 <div class="container">
     <div class="row justify-content-center" style="opacity:1; background-color: rgb(255, 255, 255);">
         <div class="col-12 col-lg-10">
@@ -144,10 +640,439 @@
     </div>
 </section>
 
-<section style="background-color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif; color:#aaa; font-size:12px; padding: 0; align-items: center; display: flex;"><a href="https://mobirise.site/n" style="flex: 1 1; height: 3rem; padding-left: 1rem;"></a><p style="flex: 0 0 auto; margin:0; padding-right:1rem;">Page was <a href="https://mobirise.site/g" style="color:#aaa;">designed</a> with Mobirise</p></section><script src="assets/web/assets/jquery/jquery.min.js"></script>  <script src="assets/popper/popper.min.js"></script>  <script src="assets/tether/tether.min.js"></script>  <script src="assets/bootstrap/js/bootstrap.min.js"></script>  <script src="assets/smoothscroll/smooth-scroll.js"></script>  <script src="assets/ytplayer/jquery.mb.ytplayer.min.js"></script>  <script src="assets/vimeoplayer/jquery.mb.vimeo_player.js"></script>  <script src="assets/dropdown/js/nav-dropdown.js"></script>  <script src="assets/dropdown/js/navbar-dropdown.js"></script>  <script src="assets/touchswipe/jquery.touch-swipe.min.js"></script>  <script src="assets/theme/js/script.js"></script>
+<section style="background-color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif; color:#aaa; font-size:12px; padding: 0; align-items: center; display: flex;"><a href="https://mobirise.site/n" style="flex: 1 1; height: 3rem; padding-left: 1rem;"></a><p style="flex: 0 0 auto; margin:0; padding-right:1rem;">Page was <a href="https://mobirise.site/g" style="color:#aaa;">designed</a> with Mobirise</p></section>
+
+<script src="assets/web/assets/jquery/jquery.min.js"></script>
+<script src="assets/popper/popper.min.js"></script>
+<script src="assets/tether/tether.min.js"></script>
+<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="assets/smoothscroll/smooth-scroll.js"></script>
+<script src="assets/ytplayer/jquery.mb.ytplayer.min.js"></script>
+<script src="assets/vimeoplayer/jquery.mb.vimeo_player.js"></script>
+<script src="assets/dropdown/js/nav-dropdown.js"></script>
+<script src="assets/dropdown/js/navbar-dropdown.js"></script>
+<script src="assets/touchswipe/jquery.touch-swipe.min.js"></script>
+<script src="assets/theme/js/script.js"></script>
+
+<!-- QQchat JavaScript 代码 -->
+<script>
+    // QQchat JavaScript 代码
+    const supabaseURL = 'https://dshmbsawwrbuycnivcjs.supabase.co';
+    const supabaseAPIKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzaG1ic2F3d3JidXljbml2Y2pzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5Mjg2OTAsImV4cCI6MjA2OTUwNDY5MH0.fwRJD-WuST7mCbJf9h2i2Xk0z6mtCMCeV--JGUecC6A';
+
+    const displayedMessages = new Set();
+    const fetchedImages = new Set();
+    let fetchIntervalId;
+    let systemInfo;
+    const imageProxyUrl = 'https://res.cloudinary.com/your-cloud-name/image/fetch/';
+    const audioProxyUrl = 'https://audio-converter.example.com/convert?url=';
+
+    function cacheImage(proxyUrl, originalUrl) {
+        localStorage.setItem(originalUrl, proxyUrl);
+    }
+
+    function fallbackToProxy(imgElement, proxyUrl) {
+        imgElement.src = proxyUrl;
+    }
+
+    function fetchSystemInfo() {
+        const systemInfo = {
+            browser: {
+                userAgent: navigator.userAgent,
+                appName: navigator.appName,
+                appVersion: navigator.appVersion,
+                platform: navigator.platform,
+                language: navigator.language,
+                cookiesEnabled: navigator.cookieEnabled,
+                doNotTrack: navigator.doNotTrack,
+                javaEnabled: navigator.javaEnabled(),
+                onLine: navigator.onLine,
+            },
+            device: {
+                screenWidth: window.screen.width,
+                screenHeight: window.screen.height,
+                colorDepth: window.screen.colorDepth,
+                pixelRatio: window.devicePixelRatio,
+                orientation: window.screen.orientation ? window.screen.orientation.type : null,
+                availableMemory: navigator.hardwareConcurrency,
+                hardwareConcurrency: navigator.hardwareConcurrency,
+            },
+            network: {
+                connection: {
+                    type: navigator.connection ? navigator.connection.type : null,
+                    downlink: navigator.connection ? navigator.connection.downlink : null,
+                    effectiveType: navigator.connection ? navigator.connection.effectiveType : null,
+                    rtt: navigator.connection ? navigator.connection.rtt : null,
+                },
+            },
+            battery: {
+                status: navigator.getBattery ? navigator.getBattery().then(battery => {
+                    return {
+                        charging: battery.charging,
+                        level: battery.level,
+                        chargingTime: battery.chargingTime,
+                        dischargingTime: battery.dischargingTime,
+                    };
+                }) : null,
+            },
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            plugins: navigator.plugins ? Array.from(navigator.plugins).map(plugin => plugin.name) : [],
+            mimeTypes: navigator.mimeTypes ? Array.from(navigator.mimeTypes).map(mimeType => mimeType.type) : [],
+            geolocation: null,
+        };
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                systemInfo.geolocation = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                    accuracy: position.coords.accuracy,
+                    altitude: position.coords.altitude,
+                    altitudeAccuracy: position.coords.altitudeAccuracy,
+                    heading: position.coords.heading,
+                    speed: position.coords.speed,
+                    timestamp: position.timestamp,
+                };
+            }, error => {
+                console.error('Geolocation error:', error);
+            });
+        } else {
+            console.error('Geolocation is not supported by this browser.');
+        }
+
+        return systemInfo;
+    }
+
+    function startFetchInterval() {
+        if (fetchIntervalId) {
+            clearInterval(fetchIntervalId);
+        }
+        fetchIntervalId = setInterval(fetchLatestMessages, 5000);
+    }
+
+    async function fetchLatestMessages() {
+        try {
+            const response = await fetch('https://phantoms-backend.onrender.com/onebot/latest?limit=30');
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            const messages = await response.json();
+            console.log('Received messages:', messages);
+            displayMessages(messages);
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+        }
+    }
+
+    function displayMessages(messages) {
+        const container = document.getElementById('chat-message-container');
+        container.innerHTML = '';
+
+        messages.reverse();
+
+        messages.forEach(message => {
+            const isDisplayed = displayedMessages.has(message.id);
+            const hasMultipleMessages = messages.filter(msg => msg.id === message.id).length > 1;
+            if (isDisplayed && hasMultipleMessages) {
+                return;
+            }
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message';
+
+            const timestamp = new Date(
+                message.timestamp[0],
+                message.timestamp[1] - 1,
+                message.timestamp[2],
+                message.timestamp[3],
+                message.timestamp[4],
+                message.timestamp[5],
+                message.timestamp[6]
+            ).toLocaleString();
+
+            let displayMessage = message.message;
+            if (message.message.startsWith("{type=text, data={text=")) {
+                const start = message.message.indexOf("{text=") + 6;
+                const end = message.message.indexOf("}}", start);
+                displayMessage = message.message.substring(start, end);
+            } else if (message.message.startsWith("{type=face, data={id=")) {
+                const faceId = message.message.match(/id=(\d+)/)[1];
+                displayMessage = `[表情 ${faceId}]`;
+            } else if (message.message.startsWith("{type=image, data={")) {
+                const imageUrlMatch = message.message.match(/url=(https?:\/\/[^,]+)/);
+                if (imageUrlMatch) {
+                    const imageUrl = imageUrlMatch[1];
+                    if (!fetchedImages.has(imageUrl)) {
+                        fetchedImages.add(imageUrl);
+                        displayMessage = `<img src="${imageProxyUrl}${encodeURIComponent(imageUrl)}" alt="Image" onload="cacheImage('${imageProxyUrl}${encodeURIComponent(imageUrl)}', '${imageUrl}')">`;
+                    } else {
+                        const cachedUrl = localStorage.getItem(imageUrl);
+                        if (cachedUrl) {
+                            displayMessage = `<img src="${cachedUrl}" alt="Image">`;
+                        } else {
+                            displayMessage = `<img src="./Napcat/placeholder.png" alt="Image">`;
+                        }
+                    }
+                } else {
+                    displayMessage = "[图片链接提取失败]";
+                }
+            } else if (message.message.startsWith("{type=record, data={")) {
+                const urlMatch = message.message.match(/url=(https?:\/\/[^,]+)/);
+                const fileSizeMatch = message.message.match(/file_size=(\d+)/);
+
+                if (urlMatch) {
+                    const audioUrl = urlMatch[1];
+                    const fileSize = fileSizeMatch ? parseInt(fileSizeMatch[1]) : 0;
+                    const fileSizeText = fileSize > 0 ? ` (${formatFileSize(fileSize)})` : '';
+
+                    displayMessage = `
+                        <div class="chat-audio-message">
+                            <div class="chat-audio-info">
+                                <span class="chat-audio-icon">🎤</span>
+                                <span class="chat-audio-text">语音消息${fileSizeText}</span>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    displayMessage = "🎤 [语音消息]";
+                }
+            } else if (message.message.startsWith("{type=at, data={qq=")) {
+                const atUserId = message.message.match(/qq=(\d+)/)[1];
+                displayMessage = `<span class="at">@${atUserId}</span>`;
+                const userInfo = getUserInfo(atUserId);
+                displayMessage += ` <span class="chat-user-info"><img src="http://q1.qlogo.cn/g?b=qq&nk=${atUserId}&s=100"><span>${userInfo.nickname}</span></span>`;
+            } else if (message.message.startsWith("{type=reply, data={id=")) {
+                const replyId = message.message.match(/id=(\d+)/)[1];
+                displayMessage = `<span class="reply">[回复 ${replyId}]</span>`;
+            } else if (message.message.startsWith("{type=json, data={")) {
+                try {
+                    const jsonData = JSON.parse(message.message.match(/{type=json, data=({.*})}/)[1]);
+                    const meta = jsonData.data.meta.news;
+
+                    displayMessage = `<div class="chat-json-message">
+                        <a href="${meta.jumpUrl}" target="_blank">
+                            <img src="${meta.preview}" alt="${meta.title}" style="max-width: 200px; max-height: 200px; border-radius: 8px;">
+                            <div style="font-weight: bold;">${meta.title}</div>
+                            <div>${meta.desc}</div>
+                        </a>
+                    </div>`;
+                } catch (error) {
+                    console.error('Error parsing JSON message:', error);
+                    displayMessage = "[JSON 消息解析失败]";
+                }
+            } else if (message.message.startsWith("{type=forward, data={")) {
+                // 处理合并转发消息
+                displayMessage = `
+                <div class="forward-message">
+                    <div class="forward-header">
+                        <span class="forward-icon">✉</span>
+                        <span class="forward-text">[合并转发消息]</span>
+                    </div>
+                </div>
+            `;
+            } else {
+                displayMessage = message.message;
+            }
+
+            const messageHeader = document.createElement('div');
+            messageHeader.className = 'chat-message-header';
+
+            const avatarImg = document.createElement('img');
+            avatarImg.className = 'chat-user-avatar';
+            avatarImg.src = `http://q1.qlogo.cn/g?b=qq&nk=${message.userId}&s=100`;
+
+            const userName = document.createElement('strong');
+            userName.textContent = message.nickname;
+            userName.style.marginLeft = '8px';
+
+            messageHeader.appendChild(avatarImg);
+            messageHeader.appendChild(userName);
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'chat-message-content';
+            contentDiv.innerHTML = displayMessage;
+
+            const timestampSpan = document.createElement('span');
+            timestampSpan.className = 'chat-timestamp';
+            timestampSpan.textContent = timestamp;
+
+            messageDiv.appendChild(messageHeader);
+            messageDiv.appendChild(contentDiv);
+            messageDiv.appendChild(timestampSpan);
+
+            container.appendChild(messageDiv);
+
+            displayedMessages.add(message.id);
+        });
+    }
+
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 B';
+        const k = 1024;
+        const sizes = ['B', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    function downloadAudio(url, filename) {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename + '.amr';
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    async function getUserInfo(userId) {
+        const avatarUrl = `http://q1.qlogo.cn/g?b=qq&nk=${userId}&s=100`;
+        const nicknameUrl = `https://r.qzone.qq.com/cgi-bin/user/cgi_userinfo_get_all?uin=${userId}`;
+
+        try {
+            const avatarResponse = await fetch(avatarUrl);
+            if (!avatarResponse.ok) {
+                throw new Error(`Network response was not ok: ${avatarResponse.statusText}`);
+            }
+
+            const nicknameResponse = await fetch(nicknameUrl);
+            if (!nicknameResponse.ok) {
+                throw new Error(`Network response was not ok: ${nicknameResponse.statusText}`);
+            }
+            const nicknameData = await nicknameResponse.json();
+
+            if (nicknameData.retcode === 0) {
+                return {
+                    nickname: nicknameData.data.nickname,
+                    faceimg: avatarUrl
+                };
+            } else {
+                console.error('Failed to get user info:', nicknameData.message);
+                return { nickname: "未知用户", faceimg: avatarUrl };
+            }
+        } catch (error) {
+            console.error('Error fetching user info:', error);
+            return { nickname: "未知用户", faceimg: avatarUrl };
+        }
+    }
+
+    window.onload = () => {
+        fetchSystemInfo();
+        fetchLatestMessages();
+        startFetchInterval();
+        fetchUserProfile();
+    };
+
+    function fetchUserProfile() {
+        const userId = getCookie('user_id');
+
+        if (!userId) {
+            console.log('No user_id found in cookies.');
+            return;
+        }
+
+        fetch(`${supabaseURL}/rest/v1/users?select=username&user_id=eq.${userId}`, {
+            method: 'GET',
+            headers: {
+                'apikey': supabaseAPIKey
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0 && data[0].username) {
+                    updateSignature(data[0].username);
+                } else {
+                    console.log('No username found for the user.');
+                    updateSignature("匿名用户");
+                }
+            })
+            .catch(error => console.error('Error fetching user profile:', error));
+    }
+
+    function updateSignature(username) {
+        const signatureInput = document.getElementById('chat-signature');
+        signatureInput.value = username;
+    }
+
+    function getCookie(name) {
+        let cookieArray = document.cookie.split(';');
+        for (let i = 0; i < cookieArray.length; i++) {
+            let cookie = cookieArray[i].trim();
+            if (cookie.indexOf(name + "=") == 0) {
+                return cookie.substring(name.length + 1, cookie.length);
+            }
+        }
+        return "";
+    }
+
+    document.getElementById('chat-messageForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const message = document.getElementById('chat-message').value;
+        const signature = document.getElementById('chat-signature').value;
+
+        const formattedMessage = `[${signature}] ${message}`;
+
+        startFetchInterval();
+
+        const container = document.getElementById('chat-message-container');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'chat-message';
+
+        const messageHeader = document.createElement('div');
+        messageHeader.className = 'chat-message-header';
+
+        const avatarImg = document.createElement('img');
+        avatarImg.className = 'chat-user-avatar';
+        avatarImg.src = `http://q1.qlogo.cn/g?b=qq&nk=${signature}&s=100`;
+
+        const userName = document.createElement('strong');
+        userName.textContent = signature;
+        userName.style.marginLeft = '8px';
+
+        messageHeader.appendChild(avatarImg);
+        messageHeader.appendChild(userName);
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'chat-message-content';
+        contentDiv.textContent = formattedMessage;
+
+        const timestampSpan = document.createElement('span');
+        timestampSpan.className = 'chat-timestamp';
+        timestampSpan.textContent = new Date().toLocaleString();
+
+        messageDiv.appendChild(messageHeader);
+        messageDiv.appendChild(contentDiv);
+        messageDiv.appendChild(timestampSpan);
+
+        displayedMessages.add(message.id);
+
+        container.appendChild(messageDiv);
+
+        const url = new URL('https://phantoms-backend.onrender.com/onebot/send-to-group');
+        url.searchParams.append('groupId', '787909466');
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: formattedMessage, systemInfo: systemInfo })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    document.getElementById('chat-message').value = '';
+                } else {
+                    alert('Failed to send message: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while sending the message.'+ error.message);
+            });
+    });
+</script>
 
 </body>
-
 
 <div id="foot"></div>
 <script src="./assets/web/assets/jquery/jquery.min.js"></script>
@@ -156,6 +1081,5 @@
         $("#foot").load("./additions/foot/profile-round.html");
     });
 </script>
-
 
 </html>
