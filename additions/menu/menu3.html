@@ -211,19 +211,115 @@
     // 每秒更新一次时间
     setInterval(updateTime, 1000);
 
-    function adjustLinks() {
-        var links = document.querySelectorAll('a[data-mobile-href]');
+    // 改进的移动端链接调整功能
+    let linkObserver = null;
+
+    // 初始化链接存储
+    function initLinkStorage() {
+        const links = document.querySelectorAll('a[data-mobile-href]');
         links.forEach(function(link) {
-            if (window.innerWidth <= 768) { // 假设屏幕宽度小于或等于 768px 时为移动端
-                link.href = link.getAttribute('data-mobile-href');
-            } else {
-                link.href = link.getAttribute('href');
+            // 存储原始链接
+            if (!link.hasAttribute('data-original-href')) {
+                link.setAttribute('data-original-href', link.getAttribute('href'));
             }
         });
     }
 
+    // 检测是否为移动设备
+    function isMobileDevice() {
+        return window.innerWidth <= 768 ||
+            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
+    // 调整链接函数
+    function adjustLinks() {
+        const links = document.querySelectorAll('a[data-mobile-href]');
+        const isMobile = isMobileDevice();
+
+        console.log(`调整链接: 移动端=${isMobile}, 找到${links.length}个链接`);
+
+        links.forEach(function(link) {
+            if (isMobile) {
+                // 移动端：使用移动端链接
+                const mobileHref = link.getAttribute('data-mobile-href');
+                if (mobileHref && link.href !== mobileHref) {
+                    link.href = mobileHref;
+                    console.log(`设置为移动端链接: ${mobileHref}`);
+                }
+            } else {
+                // 桌面端：恢复原始链接
+                const originalHref = link.getAttribute('data-original-href');
+                if (originalHref && link.href !== originalHref) {
+                    link.href = originalHref;
+                    console.log(`恢复桌面端链接: ${originalHref}`);
+                }
+            }
+        });
+    }
+
+    // 监听DOM变化
+    function observeDynamicContent() {
+        if (linkObserver) {
+            linkObserver.disconnect();
+        }
+
+        linkObserver = new MutationObserver(function(mutations) {
+            let shouldAdjust = false;
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList') {
+                    // 检查新增的节点中是否有需要处理的链接
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeType === 1) { // Element node
+                            if (node.matches && node.matches('a[data-mobile-href]')) {
+                                shouldAdjust = true;
+                            }
+                            if (node.querySelectorAll) {
+                                const links = node.querySelectorAll('a[data-mobile-href]');
+                                if (links.length > 0) {
+                                    shouldAdjust = true;
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+
+            if (shouldAdjust) {
+                initLinkStorage();
+                adjustLinks();
+            }
+        });
+
+        linkObserver.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    }
+
+    // 页面加载完成后的初始化
     document.addEventListener("DOMContentLoaded", function() {
+        // 初始化链接存储
+        initLinkStorage();
+
+        // 立即调整链接
         adjustLinks();
+
+        // 开始监听DOM变化
+        observeDynamicContent();
+
+        // 监听窗口大小变化
         window.addEventListener('resize', adjustLinks);
+
+        // 监听页面显示变化（处理浏览器标签页切换）
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                setTimeout(adjustLinks, 100);
+            }
+        });
+    });
+
+    // 确保在页面完全加载后再次检查
+    window.addEventListener('load', function() {
+        setTimeout(adjustLinks, 500);
     });
 </script>
