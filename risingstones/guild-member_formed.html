@@ -102,6 +102,8 @@
         .member-card.no-avatar img {
             border: 2px solid #ddd;
         }
+
+        /* 更新后的弹窗样式 */
         .modal {
             display: none;
             position: fixed;
@@ -111,57 +113,170 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0, 0, 0, 0.4);
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
         }
         .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 600px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            background-color: #fff;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 12px;
+            width: 85%;
+            max-width: 800px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 10px;
+            background: linear-gradient(135deg, #282828 0%, #343434 100%);
+            color: white;
+            padding: 20px 30px;
+            position: relative;
         }
         .modal-title {
-            font-size: 1.5em;
-            color: #333;
+            font-size: 1.8em;
+            margin: 0;
+            font-weight: 600;
         }
         .close {
-            color: #aaa;
+            color: white;
             font-size: 28px;
             font-weight: bold;
+            position: absolute;
+            right: 20px;
+            top: 15px;
             cursor: pointer;
+            transition: color 0.2s;
         }
         .close:hover,
         .close:focus {
-            color: black;
+            color: #ffffff;
             text-decoration: none;
         }
         .modal-body {
-            padding: 20px 0;
+            padding: 30px;
+            max-height: 70vh;
+            overflow-y: auto;
         }
-        .modal-body p {
-            margin: 10px 0;
-            font-size: 1em;
-            color: #555;
+        .info-section {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
         }
-        .modal-body h3 {
-            font-size: 1.2em;
+        .info-section:last-child {
+            border-bottom: none;
+        }
+        .info-section h3 {
+            font-size: 1.3em;
             color: #333;
-            margin: 20px 0 10px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #a1a1a1;
+            display: inline-block;
+        }
+        .info-item {
+            display: flex;
+            margin-bottom: 12px;
+            align-items: flex-start;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #555;
+            min-width: 120px;
+            margin-right: 15px;
+        }
+        .info-value {
+            color: #333;
+            flex: 1;
+        }
+        .achievement-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .achievement-item {
+            background: #f8f9fa;
+            border-left: 4px solid #2f2f2f;
+            padding: 12px 15px;
+            border-radius: 4px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .achievement-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .achievement-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .achievement-detail {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+        .achievement-time {
+            color: #888;
+            font-size: 0.8em;
+            text-align: right;
+        }
+        .career-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .career-item {
+            background: #ececec;
+            border: 1px solid #dedede;
+            border-radius: 6px;
+            padding: 8px 10px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+        .career-level {
+            font-weight: 600;
+            color: #313131;
         }
         .loading {
             text-align: center;
+            padding: 40px;
             font-size: 1.2em;
             color: #777;
+        }
+        .no-data {
+            color: #999;
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+            .modal-body {
+                padding: 20px;
+            }
+            .achievement-list {
+                grid-template-columns: 1fr;
+            }
+            .career-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            .info-item {
+                flex-direction: column;
+            }
+            .info-label {
+                margin-bottom: 5px;
+            }
         }
     </style>
 </head>
@@ -195,15 +310,49 @@
         <div id="myModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2 class="modal-title">Member Details</h2>
+                    <h2 class="modal-title">成员详情</h2>
                     <span class="close">&times;</span>
                 </div>
                 <div class="modal-body">
-                    <p id="modalProfile">Profile: No profile</p>
-                    <p id="modalLastDynamic">Last Dynamic: No recent activity</p>
-                    <h3>Achievements</h3>
-                    <p id="modalAchievements">No achievements</p>
-                    <div class="loading" id="loadingMessage">Loading...</div>
+                    <div class="info-section">
+                        <h3>基本信息</h3>
+                        <div class="info-item">
+                            <span class="info-label">角色名:</span>
+                            <span class="info-value" id="modalCharacterName">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">服务器:</span>
+                            <span class="info-value" id="modalServer">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">部队:</span>
+                            <span class="info-value" id="modalGuild">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">签名:</span>
+                            <span class="info-value" id="modalProfile">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">最后登录:</span>
+                            <span class="info-value" id="modalLastLogin">-</span>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>职业等级</h3>
+                        <div class="career-grid" id="modalCareers">
+                            <!-- 职业信息将通过JS动态添加 -->
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>成就</h3>
+                        <div class="achievement-list" id="modalAchievements">
+                            <!-- 成就信息将通过JS动态添加 -->
+                        </div>
+                    </div>
+
+                    <div class="loading" id="loadingMessage">加载中...</div>
                 </div>
             </div>
         </div>
@@ -247,7 +396,7 @@
 <script src="../assets/touchswipe/jquery.touch-swipe.min.js"></script>
 <script src="../assets/theme/js/script.js"></script>
 
-<!-- 添加 test.html 的 JavaScript 代码 -->
+<!-- 更新后的 JavaScript 代码 -->
 <script>
     // test.html 的 JavaScript 代码
     const imageProxyUrl = 'https://res.cloudinary.com/your-cloud-name/image/fetch/';
@@ -303,27 +452,82 @@
             displayUserInfo(data.data);
         } catch (error) {
             console.error('There has been a problem with your fetch operation:', error);
-            displayError('Failed to load user information.');
+            displayError('加载用户信息失败。');
         }
     }
 
     function displayUserInfo(userInfo) {
-        const modalTitle = document.querySelector('.modal-title');
-        const modalProfile = document.getElementById('modalProfile');
-        const modalLastDynamic = document.getElementById('modalLastDynamic');
-        const modalAchievements = document.getElementById('modalAchievements');
+        // const modalTitle = document.querySelector('.modal-title');
+        // const modalProfile = document.getElementById('modalProfile');
+        // const modalLastDynamic = document.getElementById('modalLastDynamic');
+        // const modalAchievements = document.getElementById('modalAchievements');
         const loadingMessage = document.getElementById('loadingMessage');
 
-        modalTitle.textContent = userInfo.character_name || 'N/A';
-        modalProfile.textContent = `Profile: ${userInfo.profile || 'No profile'}`;
-        modalLastDynamic.textContent = `Last Dynamic: ${userInfo.last_dynamic || 'No recent activity'}`;
+        // 基本信息
+        document.getElementById('modalCharacterName').textContent = userInfo.character_name || '-';
+        document.getElementById('modalServer').textContent = `${userInfo.area_name || '-'} - ${userInfo.group_name || '-'}`;
+        document.getElementById('modalGuild').textContent = userInfo.characterDetail?.[0]?.guild_name || '-';
+        document.getElementById('modalProfile').textContent = userInfo.profile || '-';
+        document.getElementById('modalLastLogin').textContent = userInfo.characterDetail?.[0]?.last_login_time || '-';
 
-        const achievements = userInfo.achieveInfo.map(achieve => {
-            return `${achieve.achieve_name}: ${achieve.achieve_detail} (${achieve.achieve_time})`;
-        }).join('<br>');
-        modalAchievements.innerHTML = `Achievements: ${achievements || 'No achievements'}`;
+        // 职业信息
+        const careersContainer = document.getElementById('modalCareers');
+        careersContainer.innerHTML = '';
+
+        if (userInfo.careerLevel && userInfo.careerLevel.length > 0) {
+            userInfo.careerLevel.forEach(career => {
+                const careerItem = document.createElement('div');
+                careerItem.className = 'career-item';
+                careerItem.innerHTML = `
+                    <div>${career.career}</div>
+                    <div class="career-level">Lv.${career.character_level}</div>
+                `;
+                careersContainer.appendChild(careerItem);
+            });
+        } else {
+            careersContainer.innerHTML = '<div class="no-data">暂无职业信息</div>';
+        }
+
+        // 成就信息
+        const achievementsContainer = document.getElementById('modalAchievements');
+        achievementsContainer.innerHTML = '';
+
+        if (userInfo.achieveInfo && userInfo.achieveInfo.length > 0) {
+            // 只显示最近的10个成就
+            const recentAchievements = userInfo.achieveInfo.slice(0, 10);
+
+            recentAchievements.forEach(achievement => {
+                const achievementItem = document.createElement('div');
+                achievementItem.className = 'achievement-item';
+                achievementItem.innerHTML = `
+                    <div class="achievement-name">${achievement.achieve_name}</div>
+                    <div class="achievement-detail">${achievement.achieve_detail}</div>
+                    <div class="achievement-time">${formatDate(achievement.achieve_time)}</div>
+                `;
+                achievementsContainer.appendChild(achievementItem);
+            });
+
+            // 如果成就超过10个，显示提示
+            if (userInfo.achieveInfo.length > 10) {
+                const moreItem = document.createElement('div');
+                moreItem.className = 'achievement-item';
+                moreItem.innerHTML = `
+                    <div class="achievement-name">还有 ${userInfo.achieveInfo.length - 10} 个成就...</div>
+                    <div class="achievement-detail">查看更多成就请访问石之家社区</div>
+                `;
+                achievementsContainer.appendChild(moreItem);
+            }
+        } else {
+            achievementsContainer.innerHTML = '<div class="no-data">暂无成就信息</div>';
+        }
 
         loadingMessage.style.display = 'none';
+    }
+
+    function formatDate(dateString) {
+        if (!dateString) return '-';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('zh-CN');
     }
 
     function displayError(message) {
@@ -337,6 +541,18 @@
 
     function showModal() {
         const modal = document.getElementById('myModal');
+        const loadingMessage = document.getElementById('loadingMessage');
+
+        // 重置内容
+        document.getElementById('modalCharacterName').textContent = '-';
+        document.getElementById('modalServer').textContent = '-';
+        document.getElementById('modalGuild').textContent = '-';
+        document.getElementById('modalProfile').textContent = '-';
+        document.getElementById('modalLastLogin').textContent = '-';
+        document.getElementById('modalCareers').innerHTML = '';
+        document.getElementById('modalAchievements').innerHTML = '';
+
+        loadingMessage.style.display = 'block';
         modal.style.display = 'block';
     }
 
