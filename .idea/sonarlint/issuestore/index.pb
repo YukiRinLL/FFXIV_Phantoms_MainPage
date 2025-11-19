@@ -14,3 +14,9 @@ M
 profiles/profiles_formed.html,8\5\85e61cb6464d158ab0c5a3599c352a6e107400ef
 U
 %messageBoard/messageBoard_formed.html,2\c\2c544b1902b5230d9c9ad9bad087b98c14f55232
+@
+Napcat/QQchat.js,1\8\183ea9c7ad39783dcb6689581f4c3771e35ed0c8
+A
+Napcat/QQchat.css,0\f\0fb9a9f904721b14f415d912693a67088d30c110
+B
+Napcat/QQchat.html,3\c\3cecc66fc43c88ed3d24660329f51f0ff28c4918
