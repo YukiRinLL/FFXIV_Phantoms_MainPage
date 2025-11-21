@@ -15,10 +15,10 @@
         }
         .sort-button {
             position: fixed;
-            top: 20px;
+            top: 50px;
             right: 20px;
             z-index: 1000;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: white;
             color: white;
             border: none;
             padding: 12px 24px;
@@ -34,7 +34,7 @@
             box-shadow: 0 6px 20px rgba(0,0,0,0.3);
         }
         .sort-button.loading {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            background: gray;
             cursor: not-allowed;
         }
         .container {
@@ -168,7 +168,7 @@
 </head>
 <body>
 
-<button class="sort-button" onclick="sortByColor()">🌈 按颜色排序</button>
+<button class="sort-button" onclick="sortByColor()">🌈</button>
 
 <div class="container">
     <!-- 公会成员卡片 -->
@@ -844,7 +844,7 @@
 </div>
 <div id="member31Modal" class="modal">
     <div class="modal-content">
-        <span class="close" onclick="closeModal('member30Modal')">&times;</span>
+        <span class="close" onclick="closeModal('member31Modal')">&times;</span>
         <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
             加载中...
         </div>
@@ -855,7 +855,7 @@
 </div>
 <div id="member32Modal" class="modal">
     <div class="modal-content">
-        <span class="close" onclick="closeModal('member35Modal')">&times;</span>
+        <span class="close" onclick="closeModal('member32Modal')">&times;</span>
         <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
             加载中...
         </div>
@@ -866,7 +866,7 @@
 </div>
 <div id="member33Modal" class="modal">
     <div class="modal-content">
-        <span class="close" onclick="closeModal('member32Modal')">&times;</span>
+        <span class="close" onclick="closeModal('member33Modal')">&times;</span>
         <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
             加载中...
         </div>
@@ -877,7 +877,7 @@
 </div>
 <div id="member34Modal" class="modal">
     <div class="modal-content">
-        <span class="close" onclick="closeModal('member37Modal')">&times;</span>
+        <span class="close" onclick="closeModal('member34Modal')">&times;</span>
         <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
             加载中...
         </div>
@@ -888,7 +888,7 @@
 </div>
 <div id="member35Modal" class="modal">
     <div class="modal-content">
-        <span class="close" onclick="closeModal('member31Modal')">&times;</span>
+        <span class="close" onclick="closeModal('member35Modal')">&times;</span>
         <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
             加载中...
         </div>
@@ -910,7 +910,7 @@
 </div>
 <div id="member37Modal" class="modal">
     <div class="modal-content">
-        <span class="close" onclick="closeModal('member34Modal')">&times;</span>
+        <span class="close" onclick="closeModal('member37Modal')">&times;</span>
         <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
             加载中...
         </div>
@@ -925,14 +925,27 @@
     // 使用images.weserv.nl作为图片代理服务
     const IMAGE_PROXY_URL = 'https://images.weserv.nl/?url=';
 
+    // === 算法开关配置 ===
+    const ALGORITHM_SWITCHES = {
+        topEdge: false,    // 顶部边缘算法
+        region: false,     // 智能区域分析
+        mode: false,       // 众数颜色算法
+        average: false,    // 平均数算法
+        fixedPoints: true // 固定点采样算法
+    };
+    // === 配置结束 ===
+
     // 预定义的颜色映射，用于缓存已经分析过的图片颜色
     const colorCache = new Map();
+
+    // 用于记录调试信息
+    const debugInfo = new Map();
 
     async function sortByColor() {
         const button = document.querySelector('.sort-button');
         const originalText = button.textContent;
 
-        button.textContent = '🎨 分析颜色中...';
+        button.textContent = '🎨';
         button.classList.add('loading');
 
         const container = document.querySelector('.container');
@@ -941,9 +954,10 @@
         try {
             // 为每个卡片提取主要颜色（使用代理图片）
             const cardsWithColors = await Promise.all(
-                cards.map(async (card) => {
+                cards.map(async (card, index) => {
                     const imgElement = card.querySelector('.member-image img');
                     const originalSrc = imgElement.src;
+                    const memberName = card.querySelector('.member-name').textContent;
 
                     // 检查缓存
                     if (colorCache.has(originalSrc)) {
@@ -953,20 +967,26 @@
                         };
                     }
 
+                    const color = await getDominantColor(originalSrc, memberName);
                     return {
                         card,
-                        color: await getDominantColor(originalSrc)
+                        color: color
                     };
                 })
             );
 
+            // 输出所有调试信息
+            console.log('🎨 === 颜色分析调试信息 ===');
+            debugInfo.forEach((info, memberName) => {
+                console.log(`👤 ${memberName}:`, info);
+            });
+            console.log('🎨 ========================');
+
             // 按HSL颜色值排序（色相 -> 饱和度 -> 亮度）
             cardsWithColors.sort((a, b) => {
-                // 转换为HSL进行比较
                 const hslA = rgbToHsl(a.color.r, a.color.g, a.color.b);
                 const hslB = rgbToHsl(b.color.r, b.color.g, b.color.b);
 
-                // 主要按色相排序，然后按饱和度，最后按亮度
                 if (Math.abs(hslA.h - hslB.h) > 0.1) {
                     return hslA.h - hslB.h;
                 }
@@ -979,7 +999,6 @@
             // 重新排列卡片
             cardsWithColors.forEach((item, index) => {
                 container.appendChild(item.card);
-                // 添加动画效果
                 item.card.style.transition = 'all 0.8s ease';
                 item.card.style.transform = `translateX(${index * 20}px)`;
             });
@@ -989,7 +1008,6 @@
                 button.textContent = originalText;
                 button.classList.remove('loading');
 
-                // 移除动画效果
                 cardsWithColors.forEach(item => {
                     item.card.style.transition = '';
                     item.card.style.transform = '';
@@ -1006,83 +1024,714 @@
         }
     }
 
-    // 获取图片主要颜色（使用代理）
-    function getDominantColor(imageUrl) {
+    // 获取图片主要颜色（综合算法）
+    function getDominantColor(imageUrl, memberName) {
         return new Promise((resolve, reject) => {
             const img = new Image();
-            // 使用代理URL
             const proxiedUrl = getProxiedImageUrl(imageUrl);
             img.src = proxiedUrl;
-            img.crossOrigin = "anonymous"; // 设置跨域属性
+            img.crossOrigin = "anonymous";
 
             img.onload = function() {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
-                canvas.width = 50;
-                canvas.height = 50;
 
-                ctx.drawImage(img, 0, 0, 50, 50);
+                canvas.width = 300;
+                canvas.height = 300;
 
-                const imageData = ctx.getImageData(0, 0, 50, 50).data;
-                let r = 0, g = 0, b = 0, count = 0;
+                ctx.drawImage(img, 0, 0, 300, 300);
 
-                // 采样计算平均颜色
-                for (let i = 0; i < imageData.length; i += 16) {
-                    r += imageData[i];
-                    g += imageData[i + 1];
-                    b += imageData[i + 2];
-                    count++;
+                try {
+                    const imageData = ctx.getImageData(0, 0, 300, 300).data;
+                    const result = getComprehensiveDominantColor(imageData, 300, 300, memberName);
+
+                    colorCache.set(imageUrl, result.finalColor);
+
+                    // 存储调试信息
+                    debugInfo.set(memberName, {
+                        finalColor: result.finalColor,
+                        finalColorHex: rgbToHex(result.finalColor.r, result.finalColor.g, result.finalColor.b),
+                        algorithms: result.algorithms,
+                        scores: result.scores,
+                        weights: result.weights,
+                        characteristics: result.characteristics,
+                        enabledAlgorithms: Object.keys(ALGORITHM_SWITCHES).filter(key => ALGORITHM_SWITCHES[key]),
+                        imageUrl: imageUrl
+                    });
+
+                    resolve(result.finalColor);
+                } catch (error) {
+                    console.warn('颜色分析失败，使用备用算法:', error);
+                    const fallbackColor = getTopEdgeColor(ctx.getImageData(0, 0, 300, 300).data, 300, 300);
+                    colorCache.set(imageUrl, fallbackColor);
+
+                    debugInfo.set(memberName, {
+                        finalColor: fallbackColor,
+                        finalColorHex: rgbToHex(fallbackColor.r, fallbackColor.g, fallbackColor.b),
+                        algorithms: { topEdge: fallbackColor },
+                        scores: { topEdge: 1 },
+                        weights: { topEdge: 1 },
+                        error: error.message,
+                        imageUrl: imageUrl
+                    });
+
+                    resolve(fallbackColor);
                 }
-
-                const color = {
-                    r: Math.floor(r / count),
-                    g: Math.floor(g / count),
-                    b: Math.floor(b / count)
-                };
-
-                // 缓存结果（使用原始URL作为key）
-                colorCache.set(imageUrl, color);
-                resolve(color);
             };
 
             img.onerror = function() {
                 console.warn('图片加载失败，使用随机颜色:', imageUrl);
-                // 如果图片加载失败，返回随机颜色
-                const randomColor = {
-                    r: Math.floor(Math.random() * 255),
-                    g: Math.floor(Math.random() * 255),
-                    b: Math.floor(Math.random() * 255)
-                };
+                const randomColor = getRandomColor();
                 colorCache.set(imageUrl, randomColor);
+
+                debugInfo.set(memberName, {
+                    finalColor: randomColor,
+                    finalColorHex: rgbToHex(randomColor.r, randomColor.g, randomColor.b),
+                    error: '图片加载失败',
+                    imageUrl: imageUrl
+                });
+
                 resolve(randomColor);
             };
 
-            // 设置超时
             setTimeout(() => {
                 if (!img.complete) {
                     console.warn('图片加载超时:', imageUrl);
-                    const randomColor = {
-                        r: Math.floor(Math.random() * 255),
-                        g: Math.floor(Math.random() * 255),
-                        b: Math.floor(Math.random() * 255)
-                    };
+                    const randomColor = getRandomColor();
                     colorCache.set(imageUrl, randomColor);
+
+                    debugInfo.set(memberName, {
+                        finalColor: randomColor,
+                        finalColorHex: rgbToHex(randomColor.r, randomColor.g, randomColor.b),
+                        error: '图片加载超时',
+                        imageUrl: imageUrl
+                    });
+
                     resolve(randomColor);
                 }
             }, 5000);
         });
     }
 
+    // 综合颜色分析算法
+    function getComprehensiveDominantColor(imageData, width, height, memberName) {
+        // 1. 根据配置开关运行不同的算法
+        const algorithms = {};
+        const colors = [];
+
+        if (ALGORITHM_SWITCHES.topEdge) {
+            algorithms.topEdge = getTopEdgeColor(imageData, width, height);
+            colors.push(algorithms.topEdge);
+        }
+
+        if (ALGORITHM_SWITCHES.region) {
+            algorithms.region = getSmartRegionColor(imageData, width, height);
+            colors.push(algorithms.region);
+        }
+
+        if (ALGORITHM_SWITCHES.mode) {
+            algorithms.mode = getModeColor(imageData, width, height);
+            colors.push(algorithms.mode);
+        }
+
+        if (ALGORITHM_SWITCHES.average) {
+            algorithms.average = getAverageColor(imageData, width, height);
+            colors.push(algorithms.average);
+        }
+
+        if (ALGORITHM_SWITCHES.fixedPoints) {
+            algorithms.fixedPoints = getFixedPointsColor(imageData, width, height);
+            colors.push(algorithms.fixedPoints);
+        }
+
+        // 如果没有启用任何算法，使用随机颜色
+        if (colors.length === 0) {
+            const randomColor = getRandomColor();
+            return {
+                finalColor: randomColor,
+                algorithms: { random: randomColor },
+                scores: { random: 1 },
+                weights: { random: 1 },
+                characteristics: {}
+            };
+        }
+
+        // 2. 评估每种算法的结果质量
+        const scores = {};
+        if (ALGORITHM_SWITCHES.topEdge) {
+            scores.topEdge = evaluateColorQuality(algorithms.topEdge, imageData, width, height, 'topEdge');
+        }
+        if (ALGORITHM_SWITCHES.region) {
+            scores.region = evaluateColorQuality(algorithms.region, imageData, width, height, 'region');
+        }
+        if (ALGORITHM_SWITCHES.mode) {
+            scores.mode = evaluateColorQuality(algorithms.mode, imageData, width, height, 'mode');
+        }
+        if (ALGORITHM_SWITCHES.average) {
+            scores.average = evaluateColorQuality(algorithms.average, imageData, width, height, 'average');
+        }
+        if (ALGORITHM_SWITCHES.fixedPoints) {
+            scores.fixedPoints = evaluateColorQuality(algorithms.fixedPoints, imageData, width, height, 'fixedPoints');
+        }
+
+        // 3. 动态调整权重（基于启用的算法）
+        const weights = {};
+        let totalWeight = 0;
+
+        if (ALGORITHM_SWITCHES.topEdge) {
+            weights.topEdge = 0.3;
+            totalWeight += weights.topEdge;
+        }
+        if (ALGORITHM_SWITCHES.region) {
+            weights.region = 0.25;
+            totalWeight += weights.region;
+        }
+        if (ALGORITHM_SWITCHES.mode) {
+            weights.mode = 0.15;
+            totalWeight += weights.mode;
+        }
+        if (ALGORITHM_SWITCHES.average) {
+            weights.average = 0.1;
+            totalWeight += weights.average;
+        }
+        if (ALGORITHM_SWITCHES.fixedPoints) {
+            weights.fixedPoints = 0.2;
+            totalWeight += weights.fixedPoints;
+        }
+
+        // 归一化权重
+        Object.keys(weights).forEach(key => {
+            weights[key] /= totalWeight;
+        });
+
+        // 4. 加权混合最终颜色
+        const imageCharacteristics = analyzeImageCharacteristics(imageData, width, height);
+        const finalColor = blendColorsWithStrategy(colors, Object.values(weights), imageCharacteristics);
+
+        return {
+            finalColor,
+            algorithms,
+            scores,
+            weights,
+            characteristics: imageCharacteristics
+        };
+    }
+
+    // 算法5: 固定点采样算法（新增）
+    function getFixedPointsColor(imageData, width, height) {
+        const positions = [
+            Math.floor(width * 0.25),  // 1/4位置
+            Math.floor(width * 0.333), // 1/3位置
+            Math.floor(width * 0.666), // 2/3位置
+            Math.floor(width * 0.75)   // 3/4位置
+        ];
+
+        let totalR = 0, totalG = 0, totalB = 0;
+        let validPoints = 0;
+
+        // 在第一行（y=0）的指定位置采样
+        for (const x of positions) {
+            const index = (0 * width + x) * 4;
+
+            // 检查像素是否有效（不透明）
+            if (imageData[index + 3] > 128) {
+                totalR += imageData[index];
+                totalG += imageData[index + 1];
+                totalB += imageData[index + 2];
+                validPoints++;
+            }
+        }
+
+        // 如果有有效像素点，计算平均值
+        if (validPoints > 0) {
+            return {
+                r: Math.floor(totalR / validPoints),
+                g: Math.floor(totalG / validPoints),
+                b: Math.floor(totalB / validPoints)
+            };
+        }
+
+        // 如果没有有效像素点，使用备用算法
+        return getAverageColor(imageData, width, height);
+    }
+
+    // 分析图片特性
+    function analyzeImageCharacteristics(imageData, width, height) {
+        let totalR = 0, totalG = 0, totalB = 0;
+        let pixelCount = 0;
+        let colorVariance = 0;
+        let edgeIntensity = 0;
+
+        // 计算基本统计信息
+        for (let i = 0; i < imageData.length; i += 16) {
+            if (imageData[i + 3] > 128) {
+                totalR += imageData[i];
+                totalG += imageData[i + 1];
+                totalB += imageData[i + 2];
+                pixelCount++;
+            }
+        }
+
+        const avgR = totalR / pixelCount;
+        const avgG = totalG / pixelCount;
+        const avgB = totalB / pixelCount;
+
+        // 计算颜色方差
+        for (let i = 0; i < imageData.length; i += 16) {
+            if (imageData[i + 3] > 128) {
+                const dr = imageData[i] - avgR;
+                const dg = imageData[i + 1] - avgG;
+                const db = imageData[i + 2] - avgB;
+                colorVariance += (dr * dr + dg * dg + db * db);
+            }
+        }
+        colorVariance /= pixelCount;
+
+        // 简单的边缘检测（计算顶部区域的对比度）
+        const edgePixels = Math.min(50, Math.floor(width * 0.1));
+        for (let x = 0; x < edgePixels; x++) {
+            const index1 = x * 4;
+            const index2 = (width - 1 - x) * 4;
+            if (imageData[index1 + 3] > 128 && imageData[index2 + 3] > 128) {
+                const contrast = Math.abs(imageData[index1] - imageData[index2]) +
+                               Math.abs(imageData[index1 + 1] - imageData[index2 + 1]) +
+                               Math.abs(imageData[index1 + 2] - imageData[index2 + 2]);
+                edgeIntensity += contrast;
+            }
+        }
+
+        return {
+            hasStrongEdges: edgeIntensity > 5000,
+            hasUniformBackground: colorVariance < 5000,
+            isColorful: colorVariance > 10000,
+            averageBrightness: (avgR + avgG + avgB) / 3,
+            colorVariance: colorVariance
+        };
+    }
+
+    // 改进的颜色混合策略
+    function blendColorsWithStrategy(colors, weights, characteristics) {
+        // 如果图片颜色方差小（可能是单色背景），更依赖区域分析
+        if (characteristics.hasUniformBackground) {
+            // 找到region算法的索引
+            const regionIndex = weights.findIndex((w, i) => w > 0.2); // 假设region权重较高
+            if (regionIndex !== -1) {
+                weights[regionIndex] += 0.15;
+                // 减少其他算法的权重
+                weights.forEach((w, i) => {
+                    if (i !== regionIndex) weights[i] = Math.max(0, w - 0.05);
+                });
+            }
+        }
+
+        // 归一化权重
+        const totalWeight = weights.reduce((sum, w) => sum + w, 0);
+        weights = weights.map(w => w / totalWeight);
+
+        // 加权混合
+        let r = 0, g = 0, b = 0;
+        for (let i = 0; i < colors.length; i++) {
+            r += colors[i].r * weights[i];
+            g += colors[i].g * weights[i];
+            b += colors[i].b * weights[i];
+        }
+
+        // 后处理：确保颜色饱和度
+        const hsl = rgbToHsl(Math.round(r), Math.round(g), Math.round(b));
+
+        // 提高低饱和度颜色的饱和度
+        if (hsl.s < 0.3) {
+            hsl.s = Math.min(0.7, hsl.s * 1.5);
+        }
+
+        // 调整过亮或过暗的颜色
+        if (hsl.l > 0.8) {
+            hsl.l = 0.7;
+        } else if (hsl.l < 0.2) {
+            hsl.l = 0.3;
+        }
+
+        // 转换回RGB
+        return hslToRgb(hsl.h, hsl.s, hsl.l);
+    }
+
+    // HSL转RGB函数
+    function hslToRgb(h, s, l) {
+        let r, g, b;
+
+        if (s === 0) {
+            r = g = b = l;
+        } else {
+            const hue2rgb = (p, q, t) => {
+                if (t < 0) t += 1;
+                if (t > 1) t -= 1;
+                if (t < 1/6) return p + (q - p) * 6 * t;
+                if (t < 1/2) return q;
+                if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                return p;
+            };
+
+            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            const p = 2 * l - q;
+            r = hue2rgb(p, q, h + 1/3);
+            g = hue2rgb(p, q, h);
+            b = hue2rgb(p, q, h - 1/3);
+        }
+
+        return {
+            r: Math.round(r * 255),
+            g: Math.round(g * 255),
+            b: Math.round(b * 255)
+        };
+    }
+
+    // 改进的颜色质量评估
+    function evaluateColorQuality(color, imageData, width, height, algorithmType) {
+        const hsl = rgbToHsl(color.r, color.g, color.b);
+
+        // 基础分数
+        let score = 0;
+
+        // 饱和度分数（鼓励适中的饱和度）
+        const saturationScore = Math.min(hsl.s * 1.2, 1);
+
+        // 亮度分数（避免过亮或过暗）
+        const lightnessScore = 1 - Math.pow(hsl.l - 0.6, 2) * 1.2;
+
+        // 代表性分数
+        const representativenessScore = calculateColorRepresentativeness(color, imageData);
+
+        // 算法特定调整
+        switch (algorithmType) {
+            case 'topEdge':
+                // 顶部边缘算法：鼓励鲜艳颜色
+                score = saturationScore * 0.5 + lightnessScore * 0.3 + representativenessScore * 0.2;
+                break;
+            case 'region':
+                // 区域分析：平衡考虑
+                score = saturationScore * 0.4 + lightnessScore * 0.4 + representativenessScore * 0.2;
+                break;
+            case 'mode':
+                // 众数算法：更看重代表性
+                score = saturationScore * 0.3 + lightnessScore * 0.3 + representativenessScore * 0.4;
+                break;
+            case 'average':
+                // 平均算法：保守评估
+                score = saturationScore * 0.4 + lightnessScore * 0.4 + representativenessScore * 0.2;
+                break;
+            case 'fixedPoints':
+                // 固定点算法：鼓励鲜艳和代表性
+                score = saturationScore * 0.4 + lightnessScore * 0.3 + representativenessScore * 0.3;
+                break;
+        }
+
+        return Math.max(0.1, score);
+    }
+
+    // 算法1: 顶部边缘像素分析
+    function getTopEdgeColor(imageData, width, height) {
+        const edgeHeight = Math.floor(height * 0.2); // 增加采样区域
+        const colorBuckets = new Map();
+        const bucketSize = 15; // 增加桶大小以减少噪声
+
+        // 采样更多像素
+        for (let y = 0; y < edgeHeight; y++) {
+            for (let x = 0; x < width; x++) {
+                const index = (y * width + x) * 4;
+                if (imageData[index + 3] > 128) {
+                    const r = imageData[index];
+                    const g = imageData[index + 1];
+                    const b = imageData[index + 2];
+
+                    // 跳过接近纯黑、纯白、纯灰的颜色
+                    //if ((r === g && g === b) && (r < 30 || r > 225)) continue;
+
+                    const bucketKey = `${Math.floor(r/bucketSize)},${Math.floor(g/bucketSize)},${Math.floor(b/bucketSize)}`;
+                    const currentCount = colorBuckets.get(bucketKey) || 0;
+                    colorBuckets.set(bucketKey, currentCount + 1);
+                }
+            }
+        }
+
+        // 找到最佳颜色
+        let bestColor = getAverageColor(imageData, width, height); // 默认使用平均值
+        let bestScore = -1;
+
+        for (const [bucketKey, frequency] of colorBuckets) {
+            const [br, bg, bb] = bucketKey.split(',').map(Number);
+            const color = {
+                r: br * bucketSize + bucketSize / 2,
+                g: bg * bucketSize + bucketSize / 2,
+                b: bb * bucketSize + bucketSize / 2
+            };
+
+            const score = evaluateThemeColor(color) * Math.log(frequency + 1);
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestColor = color;
+            }
+        }
+
+        return bestColor;
+    }
+
+    // 评估主题色质量
+    function evaluateThemeColor(color) {
+        const hsl = rgbToHsl(color.r, color.g, color.b);
+
+        const saturationScore = Math.min(hsl.s * 1.5, 1);
+        const lightnessScore = 1 - Math.pow(hsl.l - 0.6, 2) * 2;
+        const colorfulnessScore = hsl.s > 0.1 ? 1 : 0;
+
+        return saturationScore * 0.5 + lightnessScore * 0.3 + colorfulnessScore * 0.2;
+    }
+
+    // 算法2: 智能区域分析
+    function getSmartRegionColor(imageData, width, height) {
+        const regions = divideImageIntoRegions(imageData, width, height, 6, 6);
+        const centerRegions = getCenterRegions(regions, 6, 6);
+        const backgroundRegions = excludeCenterRegions(regions, centerRegions);
+        const cornerRegions = getCornerRegions(regions, 6, 6);
+
+        const backgroundColors = analyzeBackgroundRegions(backgroundRegions);
+        const cornerColors = analyzeBackgroundRegions(cornerRegions);
+
+        const mergedColors = new Map([...backgroundColors, ...cornerColors]);
+
+        return selectDominantBackgroundColor(mergedColors);
+    }
+
+    // 获取四个角落的区域
+    function getCornerRegions(regions, cols, rows) {
+        const cornerIndices = [0, cols - 1, (rows - 1) * cols, rows * cols - 1];
+        return cornerIndices
+            .filter(index => index < regions.length)
+            .map(index => regions[index]);
+    }
+
+    // 算法3: 众数颜色算法
+    function getModeColor(imageData, width, height) {
+        const colorBuckets = new Map();
+        const bucketSize = 10;
+
+        for (let i = 0; i < imageData.length; i += 8) {
+            if (imageData[i + 3] > 128) {
+                const r = imageData[i];
+                const g = imageData[i + 1];
+                const b = imageData[i + 2];
+
+                // 跳过接近纯黑、纯白、纯灰的颜色
+                //if ((r === g && g === b) && (r < 30 || r > 225)) continue;
+
+                const bucketKey = `${Math.floor(r/bucketSize)},${Math.floor(g/bucketSize)},${Math.floor(b/bucketSize)}`;
+                colorBuckets.set(bucketKey, (colorBuckets.get(bucketKey) || 0) + 1);
+            }
+        }
+
+        let maxFrequency = 0;
+        let dominantBucket = null;
+
+        for (const [bucketKey, frequency] of colorBuckets) {
+            if (frequency > maxFrequency) {
+                maxFrequency = frequency;
+                dominantBucket = bucketKey;
+            }
+        }
+
+        if (dominantBucket) {
+            const [br, bg, bb] = dominantBucket.split(',').map(Number);
+            return {
+                r: br * bucketSize + bucketSize / 2,
+                g: bg * bucketSize + bucketSize / 2,
+                b: bb * bucketSize + bucketSize / 2
+            };
+        }
+
+        return getAverageColor(imageData, width, height);
+    }
+
+    // 算法4: 平均数颜色算法
+    function getAverageColor(imageData, width, height) {
+        let totalR = 0, totalG = 0, totalB = 0, count = 0;
+
+        for (let i = 0; i < imageData.length; i += 4) {
+            if (imageData[i + 3] > 128) {
+                totalR += imageData[i];
+                totalG += imageData[i + 1];
+                totalB += imageData[i + 2];
+                count++;
+            }
+        }
+
+        if (count === 0) return getRandomColor();
+
+        return {
+            r: Math.floor(totalR / count),
+            g: Math.floor(totalG / count),
+            b: Math.floor(totalB / count)
+        };
+    }
+
+    // 计算颜色代表性
+    function calculateColorRepresentativeness(targetColor, imageData) {
+        const tolerance = 40;
+        let matchCount = 0;
+        let totalCount = 0;
+
+        for (let i = 0; i < imageData.length; i += 16) {
+            if (imageData[i + 3] > 128) {
+                totalCount++;
+                const r = imageData[i];
+                const g = imageData[i + 1];
+                const b = imageData[i + 2];
+
+                const dr = Math.abs(r - targetColor.r);
+                const dg = Math.abs(g - targetColor.g);
+                const db = Math.abs(b - targetColor.b);
+
+                if (dr < tolerance && dg < tolerance && db < tolerance) {
+                    matchCount++;
+                }
+            }
+        }
+
+        return totalCount > 0 ? matchCount / totalCount : 0;
+    }
+
+    // RGB转十六进制
+    function rgbToHex(r, g, b) {
+        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+    }
+
+    // 分区块相关函数
+    function divideImageIntoRegions(imageData, width, height, cols, rows) {
+        const regions = [];
+        const regionWidth = Math.floor(width / cols);
+        const regionHeight = Math.floor(height / rows);
+
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < cols; col++) {
+                const region = {
+                    x: col * regionWidth,
+                    y: row * regionHeight,
+                    width: regionWidth,
+                    height: regionHeight,
+                    pixels: [],
+                    averageColor: null
+                };
+
+                let totalR = 0, totalG = 0, totalB = 0;
+                let pixelCount = 0;
+
+                for (let y = region.y; y < region.y + regionHeight && y < height; y += 2) {
+                    for (let x = region.x; x < region.x + regionWidth && x < width; x += 2) {
+                        const index = (y * width + x) * 4;
+                        const r = imageData[index];
+                        const g = imageData[index + 1];
+                        const b = imageData[index + 2];
+                        const a = imageData[index + 3];
+
+                        if (a > 128) {
+                            region.pixels.push({ r, g, b });
+                            totalR += r;
+                            totalG += g;
+                            totalB += b;
+                            pixelCount++;
+                        }
+                    }
+                }
+
+                if (pixelCount > 0) {
+                    region.averageColor = {
+                        r: Math.floor(totalR / pixelCount),
+                        g: Math.floor(totalG / pixelCount),
+                        b: Math.floor(totalB / pixelCount)
+                    };
+                }
+
+                regions.push(region);
+            }
+        }
+
+        return regions;
+    }
+
+    function getCenterRegions(regions, cols, rows) {
+        const centerRegions = [];
+        const centerColStart = Math.floor(cols / 2) - 1;
+        const centerRowStart = Math.floor(rows / 2) - 1;
+
+        for (let row = centerRowStart; row <= centerRowStart + 2 && row < rows; row++) {
+            for (let col = centerColStart; col <= centerRowStart + 2 && col < cols; col++) {
+                const index = row * cols + col;
+                if (index < regions.length) {
+                    centerRegions.push(regions[index]);
+                }
+            }
+        }
+
+        return centerRegions;
+    }
+
+    function excludeCenterRegions(allRegions, centerRegions) {
+        return allRegions.filter(region => !centerRegions.includes(region));
+    }
+
+    function analyzeBackgroundRegions(backgroundRegions) {
+        const colorBuckets = new Map();
+        const bucketSize = 15;
+
+        backgroundRegions.forEach(region => {
+            if (region.averageColor && region.pixels.length > 0) {
+                const bucketKey = `${Math.floor(region.averageColor.r/bucketSize)},${Math.floor(region.averageColor.g/bucketSize)},${Math.floor(region.averageColor.b/bucketSize)}`;
+                const weight = region.pixels.length;
+
+                const currentData = colorBuckets.get(bucketKey) || { color: region.averageColor, frequency: 0, pixelCount: 0 };
+                currentData.frequency += weight;
+                currentData.pixelCount += region.pixels.length;
+                colorBuckets.set(bucketKey, currentData);
+            }
+        });
+
+        return colorBuckets;
+    }
+
+    function selectDominantBackgroundColor(backgroundColors) {
+        if (backgroundColors.size === 0) return getRandomColor();
+
+        let bestColor = null;
+        let bestScore = -1;
+
+        for (const [bucketKey, data] of backgroundColors) {
+            const hsl = rgbToHsl(data.color.r, data.color.g, data.color.b);
+            const saturationScore = hsl.s * 1.5;
+            const frequencyScore = Math.log(data.frequency + 1);
+            const score = frequencyScore * (1 + saturationScore);
+
+            if (score > bestScore) {
+                bestScore = score;
+                bestColor = data.color;
+            }
+        }
+
+        return bestColor || getRandomColor();
+    }
+
+    function getRandomColor() {
+        return {
+            r: Math.floor(Math.random() * 255),
+            g: Math.floor(Math.random() * 255),
+            b: Math.floor(Math.random() * 255)
+        };
+    }
+
     // 获取代理图片URL
     function getProxiedImageUrl(originalUrl) {
-        // 如果已经是代理URL，直接返回
         if (originalUrl.includes('weserv.nl')) {
             return originalUrl;
         }
-
-        // 使用images.weserv.nl代理服务
-        // 添加一些参数优化图片加载
-        return `${IMAGE_PROXY_URL}${encodeURIComponent(originalUrl)}&w=100&h=100&fit=cover`;
+        return `${IMAGE_PROXY_URL}${encodeURIComponent(originalUrl)}&w=300&h=300&fit=cover`;
     }
 
     // RGB转HSL
@@ -1117,21 +1766,17 @@
         const img = modal.querySelector('img');
         const placeholder = modal.querySelector('.image-placeholder');
 
-        // 如果图片还没有加载
         if (img.dataset.src && !img.src) {
             img.src = img.dataset.src;
             img.onload = function() {
-                // 图片加载完成后隐藏占位符，显示图片
                 placeholder.style.display = 'none';
                 img.style.display = 'block';
             };
 
             img.onerror = function() {
-                // 加载失败处理
                 placeholder.innerHTML = '图片加载失败';
             };
         } else if (img.src) {
-            // 如果已经加载过，直接显示
             placeholder.style.display = 'none';
             img.style.display = 'block';
         }
