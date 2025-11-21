@@ -939,22 +939,23 @@
         const cards = Array.from(container.querySelectorAll('.member-card'));
 
         try {
-            // 为每个卡片提取主要颜色（使用已加载的图片）
+            // 为每个卡片提取主要颜色（使用代理图片）
             const cardsWithColors = await Promise.all(
                 cards.map(async (card) => {
                     const imgElement = card.querySelector('.member-image img');
+                    const originalSrc = imgElement.src;
 
                     // 检查缓存
-                    if (colorCache.has(imgElement.src)) {
+                    if (colorCache.has(originalSrc)) {
                         return {
                             card,
-                            color: colorCache.get(imgElement.src)
+                            color: colorCache.get(originalSrc)
                         };
                     }
 
                     return {
                         card,
-                        color: await getDominantColorFromElement(imgElement)
+                        color: await getDominantColor(originalSrc)
                     };
                 })
             );
@@ -1005,40 +1006,6 @@
         }
     }
 
-    // 从已加载的图片元素获取主要颜色
-    function getDominantColorFromElement(imgElement) {
-        return new Promise((resolve) => {
-            // 如果图片已经加载完成
-            if (imgElement.complete) {
-                const color = extractColorFromImage(imgElement);
-                colorCache.set(imgElement.src, color);
-                resolve(color);
-            } else {
-                // 如果图片还在加载，等待加载完成
-                imgElement.onload = function() {
-                    const color = extractColorFromImage(imgElement);
-                    colorCache.set(imgElement.src, color);
-                    resolve(color);
-                };
-
-                // 设置超时，防止图片加载失败
-                setTimeout(() => {
-                    if (!imgElement.complete) {
-                        console.warn('图片加载超时，使用随机颜色:', imgElement.src);
-                        const randomColor = {
-                            r: Math.floor(Math.random() * 255),
-                            g: Math.floor(Math.random() * 255),
-                            b: Math.floor(Math.random() * 255)
-                        };
-                        colorCache.set(imgElement.src, randomColor);
-                        resolve(randomColor);
-                    }
-                }, 1000);
-            }
-        });
-    }
-
-
     // 获取图片主要颜色（使用代理）
     function getDominantColor(imageUrl) {
         return new Promise((resolve, reject) => {
@@ -1046,6 +1013,7 @@
             // 使用代理URL
             const proxiedUrl = getProxiedImageUrl(imageUrl);
             img.src = proxiedUrl;
+            img.crossOrigin = "anonymous"; // 设置跨域属性
 
             img.onload = function() {
                 const canvas = document.createElement('canvas');
@@ -1072,13 +1040,13 @@
                     b: Math.floor(b / count)
                 };
 
-                // 缓存结果
+                // 缓存结果（使用原始URL作为key）
                 colorCache.set(imageUrl, color);
                 resolve(color);
             };
 
             img.onerror = function() {
-                console.warn('图片加载失败，使用默认颜色:', imageUrl);
+                console.warn('图片加载失败，使用随机颜色:', imageUrl);
                 // 如果图片加载失败，返回随机颜色
                 const randomColor = {
                     r: Math.floor(Math.random() * 255),
@@ -1103,33 +1071,6 @@
                 }
             }, 5000);
         });
-    }
-
-    // 从图片元素提取颜色
-    function extractColorFromImage(imgElement) {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = 50;
-        canvas.height = 50;
-
-        ctx.drawImage(imgElement, 0, 0, 50, 50);
-
-        const imageData = ctx.getImageData(0, 0, 50, 50).data;
-        let r = 0, g = 0, b = 0, count = 0;
-
-        // 采样计算平均颜色
-        for (let i = 0; i < imageData.length; i += 16) {
-            r += imageData[i];
-            g += imageData[i + 1];
-            b += imageData[i + 2];
-            count++;
-        }
-
-        return {
-            r: Math.floor(r / count),
-            g: Math.floor(g / count),
-            b: Math.floor(b / count)
-        };
     }
 
     // 获取代理图片URL
@@ -1171,7 +1112,6 @@
         return { h, s, l };
     }
 
-    // 原有的其他函数保持不变
     function openModal(modalId) {
         const modal = document.getElementById(modalId);
         const img = modal.querySelector('img');
@@ -1204,24 +1144,19 @@
     }
 
     document.addEventListener('wheel', handleWheel);
-    // 新增处理鼠标滚轮的函数
+
     function handleWheel(event) {
-        // 获取容器元素
         const container = document.querySelector('.container');
-        // 获取容器的当前滚动位置
         let scrollLeft = container.scrollLeft;
-        // 计算滚轮滚动的方向和距离
         const delta = event.deltaY;
-        const step = 100; // 每次滚动的像素数，对齐卡片300
+        const step = 100;
         if (delta > 0) {
             scrollLeft += step;
         } else {
             scrollLeft -= step;
         }
-        // 设置容器的新滚动位置
         container.scrollLeft = scrollLeft;
     }
-
 </script>
 
 </body>
