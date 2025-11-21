@@ -13,6 +13,30 @@
             background: #f8f8f8;
             overflow-x: hidden;
         }
+        .sort-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        .sort-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        .sort-button.loading {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            cursor: not-allowed;
+        }
         .container {
             flex-direction: row; /* 修改为row以水平排列 */
             display: flex;
@@ -109,6 +133,15 @@
             overflow: auto;
             background-color: rgba(0,0,0,0.4);
         }
+        .modal img {
+            transition: opacity 0.3s ease;
+        }
+        .modal img.loading {
+            opacity: 0;
+        }
+        .modal img.loaded {
+            opacity: 1;
+        }
         .modal-content {
             background-color: #fefefe;
             margin: 15% auto;
@@ -135,6 +168,7 @@
 </head>
 <body>
 
+<button class="sort-button" onclick="sortByColor()">🌈 按颜色排序</button>
 
 <div class="container">
     <!-- 公会成员卡片 -->
@@ -414,7 +448,7 @@
         </div>
         <div class="member-info">
             <h3 class="member-name">猫猫吐司</h3>
-            <p class="member-role"></p>
+            <p class="member-role">NULL</p>
         </div>
     </div>
     <div class="member-card" onclick="openModal('member32Modal')">
@@ -423,7 +457,7 @@
         </div>
         <div class="member-info">
             <h3 class="member-name">迪布瓦</h3>
-            <p class="member-role"></p>
+            <p class="member-role">NULL</p>
         </div>
     </div>
     <div class="member-card" onclick="openModal('member33Modal')">
@@ -432,7 +466,7 @@
         </div>
         <div class="member-info">
             <h3 class="member-name">锦鲤</h3>
-            <p class="member-role"></p>
+            <p class="member-role">NULL</p>
         </div>
     </div>
     <div class="member-card" onclick="openModal('member34Modal')">
@@ -441,7 +475,7 @@
         </div>
         <div class="member-info">
             <h3 class="member-name">机智的土豆</h3>
-            <p class="member-role"></p>
+            <p class="member-role">NULL</p>
         </div>
     </div>
     <div class="member-card" onclick="openModal('member35Modal')">
@@ -450,7 +484,7 @@
         </div>
         <div class="member-info">
             <h3 class="member-name">千绘o</h3>
-            <p class="member-role"></p>
+            <p class="member-role">NULL</p>
         </div>
     </div>
     <div class="member-card" onclick="openModal('member36Modal')">
@@ -478,7 +512,10 @@
 <div id="member1Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member1Modal')">&times;</span>
-        <img src="https://img.picgo.net/2024/10/20/202410201936022c9054e0a931c118.png" alt="Member 1" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2024/10/20/202410201936022c9054e0a931c118.png" alt="Member 1" style="width:100%; display:none;">
         <h2>鲸波万仞</h2>
 <!--        <p>恰巧此时，两手空空，才能无限拥有。</p>-->
     </div>
@@ -486,7 +523,10 @@
 <div id="member2Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member2Modal')">&times;</span>
-        <img src="https://img.picgo.net/2024/10/20/20241020193632dee195645d114d76.png" alt="Member 2" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2024/10/20/20241020193632dee195645d114d76.png" alt="Member 2" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -494,7 +534,10 @@
 <div id="member3Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member3Modal')">&times;</span>
-        <img src="https://img.picgo.net/2024/10/20/20241020193622bffb7c8166cbf5e9.png" alt="Member 3" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2024/10/20/20241020193622bffb7c8166cbf5e9.png" alt="Member 3" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -502,7 +545,10 @@
 <div id="member4Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member4Modal')">&times;</span>
-        <img src="https://img.picgo.net/2024/10/20/202410201936596193144754704659.png" alt="Member 4" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2024/10/20/202410201936596193144754704659.png" alt="Member 4" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -510,7 +556,10 @@
 <div id="member5Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member5Modal')">&times;</span>
-        <img src="https://img.picgo.net/2024/10/20/20241020193637807ffc1c4ce336fb.png" alt="Member 5" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2024/10/20/20241020193637807ffc1c4ce336fb.png" alt="Member 5" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -518,7 +567,10 @@
 <div id="member6Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member6Modal')">&times;</span>
-        <img src="https://img.picgo.net/2024/10/20/20241020193654514c86254d16f6e5.png" alt="Member 6" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2024/10/20/20241020193654514c86254d16f6e5.png" alt="Member 6" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -526,7 +578,10 @@
 <div id="member7Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member7Modal')">&times;</span>
-        <img src="https://img.picgo.net/2024/10/20/20241020193649280f28d84fb13a65.png" alt="Member 7" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2024/10/20/20241020193649280f28d84fb13a65.png" alt="Member 7" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -534,7 +589,10 @@
 <div id="member8Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member8Modal')">&times;</span>
-        <img src="https://img.picgo.net/2024/10/20/2024102019361731660f32ad502a5b.png" alt="Member 8" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2024/10/20/2024102019361731660f32ad502a5b.png" alt="Member 8" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -542,7 +600,10 @@
 <div id="member9Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member9Modal')">&times;</span>
-        <img src="https://img.picgo.net/2024/10/20/2024102019364432a9ab2765ced26a.png" alt="Member 9" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2024/10/20/2024102019364432a9ab2765ced26a.png" alt="Member 9" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -550,7 +611,10 @@
 <div id="member10Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member10Modal')">&times;</span>
-        <img src="https://img.picgo.net/2024/10/27/QQ202410271352035fa587d2a58035dd.png" alt="Member 10" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2024/10/27/QQ202410271352035fa587d2a58035dd.png" alt="Member 10" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -561,7 +625,10 @@
 <div id="member11Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member11Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_008f85c71a5bd7911c2.png" alt="Member 11" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2025/03/01/IMG_008f85c71a5bd7911c2.png" alt="Member 11" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -569,7 +636,10 @@
 <div id="member12Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member12Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_016035ff5124d5e953d.png" alt="Member 12" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2025/03/01/IMG_016035ff5124d5e953d.png" alt="Member 12" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -577,7 +647,10 @@
 <div id="member13Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member13Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_0170f13937abfed7738.png" alt="Member 13" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2025/03/01/IMG_0170f13937abfed7738.png" alt="Member 13" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -585,7 +658,10 @@
 <div id="member14Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member14Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_014f7fb787ef96e7383.png" alt="Member 14" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2025/03/01/IMG_014f7fb787ef96e7383.png" alt="Member 14" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -593,7 +669,10 @@
 <div id="member15Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member15Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_013f2b4b87ee724c1d2.png" alt="Member 15" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2025/03/01/IMG_013f2b4b87ee724c1d2.png" alt="Member 15" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -601,7 +680,10 @@
 <div id="member16Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member16Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_018dfb3243b8f7a5404.png" alt="Member 16" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2025/03/01/IMG_018dfb3243b8f7a5404.png" alt="Member 16" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -609,7 +691,10 @@
 <div id="member17Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member17Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_011576a8f86f1e3d298.png" alt="Member 17" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2025/03/01/IMG_011576a8f86f1e3d298.png" alt="Member 17" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -617,7 +702,10 @@
 <div id="member18Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member18Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_0121a320c7d33262f61.png" alt="Member 18" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2025/03/01/IMG_0121a320c7d33262f61.png" alt="Member 18" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -625,7 +713,10 @@
 <div id="member19Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member19Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_009e7abe046f2a2cf24.png" alt="Member 19" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2025/03/01/IMG_009e7abe046f2a2cf24.png" alt="Member 19" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -633,7 +724,10 @@
 <div id="member20Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member20Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_015d1a80e16e388027f.png" alt="Member 20" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2025/03/01/IMG_015d1a80e16e388027f.png" alt="Member 20" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -641,7 +735,10 @@
 <div id="member21Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member21Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG8f623c220bdbf24e.png" alt="Member 21" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2025/03/01/IMG8f623c220bdbf24e.png" alt="Member 21" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -649,7 +746,10 @@
 <div id="member22Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member22Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_004c65a7f904a0b855c.png" alt="Member 22" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2025/03/01/IMG_004c65a7f904a0b855c.png" alt="Member 22" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -657,7 +757,10 @@
 <div id="member23Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member23Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_007d7f5e122f9e0ded9.png" alt="Member 23" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2025/03/01/IMG_007d7f5e122f9e0ded9.png" alt="Member 23" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -665,7 +768,10 @@
 <div id="member24Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member24Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_01070be122c61fc0814.png" alt="Member 24" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2025/03/01/IMG_01070be122c61fc0814.png" alt="Member 24" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -673,7 +779,10 @@
 <div id="member25Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member25Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_005db0a5119b2c611f1.png" alt="Member 25" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2025/03/01/IMG_005db0a5119b2c611f1.png" alt="Member 25" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -681,7 +790,10 @@
 <div id="member26Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member26Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_003cc5deb2a21a01600.png" alt="Member 26" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2025/03/01/IMG_003cc5deb2a21a01600.png" alt="Member 26" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -689,7 +801,10 @@
 <div id="member27Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member27Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_006a784793498ce1b59.png" alt="Member 27" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2025/03/01/IMG_006a784793498ce1b59.png" alt="Member 27" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -697,7 +812,10 @@
 <div id="member28Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member28Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_00238a8d7c6566673e3.png" alt="Member 28" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2025/03/01/IMG_00238a8d7c6566673e3.png" alt="Member 28" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -705,7 +823,10 @@
 <div id="member29Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member29Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_0018321fc5d62744d85.png" alt="Member 29" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://img.picgo.net/2025/03/01/IMG_0018321fc5d62744d85.png" alt="Member 29" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -713,7 +834,10 @@
 <div id="member30Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member33Modal')">&times;</span>
-        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpZa2N5Qm9CM0M4QlEhIQUAcXVuZ3o7c723723a8a490fd.png" alt="Member 33" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpZa2N5Qm9CM0M4QlEhIQUAcXVuZ3o7c723723a8a490fd.png" alt="Member 33" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -721,7 +845,10 @@
 <div id="member31Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member30Modal')">&times;</span>
-        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphT1d1MW5hcmFwR3chIQUAcXVuZ3oa4591f136926de0c.jpeg" alt="Member 30" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphT1d1MW5hcmFwR3chIQUAcXVuZ3oa4591f136926de0c.jpeg" alt="Member 30" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -729,7 +856,10 @@
 <div id="member32Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member35Modal')">&times;</span>
-        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaZEE1Wm9WZG1JS3chIQUAcXVuZ3o04956d3c0d3f97dd.png" alt="Member 35" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaZEE1Wm9WZG1JS3chIQUAcXVuZ3o04956d3c0d3f97dd.png" alt="Member 35" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -737,7 +867,10 @@
 <div id="member33Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member32Modal')">&times;</span>
-        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphUFd1MW5LbmFwR3chIQUAcXVuZ3o6cb1cdb356431c32.jpeg" alt="Member 32" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphUFd1MW5LbmFwR3chIQUAcXVuZ3o6cb1cdb356431c32.jpeg" alt="Member 32" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -745,7 +878,10 @@
 <div id="member34Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member37Modal')">&times;</span>
-        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpiWFEweG9hS3Z2SVEhIQUAcXVuZ3o47c68ddb2af2812c.png" alt="Member 37" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpiWFEweG9hS3Z2SVEhIQUAcXVuZ3o47c68ddb2af2812c.png" alt="Member 37" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -753,7 +889,10 @@
 <div id="member35Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member31Modal')">&times;</span>
-        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphTld1MW5zMGFyR3chIQUAcXVuZ3o00b831acf0ea6ec9.jpeg" alt="Member 31" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphTld1MW5zMGFyR3chIQUAcXVuZ3o00b831acf0ea6ec9.jpeg" alt="Member 31" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -761,7 +900,10 @@
 <div id="member36Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member36Modal')">&times;</span>
-        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphbzFMNW80TDJ3TEEhIQUAcXVuZ3o971fee0c5f48f0ca.png" alt="Member 36" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphbzFMNW80TDJ3TEEhIQUAcXVuZ3o971fee0c5f48f0ca.png" alt="Member 36" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -769,7 +911,10 @@
 <div id="member37Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member34Modal')">&times;</span>
-        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpZbGN5Qm9XVWk5QlEhIQUAcXVuZ3o3f3e63ce3916d424.png" alt="Member 34" style="width:100%">
+        <div class="image-placeholder" style="width:100%; height:400px; background:#f0f0f0; display:flex; align-items:center; justify-content:center;">
+            加载中...
+        </div>
+        <img data-src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpZbGN5Qm9XVWk5QlEhIQUAcXVuZ3o3f3e63ce3916d424.png" alt="Member 34" style="width:100%; display:none;">
         <h2></h2>
         <p></p>
     </div>
@@ -777,8 +922,281 @@
 
 
 <script>
+    // 使用images.weserv.nl作为图片代理服务
+    const IMAGE_PROXY_URL = 'https://images.weserv.nl/?url=';
+
+    // 预定义的颜色映射，用于缓存已经分析过的图片颜色
+    const colorCache = new Map();
+
+    async function sortByColor() {
+        const button = document.querySelector('.sort-button');
+        const originalText = button.textContent;
+
+        button.textContent = '🎨 分析颜色中...';
+        button.classList.add('loading');
+
+        const container = document.querySelector('.container');
+        const cards = Array.from(container.querySelectorAll('.member-card'));
+
+        try {
+            // 为每个卡片提取主要颜色（使用已加载的图片）
+            const cardsWithColors = await Promise.all(
+                cards.map(async (card) => {
+                    const imgElement = card.querySelector('.member-image img');
+
+                    // 检查缓存
+                    if (colorCache.has(imgElement.src)) {
+                        return {
+                            card,
+                            color: colorCache.get(imgElement.src)
+                        };
+                    }
+
+                    return {
+                        card,
+                        color: await getDominantColorFromElement(imgElement)
+                    };
+                })
+            );
+
+            // 按HSL颜色值排序（色相 -> 饱和度 -> 亮度）
+            cardsWithColors.sort((a, b) => {
+                // 转换为HSL进行比较
+                const hslA = rgbToHsl(a.color.r, a.color.g, a.color.b);
+                const hslB = rgbToHsl(b.color.r, b.color.g, b.color.b);
+
+                // 主要按色相排序，然后按饱和度，最后按亮度
+                if (Math.abs(hslA.h - hslB.h) > 0.1) {
+                    return hslA.h - hslB.h;
+                }
+                if (Math.abs(hslA.s - hslB.s) > 0.1) {
+                    return hslA.s - hslB.s;
+                }
+                return hslA.l - hslB.l;
+            });
+
+            // 重新排列卡片
+            cardsWithColors.forEach((item, index) => {
+                container.appendChild(item.card);
+                // 添加动画效果
+                item.card.style.transition = 'all 0.8s ease';
+                item.card.style.transform = `translateX(${index * 20}px)`;
+            });
+
+            // 重置按钮状态
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.classList.remove('loading');
+
+                // 移除动画效果
+                cardsWithColors.forEach(item => {
+                    item.card.style.transition = '';
+                    item.card.style.transform = '';
+                });
+            }, 1000);
+
+        } catch (error) {
+            console.error('排序失败:', error);
+            button.textContent = '❌ 排序失败';
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.classList.remove('loading');
+            }, 2000);
+        }
+    }
+
+    // 从已加载的图片元素获取主要颜色
+    function getDominantColorFromElement(imgElement) {
+        return new Promise((resolve) => {
+            // 如果图片已经加载完成
+            if (imgElement.complete) {
+                const color = extractColorFromImage(imgElement);
+                colorCache.set(imgElement.src, color);
+                resolve(color);
+            } else {
+                // 如果图片还在加载，等待加载完成
+                imgElement.onload = function() {
+                    const color = extractColorFromImage(imgElement);
+                    colorCache.set(imgElement.src, color);
+                    resolve(color);
+                };
+
+                // 设置超时，防止图片加载失败
+                setTimeout(() => {
+                    if (!imgElement.complete) {
+                        console.warn('图片加载超时，使用随机颜色:', imgElement.src);
+                        const randomColor = {
+                            r: Math.floor(Math.random() * 255),
+                            g: Math.floor(Math.random() * 255),
+                            b: Math.floor(Math.random() * 255)
+                        };
+                        colorCache.set(imgElement.src, randomColor);
+                        resolve(randomColor);
+                    }
+                }, 1000);
+            }
+        });
+    }
+
+
+    // 获取图片主要颜色（使用代理）
+    function getDominantColor(imageUrl) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            // 使用代理URL
+            const proxiedUrl = getProxiedImageUrl(imageUrl);
+            img.src = proxiedUrl;
+
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = 50;
+                canvas.height = 50;
+
+                ctx.drawImage(img, 0, 0, 50, 50);
+
+                const imageData = ctx.getImageData(0, 0, 50, 50).data;
+                let r = 0, g = 0, b = 0, count = 0;
+
+                // 采样计算平均颜色
+                for (let i = 0; i < imageData.length; i += 16) {
+                    r += imageData[i];
+                    g += imageData[i + 1];
+                    b += imageData[i + 2];
+                    count++;
+                }
+
+                const color = {
+                    r: Math.floor(r / count),
+                    g: Math.floor(g / count),
+                    b: Math.floor(b / count)
+                };
+
+                // 缓存结果
+                colorCache.set(imageUrl, color);
+                resolve(color);
+            };
+
+            img.onerror = function() {
+                console.warn('图片加载失败，使用默认颜色:', imageUrl);
+                // 如果图片加载失败，返回随机颜色
+                const randomColor = {
+                    r: Math.floor(Math.random() * 255),
+                    g: Math.floor(Math.random() * 255),
+                    b: Math.floor(Math.random() * 255)
+                };
+                colorCache.set(imageUrl, randomColor);
+                resolve(randomColor);
+            };
+
+            // 设置超时
+            setTimeout(() => {
+                if (!img.complete) {
+                    console.warn('图片加载超时:', imageUrl);
+                    const randomColor = {
+                        r: Math.floor(Math.random() * 255),
+                        g: Math.floor(Math.random() * 255),
+                        b: Math.floor(Math.random() * 255)
+                    };
+                    colorCache.set(imageUrl, randomColor);
+                    resolve(randomColor);
+                }
+            }, 5000);
+        });
+    }
+
+    // 从图片元素提取颜色
+    function extractColorFromImage(imgElement) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 50;
+        canvas.height = 50;
+
+        ctx.drawImage(imgElement, 0, 0, 50, 50);
+
+        const imageData = ctx.getImageData(0, 0, 50, 50).data;
+        let r = 0, g = 0, b = 0, count = 0;
+
+        // 采样计算平均颜色
+        for (let i = 0; i < imageData.length; i += 16) {
+            r += imageData[i];
+            g += imageData[i + 1];
+            b += imageData[i + 2];
+            count++;
+        }
+
+        return {
+            r: Math.floor(r / count),
+            g: Math.floor(g / count),
+            b: Math.floor(b / count)
+        };
+    }
+
+    // 获取代理图片URL
+    function getProxiedImageUrl(originalUrl) {
+        // 如果已经是代理URL，直接返回
+        if (originalUrl.includes('weserv.nl')) {
+            return originalUrl;
+        }
+
+        // 使用images.weserv.nl代理服务
+        // 添加一些参数优化图片加载
+        return `${IMAGE_PROXY_URL}${encodeURIComponent(originalUrl)}&w=100&h=100&fit=cover`;
+    }
+
+    // RGB转HSL
+    function rgbToHsl(r, g, b) {
+        r /= 255;
+        g /= 255;
+        b /= 255;
+
+        const max = Math.max(r, g, b);
+        const min = Math.min(r, g, b);
+        let h, s, l = (max + min) / 2;
+
+        if (max === min) {
+            h = s = 0;
+        } else {
+            const d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+        }
+
+        return { h, s, l };
+    }
+
+    // 原有的其他函数保持不变
     function openModal(modalId) {
-      document.getElementById(modalId).style.display = "block";
+        const modal = document.getElementById(modalId);
+        const img = modal.querySelector('img');
+        const placeholder = modal.querySelector('.image-placeholder');
+
+        // 如果图片还没有加载
+        if (img.dataset.src && !img.src) {
+            img.src = img.dataset.src;
+            img.onload = function() {
+                // 图片加载完成后隐藏占位符，显示图片
+                placeholder.style.display = 'none';
+                img.style.display = 'block';
+            };
+
+            img.onerror = function() {
+                // 加载失败处理
+                placeholder.innerHTML = '图片加载失败';
+            };
+        } else if (img.src) {
+            // 如果已经加载过，直接显示
+            placeholder.style.display = 'none';
+            img.style.display = 'block';
+        }
+
+        modal.style.display = "block";
     }
 
     function closeModal(modalId) {
