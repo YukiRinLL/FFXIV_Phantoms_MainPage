@@ -115,6 +115,7 @@
             justify-content: center;
             padding: 20px;
             box-sizing: border-box;
+            flex-direction: column; /* 改为垂直排列 */
         }
         .lightbox img {
             max-width: 90%;
@@ -125,13 +126,43 @@
             border-radius: 5px;
             box-shadow: 0 5px 25px rgba(0,0,0,0.5);
         }
+        .lightbox img, .group-lightbox-container img {
+            max-width: 90%;
+            max-height: 70vh; /* 进一步减少高度，为关闭按钮留更多空间 */
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 5px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+            margin-bottom: 0; /* 移除margin-bottom，改用容器的flex布局 */
+        }
+        .lightbox-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 90%;
+            max-height: 90%;
+        }
         .close-lightbox {
             cursor: pointer;
-            position: fixed;
-            top: 20px;
-            right: 20px;
+            position: relative; /* 改为相对定位 */
+            margin-top: 20px; /* 在图片和按钮之间添加间距 */
             color: #fff;
-            font-size: 25px;
+            font-size: 35px;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.7);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            transition: background 0.3s;
+            border: 2px solid white;
+        }
+        .close-lightbox:hover {
+            background: rgba(255, 255, 255, 0.9);
+            color: #000;
         }
         .caption {
             position: absolute;
@@ -154,7 +185,6 @@
 
         /* 组图灯箱样式 */
         .group-lightbox-container {
-            position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -185,7 +215,6 @@
             font-size: 24px;
             padding: 10px 15px;
             margin: 0 10px;
-            border-radius: 50%;
             cursor: pointer;
             transition: background 0.3s;
         }
@@ -609,8 +638,10 @@
 
 <!-- 单图灯箱 -->
 <div id="lightbox" class="lightbox">
-    <img src="" alt="Lightbox Image" />
-    <span id="close-lightbox" class="close-lightbox">&times;</span>
+    <div class="lightbox-content">
+        <img src="" alt="Lightbox Image" />
+        <span id="close-lightbox" class="close-lightbox">&times;</span>
+    </div>
 </div>
 
 <!-- 组图灯箱 -->
@@ -622,8 +653,8 @@
             <span id="group-counter">1 / 2</span>
             <button id="next-btn" class="group-nav-btn">&#10095;</button>
         </div>
+        <span id="close-group-lightbox" class="close-lightbox">&times;</span>
     </div>
-    <span id="close-group-lightbox" class="close-lightbox">&times;</span>
 </div>
 
 <script>
