@@ -1,105 +1,226 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>公会成员展示</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body, html {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Arial', 'PingFang SC', 'Microsoft YaHei', sans-serif;
             margin: 0;
             padding: 0;
             background: #f8f8f8;
             overflow-x: hidden;
+            color: #333;
         }
         .container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             padding: 10px;
             width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
         }
+
         .member-card {
             display: flex;
             flex-direction: row;
             align-items: center;
             width: 100%;
-            margin: 10px 0;
-            background: linear-gradient(135deg, rgba(196, 196, 196, 0.2), rgba(196, 196, 196, 0));
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            overflow: hidden;
-            transition: transform 0.3s ease-in-out;
-        }
-        .member-card:hover {
-            transform: translateY(-5px);
-        }
-        .member-info {
-            flex: 0.4; /* 左边文字部分宽度占比 */
-            height: 150px; /* 高度 */
-            padding: 0px;
-            text-align: left;
+            margin: 8px 0;
             background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 1px solid #e0e0e0;
         }
+
+        .member-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+
+        .member-info {
+            flex: 0.6;
+            padding: 15px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
         .member-name {
-            font-size: 18px;
+            font-size: 1.1rem;
             color: #333;
             margin-bottom: 5px;
+            font-weight: 600;
         }
+
         .member-role {
-            font-size: 14px;
+            font-size: 0.85rem;
             color: #666;
+            background: #f0f0f0;
+            padding: 3px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            font-weight: 500;
+            width: fit-content;
         }
+
         .member-image {
-            flex: 0.6; /* 右边图片部分宽度占比 */
-            height: 150px; /* 图片高度 */
-            margin-left: 10px;
+            flex: 0.4;
+            height: 120px;
             background-size: cover;
             background-position: center;
             overflow: hidden;
+            position: relative;
         }
+
         .member-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
+
         .modal {
             display: none;
             position: fixed;
-            z-index: 1;
+            z-index: 1000;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0,0,0,0.4);
+            background-color: rgba(0,0,0,0.7);
+            animation: fadeIn 0.3s ease;
         }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
         .modal-content {
             background-color: #fefefe;
-            margin: 15% auto;
+            margin: 5% auto;
             padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            position: relative;
+            animation: slideUp 0.3s ease;
+            border: 1px solid #e0e0e0;
         }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
         .close {
             color: #aaa;
-            float: right;
+            position: absolute;
+            top: 10px;
+            right: 15px;
             font-size: 28px;
             font-weight: bold;
+            z-index: 10;
         }
+
         .close:hover,
         .close:focus {
-            color: black;
+            color: #333;
             text-decoration: none;
             cursor: pointer;
+        }
+
+        .modal-image-container {
+            width: 100%;
+            height: 250px;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e0e0e0;
+        }
+
+        .modal-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .modal-title {
+            font-size: 1.4rem;
+            margin: 0 0 10px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .modal-role {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+            font-weight: 500;
+            background: #f0f0f0;
+            padding: 4px 10px;
+            border-radius: 4px;
+            width: fit-content;
+        }
+
+        .modal-quote {
+            font-style: italic;
+            color: #777;
+            border-left: 2px solid #888;
+            padding-left: 10px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 380px) {
+            .member-info {
+                padding: 12px;
+            }
+
+            .member-name {
+                font-size: 1rem;
+            }
+
+            .member-role {
+                font-size: 0.8rem;
+            }
+
+            .member-image {
+                height: 100px;
+            }
+        }
+
+        @media (min-width: 500px) {
+            .container {
+                padding: 15px;
+            }
+
+            .member-card {
+                margin: 10px 0;
+            }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- 公会成员卡片 -->
     <div class="member-card" onclick="openModal('member1Modal')">
         <div class="member-info">
             <h3 class="member-name">鲸波万仞</h3>
@@ -361,251 +482,518 @@
             <img src="https://img.picgo.net/2025/03/01/IMG_0018321fc5d62744d85.png" alt="Member 29" style="display: none;">
         </div>
     </div>
+    <div class="member-card" onclick="openModal('member30Modal')">
+        <div class="member-info">
+            <h3 class="member-name">摆烂の雪华</h3>
+            <p class="member-role">&ltMaterial&gt</p>
+        </div>
+        <div class="member-image" style="background-image: url('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpZa2N5Qm9CM0M4QlEhIQUAcXVuZ3o7c723723a8a490fd.md.png');">
+            <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpZa2N5Qm9CM0M4QlEhIQUAcXVuZ3o7c723723a8a490fd.md.png" alt="Member 30" style="display: none;">
+        </div>
+    </div>
+    <div class="member-card" onclick="openModal('member31Modal')">
+        <div class="member-info">
+            <h3 class="member-name">猫猫吐司</h3>
+            <p class="member-role">NULL</p>
+        </div>
+        <div class="member-image" style="background-image: url('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphT1d1MW5hcmFwR3chIQUAcXVuZ3oa4591f136926de0c.md.jpeg');">
+            <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphT1d1MW5hcmFwR3chIQUAcXVuZ3oa4591f136926de0c.md.jpeg" alt="Member 31" style="display: none;">
+        </div>
+    </div>
+    <div class="member-card" onclick="openModal('member32Modal')">
+        <div class="member-info">
+            <h3 class="member-name">迪布瓦</h3>
+            <p class="member-role">NULL</p>
+        </div>
+        <div class="member-image" style="background-image: url('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaZEE1Wm9WZG1JS3chIQUAcXVuZ3o04956d3c0d3f97dd.md.png');">
+            <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaZEE1Wm9WZG1JS3chIQUAcXVuZ3o04956d3c0d3f97dd.md.png" alt="Member 32" style="display: none;">
+        </div>
+    </div>
+    <div class="member-card" onclick="openModal('member33Modal')">
+        <div class="member-info">
+            <h3 class="member-name">锦鲤</h3>
+            <p class="member-role">NULL</p>
+        </div>
+        <div class="member-image" style="background-image: url('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphUFd1MW5LbmFwR3chIQUAcXVuZ3o6cb1cdb356431c32.md.jpeg');">
+            <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphUFd1MW5LbmFwR3chIQUAcXVuZ3o6cb1cdb356431c32.md.jpeg" alt="Member 33" style="display: none;">
+        </div>
+    </div>
+    <div class="member-card" onclick="openModal('member34Modal')">
+        <div class="member-info">
+            <h3 class="member-name">机智的土豆</h3>
+            <p class="member-role">NULL</p>
+        </div>
+        <div class="member-image" style="background-image: url('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpiWFEweG9hS3Z2SVEhIQUAcXVuZ3o47c68ddb2af2812c.md.png');">
+            <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpiWFEweG9hS3Z2SVEhIQUAcXVuZ3o47c68ddb2af2812c.md.png" alt="Member 34" style="display: none;">
+        </div>
+    </div>
+    <div class="member-card" onclick="openModal('member35Modal')">
+        <div class="member-info">
+            <h3 class="member-name">千绘o</h3>
+            <p class="member-role">NULL</p>
+        </div>
+        <div class="member-image" style="background-image: url('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphTld1MW5zMGFyR3chIQUAcXVuZ3o00b831acf0ea6ec9.md.jpeg');">
+            <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphTld1MW5zMGFyR3chIQUAcXVuZ3o00b831acf0ea6ec9.md.jpeg" alt="Member 35" style="display: none;">
+        </div>
+    </div>
+    <div class="member-card" onclick="openModal('member36Modal')">
+        <div class="member-info">
+            <h3 class="member-name">Maglian</h3>
+            <p class="member-role">&ltMaterial&gt</p>
+        </div>
+        <div class="member-image" style="background-image: url('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphbzFMNW80TDJ3TEEhIQUAcXVuZ3o971fee0c5f48f0ca.md.png');">
+            <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphbzFMNW80TDJ3TEEhIQUAcXVuZ3o971fee0c5f48f0ca.md.png" alt="Member 36" style="display: none;">
+        </div>
+    </div>
+    <div class="member-card" onclick="openModal('member37Modal')">
+        <div class="member-info">
+            <h3 class="member-name">复调</h3>
+            <p class="member-role">&ltMaterial&gt</p>
+        </div>
+        <div class="member-image" style="background-image: url('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpZbGN5Qm9XVWk5QlEhIQUAcXVuZ3o3f3e63ce3916d424.md.png');">
+            <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpZbGN5Qm9XVWk5QlEhIQUAcXVuZ3o3f3e63ce3916d424.md.png" alt="Member 37" style="display: none;">
+        </div>
+    </div>
 </div>
 
-<!-- 模态窗口 -->
 <div id="member1Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member1Modal')">&times;</span>
-        <img src="https://img.picgo.net/2024/10/20/202410201936022c9054e0a931c118.png" alt="Member 1" style="width:100%">
-        <h2>鲸波万仞</h2>
-        <p>恰巧此时，两手空空，才能无限拥有。</p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2024/10/20/202410201936022c9054e0a931c118.png" alt="Member 1">
+        </div>
+        <h2 class="modal-title">鲸波万仞</h2>
+        <p class="modal-role">&ltClement&gt</p>
+        <p class="modal-quote">恰巧此时，两手空空，才能无限拥有。</p>
     </div>
 </div>
 <div id="member2Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member2Modal')">&times;</span>
-        <img src="https://img.picgo.net/2024/10/20/20241020193632dee195645d114d76.png" alt="Member 2" style="width:100%">
-        <h2>朝夕优</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2024/10/20/20241020193632dee195645d114d76.png" alt="Member 2">
+        </div>
+        <h2 class="modal-title">朝夕优</h2>
+        <p class="modal-role">&ltClement&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member3Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member3Modal')">&times;</span>
-        <img src="https://img.picgo.net/2024/10/20/20241020193622bffb7c8166cbf5e9.png" alt="Member 3" style="width:100%">
-        <h2>緋雪yuki</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2024/10/20/20241020193622bffb7c8166cbf5e9.png" alt="Member 3">
+        </div>
+        <h2 class="modal-title">緋雪yuki</h2>
+        <p class="modal-role">&ltAstral&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member4Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member4Modal')">&times;</span>
-        <img src="https://img.picgo.net/2024/10/20/202410201936596193144754704659.png" alt="Member 4" style="width:100%">
-        <h2>暧昧回避</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2024/10/20/202410201936596193144754704659.png" alt="Member 4">
+        </div>
+        <h2 class="modal-title">暧昧回避</h2>
+        <p class="modal-role">&ltClement&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member5Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member5Modal')">&times;</span>
-        <img src="https://img.picgo.net/2024/10/20/20241020193637807ffc1c4ce336fb.png" alt="Member 5" style="width:100%">
-        <h2>Vricr</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2024/10/20/20241020193637807ffc1c4ce336fb.png" alt="Member 5">
+        </div>
+        <h2 class="modal-title">Vricr</h2>
+        <p class="modal-role">&ltMissionary&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member6Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member6Modal')">&times;</span>
-        <img src="https://img.picgo.net/2024/10/20/20241020193654514c86254d16f6e5.png" alt="Member 6" style="width:100%">
-        <h2>Yan</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2024/10/20/20241020193654514c86254d16f6e5.png" alt="Member 6">
+        </div>
+        <h2 class="modal-title">Yan</h2>
+        <p class="modal-role">&ltOriginal&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member7Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member7Modal')">&times;</span>
-        <img src="https://img.picgo.net/2024/10/20/20241020193649280f28d84fb13a65.png" alt="Member 7" style="width:100%">
-        <h2>大白鹅</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2024/10/20/20241020193649280f28d84fb13a65.png" alt="Member 7">
+        </div>
+        <h2 class="modal-title">大白鹅</h2>
+        <p class="modal-role">&ltTranscendent&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member8Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member8Modal')">&times;</span>
-        <img src="https://img.picgo.net/2024/10/20/2024102019361731660f32ad502a5b.png" alt="Member 8" style="width:100%">
-        <h2>Unvoler</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2024/10/20/2024102019361731660f32ad502a5b.png" alt="Member 8">
+        </div>
+        <h2 class="modal-title">Unvoler</h2>
+        <p class="modal-role">&ltClement&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member9Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member9Modal')">&times;</span>
-        <img src="https://img.picgo.net/2024/10/20/2024102019364432a9ab2765ced26a.png" alt="Member 9" style="width:100%">
-        <h2>菠萝芒果橙</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2024/10/20/2024102019364432a9ab2765ced26a.png" alt="Member 9">
+        </div>
+        <h2 class="modal-title">菠萝芒果橙</h2>
+        <p class="modal-role">&ltTranscendent&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member10Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member10Modal')">&times;</span>
-        <img src="https://img.picgo.net/2024/10/27/QQ202410271352035fa587d2a58035dd.png" alt="Member 10" style="width:100%">
-        <h2>隼人</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2024/10/27/QQ202410271352035fa587d2a58035dd.png" alt="Member 10">
+        </div>
+        <h2 class="modal-title">隼人</h2>
+        <p class="modal-role">&ltTranscendent&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member11Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member11Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_008f85c71a5bd7911c2.png" alt="Member 11" style="width:100%">
-        <h2>金羊毛</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2025/03/01/IMG_008f85c71a5bd7911c2.png" alt="Member 11">
+        </div>
+        <h2 class="modal-title">金羊毛</h2>
+        <p class="modal-role">&ltPolyglot&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member12Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member12Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_016035ff5124d5e953d.png" alt="Member 12" style="width:100%">
-        <h2>明堂</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2025/03/01/IMG_016035ff5124d5e953d.png" alt="Member 12">
+        </div>
+        <h2 class="modal-title">明堂</h2>
+        <p class="modal-role">&ltArcanum&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member13Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member13Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_0170f13937abfed7738.png" alt="Member 13" style="width:100%">
-        <h2>埃迦菲尔</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2025/03/01/IMG_0170f13937abfed7738.png" alt="Member 13">
+        </div>
+        <h2 class="modal-title">埃迦菲尔</h2>
+        <p class="modal-role">&ltTranscendent&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member14Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member14Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_014f7fb787ef96e7383.png" alt="Member 14" style="width:100%">
-        <h2>帕特里克w</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2025/03/01/IMG_014f7fb787ef96e7383.png" alt="Member 14">
+        </div>
+        <h2 class="modal-title">帕特里克w</h2>
+        <p class="modal-role">&ltMissionary&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member15Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member15Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_013f2b4b87ee724c1d2.png" alt="Member 15" style="width:100%">
-        <h2>Lulubai</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2025/03/01/IMG_013f2b4b87ee724c1d2.png" alt="Member 15">
+        </div>
+        <h2 class="modal-title">Lulubai</h2>
+        <p class="modal-role">&ltOriginal&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member16Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member16Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_018dfb3243b8f7a5404.png" alt="Member 16" style="width:100%">
-        <h2>苹果热橙茶</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2025/03/01/IMG_018dfb3243b8f7a5404.png" alt="Member 16">
+        </div>
+        <h2 class="modal-title">苹果热橙茶</h2>
+        <p class="modal-role">&ltMissionary&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member17Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member17Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_011576a8f86f1e3d298.png" alt="Member 17" style="width:100%">
-        <h2>Ryan</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2025/03/01/IMG_011576a8f86f1e3d298.png" alt="Member 17">
+        </div>
+        <h2 class="modal-title">Ryan</h2>
+        <p class="modal-role">&ltMissionary&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member18Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member18Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_0121a320c7d33262f61.png" alt="Member 18" style="width:100%">
-        <h2>包心小鱼丸</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2025/03/01/IMG_0121a320c7d33262f61.png" alt="Member 18">
+        </div>
+        <h2 class="modal-title">包心小鱼丸</h2>
+        <p class="modal-role">&ltTranscendent&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member19Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member19Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_009e7abe046f2a2cf24.png" alt="Member 19" style="width:100%">
-        <h2>休斯</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2025/03/01/IMG_009e7abe046f2a2cf24.png" alt="Member 19">
+        </div>
+        <h2 class="modal-title">休斯</h2>
+        <p class="modal-role">&ltArcanum&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member20Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member20Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_015d1a80e16e388027f.png" alt="Member 20" style="width:100%">
-        <h2>澪</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2025/03/01/IMG_015d1a80e16e388027f.png" alt="Member 20">
+        </div>
+        <h2 class="modal-title">澪</h2>
+        <p class="modal-role">&ltOriginal&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member21Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member21Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG8f623c220bdbf24e.png" alt="Member 21" style="width:100%">
-        <h2>栗子lz</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2025/03/01/IMG8f623c220bdbf24e.png" alt="Member 21">
+        </div>
+        <h2 class="modal-title">栗子lz</h2>
+        <p class="modal-role">&ltXenogeneic&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member22Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member22Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_004c65a7f904a0b855c.png" alt="Member 22" style="width:100%">
-        <h2>貓餅乾</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2025/03/01/IMG_004c65a7f904a0b855c.png" alt="Member 22">
+        </div>
+        <h2 class="modal-title">貓餅乾</h2>
+        <p class="modal-role">&ltPolyglot&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member23Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member23Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_007d7f5e122f9e0ded9.png" alt="Member 23" style="width:100%">
-        <h2>邑小小干</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2025/03/01/IMG_007d7f5e122f9e0ded9.png" alt="Member 23">
+        </div>
+        <h2 class="modal-title">邑小小干</h2>
+        <p class="modal-role">&ltPolyglot&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member24Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member24Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_01070be122c61fc0814.png" alt="Member 24" style="width:100%">
-        <h2>咸鱼ab</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2025/03/01/IMG_01070be122c61fc0814.png" alt="Member 24">
+        </div>
+        <h2 class="modal-title">咸鱼ab</h2>
+        <p class="modal-role">&ltUmbral&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member25Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member25Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_005db0a5119b2c611f1.png" alt="Member 25" style="width:100%">
-        <h2>Eika大雪</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2025/03/01/IMG_005db0a5119b2c611f1.png" alt="Member 25">
+        </div>
+        <h2 class="modal-title">Eika大雪</h2>
+        <p class="modal-role">&ltMissionary&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member26Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member26Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_003cc5deb2a21a01600.png" alt="Member 26" style="width:100%">
-        <h2>蘇蘇</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2025/03/01/IMG_003cc5deb2a21a01600.png" alt="Member 26">
+        </div>
+        <h2 class="modal-title">蘇蘇</h2>
+        <p class="modal-role">NULL</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member27Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member27Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_006a784793498ce1b59.png" alt="Member 27" style="width:100%">
-        <h2>木头睦头</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2025/03/01/IMG_006a784793498ce1b59.png" alt="Member 27">
+        </div>
+        <h2 class="modal-title">木头睦头</h2>
+        <p class="modal-role">&ltTranscendent&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member28Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member28Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_00238a8d7c6566673e3.png" alt="Member 28" style="width:100%">
-        <h2>玄离卦心</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2025/03/01/IMG_00238a8d7c6566673e3.png" alt="Member 28">
+        </div>
+        <h2 class="modal-title">玄离卦心</h2>
+        <p class="modal-role">&ltMissionary&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 <div id="member29Modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal('member29Modal')">&times;</span>
-        <img src="https://img.picgo.net/2025/03/01/IMG_0018321fc5d62744d85.png" alt="Member 29" style="width:100%">
-        <h2>栗山香橙</h2>
-        <p></p>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://img.picgo.net/2025/03/01/IMG_0018321fc5d62744d85.png" alt="Member 29">
+        </div>
+        <h2 class="modal-title">栗山香橙</h2>
+        <p class="modal-role">&ltPolyglot&gt</p>
+        <p class="modal-quote"></p>
+    </div>
+</div>
+<div id="member30Modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('member30Modal')">&times;</span>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpZa2N5Qm9CM0M4QlEhIQUAcXVuZ3o7c723723a8a490fd.png" alt="Member 30">
+        </div>
+        <h2 class="modal-title">摆烂の雪华</h2>
+        <p class="modal-role">&ltMaterial&gt</p>
+        <p class="modal-quote"></p>
+    </div>
+</div>
+<div id="member31Modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('member31Modal')">&times;</span>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphT1d1MW5hcmFwR3chIQUAcXVuZ3oa4591f136926de0c.jpeg" alt="Member 31">
+        </div>
+        <h2 class="modal-title">猫猫吐司</h2>
+        <p class="modal-role">NULL</p>
+        <p class="modal-quote"></p>
+    </div>
+</div>
+<div id="member32Modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('member32Modal')">&times;</span>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaZEE1Wm9WZG1JS3chIQUAcXVuZ3o04956d3c0d3f97dd.png" alt="Member 32">
+        </div>
+        <h2 class="modal-title">迪布瓦</h2>
+        <p class="modal-role">NULL</p>
+        <p class="modal-quote"></p>
+    </div>
+</div>
+<div id="member33Modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('member33Modal')">&times;</span>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphUFd1MW5LbmFwR3chIQUAcXVuZ3o6cb1cdb356431c32.jpeg" alt="Member 33">
+        </div>
+        <h2 class="modal-title">锦鲤</h2>
+        <p class="modal-role">NULL</p>
+        <p class="modal-quote"></p>
+    </div>
+</div>
+<div id="member34Modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('member34Modal')">&times;</span>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpiWFEweG9hS3Z2SVEhIQUAcXVuZ3o47c68ddb2af2812c.png" alt="Member 34">
+        </div>
+        <h2 class="modal-title">机智的土豆</h2>
+        <p class="modal-role">NULL</p>
+        <p class="modal-quote"></p>
+    </div>
+</div>
+<div id="member35Modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('member35Modal')">&times;</span>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphTld1MW5zMGFyR3chIQUAcXVuZ3o00b831acf0ea6ec9.jpeg" alt="Member 35">
+        </div>
+        <h2 class="modal-title">千绘o</h2>
+        <p class="modal-role">NULL</p>
+        <p class="modal-quote"></p>
+    </div>
+</div>
+<div id="member36Modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('member36Modal')">&times;</span>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphbzFMNW80TDJ3TEEhIQUAcXVuZ3o971fee0c5f48f0ca.png" alt="Member 36">
+        </div>
+        <h2 class="modal-title">Maglian</h2>
+        <p class="modal-role">&ltMaterial&gt</p>
+        <p class="modal-quote"></p>
+    </div>
+</div>
+<div id="member37Modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('member37Modal')">&times;</span>
+        <div class="modal-image-container">
+            <img class="modal-image" src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpZbGN5Qm9XVWk5QlEhIQUAcXVuZ3o3f3e63ce3916d424.png" alt="Member 37">
+        </div>
+        <h2 class="modal-title">复调</h2>
+        <p class="modal-role">&ltMaterial&gt</p>
+        <p class="modal-quote"></p>
     </div>
 </div>
 
 <script>
     function openModal(modalId) {
-      document.getElementById(modalId).style.display = "block";
+        document.getElementById(modalId).style.display = "block";
+        document.body.style.overflow = "hidden";
     }
 
     function closeModal(modalId) {
-      document.getElementById(modalId).style.display = "none";
+        document.getElementById(modalId).style.display = "none";
+        document.body.style.overflow = "auto";
     }
-</script>
 
+    window.onclick = function(event) {
+        const modals = document.getElementsByClassName('modal');
+        for (let i = 0; i < modals.length; i++) {
+            if (event.target == modals[i]) {
+                modals[i].style.display = "none";
+                document.body.style.overflow = "auto";
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const images = document.querySelectorAll('.modal-image');
+        images.forEach(img => {
+            img.onerror = function() {
+                this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgZmlsbD0iI2Y1ZjVmNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkeT0iLjM1ZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSI+5Zu+54mH5Zu+5YOPPC90ZXh0Pjwvc3ZnPg==';
+                this.alt = '图片加载失败';
+            };
+        });
+    });
+</script>
 </body>
 </html>
