@@ -55,49 +55,114 @@
             border-radius: 5px;
             overflow: hidden;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            position: relative; /* Add this */
-            width: 550px; /* Add this */
-            height: 550px; /* Add this */
-            display: flex; /* Add this */
-            align-items: center; /* Add this */
-            justify-content: center; /* Add this */
+            position: relative;
+            width: 550px;
+            height: 550px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .gallery-item img {
             width: auto;
             height: auto;
-            max-width: 100%; /* Change this */
-            max-height: 100%; /* Change this */
+            max-width: 100%;
+            max-height: 100%;
             display: block;
             transition: transform 0.6s ease;
         }
         .gallery-item:hover img {
             transform: scale(1.05);
         }
+
+        /* 组图样式 */
+        .group-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            width: 100%;
+            height: 100%;
+        }
+        .group-item {
+            position: relative;
+            overflow: hidden;
+        }
+        .group-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .group-label {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            z-index: 10;
+        }
+
         .lightbox {
             display: none;
             position: fixed;
             z-index: 1000;
-            min-width: 100%;
-            min-height: 100%;
-            object-fit: contain;
             top: 0;
             left: 0;
-            background: rgba(0, 0, 0, 0.8);
-            /*display: flex;*/
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
             align-items: center;
             justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+            flex-direction: column; /* 改为垂直排列 */
         }
         .lightbox img {
             max-width: 90%;
-            max-height: 80%;
+            max-height: 90%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 5px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+        }
+        .lightbox img, .group-lightbox-container img {
+            max-width: 90%;
+            max-height: 70vh; /* 进一步减少高度，为关闭按钮留更多空间 */
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 5px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+            margin-bottom: 0; /* 移除margin-bottom，改用容器的flex布局 */
+        }
+        .lightbox-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 90%;
+            max-height: 90%;
         }
         .close-lightbox {
             cursor: pointer;
-            position: fixed;
-            top: 20px;
-            right: 20px;
+            position: relative; /* 改为相对定位 */
+            margin-top: 20px; /* 在图片和按钮之间添加间距 */
             color: #fff;
-            font-size: 25px;
+            font-size: 35px;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.7);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            transition: background 0.3s;
+            border: 2px solid white;
+        }
+        .close-lightbox:hover {
+            background: rgba(255, 255, 255, 0.9);
+            color: #000;
         }
         .caption {
             position: absolute;
@@ -116,6 +181,49 @@
 
         .title {
             /* 作品名样式 */
+        }
+
+        /* 组图灯箱样式 */
+        .group-lightbox-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .group-lightbox-container img {
+            max-width: 100%;
+            max-height: calc(90vh - 80px); /* 为导航栏留出空间 */
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 5px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+        }
+        .group-nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            color: white;
+            width: 100%;
+        }
+        .group-nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            padding: 10px 15px;
+            margin: 0 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .group-nav-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+        #group-counter {
+            margin: 0 15px;
+            font-size: 16px;
         }
     </style>
 </head>
@@ -336,29 +444,298 @@
     <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/75B25F2160F64384E26287DA3F7A926A994664b4259bf053.jpeg')">
         <img src="https://img.picgo.net/2024/10/18/75B25F2160F64384E26287DA3F7A926A994664b4259bf053.jpeg" alt="Gallery Image" />
     </div>
+
+    <!-- 组图 -->
+    <div class="gallery-item" onclick="openGroupLightbox(['https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpicE5yaG9heXJ1Q0EhIQUAcXVuZ3od482dd00445dadc3.png', 'https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpicU5yaG9YY0xyQ0EhIQUAcXVuZ3o8b1a640695c75850.png'])">
+        <div class="group-container">
+            <div class="group-item">
+                <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpicE5yaG9heXJ1Q0EhIQUAcXVuZ3od482dd00445dadc3.md.png" alt="组图1" />
+            </div>
+            <div class="group-item">
+                <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpicU5yaG9YY0xyQ0EhIQUAcXVuZ3o8b1a640695c75850.md.png" alt="组图2" />
+            </div>
+        </div>
+        <div class="group-label">组图</div>
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title">你要睡了吗.jpg</span>
+        </div>
+    </div>
+
+    <div class="gallery-item" onclick="openLightbox('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaSUQ4Qm9yRDFQRVEhIQUAcXVuZ3o6de52f1e1f281347.png')">
+        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaSUQ4Qm9yRDFQRVEhIQUAcXVuZ3o6de52f1e1f281347.md.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaWW5zWm9QcGJkQnchIQUAcXVuZ3oa5e5b6afc3e2faf6.png')">
+        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaWW5zWm9QcGJkQnchIQUAcXVuZ3oa5e5b6afc3e2faf6.md.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpiY2NibG9QN1VJTGchIQUAcXVuZ3of294008937dc5bc6.png')">
+        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpiY2NibG9QN1VJTGchIQUAcXVuZ3of294008937dc5bc6.md.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpidnlzeG9pdjF2TFEhIQUAcXVuZ3oc5da74ac205ad5a5.png')">
+        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpidnlzeG9pdjF2TFEhIQUAcXVuZ3oc5da74ac205ad5a5.md.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpiZEVzbG9iTkxXQVEhIQUAcXVuZ3o4fda4e7db434870d.png')">
+        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpiZEVzbG9iTkxXQVEhIQUAcXVuZ3o4fda4e7db434870d.md.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+
+    <!-- 组图 -->
+    <div class="gallery-item" onclick="openGroupLightbox(['https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpZeUJNMW8yTEFpR1EhIQUAcXVuZ3o5d3eec9374c851b6.jpeg', 'https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpZekJNMW9tTU1qR1EhIQUAcXVuZ3o6a8e1b378b131962.jpeg', 'https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaTHE5dG9uNFhMS1EhIQUAcXVuZ3o438161b406ecee77.png', 'https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaTXE5dG9FZWpMS1EhIQUAcXVuZ3o6b8bce453edb9b95.png'])">
+        <div class="group-container">
+            <div class="group-item">
+                <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpZeUJNMW8yTEFpR1EhIQUAcXVuZ3o5d3eec9374c851b6.jpeg" alt="组图1" />
+            </div>
+            <div class="group-item">
+                <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpZekJNMW9tTU1qR1EhIQUAcXVuZ3o6a8e1b378b131962.jpeg" alt="组图2" />
+            </div>
+            <div class="group-item">
+                <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaTHE5dG9uNFhMS1EhIQUAcXVuZ3o438161b406ecee77.md.png" alt="组图1" />
+            </div>
+            <div class="group-item">
+                <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaTXE5dG9FZWpMS1EhIQUAcXVuZ3o6b8bce453edb9b95.md.png" alt="组图2" />
+            </div>
+        </div>
+        <div class="group-label">组图</div>
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong>表情包</strong></span>
+        </div>
+    </div>
+
+    <div class="gallery-item" onclick="openLightbox('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaT0NjMW9zUzF4S3chIQUAcXVuZ3o6a3bad2a8bfb2af1.png')">
+        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaT0NjMW9zUzF4S3chIQUAcXVuZ3o6a3bad2a8bfb2af1.md.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+
+    <div class="gallery-item" onclick="openLightbox('https://origin.picgo.net/2025/11/21/QQ20251121100956408afe77de2a7900a0.png')">
+        <img src="https://origin.picgo.net/2025/11/21/QQ20251121100956408afe77de2a7900a0.md.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaNWR4Wm50SmxySlEhIQUAcXVuZ3oe00ea74c18f50f1f.jpeg')">
+        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaNWR4Wm50SmxySlEhIQUAcXVuZ3oe00ea74c18f50f1f.md.jpeg" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaT21EUm5CZ2FvQmchIQUAcXVuZ3o51b061bf45e56344.png')">
+        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaT21EUm5CZ2FvQmchIQUAcXVuZ3o51b061bf45e56344.md.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphVXh5bG44YnJpRWchIQUAcXVuZ3o9060136a14ce1227.jpeg')">
+        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphVXh5bG44YnJpRWchIQUAcXVuZ3o9060136a14ce1227.md.jpeg" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpiWC5vUm5OTElhRFEhIQUAcXVuZ3o40a10660f76ffd8c.png')">
+        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpiWC5vUm5OTElhRFEhIQUAcXVuZ3o40a10660f76ffd8c.md.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpiMGlZcG5vc253SHchIQUAcXVuZ3o718d86740d79b960.png')">
+        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpiMGlZcG5vc253SHchIQUAcXVuZ3o718d86740d79b960.md.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphTWtkMW5lWW1LT1EhIQUAcXVuZ3o37a35063d7bdcc63.jpeg')">
+        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphTWtkMW5lWW1LT1EhIQUAcXVuZ3o37a35063d7bdcc63.md.jpeg" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphZTFFdG8wUm5VQlEhIQUAcXVuZ3od3ab395202119518.png')">
+        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmphZTFFdG8wUm5VQlEhIQUAcXVuZ3od3ab395202119518.md.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaUGY0Um8yS3RsTUEhIQUAcXVuZ3ob57d545461112331.png')">
+        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaUGY0Um8yS3RsTUEhIQUAcXVuZ3ob57d545461112331.md.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaUWY0Um9BMDFsTUEhIQUAcXVuZ3ofe07c544ab3c2652.png')">
+        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaUWY0Um9BMDFsTUEhIQUAcXVuZ3ofe07c544ab3c2652.md.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpiV0NVMW9xT3A5RHchIQUAcXVuZ3o38fd5c64315e442d.jpeg')">
+        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpiV0NVMW9xT3A5RHchIQUAcXVuZ3o38fd5c64315e442d.md.jpeg" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpiWXQxOW9MTWo3R2chIQUAcXVuZ3o500e45f02eb548a6.png')">
+        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpiWXQxOW9MTWo3R2chIQUAcXVuZ3o500e45f02eb548a6.md.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaYUNJWm9vM0diR1EhIQUAcXVuZ3o8adbd9792eb69b58.png')">
+        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpaYUNJWm9vM0diR1EhIQUAcXVuZ3o8adbd9792eb69b58.md.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpiQllhbG85amVIQkEhIQUAcXVuZ3oa3790c6459e241bf.png')">
+        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpiQllhbG85amVIQkEhIQUAcXVuZ3oa3790c6459e241bf.md.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpib05yaG9nKmZsQ0EhIQUAcXVuZ3o029e0daa33eb6c14.png')">
+        <img src="https://origin.picgo.net/2025/11/21/NR8AVjViQ1FBM09EYzVNRGswTmpib05yaG9nKmZsQ0EhIQUAcXVuZ3o029e0daa33eb6c14.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
 </div>
-<!-- Lightbox -->
+
+<!-- 单图灯箱 -->
 <div id="lightbox" class="lightbox">
-    <img src="" alt="Lightbox Image" />
-    <span id="close-lightbox" class="close-lightbox">&times;</span>
+    <div class="lightbox-content">
+        <img src="" alt="Lightbox Image" />
+        <span id="close-lightbox" class="close-lightbox">&times;</span>
+    </div>
 </div>
+
+<!-- 组图灯箱 -->
+<div id="group-lightbox" class="lightbox">
+    <div class="group-lightbox-container">
+        <img src="" alt="Group Lightbox Image" />
+        <div class="group-nav">
+            <button id="prev-btn" class="group-nav-btn">&#10094;</button>
+            <span id="group-counter">1 / 2</span>
+            <button id="next-btn" class="group-nav-btn">&#10095;</button>
+        </div>
+        <span id="close-group-lightbox" class="close-lightbox">&times;</span>
+    </div>
+</div>
+
 <script>
+    // 单图灯箱功能
     let lightboxImg = document.getElementById('lightbox').querySelector('img');
     let closeLightbox = document.getElementById('close-lightbox');
     let lightbox = document.getElementById('lightbox');
+
     function openLightbox(src) {
         lightbox.style.display = 'flex';
         lightboxImg.src = src;
     }
+
     closeLightbox.onclick = function() {
         lightbox.style.display = 'none';
     }
+
     window.onclick = function(event) {
         if (event.target == lightbox) {
             lightbox.style.display = 'none';
         }
-    }</script>
+    }
 
+    // 组图灯箱功能
+    let groupLightbox = document.getElementById('group-lightbox');
+    let groupLightboxImg = groupLightbox.querySelector('img');
+    let closeGroupLightbox = document.getElementById('close-group-lightbox');
+    let prevBtn = document.getElementById('prev-btn');
+    let nextBtn = document.getElementById('next-btn');
+    let groupCounter = document.getElementById('group-counter');
+
+    let currentGroupImages = [];
+    let currentGroupIndex = 0;
+
+    function openGroupLightbox(images) {
+        currentGroupImages = images;
+        currentGroupIndex = 0;
+        updateGroupLightbox();
+        groupLightbox.style.display = 'flex';
+    }
+
+    function updateGroupLightbox() {
+        // 确保使用源文件链接（不带.md的链接）
+        groupLightboxImg.src = currentGroupImages[currentGroupIndex];
+        groupCounter.textContent = `${currentGroupIndex + 1} / ${currentGroupImages.length}`;
+
+        // 图片加载完成后确保适应窗口
+        groupLightboxImg.onload = function() {
+            // 确保图片不会超出窗口
+            this.style.maxWidth = '100%';
+            this.style.maxHeight = 'calc(90vh - 80px)';
+            this.style.width = 'auto';
+            this.style.height = 'auto';
+            this.style.objectFit = 'contain';
+        };
+    }
+
+    prevBtn.onclick = function() {
+        if (currentGroupIndex > 0) {
+            currentGroupIndex--;
+            updateGroupLightbox();
+        }
+    }
+
+    nextBtn.onclick = function() {
+        if (currentGroupIndex < currentGroupImages.length - 1) {
+            currentGroupIndex++;
+            updateGroupLightbox();
+        }
+    }
+
+    closeGroupLightbox.onclick = function() {
+        groupLightbox.style.display = 'none';
+    }
+
+    window.addEventListener('click', function(event) {
+        if (event.target == groupLightbox) {
+            groupLightbox.style.display = 'none';
+        }
+    });
+</script>
 
 <section style="background-color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif; color:#aaa; font-size:12px; padding: 0; align-items: center; display: flex;">
     <p style="flex: 0 0 auto; margin:0; padding-right:1rem;">Page was <a href="https://mobirise.site/g" style="color:#aaa;">designed</a> with Mobirise</p>
