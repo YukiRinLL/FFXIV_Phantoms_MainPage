@@ -28,7 +28,7 @@
 
         header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             padding: 20px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 15px;
@@ -48,6 +48,110 @@
         .subtitle {
             font-size: 1.2rem;
             opacity: 0.8;
+        }
+
+        /* 月份选择器样式 */
+        .month-selector-container {
+            margin-bottom: 25px;
+        }
+
+        .month-selector {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .month-nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .current-month {
+            font-weight: 600;
+            font-size: 1.2rem;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #4cc9f0, #4361ee);
+            border-radius: 20px;
+            min-width: 200px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .month-picker {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .month-picker select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            color: white;
+            padding: 10px 15px;
+            outline: none;
+            cursor: pointer;
+            min-width: 120px;
+        }
+
+        .month-picker select option {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #4cc9f0, #4361ee);
+            border: none;
+            border-radius: 20px;
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .action-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
         }
 
         /* 统计概览样式 */
@@ -311,13 +415,27 @@
 
         .loading {
             text-align: center;
-            padding: 20px;
+            padding: 40px;
             font-size: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .loading-spinner {
+            font-size: 2rem;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .error {
             text-align: center;
-            padding: 20px;
+            padding: 40px;
             color: #ff6b6b;
             font-size: 1.2rem;
         }
@@ -354,7 +472,7 @@
             gap: 8px;
         }
 
-        .search-btn:hover {
+        .search-btn:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
         }
@@ -362,8 +480,8 @@
         .search-btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
+            transform: none !important;
+            box-shadow: none !important;
         }
 
         .user-stats-info {
@@ -395,7 +513,28 @@
             opacity: 1;
         }
 
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: rgba(255, 255, 255, 0.5);
+            font-style: italic;
+        }
+
         @media (max-width: 768px) {
+            .month-selector {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .month-nav {
+                justify-content: center;
+                margin-bottom: 10px;
+            }
+
+            .month-picker {
+                justify-content: center;
+            }
+
             .stats-overview {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -451,6 +590,17 @@
                 gap: 10px;
                 align-items: center;
             }
+
+            .month-nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .current-month {
+                min-width: 150px;
+                font-size: 1rem;
+                padding: 8px 15px;
+            }
         }
     </style>
 </head>
@@ -461,15 +611,60 @@
         <p class="subtitle">群聊月度数据统计</p>
     </header>
 
+    <!-- 月份选择器 -->
+    <div class="month-selector-container">
+        <div class="month-selector">
+            <div class="month-nav">
+                <button id="prevMonth" class="nav-btn" title="上个月">
+                    <i class="fas fa-chevron-left"></i> 上个月
+                </button>
+                <div id="currentMonth" class="current-month">加载中...</div>
+                <button id="nextMonth" class="nav-btn" title="下个月">
+                    下个月 <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <div class="month-picker">
+                <select id="yearSelect">
+                    <!-- 动态填充年份 -->
+                </select>
+                <select id="monthSelect">
+                    <option value="1">一月</option>
+                    <option value="2">二月</option>
+                    <option value="3">三月</option>
+                    <option value="4">四月</option>
+                    <option value="5">五月</option>
+                    <option value="6">六月</option>
+                    <option value="7">七月</option>
+                    <option value="8">八月</option>
+                    <option value="9">九月</option>
+                    <option value="10">十月</option>
+                    <option value="11">十一月</option>
+                    <option value="12">十二月</option>
+                </select>
+                <button id="goToMonth" class="action-btn">
+                    <i class="fas fa-calendar-alt"></i> 跳转
+                </button>
+                <button id="goToCurrent" class="action-btn">
+                    <i class="fas fa-sync-alt"></i> 本月
+                </button>
+            </div>
+        </div>
+
+        <div class="month-info" style="text-align: center; opacity: 0.7; font-size: 0.9rem;">
+            <i class="fas fa-info-circle"></i> 选择不同月份查看历史统计数据
+        </div>
+    </div>
+
     <!-- 统计概览 -->
     <div class="stats-overview">
         <div class="stat-item">
             <div class="stat-number" id="monthlyMessageCount">0</div>
-            <div class="stat-label">本月消息总数</div>
+            <div class="stat-label" id="monthlyMessageLabel">本月消息总数</div>
         </div>
         <div class="stat-item">
             <div class="stat-number" id="monthlyImageCount">0</div>
-            <div class="stat-label">本月图片总数</div>
+            <div class="stat-label" id="monthlyImageLabel">本月图片总数</div>
         </div>
         <div class="stat-item">
             <div class="stat-number" id="totalMessageCount">0</div>
@@ -491,16 +686,25 @@
             <div class="tab active" data-tab="all">全部数据</div>
             <div class="tab" data-tab="messages">消息数量</div>
             <div class="tab" data-tab="images">图片数量</div>
-            <div class="tab" data-tab="ratio">图片占总消息比例</div>
+            <div class="tab" data-tab="ratio">图片比例</div>
         </div>
     </div>
 
     <div id="loading" class="loading">
-        <i class="fas fa-spinner fa-spin"></i> 正在加载数据...
+        <div class="loading-spinner">
+            <i class="fas fa-spinner"></i>
+        </div>
+        <div>正在加载数据...</div>
     </div>
 
     <div id="error" class="error" style="display: none;">
-        <i class="fas fa-exclamation-triangle"></i> 数据加载失败，请刷新页面重试
+        <i class="fas fa-exclamation-triangle"></i>
+        <div style="margin-top: 10px;">数据加载失败，请刷新页面重试</div>
+        <div style="margin-top: 20px;">
+            <button onclick="location.reload()" class="action-btn">
+                <i class="fas fa-redo"></i> 刷新页面
+            </button>
+        </div>
     </div>
 
     <div id="content" style="display: none;">
@@ -562,7 +766,7 @@
 
         <div class="stat-card">
             <div class="card-header">
-                <h2 class="card-title">数据可视化(本月开始至今)</h2>
+                <h2 class="card-title" id="chartTitle">数据可视化</h2>
                 <div class="card-icon">
                     <i class="fas fa-chart-bar"></i>
                 </div>
@@ -573,7 +777,8 @@
         </div>
 
         <br>
-        <!-- 用户消息统计 -->
+
+        <!-- 用户消息统计区域 -->
         <div class="stat-card">
             <div class="card-header">
                 <h2 class="card-title">用户消息统计</h2>
@@ -590,6 +795,8 @@
                     <select id="timeRangeSelect">
                         <option value="7">最近一周</option>
                         <option value="30" selected>最近一个月</option>
+                        <option value="90">最近三个月</option>
+                        <option value="180">最近半年</option>
                     </select>
                 </div>
                 <button id="searchUserStats" class="search-btn">
@@ -613,7 +820,7 @@
     </div>
 
     <footer>
-        <p>数据来源: Phantoms群聊 • 更新时间: <span id="updateTime"></span></p>
+        <p>数据来源: Phantoms群聊 • 更新时间: <span id="updateTime"></span> • <span id="dataRange"></span></p>
     </footer>
 </div>
 
@@ -624,10 +831,20 @@
 
     // 全局数据存储
     let statsData = null;
+    let currentYear = new Date().getFullYear();
+    let currentMonth = new Date().getMonth() + 1;
 
-    // 页面加载完成后获取数据
+    // 月份名称映射
+    const monthNames = {
+        1: '一月', 2: '二月', 3: '三月', 4: '四月',
+        5: '五月', 6: '六月', 7: '七月', 8: '八月',
+        9: '九月', 10: '十月', 11: '十一月', 12: '十二月'
+    };
+
+    // 页面加载完成后初始化
     document.addEventListener('DOMContentLoaded', function() {
-        fetchData();
+        initializeMonthSelector();
+        fetchData(currentYear, currentMonth);
 
         // 搜索功能
         document.getElementById('searchInput').addEventListener('input', function() {
@@ -664,32 +881,244 @@
                 document.getElementById('searchUserStats').click();
             }
         });
+
+        // 月份导航按钮
+        document.getElementById('prevMonth').addEventListener('click', function() {
+            navigateMonth(-1);
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', function() {
+            navigateMonth(1);
+        });
+
+        document.getElementById('goToMonth').addEventListener('click', function() {
+            const year = parseInt(document.getElementById('yearSelect').value);
+            const month = parseInt(document.getElementById('monthSelect').value);
+
+            // 验证年份和月份
+            if (year < 2020 || year > new Date().getFullYear() + 1) {
+                alert('请选择有效的年份');
+                return;
+            }
+
+            if (month < 1 || month > 12) {
+                alert('请选择有效的月份');
+                return;
+            }
+
+            fetchData(year, month);
+        });
+
+        document.getElementById('goToCurrent').addEventListener('click', function() {
+            const now = new Date();
+            currentYear = now.getFullYear();
+            currentMonth = now.getMonth() + 1;
+            updateMonthSelector(currentYear, currentMonth);
+            fetchData(currentYear, currentMonth);
+        });
+
+        // 年份和月份选择变化时更新显示
+        document.getElementById('yearSelect').addEventListener('change', function() {
+            updateCurrentMonthDisplay();
+        });
+
+        document.getElementById('monthSelect').addEventListener('change', function() {
+            updateCurrentMonthDisplay();
+        });
     });
 
+    // 初始化月份选择器
+    function initializeMonthSelector() {
+        const yearSelect = document.getElementById('yearSelect');
+        const now = new Date();
+        const currentYear = now.getFullYear();
+
+        // 清空现有选项
+        yearSelect.innerHTML = '';
+
+        // 生成年份选项（从2020年到当前年份）
+        for (let year = 2020; year <= currentYear; year++) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = `${year}年`;
+            if (year === currentYear) {
+                option.selected = true;
+            }
+            yearSelect.appendChild(option);
+        }
+
+        // 设置当前月份
+        const monthSelect = document.getElementById('monthSelect');
+        monthSelect.value = currentMonth;
+
+        // 初始显示
+        updateCurrentMonthDisplay();
+    }
+
+    // 更新月份选择器显示
+    function updateMonthSelector(year, month) {
+        document.getElementById('yearSelect').value = year;
+        document.getElementById('monthSelect').value = month;
+        updateCurrentMonthDisplay();
+    }
+
+    // 更新当前月份显示
+    function updateCurrentMonthDisplay() {
+        const year = parseInt(document.getElementById('yearSelect').value);
+        const month = parseInt(document.getElementById('monthSelect').value);
+        document.getElementById('currentMonth').textContent = `${year}年${monthNames[month]}`;
+    }
+
+    // 月份导航
+    function navigateMonth(delta) {
+        let newYear = currentYear;
+        let newMonth = currentMonth + delta;
+
+        if (newMonth < 1) {
+            newMonth = 12;
+            newYear--;
+        } else if (newMonth > 12) {
+            newMonth = 1;
+            newYear++;
+        }
+
+        // 检查是否超出数据范围
+        const now = new Date();
+        const isNextMonthDisabled = (newYear > now.getFullYear()) ||
+                                   (newYear === now.getFullYear() && newMonth > now.getMonth() + 1);
+
+        document.getElementById('nextMonth').disabled = isNextMonthDisabled;
+
+        fetchData(newYear, newMonth);
+    }
+
     // 获取数据
-    async function fetchData() {
+    async function fetchData(year, month) {
         try {
-            const response = await fetch(API_URL);
+            currentYear = year;
+            currentMonth = month;
+
+            // 更新界面状态
+            updateMonthSelector(year, month);
+            setNavigationButtonsState(false);
+
+            // 显示加载提示
+            showLoading(true);
+
+            // 构建API URL
+            const url = `${API_URL}?year=${year}&month=${month}`;
+            console.log('Fetching data from:', url);
+
+            const response = await fetch(url);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             statsData = await response.json();
+
+            // 检查数据是否有效
+            if (!statsData || statsData.status === 'failed') {
+                throw new Error(statsData?.error || 'Invalid response data');
+            }
+
             displayData();
             initCustomScrollbars();
 
             // 隐藏加载提示，显示内容
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('content').style.display = 'block';
+            showLoading(false);
 
-            // 更新页面时间
-            document.getElementById('updateTime').textContent = new Date().toLocaleDateString();
+            // 更新页面信息
+            document.getElementById('updateTime').textContent = new Date().toLocaleString();
+            document.getElementById('dataRange').textContent = `数据范围: ${year}年${monthNames[month]}`;
+
         } catch (error) {
             console.error('获取数据失败:', error);
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('error').style.display = 'block';
+            showLoading(false);
+            showError(true, `加载数据失败: ${error.message}`);
+        } finally {
+            setNavigationButtonsState(true);
         }
+    }
+
+    // 显示/隐藏加载状态
+    function showLoading(show) {
+        const loadingEl = document.getElementById('loading');
+        const contentEl = document.getElementById('content');
+        const errorEl = document.getElementById('error');
+
+        if (show) {
+            loadingEl.style.display = 'flex';
+            contentEl.style.display = 'none';
+            errorEl.style.display = 'none';
+        } else {
+            loadingEl.style.display = 'none';
+            contentEl.style.display = 'block';
+        }
+    }
+
+    // 显示/隐藏错误状态
+    function showError(show, message = '') {
+        const errorEl = document.getElementById('error');
+        const contentEl = document.getElementById('content');
+
+        if (show) {
+            errorEl.style.display = 'block';
+            contentEl.style.display = 'none';
+            if (message) {
+                errorEl.innerHTML = `
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div style="margin-top: 10px;">${message}</div>
+                    <div style="margin-top: 20px;">
+                        <button onclick="location.reload()" class="action-btn">
+                            <i class="fas fa-redo"></i> 刷新页面
+                        </button>
+                    </div>
+                `;
+            }
+        } else {
+            errorEl.style.display = 'none';
+        }
+    }
+
+    // 设置导航按钮状态
+    function setNavigationButtonsState(enabled) {
+        const buttons = [
+            'prevMonth',
+            'nextMonth',
+            'goToMonth',
+            'goToCurrent',
+            'searchUserStats'
+        ];
+
+        buttons.forEach(buttonId => {
+            const button = document.getElementById(buttonId);
+            if (button) {
+                button.disabled = !enabled;
+                if (!enabled) {
+                    button.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${button.textContent}`;
+                } else {
+                    // 恢复按钮文本
+                    switch(buttonId) {
+                        case 'prevMonth':
+                            button.innerHTML = '<i class="fas fa-chevron-left"></i> 上个月';
+                            break;
+                        case 'nextMonth':
+                            button.innerHTML = '下个月 <i class="fas fa-chevron-right"></i>';
+                            break;
+                        case 'goToMonth':
+                            button.innerHTML = '<i class="fas fa-calendar-alt"></i> 跳转';
+                            break;
+                        case 'goToCurrent':
+                            button.innerHTML = '<i class="fas fa-sync-alt"></i> 本月';
+                            break;
+                        case 'searchUserStats':
+                            button.innerHTML = '<i class="fas fa-chart-bar"></i> 查询';
+                            break;
+                    }
+                }
+            }
+        });
     }
 
     // 初始化自定义滚动条
@@ -701,20 +1130,25 @@
 
             // 设置滚动条高度
             function updateScrollbar() {
+                if (list.scrollHeight <= list.clientHeight) {
+                    scrollbar.style.display = 'none';
+                    return;
+                }
+
+                scrollbar.style.display = 'block';
                 const scrollRatio = list.clientHeight / list.scrollHeight;
-                const thumbHeight = Math.max(scrollRatio * scrollbar.clientHeight, 20); // 最小高度20px
+                const thumbHeight = Math.max(scrollRatio * scrollbar.clientHeight, 20);
 
                 thumb.style.height = thumbHeight + 'px';
-
-                // 设置初始位置
                 updateThumbPosition();
             }
 
             // 更新滑块位置
             function updateThumbPosition() {
+                if (list.scrollHeight <= list.clientHeight) return;
+
                 const scrollRatio = list.scrollTop / (list.scrollHeight - list.clientHeight);
                 const thumbPosition = scrollRatio * (scrollbar.clientHeight - thumb.clientHeight);
-
                 thumb.style.top = thumbPosition + 'px';
             }
 
@@ -756,9 +1190,10 @@
 
             // 点击滚动条轨道跳转
             scrollbar.addEventListener('click', function(e) {
-                if (e.target === thumb) return;
+                if (e.target === thumb || list.scrollHeight <= list.clientHeight) return;
 
-                const clickY = e.clientY - scrollbar.getBoundingClientRect().top;
+                const rect = scrollbar.getBoundingClientRect();
+                const clickY = e.clientY - rect.top;
                 const thumbHeight = thumb.clientHeight;
                 const newTop = Math.max(0, Math.min(clickY - thumbHeight / 2, scrollbar.clientHeight - thumbHeight));
 
@@ -774,6 +1209,9 @@
 
             // 初始更新
             updateScrollbar();
+
+            // 延迟再次更新，确保DOM完全渲染
+            setTimeout(updateScrollbar, 100);
         });
     }
 
@@ -785,13 +1223,28 @@
         displayOverviewData();
 
         // 显示消息排行榜
-        displayRanking('messageRanking', statsData.messageRanking, 'messageCount', '条消息');
+        if (statsData.messageRanking && statsData.messageRanking.length > 0) {
+            displayRanking('messageRanking', statsData.messageRanking, 'messageCount', '条消息');
+        } else {
+            document.getElementById('messageRanking').innerHTML =
+                '<div class="no-data">该月暂无消息数据</div>';
+        }
 
         // 显示图片排行榜
-        displayRanking('imageRanking', statsData.imageRanking, 'imageCount', '张图片');
+        if (statsData.imageRanking && statsData.imageRanking.length > 0) {
+            displayRanking('imageRanking', statsData.imageRanking, 'imageCount', '张图片');
+        } else {
+            document.getElementById('imageRanking').innerHTML =
+                '<div class="no-data">该月暂无图片数据</div>';
+        }
 
         // 显示图片比例排行榜
-        displayRatioRanking('ratioRanking', statsData.ratioRanking);
+        if (statsData.ratioRanking && statsData.ratioRanking.length > 0) {
+            displayRatioRanking('ratioRanking', statsData.ratioRanking);
+        } else {
+            document.getElementById('ratioRanking').innerHTML =
+                '<div class="no-data">该月暂无图片比例数据</div>';
+        }
 
         // 创建图表
         createChart();
@@ -807,10 +1260,18 @@
         const totalMessageCount = statsData.totalMessageCount || 0;
         const totalImageCount = statsData.totalImageCount || 0;
 
+        // 更新概览数据
         document.getElementById('monthlyMessageCount').textContent = monthlyMessageCount.toLocaleString();
         document.getElementById('monthlyImageCount').textContent = monthlyImageCount.toLocaleString();
         document.getElementById('totalMessageCount').textContent = totalMessageCount.toLocaleString();
         document.getElementById('totalImageCount').textContent = totalImageCount.toLocaleString();
+
+        // 更新标签显示
+        document.getElementById('monthlyMessageLabel').textContent = `${currentYear}年${monthNames[currentMonth]}消息总数`;
+        document.getElementById('monthlyImageLabel').textContent = `${currentYear}年${monthNames[currentMonth]}图片总数`;
+
+        // 更新图表标题
+        document.getElementById('chartTitle').textContent = `${currentYear}年${monthNames[currentMonth]} 数据可视化`;
     }
 
     // 显示排行榜
@@ -824,13 +1285,13 @@
             const itemElement = document.createElement('div');
             itemElement.className = 'ranking-item';
             itemElement.innerHTML = `
-                    <div class="rank ${rankClass}">${index + 1}</div>
-                    <div class="user-info">
-                        <div class="user-name" title="${item.nickname}">${item.nickname}</div>
-                        <div class="user-id">ID: ${item.userId}</div>
-                    </div>
-                    <div class="stat-value">${item[countField].toLocaleString()}${unit}</div>
-                `;
+                <div class="rank ${rankClass}">${index + 1}</div>
+                <div class="user-info">
+                    <div class="user-name" title="${item.nickname}">${item.nickname}</div>
+                    <div class="user-id">ID: ${item.userId}</div>
+                </div>
+                <div class="stat-value">${item[countField].toLocaleString()}${unit}</div>
+            `;
 
             container.appendChild(itemElement);
         });
@@ -847,13 +1308,13 @@
             const itemElement = document.createElement('div');
             itemElement.className = 'ranking-item';
             itemElement.innerHTML = `
-                    <div class="rank ${rankClass}">${index + 1}</div>
-                    <div class="user-info">
-                        <div class="user-name" title="${item.nickname}">${item.nickname}</div>
-                        <div class="user-id">消息: ${item.totalMessages}条, 图片: ${item.totalImages}张</div>
-                    </div>
-                    <div class="stat-value">${item.imageRatio}</div>
-                `;
+                <div class="rank ${rankClass}">${index + 1}</div>
+                <div class="user-info">
+                    <div class="user-name" title="${item.nickname}">${item.nickname}</div>
+                    <div class="user-id">消息: ${item.totalMessages}条, 图片: ${item.totalImages}张</div>
+                </div>
+                <div class="stat-value">${item.imageRatio}</div>
+            `;
 
             container.appendChild(itemElement);
         });
@@ -863,20 +1324,82 @@
     function createChart() {
         const ctx = document.getElementById('statsChart').getContext('2d');
 
+        // 如果有现有的图表实例，先销毁
+        if (window.statsChartInstance) {
+            window.statsChartInstance.destroy();
+        }
+
+        // 检查是否有数据
+        if (!statsData.messageRanking || statsData.messageRanking.length === 0) {
+            // 创建无数据图表
+            window.statsChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['暂无数据'],
+                    datasets: [{
+                        label: '消息数',
+                        data: [0],
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        borderColor: 'rgba(255, 255, 255, 0.3)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: `${currentYear}年${monthNames[currentMonth]} 暂无数据`,
+                            color: 'rgba(255, 255, 255, 0.9)',
+                            font: {
+                                size: 14
+                            }
+                        }
+                    }
+                }
+            });
+            return;
+        }
+
         // 提取前5名用户的数据
-        const topUsers = statsData.messageRanking.slice(0, 5);
+        const topUsers = statsData.messageRanking.slice(0, Math.min(5, statsData.messageRanking.length));
         const labels = topUsers.map(user => user.nickname);
 
         // 获取每个用户的消息数和图片数
         const messageCounts = topUsers.map(user => user.messageCount);
 
-        // 获取每个用户的图片数（需要从imageRanking中查找）
+        // 获取每个用户的图片数
         const imageCounts = topUsers.map(user => {
-            const imageUser = statsData.imageRanking.find(imgUser => imgUser.userId === user.userId);
+            const imageUser = statsData.imageRanking?.find(imgUser => imgUser.userId === user.userId);
             return imageUser ? imageUser.imageCount : 0;
         });
 
-        new Chart(ctx, {
+        window.statsChartInstance = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: labels,
@@ -924,6 +1447,14 @@
                         labels: {
                             color: 'rgba(255, 255, 255, 0.7)'
                         }
+                    },
+                    title: {
+                        display: true,
+                        text: `${currentYear}年${monthNames[currentMonth]} 排行榜前${topUsers.length}名`,
+                        color: 'rgba(255, 255, 255, 0.9)',
+                        font: {
+                            size: 14
+                        }
                     }
                 }
             }
@@ -937,30 +1468,51 @@
         const lowerSearchTerm = searchTerm.toLowerCase();
 
         // 筛选消息排行榜
-        const filteredMessages = statsData.messageRanking.filter(item =>
-            item.nickname.toLowerCase().includes(lowerSearchTerm) ||
-            item.userId.toString().includes(lowerSearchTerm)
-        );
-        displayRanking('messageRanking', filteredMessages, 'messageCount', '条消息');
+        if (statsData.messageRanking && statsData.messageRanking.length > 0) {
+            const filteredMessages = statsData.messageRanking.filter(item =>
+                (item.nickname && item.nickname.toLowerCase().includes(lowerSearchTerm)) ||
+                (item.userId && item.userId.toString().includes(lowerSearchTerm))
+            );
+            if (filteredMessages.length > 0) {
+                displayRanking('messageRanking', filteredMessages, 'messageCount', '条消息');
+            } else {
+                document.getElementById('messageRanking').innerHTML =
+                    '<div class="no-data">未找到匹配的用户</div>';
+            }
+        }
 
         // 筛选图片排行榜
-        const filteredImages = statsData.imageRanking.filter(item =>
-            item.nickname.toLowerCase().includes(lowerSearchTerm) ||
-            item.userId.toString().includes(lowerSearchTerm)
-        );
-        displayRanking('imageRanking', filteredImages, 'imageCount', '张图片');
+        if (statsData.imageRanking && statsData.imageRanking.length > 0) {
+            const filteredImages = statsData.imageRanking.filter(item =>
+                (item.nickname && item.nickname.toLowerCase().includes(lowerSearchTerm)) ||
+                (item.userId && item.userId.toString().includes(lowerSearchTerm))
+            );
+            if (filteredImages.length > 0) {
+                displayRanking('imageRanking', filteredImages, 'imageCount', '张图片');
+            } else {
+                document.getElementById('imageRanking').innerHTML =
+                    '<div class="no-data">未找到匹配的用户</div>';
+            }
+        }
 
         // 筛选图片比例排行榜
-        const filteredRatios = statsData.ratioRanking.filter(item =>
-            item.nickname.toLowerCase().includes(lowerSearchTerm) ||
-            item.userId.toString().includes(lowerSearchTerm)
-        );
-        displayRatioRanking('ratioRanking', filteredRatios);
+        if (statsData.ratioRanking && statsData.ratioRanking.length > 0) {
+            const filteredRatios = statsData.ratioRanking.filter(item =>
+                (item.nickname && item.nickname.toLowerCase().includes(lowerSearchTerm)) ||
+                (item.userId && item.userId.toString().includes(lowerSearchTerm))
+            );
+            if (filteredRatios.length > 0) {
+                displayRatioRanking('ratioRanking', filteredRatios);
+            } else {
+                document.getElementById('ratioRanking').innerHTML =
+                    '<div class="no-data">未找到匹配的用户</div>';
+            }
+        }
     }
 
     // 按类别筛选
     function filterByCategory(category) {
-        const cards = document.querySelectorAll('.stat-card');
+        const cards = document.querySelectorAll('.stat-card[data-category]');
 
         if (category === 'all') {
             cards.forEach(card => card.style.display = 'block');
@@ -990,6 +1542,11 @@
             }
 
             const userStats = await response.json();
+
+            if (userStats.status === 'failed') {
+                throw new Error(userStats.error || '查询失败');
+            }
+
             displayUserStatsChart(userStats);
 
             searchBtn.innerHTML = originalText;
@@ -997,7 +1554,7 @@
 
         } catch (error) {
             console.error('获取用户统计数据失败:', error);
-            alert('获取用户统计数据失败，请重试');
+            alert(`获取用户统计数据失败: ${error.message}`);
 
             const searchBtn = document.getElementById('searchUserStats');
             searchBtn.innerHTML = '<i class="fas fa-chart-bar"></i> 查询';
@@ -1014,16 +1571,79 @@
             window.userStatsChartInstance.destroy();
         }
 
+        // 检查数据
+        if (!userStats.dailyStats || userStats.dailyStats.length === 0) {
+            window.userStatsChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['暂无数据'],
+                    datasets: [{
+                        label: '每日消息数量',
+                        data: [0],
+                        borderColor: 'rgba(255, 255, 255, 0.3)',
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'rgba(255, 255, 255, 0.7)'
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: `${userStats.nickname} (ID: ${userStats.userId}) - 最近${userStats.days}天暂无数据`,
+                            color: 'rgba(255, 255, 255, 0.9)',
+                            font: {
+                                size: 14
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 更新统计信息
+            document.getElementById('userInfoName').textContent = `${userStats.nickname} (ID: ${userStats.userId})`;
+            document.getElementById('totalUserMessages').textContent = '0';
+            document.getElementById('avgDailyMessages').textContent = '0';
+            document.getElementById('mostActiveDay').textContent = '-';
+            document.getElementById('userStatsInfo').style.display = 'block';
+            return;
+        }
+
         // 反转数据顺序，让时间靠前的在左边，时间靠后的在右边
         const reversedDailyStats = [...userStats.dailyStats].reverse();
         const labels = reversedDailyStats.map(stat => stat.date);
         const data = reversedDailyStats.map(stat => stat.messageCount);
 
-        // 计算统计信息（使用原始数据计算，不要用反转后的）
+        // 计算统计信息
         const totalMessages = userStats.dailyStats.reduce((sum, stat) => sum + stat.messageCount, 0);
         const avgDailyMessages = (totalMessages / userStats.dailyStats.length).toFixed(1);
 
-        // 找到最活跃日（使用原始数据）
+        // 找到最活跃日
         let maxMessages = 0;
         let mostActiveDay = '-';
         userStats.dailyStats.forEach(stat => {
@@ -1093,18 +1713,41 @@
                         bodyColor: 'rgba(255, 255, 255, 0.9)',
                         borderColor: 'rgba(76, 201, 240, 0.5)',
                         borderWidth: 1
+                    },
+                    title: {
+                        display: true,
+                        text: `${userStats.nickname} (ID: ${userStats.userId}) - 最近${userStats.days}天消息统计`,
+                        color: 'rgba(255, 255, 255, 0.9)',
+                        font: {
+                            size: 14
+                        }
                     }
                 }
             }
         });
     }
+
+    // 为移动设备优化滚动体验
+    document.addEventListener('touchmove', function(e) {
+        // 防止页面滚动干扰自定义滚动条
+        const scrollContainers = document.querySelectorAll('.scroll-container');
+        let isInScrollContainer = false;
+
+        scrollContainers.forEach(container => {
+            if (container.contains(e.target)) {
+                isInScrollContainer = true;
+            }
+        });
+
+        if (isInScrollContainer) {
+            e.stopPropagation();
+        }
+    }, { passive: true });
 </script>
 
 <!-- 引入访客统计模块 -->
 <script src="../visitor-tracker.js"></script>
 <!-- Cloudflare Web Analytics -->
-
-<!--https://static.cloudflareinsights.com/beacon.min.js-->
 <script defer src='../lib/cloudflare/beacon.min.js' data-cf-beacon='{"token": "0e55e488041949479a3dace73ef940cd"}'>
 </script>
 <!-- End Cloudflare Web Analytics -->
