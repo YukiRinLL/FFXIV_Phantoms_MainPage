@@ -281,6 +281,7 @@
             color: #888888;
         }
 
+        /* 标准卡片样式 */
         .recruitment-card {
             background: #ffffff;
             border-radius: 8px;
@@ -411,26 +412,114 @@
             font-size: 0.9rem;
         }
 
-        @media (max-width: 768px) {
-            .card-details {
-                grid-template-columns: 1fr;
-            }
-
-            .buttons {
-                flex-direction: column;
-            }
-
-            header h1 {
-                font-size: 2rem;
-            }
-
-            .results-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
+        /* 极简缩略视图样式 */
+        .compact-view .recruitment-card {
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            border-left-width: 3px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
         }
 
-        .sort-controls {
+        .compact-view .recruitment-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .compact-view .card-header {
+            margin-bottom: 5px;
+            padding-bottom: 5px;
+            border-bottom: none;
+            display: grid;
+            grid-template-columns: auto max-content max-content;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .compact-view .card-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .compact-view .card-category {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 3px;
+            justify-self: end;
+        }
+
+        .compact-view .card-description {
+            display: none;
+        }
+
+        .compact-view .card-details {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            margin-bottom: 8px;
+            padding: 6px;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+
+        .compact-view .detail-item {
+            padding: 4px 6px;
+            border-radius: 3px;
+            border: 1px solid #e8e8e8;
+            background: #ffffff;
+        }
+
+        .compact-view .detail-label {
+            font-size: 0.7rem;
+            color: #666666;
+            font-weight: 500;
+            margin-bottom: 1px;
+        }
+
+        .compact-view .detail-value {
+            font-size: 0.8rem;
+            color: #222222;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .compact-view .world-badge {
+            padding: 2px 6px;
+            font-size: 0.75rem;
+        }
+
+        .compact-view .slots-container {
+            margin-top: 5px;
+            gap: 8px;
+        }
+
+        .compact-view .slots-bar {
+            height: 6px;
+            border-radius: 3px;
+        }
+
+        .compact-view .slots-fill {
+            border-radius: 3px;
+        }
+
+        .compact-view .card-details:last-child {
+            grid-template-columns: repeat(2, 1fr);
+            margin-top: 6px;
+            background: transparent;
+            padding: 0;
+        }
+
+        .compact-view .card-details:last-child .detail-item {
+            background: #f9f9f9;
+        }
+
+        /* 视图切换控件 */
+        .view-controls {
             display: flex;
             align-items: center;
             gap: 10px;
@@ -440,6 +529,45 @@
             padding: 15px;
             border-radius: 8px;
             border: 1px solid #e0e0e0;
+            justify-content: space-between;
+        }
+
+        .view-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .view-btn {
+            background: #ffffff;
+            border: 1px solid #d0d0d0;
+            color: #333333;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .view-btn.active {
+            background: #333333;
+            color: #ffffff;
+            border-color: #333333;
+        }
+
+        .view-btn:hover:not(.active) {
+            background: #f0f0f0;
+            border-color: #888888;
+        }
+
+        .sort-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
         .sort-controls select {
@@ -483,6 +611,49 @@
         }
 
         /* 响应式调整 */
+        @media (max-width: 768px) {
+            .card-details {
+                grid-template-columns: 1fr;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .view-controls {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .view-toggle {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .compact-view .card-header {
+                grid-template-columns: 1fr max-content;
+            }
+
+            .compact-view .card-details {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .compact-view .card-category {
+                grid-column: 2;
+                grid-row: 1;
+            }
+        }
+
         @media (max-width: 480px) {
             .sort-controls {
                 flex-direction: column;
@@ -502,13 +673,16 @@
             .page-info {
                 order: -1;
             }
+
+            .compact-view .card-details {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
 <div class="container">
     <header>
-
         <h1><i class="xiv link"></i> 最终幻想14招募信息查询</h1>
         <p>使用模糊查询和多条件筛选功能查找游戏中的招募信息</p>
     </header>
@@ -520,7 +694,7 @@
 
             <div class="filter-group">
                 <label for="name">玩家名称</label>
-                <input type="text" id="name" placeholder="例如: 极神兵, 零式">
+                <input type="text" id="name" placeholder="Name">
             </div>
 
             <div class="filter-group">
@@ -602,19 +776,30 @@
                 <div class="results-count" id="resultsCount">共 0 条结果</div>
             </div>
 
-            <!-- 排序控件 -->
-            <div class="sort-controls">
-                <span class="sort-label">排序:</span>
-                <select id="sortBy">
-                    <option value="updatedAt">更新时间</option>
-                    <option value="name">名称</option>
-                    <option value="minItemLevel">装备等级</option>
-                    <option value="slotsAvailable">空位数量</option>
-                </select>
-                <select id="sortDirection">
-                    <option value="DESC">降序 (最新优先)</option>
-                    <option value="ASC">升序</option>
-                </select>
+            <!-- 视图切换和排序控件 -->
+            <div class="view-controls">
+                <div class="view-toggle">
+                    <button class="view-btn active" id="compactViewBtn" data-view="compact">
+                        <i class="fas fa-th-large"></i> 列表视图
+                    </button>
+                    <button class="view-btn" id="normalViewBtn" data-view="normal">
+                        <i class="fas fa-th-list"></i> 详情视图
+                    </button>
+                </div>
+
+                <div class="sort-controls">
+                    <span class="sort-label">排序:</span>
+                    <select id="sortBy">
+                        <option value="updatedAt">更新时间</option>
+                        <option value="name">名称</option>
+                        <option value="minItemLevel">装备等级</option>
+                        <option value="slotsAvailable">空位数量</option>
+                    </select>
+                    <select id="sortDirection">
+                        <option value="DESC">降序 (最新优先)</option>
+                        <option value="ASC">升序</option>
+                    </select>
+                </div>
             </div>
 
             <!-- 分页控件 -->
@@ -647,7 +832,8 @@
     // 当前分页信息
     let currentPage = 0;
     let totalPages = 1;
-    let pageSize = 10;
+    let pageSize = 30; // 列表视图显示30条（更紧凑的显示）
+    let currentView = 'compact'; // 默认使用列表视图
 
     // API基础URL - 根据实际部署情况修改
     const API_BASE_URL = 'https://phantoms-backend.onrender.com/api/recruitments';
@@ -661,6 +847,8 @@
     const resultsCount = document.getElementById('resultsCount');
     const pageInfo = document.getElementById('pageInfo');
     const loadingIndicator = document.getElementById('loadingIndicator');
+    const compactViewBtn = document.getElementById('compactViewBtn');
+    const normalViewBtn = document.getElementById('normalViewBtn');
 
     // 初始化页面
     document.addEventListener('DOMContentLoaded', function() {
@@ -689,6 +877,15 @@
             }
         });
 
+        // 视图切换事件
+        compactViewBtn.addEventListener('click', function() {
+            switchView('compact');
+        });
+
+        normalViewBtn.addEventListener('click', function() {
+            switchView('normal');
+        });
+
         document.getElementById('sortBy').addEventListener('change', function() {
             currentPage = 0;
             searchRecruitments();
@@ -699,6 +896,30 @@
             searchRecruitments();
         });
     });
+
+    // 切换视图
+    function switchView(view) {
+        if (view === currentView) return;
+
+        currentView = view;
+
+        // 更新按钮状态
+        compactViewBtn.classList.toggle('active', view === 'compact');
+        normalViewBtn.classList.toggle('active', view === 'normal');
+
+        // 更新容器类
+        if (view === 'compact') {
+            resultsContainer.classList.add('compact-view');
+            pageSize = 30; // 列表视图显示30条
+        } else {
+            resultsContainer.classList.remove('compact-view');
+            pageSize = 10; // 详情视图显示10条
+        }
+
+        // 重新加载数据
+        currentPage = 0;
+        searchRecruitments();
+    }
 
     // 搜索招募信息
     async function searchRecruitments() {
@@ -816,67 +1037,144 @@
             const updatedTime = formatTime(recruitment.updated_at);
             const timeLeft = formatTimeLeft(recruitment.time_left);
 
-            html += `
-                <div class="recruitment-card">
-                    <div class="card-header">
-                        <div class="card-title">${escapeHtml(recruitment.name)}</div>
-                        <div class="card-category">${escapeHtml(recruitment.category)}</div>
-                    </div>
-
-                    <div class="card-description">${escapeHtml(recruitment.description || '无描述信息')}</div>
-
-                    <div class="card-details">
-                        <div class="detail-item">
-                            <span class="detail-label">世界</span>
-                            <span class="detail-value world-badge">
-                                <i class="fas fa-globe"></i>
-                                ${escapeHtml(recruitment.home_world)}
-                                ${recruitment.is_cross_world ? '<span class="cross-world-badge" style="margin-left:5px;padding:2px 8px;font-size:0.8rem;">跨服</span>' : ''}
-                            </span>
+            // 根据视图选择不同的HTML模板
+            if (currentView === 'compact') {
+                // 极简列表视图
+                html += `
+                    <div class="recruitment-card">
+                        <div class="card-header">
+                            <div class="card-title">${escapeHtml(recruitment.name)}</div>
+                            <div class="card-category">${escapeHtml(recruitment.category)}</div>
                         </div>
 
-                        <div class="detail-item">
-                            <span class="detail-label">数据中心</span>
-                            <span class="detail-value">${escapeHtml(recruitment.datacenter)}</span>
+                        <div class="card-details">
+                            <div class="detail-item">
+                                <span class="detail-label">世界</span>
+                                <span class="detail-value">
+                                    <span class="world-badge">
+                                        <i class="fas fa-globe"></i>
+                                        ${escapeHtml(recruitment.home_world)}
+                                        ${recruitment.is_cross_world ? '<span class="cross-world-badge" style="margin-left:3px;padding:1px 4px;font-size:0.6rem;">跨</span>' : ''}
+                                    </span>
+                                </span>
+                            </div>
+
+                            <div class="detail-item">
+                                <span class="detail-label">数据</span>
+                                <span class="detail-value">${escapeHtml(recruitment.datacenter)}</span>
+                            </div>
+
+                            <div class="detail-item">
+                                <span class="detail-label">装等</span>
+                                <span class="detail-value">${recruitment.min_item_level}</span>
+                            </div>
+
+                            <div class="detail-item">
+                                <span class="detail-label">职责</span>
+                                <span class="detail-value">${escapeHtml(recruitment.duty || '-')}</span>
+                            </div>
                         </div>
 
-                        <div class="detail-item">
-                            <span class="detail-label">装备等级</span>
-                            <span class="detail-value">${recruitment.min_item_level}</span>
-                        </div>
-
-                        <div class="detail-item">
-                            <span class="detail-label">副本/职责</span>
-                            <span class="detail-value">${escapeHtml(recruitment.duty || '未指定')}</span>
-                        </div>
-                    </div>
-
-                    <div class="detail-item">
-                        <span class="detail-label">空位情况</span>
                         <div class="slots-container">
                             <div class="slots-bar">
                                 <div class="slots-fill" style="width: ${fillPercentage}%"></div>
                             </div>
-                            <span class="detail-value">${recruitment.slots_filled}/${totalSlots}</span>
-                        </div>
-                    </div>
-
-                    <div class="card-details" style="margin-top: 15px;">
-                        <div class="detail-item">
-                            <span class="detail-label">剩余时间</span>
-                            <span class="detail-value">${timeLeft}</span>
+                            <span class="detail-value" style="font-size:0.8rem;">${recruitment.slots_filled}/${totalSlots}</span>
                         </div>
 
-                        <div class="detail-item">
-                            <span class="detail-label">更新时间</span>
-                            <span class="detail-value">${updatedTime}</span>
+                        <div class="card-details">
+                            <div class="detail-item">
+                                <span class="detail-label">timeLeft</span>
+                                <span class="detail-value">${timeLeft}</span>
+                            </div>
+
+                            <div class="detail-item">
+                                <span class="detail-label">更新</span>
+                                <span class="detail-value">${formatCompactTime(updatedTime)}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
+                `;
+            } else {
+                // 标准详情视图
+                html += `
+                    <div class="recruitment-card">
+                        <div class="card-header">
+                            <div class="card-title">${escapeHtml(recruitment.name)}</div>
+                            <div class="card-category">${escapeHtml(recruitment.category)}</div>
+                        </div>
+
+                        <div class="card-description">${escapeHtml(recruitment.description || '无描述信息')}</div>
+
+                        <div class="card-details">
+                            <div class="detail-item">
+                                <span class="detail-label">世界</span>
+                                <span class="detail-value world-badge">
+                                    <i class="fas fa-globe"></i>
+                                    ${escapeHtml(recruitment.home_world)}
+                                    ${recruitment.is_cross_world ? '<span class="cross-world-badge" style="margin-left:5px;padding:2px 8px;font-size:0.8rem;">跨服</span>' : ''}
+                                </span>
+                            </div>
+
+                            <div class="detail-item">
+                                <span class="detail-label">数据中心</span>
+                                <span class="detail-value">${escapeHtml(recruitment.datacenter)}</span>
+                            </div>
+
+                            <div class="detail-item">
+                                <span class="detail-label">装备等级</span>
+                                <span class="detail-value">${recruitment.min_item_level}</span>
+                            </div>
+
+                            <div class="detail-item">
+                                <span class="detail-label">副本/职责</span>
+                                <span class="detail-value">${escapeHtml(recruitment.duty || '未指定')}</span>
+                            </div>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">空位情况</span>
+                            <div class="slots-container">
+                                <div class="slots-bar">
+                                    <div class="slots-fill" style="width: ${fillPercentage}%"></div>
+                                </div>
+                                <span class="detail-value">${recruitment.slots_filled}/${totalSlots}</span>
+                            </div>
+                        </div>
+
+                        <div class="card-details" style="margin-top: 15px;">
+                            <div class="detail-item">
+                                <span class="detail-label">剩余时间</span>
+                                <span class="detail-value">${timeLeft}</span>
+                            </div>
+
+                            <div class="detail-item">
+                                <span class="detail-label">更新时间</span>
+                                <span class="detail-value">${updatedTime}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
         });
 
         resultsContainer.innerHTML = html;
+    }
+
+    // 格式化时间（紧凑版，用于列表视图）
+    function formatCompactTime(fullTime) {
+        if (!fullTime || fullTime === '未知') return fullTime;
+
+        try {
+            // 从完整时间中提取月日时分
+            const match = fullTime.match(/(\d{2})\/(\d{2})\s+(\d{2}):(\d{2})/);
+            if (match) {
+                return `${match[1]}/${match[2]} ${match[3]}:${match[4]}`;
+            }
+            return fullTime;
+        } catch (e) {
+            return fullTime;
+        }
     }
 
     // 格式化时间
@@ -898,17 +1196,17 @@
     }
 
     // 格式化剩余时间
-    function formatTimeLeft(hours) {
-        if (!hours && hours !== 0) return '未知';
+    function formatTimeLeft(minutes) {
+        if (!minutes && minutes !== 0) return '未知';
 
-        if (hours < 1) {
-            const minutes = Math.round(hours * 60);
-            return `${minutes} 分钟`;
-        } else if (hours < 24) {
-            return `${hours.toFixed(1)} 小时`;
+        if (minutes < 60) {
+            return minutes < 1 ? '<1分' : `${minutes}分`;
+        } else if (minutes < 1440) { // 1440分钟 = 24小时
+            const hours = (minutes / 60).toFixed(1);
+            return `${hours}时`;
         } else {
-            const days = (hours / 24).toFixed(1);
-            return `${days} 天`;
+            const days = (minutes / 1440).toFixed(1);
+            return `${days}天`;
         }
     }
 
