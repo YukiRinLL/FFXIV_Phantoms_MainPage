@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>最终幻想14招募信息查询</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- FF14元素字体 -->
+    <link rel="stylesheet" href="../assets/thewakingsands/axis-font-icons/axis-font-icons@0.4.0.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+            color: #333333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-bottom: 2px solid #555555;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #222222;
+            text-shadow: 0 0 10px rgba(34, 34, 34, 0.1);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: #666666;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        @media (min-width: 992px) {
+            .main-content {
+                flex-direction: row;
+            }
+
+            .filters-section {
+                flex: 0 0 350px;
+            }
+
+            .results-section {
+                flex: 1;
+            }
+        }
+
+        .filters-section, .results-section {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #222222;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .section-title i {
+            font-size: 1.3rem;
+            color: #666666;
+        }
+
+        .filter-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444444;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            background: #fafafa;
+            border: 1px solid #d0d0d0;
+            border-radius: 6px;
+            color: #333333;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #888888;
+            box-shadow: 0 0 0 2px rgba(136, 136, 136, 0.1);
+            background: #ffffff;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .checkbox-group input {
+            width: auto;
+        }
+
+        .checkbox-group label {
+            margin-bottom: 0;
+            color: #555555;
+            font-weight: normal;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-search {
+            background: #333333;
+            color: #ffffff;
+        }
+
+        .btn-search:hover {
+            background: #444444;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-reset {
+            background: #888888;
+            color: #ffffff;
+        }
+
+        .btn-reset:hover {
+            background: #999999;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .results-count {
+            font-size: 1.2rem;
+            color: #333333;
+            font-weight: 600;
+            background: #f0f0f0;
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .pagination button {
+            background: #ffffff;
+            border: 1px solid #d0d0d0;
+            color: #333333;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background: #f0f0f0;
+            transform: translateY(-2px);
+            border-color: #888888;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            font-size: 0.9rem;
+            color: #666666;
+            background: #f5f5f5;
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+
+        .results-container {
+            min-height: 500px;
+        }
+
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 300px;
+            gap: 20px;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f0f0f0;
+            border-top-color: #333333;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666666;
+            background: #fafafa;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .no-results i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #888888;
+        }
+
+        .recruitment-card {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid #555555;
+            transition: all 0.3s;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .recruitment-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-left-color: #222222;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            color: #222222;
+            font-weight: 600;
+        }
+
+        .card-category {
+            background: #f0f0f0;
+            color: #444444;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid #d0d0d0;
+        }
+
+        .card-description {
+            color: #555555;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 6px;
+            border-left: 3px solid #d0d0d0;
+        }
+
+        .card-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            border: 1px solid #f0f0f0;
+        }
+
+        .detail-label {
+            font-size: 0.9rem;
+            color: #777777;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            color: #222222;
+            font-weight: 600;
+        }
+
+        .world-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #f0f0f0;
+            color: #333333;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            border: 1px solid #d0d0d0;
+        }
+
+        .cross-world-badge {
+            background: #222222;
+            color: #ffffff;
+        }
+
+        .slots-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .slots-bar {
+            flex: 1;
+            height: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .slots-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #555555, #888888);
+            border-radius: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            color: #777777;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .card-details {
+                grid-template-columns: 1fr;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        .sort-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .sort-controls select {
+            width: auto;
+            min-width: 150px;
+            background: #ffffff;
+        }
+
+        .sort-label {
+            color: #555555;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        /* 调整一些元素的边框和阴影 */
+        input, select, .btn {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .recruitment-card, .filters-section, .results-section {
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        /* 悬停效果增强 */
+        .recruitment-card:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .btn-search:hover, .btn-reset:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 调整图标颜色 */
+        .fa-dragon, .fa-filter, .fa-list, .fa-search, .fa-redo {
+            color: #555555;
+        }
+
+        /* 卡片内的分隔线 */
+        .card-details .detail-item:not(:last-child) {
+            border-right: 1px solid #f0f0f0;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 480px) {
+            .sort-controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .sort-controls select {
+                width: 100%;
+            }
+
+            .pagination {
+                flex-direction: column;
+                gap: 10px;
+                align-items: center;
+            }
+
+            .page-info {
+                order: -1;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+
+        <h1><i class="xiv link"></i> 最终幻想14招募信息查询</h1>
+        <p>使用模糊查询和多条件筛选功能查找游戏中的招募信息</p>
+    </header>
+
+    <div class="main-content">
+        <!-- 筛选条件部分 -->
+        <section class="filters-section">
+            <h2 class="section-title"><i class="fas fa-filter"></i> 筛选条件</h2>
+
+            <div class="filter-group">
+                <label for="name">玩家名称</label>
+                <input type="text" id="name" placeholder="例如: 极神兵, 零式">
+            </div>
+
+            <div class="filter-group">
+                <label for="description">描述信息</label>
+                <input type="text" id="description" placeholder="例如: 解限, 练习, 清CD">
+            </div>
+
+            <div class="filter-group">
+                <label for="homeWorld">服务器</label>
+                <input type="text" id="homeWorld" placeholder="例如: Elemental, Mana">
+            </div>
+
+            <div class="filter-group">
+                <label for="category">招募类别</label>
+                <select id="category">
+                    <option value="">所有类别</option>
+                    <option value="DutyRoulette">随机任务</option>
+                    <option value="Dungeons">迷宫挑战</option>
+                    <option value="Guildhests">行会令</option>
+                    <option value="Trials">讨伐歼灭战</option>
+                    <option value="Raids">大型任务</option>
+                    <option value="HighEndDuty">高难度任务</option>
+                    <option value="Pvp">玩家对战</option>
+                    <option value="GoldSaucer">金碟游乐场</option>
+                    <option value="Fates">危命任务</option>
+                    <option value="TreasureHunt">寻宝</option>
+                    <option value="TheHunt">怪物狩猎</option>
+                    <option value="GatheringForays">采集活动</option>
+                    <option value="DeepDungeons">深层迷宫</option>
+                    <option value="AdventuringForays">特殊场景探索</option>
+                    <option value="V&amp;C Dungeon Finder">特殊迷宫探索</option>
+                    <option value="None">无</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="minItemLevel">最低装备等级</label>
+                <input type="number" id="minItemLevel" min="0" placeholder="例如: 600">
+            </div>
+
+            <div class="filter-group">
+                <label for="datacenter">数据中心</label>
+                <select id="datacenter">
+                    <option value="">所有数据中心</option>
+                    <optgroup label="中国区">
+                        <option value="陆行鸟">陆行鸟</option>
+                        <option value="莫古力">莫古力</option>
+                        <option value="猫小胖">猫小胖</option>
+                        <option value="豆豆柴">豆豆柴</option>
+                    </optgroup>
+                    <optgroup label="韩国区">
+                        <option value="한국">한국</option>
+                    </optgroup>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>跨服招募</label>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="isCrossWorld">
+                    <label for="isCrossWorld">仅显示跨服招募</label>
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button class="btn btn-search" id="searchBtn">
+                    <i class="fas fa-search"></i> 搜索招募
+                </button>
+                <button class="btn btn-reset" id="resetBtn">
+                    <i class="fas fa-redo"></i> 重置条件
+                </button>
+            </div>
+        </section>
+
+        <!-- 查询结果部分 -->
+        <section class="results-section">
+            <div class="results-header">
+                <h2 class="section-title"><i class="fas fa-list"></i> 招募列表</h2>
+                <div class="results-count" id="resultsCount">共 0 条结果</div>
+            </div>
+
+            <!-- 排序控件 -->
+            <div class="sort-controls">
+                <span class="sort-label">排序:</span>
+                <select id="sortBy">
+                    <option value="updatedAt">更新时间</option>
+                    <option value="name">名称</option>
+                    <option value="minItemLevel">装备等级</option>
+                    <option value="slotsAvailable">空位数量</option>
+                </select>
+                <select id="sortDirection">
+                    <option value="DESC">降序 (最新优先)</option>
+                    <option value="ASC">升序</option>
+                </select>
+            </div>
+
+            <!-- 分页控件 -->
+            <div class="pagination" id="pagination">
+                <button id="prevPage" disabled>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="page-info" id="pageInfo">第 1 页 / 共 1 页</div>
+                <button id="nextPage" disabled>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <!-- 结果容器 -->
+            <div class="results-container" id="resultsContainer">
+                <div class="loading" id="loadingIndicator">
+                    <div class="loading-spinner"></div>
+                    <p>正在加载招募信息...</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <p>最终幻想14招募信息查询系统 &copy; 2023 | 使用Spring Boot + JPA构建的后端API</p>
+    </footer>
+</div>
+
+<script>
+    // 当前分页信息
+    let currentPage = 0;
+    let totalPages = 1;
+    let pageSize = 10;
+
+    // API基础URL - 根据实际部署情况修改
+    const API_BASE_URL = 'https://phantoms-backend.onrender.com/api/recruitments';
+
+    // DOM元素
+    const searchBtn = document.getElementById('searchBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const prevPageBtn = document.getElementById('prevPage');
+    const nextPageBtn = document.getElementById('nextPage');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const resultsCount = document.getElementById('resultsCount');
+    const pageInfo = document.getElementById('pageInfo');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+
+    // 初始化页面
+    document.addEventListener('DOMContentLoaded', function() {
+        // 加载初始数据
+        searchRecruitments();
+
+        // 绑定事件
+        searchBtn.addEventListener('click', function() {
+            currentPage = 0;
+            searchRecruitments();
+        });
+
+        resetBtn.addEventListener('click', resetFilters);
+
+        prevPageBtn.addEventListener('click', function() {
+            if (currentPage > 0) {
+                currentPage--;
+                searchRecruitments();
+            }
+        });
+
+        nextPageBtn.addEventListener('click', function() {
+            if (currentPage < totalPages - 1) {
+                currentPage++;
+                searchRecruitments();
+            }
+        });
+
+        document.getElementById('sortBy').addEventListener('change', function() {
+            currentPage = 0;
+            searchRecruitments();
+        });
+
+        document.getElementById('sortDirection').addEventListener('change', function() {
+            currentPage = 0;
+            searchRecruitments();
+        });
+    });
+
+    // 搜索招募信息
+    async function searchRecruitments() {
+        // 显示加载指示器
+        showLoading(true);
+
+        // 收集筛选条件
+        const filters = {
+            name: document.getElementById('name').value.trim(),
+            description: document.getElementById('description').value.trim(),
+            homeWorld: document.getElementById('homeWorld').value.trim(),
+            category: document.getElementById('category').value.trim(),
+            minItemLevel: document.getElementById('minItemLevel').value.trim(),
+            datacenter: document.getElementById('datacenter').value.trim(),
+            isCrossWorld: document.getElementById('isCrossWorld').checked,
+            page: currentPage,
+            size: pageSize,
+            sortBy: document.getElementById('sortBy').value,
+            direction: document.getElementById('sortDirection').value
+        };
+
+        // 构建查询参数
+        const params = new URLSearchParams();
+
+        // 添加筛选条件（空值不添加）
+        Object.keys(filters).forEach(key => {
+            const value = filters[key];
+            if (value !== '' && value !== false && value !== null && value !== undefined) {
+                params.append(key, value);
+            }
+        });
+
+        // 构建完整URL
+        const url = `${API_BASE_URL}/search?${params.toString()}`;
+
+        try {
+            // 发送请求
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            // 更新分页信息
+            updatePagination(data);
+
+            // 显示结果
+            displayResults(data.content);
+
+        } catch (error) {
+            console.error('搜索失败:', error);
+            showError('搜索失败，请检查网络连接或API地址是否正确');
+        } finally {
+            // 隐藏加载指示器
+            showLoading(false);
+        }
+    }
+
+    // 显示加载指示器
+    function showLoading(show) {
+        loadingIndicator.style.display = show ? 'flex' : 'none';
+    }
+
+    // 显示错误信息
+    function showError(message) {
+        resultsContainer.innerHTML = `
+            <div class="no-results">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>加载失败</h3>
+                <p>${message}</p>
+                <p>请确保后端服务正在运行，并且API地址正确。</p>
+            </div>
+        `;
+    }
+
+    // 更新分页信息
+    function updatePagination(data) {
+        totalPages = data.totalPages;
+        currentPage = data.number;
+
+        // 更新结果计数
+        resultsCount.textContent = `共 ${data.totalElements} 条结果`;
+
+        // 更新分页信息
+        pageInfo.textContent = `第 ${currentPage + 1} 页 / 共 ${totalPages} 页`;
+
+        // 更新分页按钮状态
+        prevPageBtn.disabled = currentPage === 0;
+        nextPageBtn.disabled = currentPage === totalPages - 1 || totalPages === 0;
+    }
+
+    // 显示查询结果
+    function displayResults(recruitments) {
+        if (!recruitments || recruitments.length === 0) {
+            resultsContainer.innerHTML = `
+                <div class="no-results">
+                    <i class="fas fa-search"></i>
+                    <h3>未找到匹配的招募信息</h3>
+                    <p>请尝试调整筛选条件或使用更宽泛的关键词</p>
+                </div>
+            `;
+            return;
+        }
+
+        let html = '';
+
+        recruitments.forEach(recruitment => {
+            // 计算空位百分比 - 使用蛇形命名法
+            const totalSlots = recruitment.slots_filled + recruitment.slots_available;
+            const fillPercentage = totalSlots > 0 ? (recruitment.slots_filled / totalSlots) * 100 : 0;
+
+            // 格式化时间
+            const updatedTime = formatTime(recruitment.updated_at);
+            const timeLeft = formatTimeLeft(recruitment.time_left);
+
+            html += `
+                <div class="recruitment-card">
+                    <div class="card-header">
+                        <div class="card-title">${escapeHtml(recruitment.name)}</div>
+                        <div class="card-category">${escapeHtml(recruitment.category)}</div>
+                    </div>
+
+                    <div class="card-description">${escapeHtml(recruitment.description || '无描述信息')}</div>
+
+                    <div class="card-details">
+                        <div class="detail-item">
+                            <span class="detail-label">世界</span>
+                            <span class="detail-value world-badge">
+                                <i class="fas fa-globe"></i>
+                                ${escapeHtml(recruitment.home_world)}
+                                ${recruitment.is_cross_world ? '<span class="cross-world-badge" style="margin-left:5px;padding:2px 8px;font-size:0.8rem;">跨服</span>' : ''}
+                            </span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">数据中心</span>
+                            <span class="detail-value">${escapeHtml(recruitment.datacenter)}</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">装备等级</span>
+                            <span class="detail-value">${recruitment.min_item_level}</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">副本/职责</span>
+                            <span class="detail-value">${escapeHtml(recruitment.duty || '未指定')}</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">空位情况</span>
+                        <div class="slots-container">
+                            <div class="slots-bar">
+                                <div class="slots-fill" style="width: ${fillPercentage}%"></div>
+                            </div>
+                            <span class="detail-value">${recruitment.slots_filled}/${totalSlots}</span>
+                        </div>
+                    </div>
+
+                    <div class="card-details" style="margin-top: 15px;">
+                        <div class="detail-item">
+                            <span class="detail-label">剩余时间</span>
+                            <span class="detail-value">${timeLeft}</span>
+                        </div>
+
+                        <div class="detail-item">
+                            <span class="detail-label">更新时间</span>
+                            <span class="detail-value">${updatedTime}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        resultsContainer.innerHTML = html;
+    }
+
+    // 格式化时间
+    function formatTime(isoString) {
+        if (!isoString) return '未知';
+
+        try {
+            const date = new Date(isoString);
+            return date.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        } catch (e) {
+            return isoString;
+        }
+    }
+
+    // 格式化剩余时间
+    function formatTimeLeft(hours) {
+        if (!hours && hours !== 0) return '未知';
+
+        if (hours < 1) {
+            const minutes = Math.round(hours * 60);
+            return `${minutes} 分钟`;
+        } else if (hours < 24) {
+            return `${hours.toFixed(1)} 小时`;
+        } else {
+            const days = (hours / 24).toFixed(1);
+            return `${days} 天`;
+        }
+    }
+
+    // 重置筛选条件
+    function resetFilters() {
+        document.getElementById('name').value = '';
+        document.getElementById('description').value = '';
+        document.getElementById('homeWorld').value = '';
+        document.getElementById('category').value = '';
+        document.getElementById('minItemLevel').value = '';
+        document.getElementById('datacenter').value = '';
+        document.getElementById('isCrossWorld').checked = false;
+        document.getElementById('sortBy').value = 'updatedAt';
+        document.getElementById('sortDirection').value = 'DESC';
+
+        currentPage = 0;
+        searchRecruitments();
+    }
+
+    // 转义HTML，防止XSS攻击
+    function escapeHtml(text) {
+        if (!text) return '';
+
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+</script>
+</body>
+</html>
