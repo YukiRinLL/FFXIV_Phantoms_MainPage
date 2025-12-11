@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>最终幻想14招募信息查询</title>
+    <title>最终幻想14历史招募信息查询</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- FF14元素字体 -->
     <link rel="stylesheet" href="../assets/thewakingsands/axis-font-icons/axis-font-icons@0.4.0.css">
@@ -819,7 +819,7 @@
             }
 
             .single-line-view .world-badge::before {
-                content: "世界: ";
+                content: "服务器: ";
                 font-weight: 600;
                 color: #666;
                 margin-right: 3px;
@@ -876,8 +876,8 @@
 <body>
 <div class="container">
     <header>
-        <h1><i class="xiv link"></i> 最终幻想14招募信息查询</h1>
-        <p>使用模糊查询和多条件筛选功能查找游戏中的招募信息</p>
+        <h1><i class="xiv link"></i> 历史招募信息查询</h1>
+        <p>目前只保存部分2025/9之后的招募记录</p>
     </header>
 
     <div class="main-content">
@@ -1014,7 +1014,7 @@
                 <div>名称</div>
                 <div>描述</div>
                 <div>类别</div>
-                <div>世界</div>
+                <div>服务器</div>
                 <div>数据中心</div>
                 <div>装等</div>
                 <div>空位</div>
@@ -1031,7 +1031,7 @@
     </div>
 
     <footer class="footer">
-        <p>最终幻想14招募信息查询系统 &copy; 2023 | 使用Spring Boot + JPA构建的后端API</p>
+        <p>Phantoms &copy; 2020 | 最终幻想14历史招募信息查询</p>
     </footer>
 </div>
 
@@ -1340,7 +1340,7 @@
 
                         <div class="card-details">
                             <div class="detail-item">
-                                <span class="detail-label">世界</span>
+                                <span class="detail-label">服务器</span>
                                 <span class="detail-value">
                                     <span class="world-badge">
                                         <i class="fas fa-globe"></i>
@@ -1399,7 +1399,7 @@
 
                         <div class="card-details">
                             <div class="detail-item">
-                                <span class="detail-label">世界</span>
+                                <span class="detail-label">服务器</span>
                                 <span class="detail-value world-badge">
                                     <i class="fas fa-globe"></i>
                                     ${escapeHtml(recruitment.home_world)}
