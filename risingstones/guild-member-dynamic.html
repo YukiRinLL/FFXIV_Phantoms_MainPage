@@ -665,6 +665,10 @@
     let currentFilterType = 'all';
     let currentSortBy = 'newest';
 
+    // 超时相关变量
+    const REQUEST_TIMEOUT = 10000; // 10秒超时
+    let requestTimeoutId = null;
+
     // 页面加载完成后获取数据
     document.addEventListener('DOMContentLoaded', function() {
         // 初始加载第一页数据
@@ -716,6 +720,11 @@
         // 如果正在加载或没有更多数据，则不处理
         if (isLoading || !hasMoreData) return;
 
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        if (!loadMoreBtn || loadMoreBtn.style.display === 'none') {
+            return;
+        }
+
         // 计算距离底部的距离
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         const windowHeight = window.innerHeight;
@@ -734,6 +743,15 @@
 
         isLoading = true;
 
+        // 设置超时定时器
+        if (requestTimeoutId) {
+            clearTimeout(requestTimeoutId);
+        }
+
+        requestTimeoutId = setTimeout(() => {
+            handleRequestTimeout(isRefresh);
+        }, REQUEST_TIMEOUT);
+
         // 显示加载状态
         if (isRefresh) {
             const container = document.getElementById('activity-container');
@@ -748,7 +766,16 @@
         }
 
         try {
-            const response = await fetch(`${API_URL}?page=${page}&limit=10`);
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+
+            const response = await fetch(`${API_URL}?page=${page}&limit=10`, {
+                signal: controller.signal
+            });
+
+            clearTimeout(timeoutId);
+            clearTimeout(requestTimeoutId);
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -783,8 +810,25 @@
                 throw new Error(`API error: ${data.msg}`);
             }
         } catch (error) {
+            clearTimeout(requestTimeoutId);
             console.error('Error fetching data:', error);
-            if (isRefresh) {
+
+            // 处理超时错误
+            if (error.name === 'AbortError' || error.message.includes('timeout')) {
+                if (isRefresh) {
+                    const container = document.getElementById('activity-container');
+                    container.innerHTML = `
+                        <div class="error">
+                            <div style="margin-bottom: 10px;">石之家功能维护中</div>
+                            <div style="font-size: 0.9rem; color: #b0b0b0;">
+                                请稍后再试，或联系管理员
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    showTimeoutError();
+                }
+            } else if (isRefresh) {
                 const container = document.getElementById('activity-container');
                 container.innerHTML = `<div class="error">加载数据失败: ${error.message}</div>`;
             }
@@ -793,11 +837,71 @@
             isLoading = false;
             hideLoadingMore();
 
+            // 清除超时定时器
+            if (requestTimeoutId) {
+                clearTimeout(requestTimeoutId);
+                requestTimeoutId = null;
+            }
+
             // 只有在有更多数据且不是刷新操作时才显示加载更多按钮
             if (hasMoreData && !isRefresh) {
                 showLoadMoreButton();
             }
         }
+    }
+
+    // 超时处理函数
+    function handleRequestTimeout(isRefresh) {
+        if (isLoading) {
+            isLoading = false;
+            hideLoadingMore();
+
+            if (isRefresh) {
+                const container = document.getElementById('activity-container');
+                container.innerHTML = `
+                    <div class="error">
+                        <div style="margin-bottom: 10px;">石之家功能维护中</div>
+                        <div style="font-size: 0.9rem; color: #b0b0b0;">
+                            请求超时，请稍后再试
+                        </div>
+                    </div>
+                `;
+            } else {
+                showTimeoutError();
+            }
+        }
+    }
+
+    // 显示超时错误
+    function showTimeoutError() {
+        // 创建一个临时的错误提示元素
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error';
+        errorDiv.style.cssText = `
+            text-align: center;
+            padding: 20px;
+            background: #2a2a2a;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #505050;
+        `;
+        errorDiv.innerHTML = `
+            <div style="margin-bottom: 10px; color: #ff6b6b;">石之家功能维护中</div>
+            <div style="font-size: 0.9rem; color: #b0b0b0;">
+                请求超时，请稍后再试
+            </div>
+        `;
+
+        // 将错误提示插入到活动列表后面
+        const container = document.getElementById('activity-container');
+        container.parentNode.insertBefore(errorDiv, container.nextSibling);
+
+        // 3秒后自动移除错误提示
+        setTimeout(() => {
+            if (errorDiv.parentNode) {
+                errorDiv.parentNode.removeChild(errorDiv);
+            }
+        }, 3000);
     }
 
     // 更新统计信息
@@ -1489,27 +1593,6 @@
 
         button.disabled = false;
         button.innerHTML = '加载更多';
-    }
-
-    // 修改滚动加载处理函数，添加更严格的检查
-    function handleScroll() {
-        // 如果正在加载或没有更多数据，或加载更多按钮不存在，则不处理
-        if (isLoading || !hasMoreData) return;
-
-        const loadMoreBtn = document.getElementById('load-more-btn');
-        if (!loadMoreBtn || loadMoreBtn.style.display === 'none') {
-            return;
-        }
-
-        // 计算距离底部的距离
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const windowHeight = window.innerHeight;
-        const documentHeight = document.documentElement.scrollHeight;
-
-        // 当滚动到距离底部200px以内时，自动加载更多
-        if (scrollTop + windowHeight >= documentHeight - 200) {
-            fetchData(currentPage + 1, false);
-        }
     }
 
     // 显示没有更多数据
