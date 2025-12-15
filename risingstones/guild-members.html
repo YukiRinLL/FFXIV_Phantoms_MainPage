@@ -239,13 +239,25 @@
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            displayUserInfo(data.data);
+
+            // 添加对code 500的处理
+            if (data.code === 500) {
+                throw new Error(data.message || '服务器返回错误');
+            }
+
+            if (data.code === 10000) {
+                displayUserInfo(data.data);
+            } else {
+                throw new Error(data.msg || 'Failed to load user information');
+            }
         } catch (error) {
             console.error('There has been a problem with your fetch operation:', error);
             if (error.name === 'AbortError') {
                 displayError('石之家功能维护中，请求超时');
+            } else if (error.message.includes('Failed to get guild member info')) {
+                displayError('石之家功能维护中，请稍后再试，或联系管理员');
             } else {
-                displayError('Failed to load user information.');
+                displayError('加载用户信息失败: ' + error.message);
             }
         }
     }
@@ -280,7 +292,7 @@
         const modalAchievements = document.getElementById('modalAchievements');
         const loadingMessage = document.getElementById('loadingMessage');
 
-        modalTitle.textContent = 'Error';
+        modalTitle.textContent = '加载失败';
         modalProfile.textContent = 'Profile: N/A';
         modalLastDynamic.textContent = 'Last Dynamic: N/A';
         modalAchievements.textContent = 'Achievements: N/A';
@@ -336,32 +348,46 @@
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            populateMemberList(data.data);
+
+            // 添加对code 500的处理
+            if (data.code === 500) {
+                throw new Error(data.message || '服务器返回错误');
+            }
+
+            if (data.code === 10000) {
+                populateMemberList(data.data);
+            } else {
+                throw new Error(data.msg || 'Failed to load member data');
+            }
         } catch (error) {
             console.error('There has been a problem with your fetch operation:', error);
 
             const memberList = document.getElementById('memberList');
+
+            // 根据错误类型显示不同的错误信息
+            let errorTitle = '加载失败';
+            let errorMessage = error.message;
+            let showRetry = true;
+
             if (error.name === 'AbortError') {
-                memberList.innerHTML = `
-                    <div style="text-align: center; padding: 50px; background: #f9f9f9; border-radius: 8px; border: 1px solid #ddd;">
-                        <div style="margin-bottom: 15px; font-size: 1.2em; color: #e74c3c;">石之家功能维护中</div>
-                        <div style="color: #777;">请求超时，请稍后再试</div>
-                        <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                            重新加载
-                        </button>
-                    </div>
-                `;
-            } else {
-                memberList.innerHTML = `
-                    <div style="text-align: center; padding: 50px; background: #f9f9f9; border-radius: 8px; border: 1px solid #ddd;">
-                        <div style="margin-bottom: 15px; font-size: 1.2em; color: #e74c3c;">加载失败</div>
-                        <div style="color: #777;">${error.message}</div>
-                        <button onclick="fetchData()" style="margin-top: 20px; padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                            重试
-                        </button>
-                    </div>
-                `;
+                errorTitle = '石之家功能维护中';
+                errorMessage = '请求超时，请稍后再试';
+            } else if (error.message.includes('Failed to get guild member info')) {
+                errorTitle = '石之家功能维护中';
+                errorMessage = '请稍后再试，或联系管理员';
             }
+
+            memberList.innerHTML = `
+                <div style="text-align: center; padding: 50px; background: #f9f9f9; border-radius: 8px; border: 1px solid #ddd; width: 100%;">
+                    <div style="margin-bottom: 15px; font-size: 1.2em; color: #e74c3c;">${errorTitle}</div>
+                    <div style="color: #777; margin-bottom: 20px;">${errorMessage}</div>
+                    ${showRetry ? `
+                    <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        重新加载
+                    </button>
+                    ` : ''}
+                </div>
+            `;
         }
     }
 
