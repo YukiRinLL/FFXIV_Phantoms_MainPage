@@ -781,6 +781,11 @@
             }
             const data = await response.json();
 
+            // 添加对code 500的处理
+            if (data.code === 500) {
+                throw new Error(data.message || '服务器返回错误');
+            }
+
             if (data.code === 10000) {
                 const newActivities = data.data.rows;
 
@@ -813,26 +818,39 @@
             clearTimeout(requestTimeoutId);
             console.error('Error fetching data:', error);
 
-            // 处理超时错误
-            if (error.name === 'AbortError' || error.message.includes('timeout')) {
-                if (isRefresh) {
-                    const container = document.getElementById('activity-container');
-                    container.innerHTML = `
-                        <div class="error">
-                            <div style="margin-bottom: 10px;">石之家功能维护中</div>
-                            <div style="font-size: 0.9rem; color: #b0b0b0;">
-                                请稍后再试，或联系管理员
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    showTimeoutError();
-                }
-            } else if (isRefresh) {
-                const container = document.getElementById('activity-container');
-                container.innerHTML = `<div class="error">加载数据失败: ${error.message}</div>`;
+            // 显示具体的错误信息
+            let errorMessage = '加载数据失败';
+            let errorDetail = '';
+
+            if (error.message.includes('Failed to get guild member dynamic info')) {
+                errorMessage = '石之家功能维护中';
+                errorDetail = '请稍后再试，或联系管理员';
+            } else if (error.name === 'AbortError' || error.message.includes('timeout')) {
+                errorMessage = '石之家功能维护中';
+                errorDetail = '请求超时，请稍后再试';
+            } else if (error.message.includes('服务器返回错误')) {
+                errorMessage = '石之家功能维护中';
+                errorDetail = error.message || '请稍后再试，或联系管理员';
+            } else {
+                errorDetail = error.message;
             }
-            hasMoreData = true;
+
+            if (isRefresh) {
+                const container = document.getElementById('activity-container');
+                container.innerHTML = `
+                    <div class="error">
+                        <div style="margin-bottom: 10px;">${errorMessage}</div>
+                        <div style="font-size: 0.9rem; color: #b0b0b0;">
+                            ${errorDetail}
+                        </div>
+                    </div>
+                `;
+            } else {
+                // 对于加载更多的情况，显示临时错误提示
+                showLoadMoreError(errorMessage, errorDetail);
+            }
+            hasMoreData = false;
+            showNoMoreData();
         } finally {
             isLoading = false;
             hideLoadingMore();
@@ -848,6 +866,38 @@
                 showLoadMoreButton();
             }
         }
+    }
+
+    // 添加加载更多时的错误显示函数
+    function showLoadMoreError(errorMessage, errorDetail) {
+        // 创建一个临时的错误提示元素
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error';
+        errorDiv.style.cssText = `
+            text-align: center;
+            padding: 20px;
+            background: #2a2a2a;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #505050;
+        `;
+        errorDiv.innerHTML = `
+            <div style="margin-bottom: 10px; color: #ff6b6b;">${errorMessage}</div>
+            <div style="font-size: 0.9rem; color: #b0b0b0;">
+                ${errorDetail}
+            </div>
+        `;
+
+        // 将错误提示插入到活动列表后面
+        const container = document.getElementById('activity-container');
+        container.parentNode.insertBefore(errorDiv, container.nextSibling);
+
+        // 3秒后自动移除错误提示
+        setTimeout(() => {
+            if (errorDiv.parentNode) {
+                errorDiv.parentNode.removeChild(errorDiv);
+            }
+        }, 3000);
     }
 
     // 超时处理函数
@@ -867,7 +917,7 @@
                     </div>
                 `;
             } else {
-                showTimeoutError();
+                showLoadMoreError('石之家功能维护中', '请求超时，请稍后再试');
             }
         }
     }
