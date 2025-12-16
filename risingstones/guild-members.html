@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guild Members</title>
     <style>
+        /* 原有的CSS样式保持不变 */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
@@ -136,11 +137,22 @@
             font-size: 1.2em;
             color: #777;
         }
+        .warning-message {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <!--    <h1>Guild Members</h1>-->
+    <div class="warning-message" id="warningMessage" style="display: none;">
+        正在使用缓存数据展示
+    </div>
     <div class="member-list" id="memberList">
         <!-- Member cards will be inserted here by JavaScript -->
     </div>
@@ -169,6 +181,9 @@
 
     // 超时时间设置（10秒）
     const REQUEST_TIMEOUT = 10000;
+
+    // 本地数据源路径
+    const LOCAL_DATA_SOURCE = './sample/guild-members.json'; // 同一目录下的JSON文件
 
     // 辅助函数：回退到默认头像
     function fallbackToDefault(imgElement) {
@@ -327,6 +342,40 @@
         });
     }
 
+    // 从本地JSON文件加载数据
+    async function loadLocalData() {
+        try {
+            const memberList = document.getElementById('memberList');
+            const response = await fetch(LOCAL_DATA_SOURCE);
+            if (!response.ok) {
+                throw new Error('Failed to load local data');
+            }
+            const data = await response.json();
+
+            // 显示警告信息
+            const warningMessage = document.getElementById('warningMessage');
+            warningMessage.style.display = 'block';
+
+            // 清空加载状态
+            memberList.innerHTML = '';
+
+            // 如果本地数据格式和API返回格式一致
+            if (data.code === 10000 && data.data) {
+                populateMemberList(data.data);
+            } else if (data.registered || data.unRegister) {
+                // 如果本地数据已经是直接的数据格式
+                populateMemberList(data);
+            } else {
+                throw new Error('Invalid local data format');
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Failed to load local data:', error);
+            return false;
+        }
+    }
+
     // Function to fetch data from the API
     async function fetchData() {
         try {
@@ -360,34 +409,29 @@
                 throw new Error(data.msg || 'Failed to load member data');
             }
         } catch (error) {
-            console.error('There has been a problem with your fetch operation:', error);
+            console.error('API请求失败，尝试加载本地数据:', error);
 
-            const memberList = document.getElementById('memberList');
+            // API请求失败，尝试加载本地数据
+            const localDataLoaded = await loadLocalData();
 
-            // 根据错误类型显示不同的错误信息
-            let errorTitle = '加载失败';
-            let errorMessage = error.message;
-            let showRetry = true;
+            if (!localDataLoaded) {
+                const memberList = document.getElementById('memberList');
+                let errorMessage = error.message;
 
-            if (error.name === 'AbortError') {
-                errorTitle = '石之家功能维护中';
-                errorMessage = '请求超时，请稍后再试';
-            } else if (error.message.includes('Failed to get guild member info')) {
-                errorTitle = '石之家功能维护中';
-                errorMessage = '请稍后再试，或联系管理员';
+                if (error.name === 'AbortError') {
+                    errorMessage = 'API请求超时且无法加载本地数据';
+                }
+
+                memberList.innerHTML = `
+                    <div style="text-align: center; padding: 50px; background: #f9f9f9; border-radius: 8px; border: 1px solid #ddd; width: 100%;">
+                        <div style="margin-bottom: 15px; font-size: 1.2em; color: #e74c3c;">数据加载失败</div>
+                        <div style="color: #777; margin-bottom: 20px;">${errorMessage}</div>
+                        <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                            重新加载
+                        </button>
+                    </div>
+                `;
             }
-
-            memberList.innerHTML = `
-                <div style="text-align: center; padding: 50px; background: #f9f9f9; border-radius: 8px; border: 1px solid #ddd; width: 100%;">
-                    <div style="margin-bottom: 15px; font-size: 1.2em; color: #e74c3c;">${errorTitle}</div>
-                    <div style="color: #777; margin-bottom: 20px;">${errorMessage}</div>
-                    ${showRetry ? `
-                    <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                        重新加载
-                    </button>
-                    ` : ''}
-                </div>
-            `;
         }
     }
 
