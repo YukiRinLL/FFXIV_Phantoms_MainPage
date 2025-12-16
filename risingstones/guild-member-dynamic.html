@@ -724,11 +724,13 @@
     const DEFAULT_AVATAR = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiByeD0iMzAiIGZpbGw9IiMyNjJmNDkiLz4KPHN2ZyB4PSIxNSIgeT0iMTUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNlOTQ1NjAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KPHBhdGggZD0iTTIwIDIxdi0yYTQgNCAwIDAgMC00LTRINGE0IDQgMCAwIDAtNCA0djIiLz4KPGNpcmNsZSBjeD0iMTIiIGN5PSI3IiByPSI0Ii8+Cjwvc3ZnPgo8L3N2Zz4K';
 
     // 全局变量存储数据
-    let activitiesData = [];
+    let allActivitiesData = []; // 存储所有本地数据
+    let activitiesData = []; // 当前显示的数据
     let filteredData = [];
 
     // 分页相关变量
     let currentPage = 1;
+    const ITEMS_PER_PAGE = 10;
     let hasMoreData = true;
     let isLoading = false;
     let currentFilterType = 'all';
@@ -770,12 +772,7 @@
         // 加载更多按钮事件
         document.getElementById('load-more-btn').addEventListener('click', function() {
             if (!isLoading && hasMoreData) {
-                if (isUsingLocalData) {
-                    // 使用本地数据时，加载更多功能使用客户端分页
-                    loadMoreLocalData();
-                } else {
-                    fetchData(currentPage + 1, false);
-                }
+                loadMoreData();
             }
         });
 
@@ -809,11 +806,23 @@
 
         // 当滚动到距离底部200px以内时，自动加载更多
         if (scrollTop + windowHeight >= documentHeight - 200) {
-            if (isUsingLocalData) {
-                loadMoreLocalData();
-            } else {
-                fetchData(currentPage + 1, false);
-            }
+            loadMoreData();
+        }
+    }
+
+    // 加载更多数据（统一处理本地和远程）
+    function loadMoreData() {
+        if (isLoading || !hasMoreData) return;
+
+        isLoading = true;
+        showLoadingMore();
+
+        if (isUsingLocalData) {
+            // 使用本地数据的分页
+            loadMoreLocalData();
+        } else {
+            // 使用API的分页
+            fetchData(currentPage + 1, false);
         }
     }
 
@@ -843,20 +852,18 @@
             // 显示警告信息
             showWarningMessage();
 
-            // 如果本地数据格式和API返回格式一致
+            // 统一数据格式处理
             if (data.code === 10000 && data.data) {
                 return {
                     code: 10000,
                     data: data.data
                 };
             } else if (data.data && data.data.rows) {
-                // 如果本地数据已经是直接的数据格式
                 return {
                     code: 10000,
                     data: data.data
                 };
             } else if (data.rows) {
-                // 如果是原始的rows数组格式
                 return {
                     code: 10000,
                     data: {
@@ -876,20 +883,23 @@
     // 本地数据分页（客户端分页）
     async function loadMoreLocalData() {
         try {
-            // 加载本地数据
-            const localData = await loadLocalData();
-            if (!localData) {
-                throw new Error('无法加载本地数据');
+            // 如果还没有加载所有本地数据，先加载
+            if (allActivitiesData.length === 0) {
+                const localData = await loadLocalData();
+                if (!localData) {
+                    throw new Error('无法加载本地数据');
+                }
+                allActivitiesData = localData.data.rows || [];
+
+                // 先进行过滤和排序
+                filterAndSortAllActivities();
             }
 
-            const allActivities = localData.data.rows;
-            const itemsPerPage = 10;
-
             // 计算要显示的下一页数据
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
+            const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+            const endIndex = startIndex + ITEMS_PER_PAGE;
 
-            const newActivities = allActivities.slice(startIndex, endIndex);
+            const newActivities = filteredData.slice(startIndex, endIndex);
 
             if (newActivities.length === 0) {
                 hasMoreData = false;
@@ -908,15 +918,15 @@
             updateStats({
                 code: 10000,
                 data: {
-                    count: allActivities.length
+                    count: filteredData.length
                 }
             });
 
-            // 过滤和排序数据
-            filterAndSortActivities(currentPage === 1);
+            // 显示数据
+            displayActivities();
 
             // 更新分页状态
-            if (endIndex >= allActivities.length) {
+            if (endIndex >= filteredData.length) {
                 hasMoreData = false;
                 showNoMoreData();
             } else {
@@ -928,6 +938,37 @@
         } catch (error) {
             console.error('Error loading more local data:', error);
             showLoadMoreError('加载数据失败', error.message);
+        } finally {
+            isLoading = false;
+            hideLoadingMore();
+        }
+    }
+
+    // 过滤和排序所有本地数据
+    function filterAndSortAllActivities() {
+        // 过滤数据
+        if (currentFilterType === 'all') {
+            filteredData = [...allActivitiesData];
+        } else if (currentFilterType === 'post') {
+            filteredData = allActivitiesData.filter(activity => activity.from === 2);
+        } else if (currentFilterType === 'recruit') {
+            filteredData = allActivitiesData.filter(activity =>
+                activity.from === 5 || activity.from === 6 || activity.from === 9 || activity.from === 7);
+        } else if (currentFilterType === 'rp') {
+            filteredData = allActivitiesData.filter(activity => activity.from === 8);
+        }
+
+        // 排序数据
+        if (currentSortBy === 'newest') {
+            filteredData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        } else if (currentSortBy === 'oldest') {
+            filteredData.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+        } else if (currentSortBy === 'popular') {
+            filteredData.sort((a, b) => {
+                const aLikes = parseInt(a.like_count) || 0;
+                const bLikes = parseInt(b.like_count) || 0;
+                return bLikes - aLikes;
+            });
         }
     }
 
@@ -953,11 +994,7 @@
             container.innerHTML = '<div class="loading">正在加载数据...</div>';
             hideLoadMoreButton();
         } else {
-            // 只有在有加载更多按钮时才显示加载状态
-            const loadMoreBtn = document.getElementById('load-more-btn');
-            if (loadMoreBtn && loadMoreBtn.style.display !== 'none') {
-                showLoadingMore();
-            }
+            showLoadingMore();
         }
 
         try {
@@ -998,11 +1035,13 @@
                     if (isRefresh) {
                         // 刷新时替换所有数据
                         activitiesData = newActivities;
+                        allActivitiesData = newActivities;
                         updateStats(data);
                         filterAndSortActivities(true);
                     } else {
                         // 加载更多时追加数据
                         activitiesData = [...activitiesData, ...newActivities];
+                        allActivitiesData = [...allActivitiesData, ...newActivities];
                         updateStats(data);
                         filterAndSortActivities(false);
                     }
@@ -1021,19 +1060,14 @@
 
             if (localData) {
                 // 本地数据加载成功
-                const newActivities = localData.data.rows;
+                isUsingLocalData = true;
+                allActivitiesData = localData.data.rows || [];
 
                 if (isRefresh) {
-                    // 刷新时使用本地数据
-                    activitiesData = newActivities;
-                    updateStats(localData);
-                    filterAndSortActivities(true);
-
-                    // 对于本地数据，我们需要设置分页
                     currentPage = 1;
-                    hasMoreData = newActivities.length > 10;
+                    filterAndSortAllActivities();
+                    await loadMoreLocalData();
                 } else {
-                    // 对于加载更多，我们需要实现客户端分页
                     await loadMoreLocalData();
                 }
             } else {
@@ -1064,7 +1098,6 @@
                         </div>
                     `;
                 } else {
-                    // 对于加载更多的情况，显示临时错误提示
                     showLoadMoreError('加载数据失败', error.message);
                 }
                 hasMoreData = false;
@@ -1074,15 +1107,9 @@
             isLoading = false;
             hideLoadingMore();
 
-            // 清除超时定时器
             if (requestTimeoutId) {
                 clearTimeout(requestTimeoutId);
                 requestTimeoutId = null;
-            }
-
-            // 只有在有更多数据且不是刷新操作时才显示加载更多按钮
-            if (hasMoreData && !isRefresh) {
-                showLoadMoreButton();
             }
         }
     }
@@ -1132,11 +1159,6 @@
         }
     }
 
-    // 以下所有其他函数保持不变（updateStats, filterAndSortActivities, displayActivities,
-    // createActivityCard, openModal, closeModal 等）
-    // 由于代码长度限制，这里只列出需要修改的部分，完整函数请参考原文件
-    // 注意：以下函数需要保持与原文完全一致
-
     // 更新统计信息
     function updateStats(data) {
         // 使用API返回的count作为Total值，添加安全检查
@@ -1144,15 +1166,15 @@
         if (data && data.data && data.data.count) {
             totalCount = parseInt(data.data.count);
         } else {
-            totalCount = activitiesData.length;
+            totalCount = allActivitiesData.length;
         }
         document.getElementById('total-count').textContent = totalCount;
 
         // 其他统计保持不变
-        const postCount = activitiesData.filter(activity => activity.from === 2).length;
-        const recruitCount = activitiesData.filter(activity =>
+        const postCount = allActivitiesData.filter(activity => activity.from === 2).length;
+        const recruitCount = allActivitiesData.filter(activity =>
             activity.from === 5 || activity.from === 6 || activity.from === 9 || activity.from === 7).length;
-        const rpCount = activitiesData.filter(activity => activity.from === 8).length;
+        const rpCount = allActivitiesData.filter(activity => activity.from === 8).length;
 
         document.getElementById('post-count').textContent = postCount;
         document.getElementById('recruit-count').textContent = recruitCount;
@@ -1168,14 +1190,14 @@
 
         // 过滤数据
         if (currentFilterType === 'all') {
-            filteredData = [...activitiesData];
+            filteredData = [...allActivitiesData];
         } else if (currentFilterType === 'post') {
-            filteredData = activitiesData.filter(activity => activity.from === 2);
+            filteredData = allActivitiesData.filter(activity => activity.from === 2);
         } else if (currentFilterType === 'recruit') {
-            filteredData = activitiesData.filter(activity =>
+            filteredData = allActivitiesData.filter(activity =>
                 activity.from === 5 || activity.from === 6 || activity.from === 9 || activity.from === 7);
         } else if (currentFilterType === 'rp') {
-            filteredData = activitiesData.filter(activity => activity.from === 8);
+            filteredData = allActivitiesData.filter(activity => activity.from === 8);
         }
 
         // 排序数据
@@ -1191,14 +1213,25 @@
             });
         }
 
+        // 分页显示
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+        const endIndex = startIndex + ITEMS_PER_PAGE;
+        activitiesData = filteredData.slice(startIndex, endIndex);
+
         displayActivities();
+
+        // 检查是否还有更多数据
+        hasMoreData = endIndex < filteredData.length;
+        if (!hasMoreData) {
+            showNoMoreData();
+        }
     }
 
     // 显示活动
     function displayActivities() {
         const container = document.getElementById('activity-container');
 
-        if (filteredData.length === 0) {
+        if (activitiesData.length === 0) {
             container.innerHTML = '<div class="loading">没有找到匹配的活动</div>';
             hideLoadMoreButton();
             return;
@@ -1207,7 +1240,7 @@
         container.innerHTML = '<div class="activity-list"></div>';
         const activityList = container.querySelector('.activity-list');
 
-        filteredData.forEach(activity => {
+        activitiesData.forEach(activity => {
             const activityCard = createActivityCard(activity);
             activityList.appendChild(activityCard);
         });
@@ -1220,12 +1253,11 @@
         }
     }
 
-    // 创建活动卡片（需要从原文件复制完整实现）
+    // 创建活动卡片
     function createActivityCard(activity) {
-        // 复制原文件的完整实现...
         const card = document.createElement('div');
         card.className = 'activity-card';
-        card.dataset.activity = JSON.stringify(activity);
+        card.dataset.activityId = activity.id || activity.created_at;
 
         // 解析徽章数据
         let badges = [];
@@ -1249,42 +1281,52 @@
             <div class="activity-header">
                 <img src="${avatarUrl}" alt="头像" class="avatar" onerror="this.src='${DEFAULT_AVATAR}'">
                 <div class="character-info">
-                    <div class="character-name">${activity.character_name}</div>
-                    <div class="server-info">${activity.area_name} · ${activity.group_name}</div>
-                    <span class="activity-type">${typeText}</span>
+                    <div class="character-name">${escapeHtml(activity.character_name)}</div>
+                    <div class="server-info">${escapeHtml(activity.area_name)} · ${escapeHtml(activity.group_name)}</div>
+                    <span class="activity-type">${escapeHtml(typeText)}</span>
                 </div>
             </div>
 
             <div class="activity-content">
-                <div class="activity-title">${title || '无标题'}</div>
-                <div class="activity-preview">${content}</div>
+                <div class="activity-title">${escapeHtml(title || '无标题')}</div>
+                <div class="activity-preview">${escapeHtml(content)}</div>
                 ${coverUrl ? `<img src="${coverUrl}" class="cover-image" alt="封面" onerror="this.style.display='none'">` : ''}
             </div>
 
             ${badges.length > 0 ? `
             <div class="badges">
                 ${badges.slice(0, 3).map(badge =>
-            `<span class="badge">${badge.badgeName}</span>`
-        ).join('')}
+                    `<span class="badge">${escapeHtml(badge.badgeName)}</span>`
+                ).join('')}
                 ${badges.length > 3 ? `<span class="badge">+${badges.length - 3}更多</span>` : ''}
             </div>
             ` : ''}
 
             <div class="activity-meta">
                 <div>${formatDate(activity.created_at)}</div>
-                <div>❤️ ${activity.like_count} · 💬 ${activity.comment_count}</div>
+                <div>❤️ ${escapeHtml(activity.like_count)} · 💬 ${escapeHtml(activity.comment_count)}</div>
             </div>
         `;
 
         // 添加点击事件打开弹窗
-        card.addEventListener('click', function() {
-            openModal(activity);
+        card.addEventListener('click', function(e) {
+            if (!e.target.closest('.badge')) { // 避免点击徽章时打开弹窗
+                openModal(activity);
+            }
         });
 
         return card;
     }
 
-    // 打开弹窗显示详细信息（需要从原文件复制完整实现）
+    // HTML转义函数
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // 打开弹窗显示详细信息
     function openModal(activity) {
         const modal = document.getElementById('detailModal');
         const modalBody = document.getElementById('modalBody');
@@ -1300,7 +1342,7 @@
         const contentSection = createContentSection(activity);
         modalBody.appendChild(contentSection);
 
-        // 如果有额外信息，创建详细信息部分
+        // 创建详细信息部分
         const detailSection = createDetailSection(activity);
         if (detailSection) {
             modalBody.appendChild(detailSection);
@@ -1308,6 +1350,181 @@
 
         // 显示弹窗
         modal.style.display = 'block';
+    }
+
+    // 创建角色信息部分
+    function createCharacterInfoSection(activity) {
+        const section = document.createElement('div');
+        section.className = 'modal-section';
+
+        const avatarUrl = activity.avatar ? getProxiedImageUrl(activity.avatar) : DEFAULT_AVATAR;
+
+        // 解析徽章数据
+        let badges = [];
+        try {
+            if (activity.badge && activity.badge !== '[]') {
+                badges = JSON.parse(activity.badge);
+            }
+        } catch (e) {
+            console.error('Error parsing badges:', e);
+            badges = [];
+        }
+
+        const { typeText } = getActivityDetails(activity);
+
+        section.innerHTML = `
+            <div class="modal-character-info">
+                <img src="${avatarUrl}" alt="头像" class="modal-character-avatar" onerror="this.src='${DEFAULT_AVATAR}'">
+                <div class="modal-character-details">
+                    <div class="modal-character-name">${escapeHtml(activity.character_name)}</div>
+                    <div class="modal-character-server">${escapeHtml(activity.area_name)} · ${escapeHtml(activity.group_name)}</div>
+                    <div class="modal-activity-type">${escapeHtml(typeText)}</div>
+                    <div class="label-container">
+                        ${badges.map(badge =>
+                            `<span class="label">${escapeHtml(badge.badgeName)}</span>`
+                        ).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        return section;
+    }
+
+    // 创建活动内容部分
+    function createContentSection(activity) {
+        const section = document.createElement('div');
+        section.className = 'modal-section';
+
+        const { title } = getActivityDetails(activity);
+        let content = '';
+
+        // 根据活动类型获取内容
+        if (activity.from === 2 && activity.from_info) { // 帖子
+            content = activity.from_info.content || '';
+        } else if (activity.from === 5 && activity.from_info) { // 导师招募
+            content = activity.from_info.detail || '';
+        } else if (activity.from === 6 && activity.from_info) { // 副本招募
+            content = activity.from_info.progress || '';
+        } else if (activity.from === 7 && activity.from_info) { // 分享招募
+            content = activity.from_info.detail || '';
+        } else if (activity.from === 8 && activity.from_info) { // RP活动
+            content = activity.from_info.profile || '';
+        } else if (activity.from === 9 && activity.from_info) { // 其他招募
+            content = activity.from_info.detail || '';
+        } else {
+            content = activity.mask_content || '';
+        }
+
+        // 处理表情标记
+        content = convertEmojiTags(content);
+
+        // 处理图片
+        let imagesHtml = '';
+        if (activity.pic_url) {
+            const proxiedUrl = getProxiedImageUrl(activity.pic_url);
+            imagesHtml = `<img src="${proxiedUrl}" class="modal-image" alt="动态图片" onerror="this.style.display='none'">`;
+        }
+
+        section.innerHTML = `
+            <h3>${escapeHtml(title || '动态内容')}</h3>
+            <div class="modal-content-text">${content}</div>
+            ${imagesHtml ? `<div class="modal-images">${imagesHtml}</div>` : ''}
+        `;
+
+        return section;
+    }
+
+    // 创建详细信息部分
+    function createDetailSection(activity) {
+        const section = document.createElement('div');
+        section.className = 'modal-section';
+
+        const fields = [];
+
+        // 添加基本字段
+        fields.push({
+            label: '发布时间',
+            value: formatFullDate(activity.created_at)
+        });
+
+        fields.push({
+            label: '点赞数',
+            value: activity.like_count || '0'
+        });
+
+        fields.push({
+            label: '评论数',
+            value: activity.comment_count || '0'
+        });
+
+        // 根据活动类型添加特定字段
+        if (activity.from === 2 && activity.from_info) { // 帖子
+            if (activity.from_info.tags) {
+                fields.push({
+                    label: '标签',
+                    value: activity.from_info.tags
+                });
+            }
+        } else if (activity.from === 5 && activity.from_info) { // 导师招募
+            if (activity.from_info.requirements) {
+                fields.push({
+                    label: '要求',
+                    value: activity.from_info.requirements
+                });
+            }
+            if (activity.from_info.contact) {
+                fields.push({
+                    label: '联系方式',
+                    value: activity.from_info.contact
+                });
+            }
+        } else if (activity.from === 6 && activity.from_info) { // 副本招募
+            if (activity.from_info.difficulty) {
+                fields.push({
+                    label: '难度',
+                    value: activity.from_info.difficulty
+                });
+            }
+            if (activity.from_info.party_size) {
+                fields.push({
+                    label: '队伍规模',
+                    value: activity.from_info.party_size
+                });
+            }
+        } else if (activity.from === 8 && activity.from_info) { // RP活动
+            if (activity.from_info.time) {
+                fields.push({
+                    label: '活动时间',
+                    value: activity.from_info.time
+                });
+            }
+            if (activity.from_info.location) {
+                fields.push({
+                    label: '活动地点',
+                    value: activity.from_info.location
+                });
+            }
+        }
+
+        if (fields.length === 3) return null; // 如果只有基本字段，不显示详情部分
+
+        let fieldsHtml = '';
+        fields.forEach(field => {
+            fieldsHtml += `
+                <div class="modal-field">
+                    <strong>${escapeHtml(field.label)}：</strong>
+                    <span class="modal-field-value">${escapeHtml(field.value)}</span>
+                </div>
+            `;
+        });
+
+        section.innerHTML = `
+            <h3>详细信息</h3>
+            ${fieldsHtml}
+        `;
+
+        return section;
     }
 
     // 关闭弹窗
@@ -1326,13 +1543,6 @@
         // 使用images.weserv.nl代理服务
         return `${IMAGE_PROXY_URL}${encodeURIComponent(originalUrl)}`;
     }
-
-    // 以下所有辅助函数都需要从原文件完整复制
-    // 包括：createCharacterInfoSection, createContentSection, createDetailSection,
-    // convertEmojiTags, processHtmlImages, processImagesInElement,
-    // getActivityDetails, formatDate, formatFullDate,
-    // showLoadMoreButton, hideLoadMoreButton, showLoadingMore,
-    // hideLoadingMore, showNoMoreData
 
     // 表情标记转换函数
     function convertEmojiTags(text) {
@@ -1362,15 +1572,13 @@
         switch(activity.from) {
             case 1: // 普通动态
                 typeText = '发布了动态';
-                // 移除表情标记用于预览
-                content = activity.mask_content ?
-                    activity.mask_content.replace(/\[emo\d+\]/g, '[表情]') : '';
+                content = activity.mask_content || '';
                 coverImage = activity.pic_url || '';
                 break;
             case 2: // 帖子
                 typeText = '发表了帖子';
                 if (activity.from_info) {
-                    title = activity.from_info.title;
+                    title = activity.from_info.title || '';
                     content = activity.from_info.content_pre || '';
                     coverImage = activity.from_info.cover_pic || '';
                 }
@@ -1378,15 +1586,14 @@
             case 5: // 导师招募
                 typeText = '发布了导师招募';
                 if (activity.from_info) {
-                    title = activity.from_info.title;
-                    content = activity.from_info.detail_mask ?
-                        activity.from_info.detail_mask.replace(/<[^>]*>/g, '').substring(0, 100) + '...' : '';
+                    title = activity.from_info.title || '';
+                    content = activity.from_info.detail_mask || '';
                 }
                 break;
             case 6: // 副本招募
                 typeText = '发布了副本招募';
                 if (activity.from_info) {
-                    title = activity.from_info.fb_name;
+                    title = activity.from_info.fb_name || '';
                     content = activity.from_info.progress || '';
                 }
                 break;
@@ -1394,15 +1601,14 @@
                 typeText = '分享了招募';
                 if (activity.from_info) {
                     title = (activity.from_info.guild_name || '') + (activity.from_info.guild_tag ? ` <${activity.from_info.guild_tag}>` : '');
-                    content = activity.from_info.detail_mask ?
-                        activity.from_info.detail_mask.replace(/<[^>]*>/g, '').substring(0, 100) + '...' : '';
+                    content = activity.from_info.detail_mask || '';
                     coverImage = activity.from_info.cover_pic || '';
                 }
                 break;
             case 8: // RP活动
                 typeText = '发布了RP活动';
                 if (activity.from_info) {
-                    title = activity.from_info.rp_name;
+                    title = activity.from_info.rp_name || '';
                     content = activity.from_info.profile || '';
                     coverImage = activity.from_info.cover_pic || '';
                 }
@@ -1410,16 +1616,15 @@
             case 9: // 其他招募
                 typeText = '发布了招募';
                 if (activity.from_info) {
-                    title = activity.from_info.title;
-                    content = activity.from_info.detail_mask ?
-                        activity.from_info.detail_mask.replace(/<[^>]*>/g, '').substring(0, 100) + '...' : '';
+                    title = activity.from_info.title || '';
+                    content = activity.from_info.detail_mask || '';
                 }
                 break;
             default:
                 typeText = activity.mask_content || '发布了内容';
         }
 
-        // 如果内容为空，使用mask_content（但需要过滤掉无意义的默认文本）
+        // 如果内容为空，使用mask_content
         if (!content && activity.mask_content) {
             const meaninglessTexts = ['发表了帖子：', '发布了招募：', '发布了RP：', '上架了招募：', '分享招募-'];
             const isMeaningless = meaninglessTexts.some(text => activity.mask_content.includes(text));
@@ -1434,7 +1639,7 @@
             content = content.replace(/<[^>]*>/g, '');
         }
 
-        // 限制内容长度
+        // 限制内容长度用于预览
         if (content && content.length > 100) {
             content = content.substring(0, 100) + '...';
         }
@@ -1500,10 +1705,7 @@
     // 显示加载中状态
     function showLoadingMore() {
         const button = document.getElementById('load-more-btn');
-        // 检查按钮是否存在且可见
-        if (!button || button.style.display === 'none') {
-            return; // 如果按钮不存在或隐藏，直接返回
-        }
+        if (!button) return;
 
         const loadingIcon = button.querySelector('.loading-more');
 
@@ -1517,12 +1719,13 @@
     // 隐藏加载中状态
     function hideLoadingMore() {
         const button = document.getElementById('load-more-btn');
-        // 检查按钮是否存在
-        if (!button) {
-            return;
-        }
+        if (!button) return;
 
         button.disabled = false;
+        const loadingIcon = button.querySelector('.loading-more');
+        if (loadingIcon) {
+            loadingIcon.style.display = 'none';
+        }
         button.innerHTML = '加载更多';
     }
 
