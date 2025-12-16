@@ -1,0 +1,30 @@
+{
+    "code": 10000,
+    "msg": "操作成功",
+    "data": {
+        "count": "1",
+        "rows": [
+            {
+                "id": "14282",
+                "children_count": "0",
+                "mask_content": "今晚加餐火腿肠！",
+                "comment_pic": null,
+                "uuid": "10039547",
+                "character_name": "玛格丽塔",
+                "area_name": "莫古力",
+                "group_name": "拂晓之间",
+                "created_at": "2023-12-19 17:17:37",
+                "ip_location": "中国浙江省",
+                "dynamic_id": "71867",
+                "avatar": "https://ff14risingstones.gcloud.com.cn/avatar/20231219/10039547/99e499c465e14400ab382c4159977e8a/1702915795581_47b792871702915795581.png",
+                "test_limited_badge": 0,
+                "posts2_creator_badge": 0,
+                "collapse_badge": 1,
+                "badge": "[{\"badgeField\":\"warrior_badge\",\"badgeName\":\"荣誉光之战士（铜）\",\"badgeLevel\":1,\"badgeWeight\":0},{\"badgeField\":\"collapse_badge\",\"badgeName\":\"崩之家徽章\",\"badgeLevel\":1,\"badgeWeight\":0},{\"badgeField\":\"test_limited_badge\",\"badgeName\":\"测试贡献徽章（银）\",\"badgeLevel\":0,\"badgeWeight\":0},{\"badgeField\":\"posts2_creator_badge\",\"badgeName\":\"攻略创作者徽章（铜）\",\"badgeLevel\":0,\"badgeWeight\":0},{\"badgeField\":\"phaenna_badge\",\"badgeName\":\"法恩娜行星纪念徽章\",\"badgeLevel\":0,\"badgeWeight\":0},{\"badgeField\":\"feifei_badge\",\"badgeName\":\"狒狒领养徽章\",\"badgeLevel\":0,\"badgeWeight\":0}]",
+                "admin_tag": 0,
+                "is_dynamic_author": 0,
+                "is_mine": 0
+            }
+        ]
+    }
+}
