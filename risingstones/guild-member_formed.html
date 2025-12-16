@@ -103,6 +103,58 @@
             border: 2px solid #ddd;
         }
 
+        /* 警告信息样式 */
+        .warning-message {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            text-align: center;
+            display: none;
+        }
+
+        /* 加载状态样式 */
+        .loading {
+            text-align: center;
+            font-size: 1.2em;
+            color: #777;
+            padding: 40px;
+        }
+
+        /* 错误状态样式 */
+        .error-container {
+            text-align: center;
+            padding: 50px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            width: 100%;
+        }
+        .error-title {
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            color: #e74c3c;
+        }
+        .error-message {
+            color: #777;
+            margin-bottom: 20px;
+        }
+        .reload-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .reload-button:hover {
+            background: #2980b9;
+        }
+
         /* 更新后的弹窗样式 */
         .modal {
             display: none;
@@ -243,12 +295,6 @@
             font-weight: 600;
             color: #313131;
         }
-        .loading {
-            text-align: center;
-            padding: 40px;
-            font-size: 1.2em;
-            color: #777;
-        }
         .no-data {
             color: #999;
             font-style: italic;
@@ -258,6 +304,9 @@
 
         /* 响应式设计 */
         @media (max-width: 768px) {
+            .member-card {
+                width: calc(50% - 20px);
+            }
             .modal-content {
                 width: 95%;
                 margin: 10% auto;
@@ -276,6 +325,12 @@
             }
             .info-label {
                 margin-bottom: 5px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .member-card {
+                width: 100%;
             }
         }
     </style>
@@ -300,6 +355,9 @@
         <!-- 替换为 test.html 的内容 -->
         <div class="member-container">
             <div class="member-inner-container">
+                <div class="warning-message" id="warningMessage">
+                    正在使用缓存数据展示
+                </div>
                 <div class="member-list" id="memberList">
                     <!-- Member cards will be inserted here by JavaScript -->
                 </div>
@@ -398,42 +456,56 @@
 
 <!-- 更新后的 JavaScript 代码 -->
 <script>
-    // test.html 的 JavaScript 代码
+    // 图片代理服务的URL
     const imageProxyUrl = 'https://res.cloudinary.com/your-cloud-name/image/fetch/';
     const defaultAvatar = '../assets/images/def-profile-gray.png';
 
+    // 超时时间设置（10秒）
+    const REQUEST_TIMEOUT = 10000;
+
+    // 本地数据源路径
+    const LOCAL_DATA_SOURCE = './sample/guild-members.json';
+
+    // 辅助函数：回退到默认头像
     function fallbackToDefault(imgElement) {
         imgElement.src = defaultAvatar;
     }
 
+    // Function to create member cards
     function createMemberCard(member) {
         const card = document.createElement('div');
         card.className = 'member-card';
         card.dataset.uuid = member.uuid;
 
+        // 检查是否有头像
         if (!member.avatar) {
             card.classList.add('no-avatar');
         }
 
+        // Avatar
         const avatar = document.createElement('img');
         avatar.src = member.avatar ? imageProxyUrl + encodeURIComponent(member.avatar) : defaultAvatar;
         avatar.alt = 'Avatar';
         avatar.onerror = () => fallbackToDefault(avatar);
         card.appendChild(avatar);
 
+        // Character Name
         const name = document.createElement('h2');
         name.textContent = member.character_name || 'N/A';
         card.appendChild(name);
 
+        // Profile
         const profile = document.createElement('p');
         profile.textContent = member.profile || 'No profile';
         card.appendChild(profile);
 
+        // Last Dynamic
         const lastDynamic = document.createElement('div');
         lastDynamic.className = 'last-dynamic';
         lastDynamic.textContent = member.last_dynamic || 'No recent activity';
         card.appendChild(lastDynamic);
 
+        // 添加点击事件
         card.addEventListener('click', () => {
             showModal();
             fetchUserInfo(member.uuid);
@@ -442,25 +514,52 @@
         return card;
     }
 
+    // Function to fetch user info from the API
     async function fetchUserInfo(uuid) {
         try {
-            const response = await fetch(`https://phantoms-backend.onrender.com/api/risingstones/user-info?uuid=${uuid}`);
+            const loadingMessage = document.getElementById('loadingMessage');
+            loadingMessage.style.display = 'block';
+            loadingMessage.textContent = '正在加载用户信息...';
+
+            // 设置超时处理
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+
+            const response = await fetch(`https://phantoms-backend.onrender.com/api/risingstones/user-info?uuid=${uuid}`, {
+                signal: controller.signal
+            });
+
+            clearTimeout(timeoutId);
+
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            displayUserInfo(data.data);
+
+            // 添加对code 500的处理
+            if (data.code === 500) {
+                throw new Error(data.message || '服务器返回错误');
+            }
+
+            if (data.code === 10000) {
+                displayUserInfo(data.data);
+            } else {
+                throw new Error(data.msg || 'Failed to load user information');
+            }
         } catch (error) {
             console.error('There has been a problem with your fetch operation:', error);
-            displayError('加载用户信息失败。');
+            if (error.name === 'AbortError') {
+                displayError('石之家功能维护中，请求超时');
+            } else if (error.message.includes('Failed to get guild member info')) {
+                displayError('石之家功能维护中，请稍后再试，或联系管理员');
+            } else {
+                displayError('加载用户信息失败: ' + error.message);
+            }
         }
     }
 
+    // Function to display user info in the modal
     function displayUserInfo(userInfo) {
-        // const modalTitle = document.querySelector('.modal-title');
-        // const modalProfile = document.getElementById('modalProfile');
-        // const modalLastDynamic = document.getElementById('modalLastDynamic');
-        // const modalAchievements = document.getElementById('modalAchievements');
         const loadingMessage = document.getElementById('loadingMessage');
 
         // 基本信息
@@ -524,21 +623,25 @@
         loadingMessage.style.display = 'none';
     }
 
+    // 格式化日期
     function formatDate(dateString) {
         if (!dateString) return '-';
         const date = new Date(dateString);
         return date.toLocaleDateString('zh-CN');
     }
 
+    // Function to display error message in the modal
     function displayError(message) {
         const modalTitle = document.querySelector('.modal-title');
         const loadingMessage = document.getElementById('loadingMessage');
 
-        modalTitle.textContent = 'Error';
+        modalTitle.textContent = '加载失败';
         loadingMessage.textContent = message;
         loadingMessage.style.display = 'block';
+        loadingMessage.style.color = '#e74c3c';
     }
 
+    // Function to show the modal
     function showModal() {
         const modal = document.getElementById('myModal');
         const loadingMessage = document.getElementById('loadingMessage');
@@ -553,16 +656,22 @@
         document.getElementById('modalAchievements').innerHTML = '';
 
         loadingMessage.style.display = 'block';
+        loadingMessage.style.color = '#777';
+        loadingMessage.textContent = '加载中...';
         modal.style.display = 'block';
     }
 
+    // Function to hide the modal
     function hideModal() {
         const modal = document.getElementById('myModal');
         modal.style.display = 'none';
     }
 
+    // Function to populate the member list
     function populateMemberList(data) {
         const memberList = document.getElementById('memberList');
+
+        // Combine registered and unregistered members
         const allMembers = data.registered.concat(data.unRegister);
 
         allMembers.forEach(member => {
@@ -571,25 +680,112 @@
         });
     }
 
+    // 从本地JSON文件加载数据
+    async function loadLocalData() {
+        try {
+            const memberList = document.getElementById('memberList');
+            const response = await fetch(LOCAL_DATA_SOURCE);
+            if (!response.ok) {
+                throw new Error('Failed to load local data');
+            }
+            const data = await response.json();
+
+            // 显示警告信息
+            const warningMessage = document.getElementById('warningMessage');
+            warningMessage.style.display = 'block';
+
+            // 清空加载状态
+            memberList.innerHTML = '';
+
+            // 如果本地数据格式和API返回格式一致
+            if (data.code === 10000 && data.data) {
+                populateMemberList(data.data);
+            } else if (data.registered || data.unRegister) {
+                // 如果本地数据已经是直接的数据格式
+                populateMemberList(data);
+            } else {
+                throw new Error('Invalid local data format');
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Failed to load local data:', error);
+            return false;
+        }
+    }
+
+    // Function to fetch data from the API
     async function fetchData() {
         try {
-            const response = await fetch('https://phantoms-backend.onrender.com/api/risingstones/guild-member');
+            // 显示加载状态
+            const memberList = document.getElementById('memberList');
+            memberList.innerHTML = '<div class="loading">正在加载成员列表...</div>';
+
+            // 设置超时处理
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+
+            const response = await fetch('https://phantoms-backend.onrender.com/api/risingstones/guild-member', {
+                signal: controller.signal
+            });
+
+            clearTimeout(timeoutId);
+
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            populateMemberList(data.data);
+
+            // 添加对code 500的处理
+            if (data.code === 500) {
+                throw new Error(data.message || '服务器返回错误');
+            }
+
+            if (data.code === 10000) {
+                populateMemberList(data.data);
+            } else {
+                throw new Error(data.msg || 'Failed to load member data');
+            }
         } catch (error) {
-            console.error('There has been a problem with your fetch operation:', error);
+            console.error('API请求失败，尝试加载本地数据:', error);
+
+            // API请求失败，尝试加载本地数据
+            const localDataLoaded = await loadLocalData();
+
+            if (!localDataLoaded) {
+                const memberList = document.getElementById('memberList');
+                let errorMessage = error.message;
+
+                if (error.name === 'AbortError') {
+                    errorMessage = 'API请求超时且无法加载本地数据';
+                }
+
+                memberList.innerHTML = `
+                    <div class="error-container">
+                        <div class="error-title">数据加载失败</div>
+                        <div class="error-message">${errorMessage}</div>
+                        <button onclick="location.reload()" class="reload-button">
+                            重新加载
+                        </button>
+                    </div>
+                `;
+            }
         }
     }
 
+    // Fetch data when the document is ready
     document.addEventListener('DOMContentLoaded', fetchData);
 
+    // Get the modal
     const modal = document.getElementById('myModal');
+
+    // Get the <span> element that closes the modal
     const span = document.getElementsByClassName('close')[0];
 
+    // When the user clicks on <span> (x), close the modal
     span.onclick = hideModal;
+
+    // When the user clicks anywhere outside of the modal, close it
     window.onclick = function(event) {
         if (event.target == modal) {
             hideModal();
@@ -648,8 +844,7 @@
                     if(oTop > 0){
                         document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
                         timer = requestAnimationFrame(fn);
-                    }
-                    else{
+                    }else{
                         cancelAnimationFrame(timer);
                     }
                 }
