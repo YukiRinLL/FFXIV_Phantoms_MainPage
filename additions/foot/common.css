@@ -3,40 +3,17 @@
     position: fixed;
     right: 20px;
     bottom: 380px;
-    height: 50px;
-    width: 50px;
+    height: 89px;/* 图片177px */
+    width: 52px;/* 图片103px */
     text-align: center;
-    padding-top: 20px;
-    background-color: black;
+    background-color: transparent;
     border-radius: 20%;
     overflow: hidden;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
 }
 
-.box:hover:before {
-    top: 50%;
-}
-
-.box:hover .box-in {
-    visibility: hidden;
-}
-
-.box:before {
-    position: absolute;
-    top: -50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    content: 'TOP';
-    width: 40px;
-    color: white;
-    font-weight: bold;
-}
-
-.box-in {
-    visibility: visible;
-    display: inline-block;
-    height: 20px;
-    width: 20px;
-    border: 3px solid black;
-    border-color: white transparent transparent white;
-    transform: rotate(45deg);
+.box:hover {
+    opacity: 1;
 }

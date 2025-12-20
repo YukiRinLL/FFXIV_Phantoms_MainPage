@@ -1,7 +1,9 @@
 // 回到顶部功能
 function initBackToTop() {
-    // 动态创建回到顶部按钮
-    const backToTopHTML = `<div id="box" class="box"><div class="box-in"></div></div>`;
+//    // 动态创建回到顶部按钮
+//    const backToTopHTML = `<div id="box" class="box"><div class="box-in"></div></div>`;
+    // 动态创建回到顶部按钮，使用图片代替原来的箭头
+    const backToTopHTML = `<div id="box" class="box"><img src="../assets/images/back-to-top.png" alt="Back to Top" style="width: 100%; height: 100%; object-fit: contain;"></div>`;
     document.body.insertAdjacentHTML('beforeend', backToTopHTML);
     
     const box = document.getElementById('box');
