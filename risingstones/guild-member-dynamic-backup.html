@@ -1,4 +1,3 @@
-<!--todo 这个页面有分页加载的问题，同时从.json和后端获取数据并且合并的时候没有实现点开显示明细，以及重新排序-->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -731,7 +730,7 @@
 
     // 分页相关变量
     let currentPage = 1;
-    const ITEMS_PER_PAGE = 1000;
+    const ITEMS_PER_PAGE = 10;
     let hasMoreData = true;
     let isLoading = false;
     let currentFilterType = 'all';
@@ -850,6 +849,9 @@
             }
             const data = await response.json();
 
+            // 显示警告信息
+            showWarningMessage();
+
             // 统一数据格式处理
             if (data.code === 10000 && data.data) {
                 return {
@@ -876,49 +878,6 @@
             console.error('Failed to load local data:', error);
             return null;
         }
-    }
-
-    // 合并API数据和本地JSON数据
-    function mergeApiAndJsonData(apiData, jsonData) {
-        if (!apiData || !apiData.data) {
-            return jsonData;
-        }
-        if (!jsonData || !jsonData.data) {
-            return apiData;
-        }
-
-        const apiRows = apiData.data.rows || [];
-        const jsonRows = jsonData.data.rows || [];
-
-        // 创建一个Map用于合并数据，JSON数据优先级更高
-        const mergedMap = new Map();
-
-        // 先添加API数据
-        apiRows.forEach(item => {
-            if (item.id) {
-                mergedMap.set(item.id, item);
-            }
-        });
-
-        // 再添加JSON数据，相同ID会覆盖API数据
-        jsonRows.forEach(item => {
-            if (item.id) {
-                mergedMap.set(item.id, item);
-            }
-        });
-
-        // 转换为数组
-        const mergedRows = Array.from(mergedMap.values());
-
-        // 返回合并后的数据结构
-        return {
-            ...apiData,
-            data: {
-                ...apiData.data,
-                rows: mergedRows,
-                count: mergedRows.length
-            }
-        };
     }
 
     // 本地数据分页（客户端分页）
@@ -1039,83 +998,64 @@
         }
 
         try {
-            // 并行请求API和本地JSON数据
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
 
-            const [apiResponse, jsonResponse] = await Promise.all([
-                fetch(`${API_URL}?page=${page}&limit=${ITEMS_PER_PAGE}`, { signal: controller.signal })
-                    .catch(error => {
-                        console.error('API请求失败:', error);
-                        return null;
-                    }),
-                fetch(LOCAL_DATA_SOURCE).catch(error => {
-                    console.error('本地数据加载失败:', error);
-                    return null;
-                })
-            ]);
+            const response = await fetch(`${API_URL}?page=${page}&limit=10`, {
+                signal: controller.signal
+            });
 
             clearTimeout(timeoutId);
             clearTimeout(requestTimeoutId);
 
-            let apiData = null;
-            let jsonData = null;
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
 
-            // 处理API响应
-            if (apiResponse && apiResponse.ok) {
-                apiData = await apiResponse.json();
+            // 添加对code 500的处理
+            if (data.code === 500) {
+                throw new Error(data.message || '服务器返回错误');
             }
 
-            // 处理本地JSON响应
-            if (jsonResponse && jsonResponse.ok) {
-                jsonData = await jsonResponse.json();
-            }
-
-            // 合并数据
-            const mergedData = mergeApiAndJsonData(apiData, jsonData);
-
-            if (mergedData && mergedData.code === 10000) {
-                // 合并成功，隐藏警告信息
+            if (data.code === 10000) {
+                // API请求成功，隐藏警告信息
                 hideWarningMessage();
                 isUsingLocalData = false;
 
-                // 更新统计数据
-                updateStats(mergedData);
-
-                // 处理数据加载逻辑
-                const newActivities = mergedData.data.rows || [];
-                
-                if (isRefresh) {
-                    // 刷新时重置数据
-                    currentPage = 1;
-                    allActivitiesData = newActivities;
-                    filterAndSortActivities(true);
-                } else {
-                    // 加载更多时追加数据到allActivitiesData
-                    // 但需要确保没有重复数据
-                    const existingIds = new Set(allActivitiesData.map(item => item.id));
-                    const uniqueNewActivities = newActivities.filter(item => !existingIds.has(item.id));
-                    allActivitiesData = [...allActivitiesData, ...uniqueNewActivities];
-                    
-                    // 重新过滤和排序所有数据，但不重置分页
-                    filterAndSortActivities(false);
-                }
+                const newActivities = data.data.rows;
 
                 // 检查是否还有更多数据
-                const totalItems = mergedData.data.count || 0;
-                hasMoreData = (allActivitiesData.length < totalItems);
-
-                if (!hasMoreData) {
+                if (newActivities.length === 0) {
+                    hasMoreData = false;
                     showNoMoreData();
+                } else {
+                    currentPage = page;
+
+                    if (isRefresh) {
+                        // 刷新时替换所有数据
+                        activitiesData = newActivities;
+                        allActivitiesData = newActivities;
+                        updateStats(data);
+                        filterAndSortActivities(true);
+                    } else {
+                        // 加载更多时追加数据
+                        activitiesData = [...activitiesData, ...newActivities];
+                        allActivitiesData = [...allActivitiesData, ...newActivities];
+                        updateStats(data);
+                        filterAndSortActivities(false);
+                    }
+
+                    hasMoreData = true;
                 }
             } else {
-                throw new Error('数据合并失败');
+                throw new Error(`API error: ${data.msg}`);
             }
         } catch (error) {
             clearTimeout(requestTimeoutId);
-            console.error('数据获取失败:', error);
+            console.error('API请求失败，尝试加载本地数据:', error);
 
-            // 尝试加载本地数据作为最后手段
+            // API请求失败，尝试加载本地数据
             const localData = await loadLocalData();
 
             if (localData) {
@@ -1243,6 +1183,11 @@
 
     // 过滤和排序活动
     function filterAndSortActivities(resetPagination = true) {
+        if (resetPagination) {
+            currentPage = 1;
+            hasMoreData = true;
+        }
+
         // 过滤数据
         if (currentFilterType === 'all') {
             filteredData = [...allActivitiesData];
@@ -1268,22 +1213,10 @@
             });
         }
 
-        // 计算当前已显示的数据数量
-        const currentDisplayCount = resetPagination ? 0 : activitiesData.length;
-        
         // 分页显示
-        const startIndex = currentDisplayCount;
+        const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
         const endIndex = startIndex + ITEMS_PER_PAGE;
-        
-        if (resetPagination) {
-            // 刷新时替换数据
-            activitiesData = filteredData.slice(startIndex, endIndex);
-            currentPage = 2; // 下一页是第2页
-        } else {
-            // 加载更多时追加数据
-            activitiesData = [...activitiesData, ...filteredData.slice(startIndex, endIndex)];
-            currentPage++;
-        }
+        activitiesData = filteredData.slice(startIndex, endIndex);
 
         displayActivities();
 
@@ -1291,8 +1224,6 @@
         hasMoreData = endIndex < filteredData.length;
         if (!hasMoreData) {
             showNoMoreData();
-        } else {
-            showLoadMoreButton();
         }
     }
 

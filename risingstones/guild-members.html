@@ -332,14 +332,78 @@
     // Function to populate the member list
     function populateMemberList(data) {
         const memberList = document.getElementById('memberList');
+        
+        // 清空加载状态
+        memberList.innerHTML = '';
 
-        // Combine registered and unregistered members
-        const allMembers = data.registered.concat(data.unRegister);
+        try {
+            // Combine registered and unregistered members
+            const registeredMembers = data.registered || [];
+            const unregisteredMembers = data.unRegister || [];
+            const allMembers = registeredMembers.concat(unregisteredMembers);
 
-        allMembers.forEach(member => {
-            const card = createMemberCard(member);
-            memberList.appendChild(card);
+            allMembers.forEach(member => {
+                const card = createMemberCard(member);
+                memberList.appendChild(card);
+            });
+        } catch (error) {
+            console.error('Error populating member list:', error);
+            memberList.innerHTML = '<div style="text-align: center; padding: 50px; color: #e74c3c;">加载成员列表失败</div>';
+        }
+    }
+
+    // 合并API数据和本地JSON数据
+    function mergeApiAndJsonData(apiData, jsonData) {
+        if (!apiData) {
+            return jsonData;
+        }
+        if (!jsonData) {
+            return apiData;
+        }
+
+        // 确保数据格式正确
+        const apiRegistered = apiData.registered || [];
+        const apiUnregistered = apiData.unRegister || [];
+        const jsonRegistered = jsonData.registered || [];
+        const jsonUnregistered = jsonData.unRegister || [];
+
+        // 创建Map用于合并数据，JSON数据优先级更高
+        const registeredMap = new Map();
+        const unregisteredMap = new Map();
+
+        // 先添加API数据
+        apiRegistered.forEach(member => {
+            if (member.uuid) {
+                registeredMap.set(member.uuid, member);
+            }
         });
+        apiUnregistered.forEach(member => {
+            if (member.uuid) {
+                unregisteredMap.set(member.uuid, member);
+            }
+        });
+
+        // 再添加JSON数据，相同ID会覆盖API数据
+        jsonRegistered.forEach(member => {
+            if (member.uuid) {
+                registeredMap.set(member.uuid, member);
+            }
+        });
+        jsonUnregistered.forEach(member => {
+            if (member.uuid) {
+                unregisteredMap.set(member.uuid, member);
+            }
+        });
+
+        // 转换为数组
+        const mergedRegistered = Array.from(registeredMap.values());
+        const mergedUnregistered = Array.from(unregisteredMap.values());
+
+        // 返回合并后的数据结构
+        return {
+            registered: mergedRegistered,
+            unRegister: mergedUnregistered
+        };
     }
 
     // 从本地JSON文件加载数据
@@ -376,13 +440,25 @@
         }
     }
 
-    // Function to fetch data from the API
-    async function fetchData() {
+    // Function to fetch local data
+    async function fetchLocalData() {
         try {
-            // 显示加载状态
-            const memberList = document.getElementById('memberList');
-            memberList.innerHTML = '<div class="loading">正在加载成员列表...</div>';
+            const response = await fetch(LOCAL_DATA_SOURCE);
+            if (!response.ok) {
+                throw new Error('Failed to load local data');
+            }
+            const data = await response.json();
+            // 如果本地数据有code和data结构，则返回data，否则直接返回数据
+            return data.code === 10000 ? data.data : data;
+        } catch (error) {
+            console.error('Failed to load local data:', error);
+            return null;
+        }
+    }
 
+    // Function to fetch data from API
+    async function fetchApiData() {
+        try {
             // 设置超时处理
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
@@ -404,34 +480,63 @@
             }
 
             if (data.code === 10000) {
-                populateMemberList(data.data);
+                return data.data;
             } else {
                 throw new Error(data.msg || 'Failed to load member data');
             }
         } catch (error) {
-            console.error('API请求失败，尝试加载本地数据:', error);
+            console.error('API请求失败:', error);
+            return null;
+        }
+    }
 
-            // API请求失败，尝试加载本地数据
-            const localDataLoaded = await loadLocalData();
+    // Function to fetch data from both API and local JSON simultaneously
+    async function fetchData() {
+        try {
+            // 显示加载状态
+            const memberList = document.getElementById('memberList');
+            memberList.innerHTML = '<div class="loading">正在加载成员列表...</div>';
 
-            if (!localDataLoaded) {
-                const memberList = document.getElementById('memberList');
-                let errorMessage = error.message;
+            // 并行请求API和本地数据
+            const [apiData, jsonData] = await Promise.all([
+                fetchApiData(),
+                fetchLocalData()
+            ]);
 
-                if (error.name === 'AbortError') {
-                    errorMessage = 'API请求超时且无法加载本地数据';
-                }
+            // 合并数据，JSON数据优先级更高
+            const mergedData = mergeApiAndJsonData(apiData, jsonData);
 
-                memberList.innerHTML = `
-                    <div style="text-align: center; padding: 50px; background: #f9f9f9; border-radius: 8px; border: 1px solid #ddd; width: 100%;">
-                        <div style="margin-bottom: 15px; font-size: 1.2em; color: #e74c3c;">数据加载失败</div>
-                        <div style="color: #777; margin-bottom: 20px;">${errorMessage}</div>
-                        <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">
-                            重新加载
-                        </button>
-                    </div>
-                `;
+            // 如果没有数据，显示错误
+            if (!mergedData || (!mergedData.registered && !mergedData.unRegister)) {
+                throw new Error('没有可用数据');
             }
+
+            // 显示合并后的数据
+            populateMemberList(mergedData);
+
+            // 如果API数据不可用，显示警告信息
+            if (!apiData && jsonData) {
+                const warningMessage = document.getElementById('warningMessage');
+                warningMessage.style.display = 'block';
+            }
+        } catch (error) {
+            console.error('数据加载失败:', error);
+            const memberList = document.getElementById('memberList');
+            let errorMessage = error.message;
+
+            if (error.name === 'AbortError') {
+                errorMessage = 'API请求超时且无法加载本地数据';
+            }
+
+            memberList.innerHTML = `
+                <div style="text-align: center; padding: 50px; background: #f9f9f9; border-radius: 8px; border: 1px solid #ddd; width: 100%;">
+                    <div style="margin-bottom: 15px; font-size: 1.2em; color: #e74c3c;">数据加载失败</div>
+                    <div style="color: #777; margin-bottom: 20px;">${errorMessage}</div>
+                    <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        重新加载
+                    </button>
+                </div>
+            `;
         }
     }
 
