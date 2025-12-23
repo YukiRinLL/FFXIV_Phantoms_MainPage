@@ -4,6 +4,9 @@ TODO:
 留言板iframe的拖动条隐藏，其他能隐藏的也改一下
 留言板里面和外面的拖动条联动，里面拖完外面动
 
+todo: bug guild-member-dynamic.html页面有分页加载的问题，同时从.json和后端获取数据并且合并的时候没有实现点开显示明细，以及重新排序
+    旧版本文件有备份guild-member-dynamic-backup.html
+
 图片上传功能图片加载非常慢，尝试单张逐个加载（已完成）
 可以压缩后上传（已完成）
 （原代码可用的版本是在demo
