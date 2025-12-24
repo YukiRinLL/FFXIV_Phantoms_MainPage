@@ -671,6 +671,9 @@
     function populateMemberList(data) {
         const memberList = document.getElementById('memberList');
 
+        // 清空容器内容（包括加载状态）
+        memberList.innerHTML = '';
+
         // Combine registered and unregistered members
         const allMembers = data.registered.concat(data.unRegister);
 
