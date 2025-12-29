@@ -1,0 +1,2537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title>BLOCK 13 - 高危犯人管理系统</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<style>
+		/* 全局重置与基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            touch-action: manipulation;
+        }
+
+        :root {
+            --primary-dark: #0a0a0f;
+            --secondary-dark: #121218;
+            --accent-red: #c41e3a;
+            --accent-blue: #1a73e8;
+            --accent-orange: #ff6b35;
+            --accent-green: #27ae60;
+            --accent-purple: #8a2be2;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --text-danger: #ff4757;
+            --text-warning: #ffa502;
+            --border-dark: #2a2a3a;
+            --glow-red: rgba(196, 30, 58, 0.5);
+            --glow-blue: rgba(26, 115, 232, 0.5);
+            --danger-gradient: linear-gradient(135deg, #c41e3a, #8b0000);
+            --grid-bg: rgba(10, 10, 15, 0.95);
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--primary-dark);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+            background-image:
+                radial-gradient(circle at 20% 30%, rgba(196, 30, 58, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(26, 115, 232, 0.05) 0%, transparent 50%),
+                linear-gradient(to bottom, #0a0a0f 0%, #121218 100%);
+            position: relative;
+            cursor: default;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                linear-gradient(90deg, var(--primary-dark) 1px, transparent 1px) 0 0 / 20px 20px,
+                linear-gradient(0deg, var(--primary-dark) 1px, transparent 1px) 0 0 / 20px 20px;
+            opacity: 0.1;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* 扫描线效果 */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                transparent 50%,
+                rgba(10, 10, 15, 0.2) 50%
+            );
+            background-size: 100% 4px;
+            z-index: 9998;
+            pointer-events: none;
+            animation: scanline 10s linear infinite;
+            opacity: 0.1;
+        }
+
+        @keyframes scanline {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100vh); }
+        }
+
+        /* 安全门入口动画 */
+        .prison-gate {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #000;
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            cursor: pointer;
+            transition: opacity 1s ease;
+        }
+
+        .prison-gate::after {
+            content: "点击任意位置进入系统";
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            animation: blink 2s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .gate-left, .gate-right {
+            position: absolute;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            background: var(--grid-bg);
+            transition: transform 2s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            pointer-events: none;
+        }
+
+        .gate-left {
+            left: 0;
+            transform: translateX(0);
+            box-shadow: inset -10px 0 20px rgba(0,0,0,0.5);
+        }
+
+        .gate-right {
+            right: 0;
+            transform: translateX(0);
+            box-shadow: inset 10px 0 20px rgba(0,0,0,0.5);
+        }
+
+        .gate-text {
+            text-align: center;
+            z-index: 2;
+            padding: 2rem;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--accent-red);
+            border-radius: 10px;
+            box-shadow: 0 0 30px var(--glow-red);
+            animation: pulse 2s infinite;
+            max-width: 90%;
+            pointer-events: none;
+            transform: translateY(-30px);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 30px var(--glow-red);
+                transform: translateY(-30px) scale(1);
+            }
+            50% {
+                box-shadow: 0 0 50px var(--glow-red);
+                transform: translateY(-30px) scale(1.02);
+            }
+        }
+
+        .gate-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.5rem, 4vw, 3rem);
+            color: var(--accent-red);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px currentColor;
+        }
+
+        .gate-text p {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* 点击反馈效果 */
+        .click-feedback {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(196, 30, 58, 0.3) 0%, transparent 70%);
+            z-index: 10001;
+            pointer-events: none;
+            opacity: 0;
+            animation: clickEffect 0.5s ease-out;
+        }
+
+        @keyframes clickEffect {
+            0% { opacity: 1; transform: scale(0.5); }
+            100% { opacity: 0; transform: scale(1.5); }
+        }
+
+        /* 主容器 */
+        .container {
+            display: none;
+            min-height: 100vh;
+            padding: 1rem;
+            position: relative;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* 顶部导航栏 */
+        .prison-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(18, 18, 24, 0.95);
+            border-radius: 10px;
+            border: 1px solid var(--border-dark);
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 1rem;
+            z-index: 100;
+        }
+
+        .header-left, .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .prison-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: clamp(1.2rem, 2vw, 1.8rem);
+            color: var(--accent-red);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .prison-logo i {
+            color: var(--accent-red);
+            font-size: 1.8rem;
+            animation: logoBlink 1.5s infinite;
+        }
+
+        @keyframes logoBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .prison-nav {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            padding: 0.6rem 1.2rem;
+            border: 1px solid var(--border-dark);
+            border-radius: 5px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+            border-color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            background: var(--danger-gradient);
+            color: white;
+            border-color: var(--accent-red);
+            box-shadow: 0 0 15px var(--glow-red);
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-link:hover::before {
+            left: 100%;
+        }
+
+        /* 安全等级指示器 */
+        .security-level {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            border: 1px solid var(--border-dark);
+            min-width: 200px;
+        }
+
+        .security-bar {
+            flex-grow: 1;
+            height: 10px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .security-fill {
+            height: 100%;
+            width: 75%;
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-orange), var(--accent-red));
+            border-radius: 5px;
+            position: relative;
+            transition: width 1s ease;
+        }
+
+        .security-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(255,255,255,0.2),
+                transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .level-text {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-warning);
+            min-width: 80px;
+        }
+
+        /* 控制按钮 */
+        .search-btn, .audio-btn, .lockdown-btn, .report-btn {
+            background: rgba(40, 40, 50, 0.8);
+            border: 1px solid var(--border-dark);
+            color: var(--text-primary);
+            padding: 0.6rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .search-btn:hover, .audio-btn:hover {
+            background: rgba(60, 60, 70, 0.8);
+            border-color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+
+        .lockdown-btn {
+            background: rgba(196, 30, 58, 0.2);
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+
+        .lockdown-btn:hover {
+            background: rgba(196, 30, 58, 0.4);
+            box-shadow: 0 0 20px var(--glow-red);
+        }
+
+        .lockdown-btn.active {
+            background: var(--accent-red);
+            color: white;
+            animation: alarm 0.5s infinite;
+        }
+
+        @keyframes alarm {
+            0%, 100% { box-shadow: 0 0 20px var(--glow-red); }
+            50% { box-shadow: 0 0 40px var(--glow-red); }
+        }
+
+        .report-btn {
+            background: rgba(26, 115, 232, 0.2);
+            border-color: var(--text-primary);
+            color: var(--text-primary);
+        }
+
+        .report-btn:hover {
+            background: rgba(26, 115, 232, 0.4);
+            box-shadow: 0 0 20px var(--border-dark);
+        }
+
+        /* 犯人计数 */
+        .inmate-count {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(0,0,0,0.3);
+            border-radius: 5px;
+            border: 1px solid var(--border-dark);
+            font-weight: 600;
+        }
+
+        .inmate-count i {
+            color: var(--accent-red);
+        }
+
+        /* 搜索容器 */
+        .search-container {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(18, 18, 24, 0.98);
+            padding: 1rem;
+            border-radius: 0 0 10px 10px;
+            border: 1px solid var(--border-dark);
+            border-top: none;
+            display: none;
+            z-index: 99;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .search-container.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border-dark);
+            border-radius: 5px;
+            color: var(--text-primary);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+        }
+
+        #searchInput:focus {
+            outline: none;
+            border-color: var(--text-primary);
+            box-shadow: 0 0 10px var(--border-dark);
+        }
+
+        #closeSearch {
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        /* 档案内容区 */
+        .album-content {
+            background: var(--grid-bg);
+            border-radius: 10px;
+            border: 1px solid var(--border-dark);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .content-header h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+            color: var(--accent-red);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .view-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .view-btn {
+            background: rgba(40, 40, 50, 0.8);
+            border: 1px solid var(--border-dark);
+            color: var(--text-secondary);
+            width: 40px;
+            height: 40px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .view-btn.active {
+            background: var(--danger-gradient);
+            color: white;
+            border-color: var(--accent-red);
+        }
+
+        .view-btn:hover:not(.active) {
+            background: rgba(60, 60, 70, 0.8);
+            border-color: var(--text-primary);
+        }
+
+        /* 档案网格 */
+        .album-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .album-grid.list-view {
+            grid-template-columns: 1fr;
+        }
+
+        .grid-item {
+            background: rgba(30, 30, 40, 0.8);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-dark);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .grid-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--text-primary);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .grid-item.high-risk:hover {
+            border-color: var(--accent-red);
+            box-shadow: 0 10px 25px var(--glow-red);
+        }
+
+        .grid-img-container {
+            position: relative;
+            width: 100%;
+            padding-top: 100%; /* 保持1:1方形 */
+            overflow: hidden;
+        }
+
+        .grid-img-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .grid-item:hover .grid-img-container img {
+            transform: scale(1.05);
+        }
+
+        .grid-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            padding: 1rem;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .grid-item:hover .grid-overlay {
+            transform: translateY(0);
+        }
+
+        /* 犯人信息样式 */
+        .inmate-info {
+            color: white;
+        }
+
+        .inmate-info h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            margin-bottom: 0.3rem;
+            color: white;
+        }
+
+        .inmate-id {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .inmate-status {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-high-risk {
+            background: var(--danger-gradient);
+            color: white;
+            box-shadow: 0 0 10px var(--glow-red);
+        }
+
+        .status-medium {
+            background: linear-gradient(135deg, var(--accent-orange), #cc5500);
+            color: white;
+        }
+
+        .status-low-risk {
+            background: linear-gradient(135deg, var(--accent-green), #1e7d3a);
+            color: white;
+        }
+
+        .status-trustee {
+            background: linear-gradient(135deg, var(--text-primary), #0d47a1);
+            color: white;
+        }
+
+        .inmate-crime {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin: 0.3rem 0;
+            line-height: 1.3;
+        }
+
+        /* 详情面板 */
+        .detail-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .detail-panel.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .close-detail {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(196, 30, 58, 0.8);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.3s ease;
+        }
+
+        .close-detail:hover {
+            background: var(--accent-red);
+            transform: rotate(90deg);
+        }
+
+        .detail-content {
+            width: 100%;
+            max-width: 1000px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: rgba(18, 18, 24, 0.95);
+            border-radius: 15px;
+            border: 2px solid var(--accent-red);
+            box-shadow: 0 0 50px var(--glow-red);
+            position: relative;
+        }
+
+        .detail-image-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .detail-image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            border: 3px solid var(--border-dark);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .detail-overlay {
+            position: relative;
+            padding: 2rem;
+            background: rgba(10, 10, 15, 0.95);
+            border-radius: 10px;
+            margin-top: 1rem;
+        }
+
+        /* 详细信息样式 */
+        .detail-info h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: var(--accent-red);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .detail-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(30, 30, 40, 0.8);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-red);
+        }
+
+        .detail-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .detail-meta i {
+            color: var(--text-primary);
+        }
+
+        /* 威胁等级指示器 */
+        .threat-level {
+            width: 100%;
+            height: 20px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 1rem 0;
+            position: relative;
+            border: 1px solid var(--border-dark);
+        }
+
+        .threat-fill {
+            height: 100%;
+            transition: width 1s ease;
+            position: relative;
+            border-radius: 10px;
+        }
+
+        .threat-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg,
+                transparent,
+                rgba(255,255,255,0.3),
+                transparent);
+            animation: shimmer 1.5s infinite;
+        }
+
+        /* 统计网格 */
+        .detail-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-item {
+            background: rgba(40, 40, 50, 0.8);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-dark);
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-3px);
+            border-color: var(--text-primary);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--text-primary);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* 关系网络 */
+        .relations {
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: rgba(30, 30, 40, 0.8);
+            border-radius: 8px;
+            border-left: 4px solid var(--text-primary);
+            position: relative;
+        }
+
+        .relations::before {
+            content: '⚠';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            background: var(--accent-red);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .relations h4 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .relations p {
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* 危险标识 */
+        .danger-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--danger-gradient);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 2;
+            box-shadow: 0 0 10px var(--glow-red);
+            animation: badgePulse 1.5s infinite;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* 交互指示器 */
+        .interactive-hint {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.7);
+            color: var(--text-primary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.7rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .grid-item:hover .interactive-hint {
+            opacity: 1;
+        }
+
+        /* 紧急广播通知 */
+        .emergency-alert {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--danger-gradient);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            z-index: 10000;
+            display: none;
+            animation: alertFlash 0.5s infinite;
+        }
+
+        @keyframes alertFlash {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* 底部状态栏 */
+        .prison-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(18, 18, 24, 0.95);
+            border-radius: 10px;
+            border: 1px solid var(--border-dark);
+            flex-wrap: wrap;
+            gap: 1rem;
+            position: sticky;
+            bottom: 1rem;
+            z-index: 100;
+        }
+
+        .footer-left, .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .time-display {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: var(--accent-green);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0,0,0,0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            border: 1px solid var(--border-dark);
+        }
+
+        .warning-signal {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(196, 30, 58, 0.1);
+            border: 1px solid var(--accent-red);
+            border-radius: 5px;
+            color: var(--text-danger);
+            font-weight: 600;
+            animation: warningPulse 2s infinite;
+        }
+
+        @keyframes warningPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* 音量控制 */
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .volume-slider-container {
+            width: 100px;
+        }
+
+        #volumeSlider {
+            width: 100%;
+            height: 5px;
+            -webkit-appearance: none;
+            background: rgba(0,0,0,0.5);
+            border-radius: 3px;
+            outline: none;
+        }
+
+        #volumeSlider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--text-primary);
+            cursor: pointer;
+            border: 2px solid white;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1024px) {
+            .album-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+
+            .detail-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .prison-header {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .header-left, .header-right {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .prison-nav {
+                justify-content: center;
+            }
+
+            .album-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            }
+
+            .detail-content {
+                max-height: 80vh;
+            }
+
+            .prison-footer {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-left, .footer-right {
+                justify-content: center;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0.5rem;
+            }
+
+            .album-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .grid-item {
+                max-width: 100%;
+            }
+
+            .nav-link {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            .security-level {
+                min-width: 150px;
+            }
+
+            .detail-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        /* 移动端优化 */
+        @media (hover: none) and (pointer: coarse) {
+            .grid-overlay {
+                transform: translateY(0);
+                background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            }
+
+            .grid-item:hover {
+                transform: none;
+            }
+
+            .nav-link:hover {
+                transform: none;
+            }
+
+            .view-btn:hover, .search-btn:hover, .audio-btn:hover {
+                transform: none;
+            }
+
+            .lockdown-btn:hover, .report-btn:hover {
+                transform: none;
+            }
+
+            .stat-item:hover {
+                transform: none;
+            }
+
+            .interactive-hint {
+                display: none;
+            }
+        }
+
+        /* 触摸设备优化 */
+        @media (pointer: coarse) {
+            button, .nav-link, .grid-item {
+                min-height: 44px;
+                min-width: 44px;
+            }
+
+            .view-btn {
+                width: 44px;
+                height: 44px;
+            }
+
+            #volumeSlider::-webkit-slider-thumb {
+                width: 24px;
+                height: 24px;
+            }
+        }
+
+        /* 高对比度模式支持 */
+        @media (prefers-contrast: high) {
+            :root {
+                --primary-dark: #000000;
+                --secondary-dark: #111111;
+                --accent-red: #ff0000;
+                --text-primary: #0088ff;
+                --text-primary: #ffffff;
+                --text-secondary: #cccccc;
+            }
+
+            .grid-item, .detail-content, .prison-header, .prison-footer {
+                border-width: 2px;
+            }
+        }
+	</style>
+</head>
+<body>
+<!-- 扫描线效果 -->
+<div class="scanlines"></div>
+
+<!-- 点击反馈层 -->
+<div class="click-feedback" id="clickFeedback"></div>
+
+<!-- 紧急广播 -->
+<div class="emergency-alert" id="emergencyAlert">
+	⚠ 紧急情况！B区出现骚乱！所有人员立即就位！ ⚠
+</div>
+
+<!-- 安全门入口动画 -->
+<div class="prison-gate" id="prisonGate">
+	<div class="gate-left"></div>
+	<div class="gate-right"></div>
+	<div class="gate-text">
+		<h1><i class="fas fa-skull-crossbones"></i> BLOCK 13 禁区</h1>
+		<p>最高安全级别设施 | 监控系统离线</p>
+		<p style="font-size: 0.9rem; margin-top: 1rem; color: #ff6b6b;">
+			<i class="fas fa-exclamation-triangle"></i> 警告：内含高危犯人信息
+		</p>
+		<p style="font-size: 0.8rem; margin-top: 0.5rem; color: #3498db;">
+			<i class="fas fa-info-circle"></i> 正在初始化安全协议...
+		</p>
+	</div>
+</div>
+
+<!-- 主容器 -->
+<div class="container" id="mainContainer">
+	<!-- 顶部导航 -->
+	<header class="prison-header">
+		<div class="header-left">
+			<div class="prison-logo">
+				<i class="fas fa-user-lock"></i>
+				<span>BLOCK 13</span>
+			</div>
+			<nav class="prison-nav">
+				<a href="#" class="nav-link active" data-filter="all">全部犯人</a>
+				<a href="#" class="nav-link" data-filter="high"><i class="fas fa-skull"></i> 高危</a>
+				<a href="#" class="nav-link" data-filter="medium"><i class="fas fa-exclamation-triangle"></i> 中等</a>
+				<a href="#" class="nav-link" data-filter="low"><i class="fas fa-shield-alt"></i> 低危</a>
+				<a href="#" class="nav-link" data-filter="trustee"><i class="fas fa-user-check"></i> 事务犯</a>
+			</nav>
+		</div>
+		<div class="header-right">
+			<div class="security-level">
+				<span><i class="fas fa-radiation"></i> 威胁等级:</span>
+				<div class="security-bar">
+					<div class="security-fill" id="securityFill"></div>
+				</div>
+				<span class="level-text" id="securityLevel">极高</span>
+			</div>
+			<button class="search-btn" id="searchBtn" title="搜索犯人">
+				<i class="fas fa-search"></i>
+			</button>
+			<div class="inmate-count">
+				<i class="fas fa-users"></i>
+				<span>在押: <span id="inmateCount">0</span>/<span id="maxCapacity">200</span></span>
+			</div>
+		</div>
+	</header>
+
+	<!-- 搜索框 -->
+	<div class="search-container" id="searchContainer">
+		<input type="text" id="searchInput" placeholder="搜索犯人 (姓名、编号、犯罪类型)...">
+		<button id="closeSearch"><i class="fas fa-times"></i></button>
+	</div>
+
+	<!-- 档案内容区 -->
+	<main class="album-content">
+		<div class="content-header">
+			<h2><i class="fas fa-database"></i> 犯人档案库 <span style="color: #ff6b6b; font-size: 0.9rem;">最高机密</span></h2>
+			<div class="view-controls">
+				<button class="view-btn active" id="gridView" title="网格视图">
+					<i class="fas fa-th"></i>
+				</button>
+				<button class="view-btn" id="listView" title="列表视图">
+					<i class="fas fa-list"></i>
+				</button>
+			</div>
+		</div>
+
+		<!-- 档案网格 -->
+		<div class="album-grid" id="albumGrid">
+			<!-- 犯人档案项将通过JavaScript动态生成 -->
+		</div>
+
+		<!-- 详细档案面板 -->
+		<div class="detail-panel" id="detailPanel">
+			<button class="close-detail" id="closeDetail" title="关闭">
+				<i class="fas fa-times"></i>
+			</button>
+			<div class="detail-content">
+				<div class="detail-image-container">
+					<div class="danger-badge" id="detailBadge">极端危险</div>
+					<img id="detailImage" src="" alt="犯人照片">
+					<div class="detail-overlay">
+						<div class="detail-info">
+							<h3 id="detailTitle"></h3>
+							<div class="inmate-id" id="detailId"></div>
+
+							<!-- 状态标签 -->
+							<div id="detailStatus"></div>
+
+							<!-- 犯罪信息 -->
+							<div class="inmate-crime" id="detailCrime"></div>
+
+							<!-- 刑期信息 -->
+							<div class="detail-meta">
+								<span><i class="fas fa-calendar-alt"></i> 入监: <span id="detailEntryDate"></span></span>
+								<span><i class="fas fa-gavel"></i> 剩余: <span id="detailSentence"></span></span>
+								<span><i class="fas fa-door-closed"></i> 监室: <span id="detailCell"></span></span>
+								<span><i class="fas fa-id-badge"></i> 等级: <span id="detailClass"></span></span>
+							</div>
+
+							<!-- 威胁等级 -->
+							<div class="stat-item">
+								<div class="stat-label">威胁指数</div>
+								<div class="threat-level">
+									<div class="threat-fill" id="threatFill"></div>
+								</div>
+								<div class="stat-value" id="threatValue"></div>
+							</div>
+
+							<!-- 详细信息网格 -->
+							<div class="detail-stats">
+								<div class="stat-item">
+									<div class="stat-label">年龄</div>
+									<div class="stat-value" id="detailAge"></div>
+								</div>
+								<div class="stat-item">
+									<div class="stat-label">身高</div>
+									<div class="stat-value" id="detailHeight"></div>
+								</div>
+								<div class="stat-item">
+									<div class="stat-label">体重</div>
+									<div class="stat-value" id="detailWeight"></div>
+								</div>
+								<div class="stat-item">
+									<div class="stat-label">暴力倾向</div>
+									<div class="stat-value" id="detailViolence"></div>
+								</div>
+							</div>
+
+							<!-- 心理评估 -->
+							<div class="relations">
+								<h4><i class="fas fa-brain"></i> 心理评估</h4>
+								<p id="detailPsychology"></p>
+							</div>
+
+							<!-- 人际关系 -->
+							<div class="relations">
+								<h4><i class="fas fa-project-diagram"></i> 关系网络</h4>
+								<p id="detailRelations"></p>
+							</div>
+
+							<!-- 监管备注 -->
+							<div class="relations">
+								<h4><i class="fas fa-sticky-note"></i> 监管备注</h4>
+								<p id="detailNotes"></p>
+							</div>
+
+							<!-- 行为记录 -->
+							<div class="relations">
+								<h4><i class="fas fa-history"></i> 近期行为记录</h4>
+								<p id="detailBehavior"></p>
+							</div>
+
+							<!-- 交互按钮 -->
+							<div class="detail-meta" style="border-color: #8a2be2;">
+								<button class="report-btn" id="addNoteBtn" style="flex: 1;">
+									<i class="fas fa-edit"></i> 添加备注
+								</button>
+								<button class="lockdown-btn" id="transferBtn" style="flex: 1;">
+									<i class="fas fa-exchange-alt"></i> 转移犯人
+								</button>
+								<button class="search-btn" id="viewLogsBtn" style="flex: 1;">
+									<i class="fas fa-scroll"></i> 查看完整记录
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<!-- 底部状态栏 -->
+	<footer class="prison-footer">
+		<div class="footer-left">
+			<div class="time-display">
+				<i class="fas fa-clock"></i>
+				<span id="currentTime">00:00:00</span>
+			</div>
+			<div class="warning-signal" id="warningSignal">
+				<i class="fas fa-exclamation-triangle"></i>
+				<span>系统状态: <span id="systemStatus">正常</span></span>
+			</div>
+		</div>
+		<div class="footer-right">
+			<div class="audio-controls">
+				<button id="audioBtn" class="audio-btn" title="音效控制">
+					<i class="fas fa-volume-up"></i>
+				</button>
+				<div class="volume-slider-container">
+					<input type="range" id="volumeSlider" min="0" max="100" value="30" title="音量调节">
+				</div>
+			</div>
+			<button class="lockdown-btn" id="lockdownBtn" title="紧急封锁">
+				<i class="fas fa-lock"></i> 紧急封锁
+			</button>
+			<button class="report-btn" id="reportBtn" title="生成报告">
+				<i class="fas fa-file-export"></i> 报告
+			</button>
+		</div>
+	</footer>
+</div>
+
+<!-- 音频元素 -->
+<audio id="prisonAudio" loop>
+	<source src="https://assets.mixkit.co/sfx/preview/mixkit-ambient-sci-fi-909.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+	// 犯人数据
+    const inmates = [
+		{
+			id: "08812",
+			name: "幽靈花",
+			nickname: "'小桃'",
+			status: "high",
+			statusText: "高危精神异常",
+			crime: "连环杀人 / 越狱未遂",
+			entryDate: "2025-03-10",
+			sentence: "终身监禁",
+			remaining: "终身",
+			cell: "X-13（最高隔离）",
+			threatLevel: 95,
+			threatText: "极度危险 - 精神不稳定",
+			age: 18,
+			height: "168cm",
+			weight: "52kg",
+			violence: "92%",
+			psychology: "多重人格障碍，主人格极度危险。智商极高，擅长心理操控与伪装。有三次成功越狱记录。",
+			relations: "拒绝任何人际接触。疑似与外部极端组织有精神共鸣。",
+			notes: "24小时监控。所有狱警需穿戴防精神污染装置。禁止任何访客。",
+			behavior: "最近一个月6次自残行为。发现用血在墙上绘制神秘符号。需要每日强制镇静。",
+			image: "./image/prison/NR8AVjViQ1FBM09EYzVNRGswTmpZcTNjNW5VdlRwRUEhIQUAcXVuZ3o!.png"
+		},
+		{
+			id: "86302",
+			name: "Jill",
+			nickname: "'朝夕优'",
+			status: "medium",
+			statusText: "暴力倾向",
+			crime: "重伤害 / 黑帮火拼",
+			entryDate: "2025-03-10",
+			sentence: "18年",
+			remaining: "16年8个月",
+			cell: "C-07（加固牢房）",
+			threatLevel: 65,
+			threatText: "中等危险",
+			age: 18,
+			height: "175cm",
+			weight: "65kg",
+			violence: "72%",
+			psychology: "创伤后应激障碍，对突发声音极度敏感。曾为雇佣兵，战斗经验丰富。",
+			relations: "前雇佣兵团成员，与P-003有敌对历史。在狱中保持低调。",
+			notes: "需5人小组押送。禁止接触金属制品。每周强制心理辅导。",
+			behavior: "上周因噪音袭击狱友。已被转移至隔离区。情绪逐渐稳定。",
+			image: "./image/prison/NR8AVjViQ1FBM09EYzVNRGswTmpaeTZjNW5tUmwxR1EhIQUAcXVuZ3o!.png"
+		},
+		{
+			id: "44968",
+			name: "Yan",
+			nickname: "'Yan'",
+			status: "medium",
+			statusText: "毒品交易",
+			crime: "跨国贩毒 / 洗钱",
+			entryDate: "2025-03-12",
+			sentence: "25年",
+			remaining: "23年4个月",
+			cell: "D-11（监控牢房）",
+			threatLevel: 58,
+			threatText: "中等危险 - 组织能力强",
+			age: 18,
+			height: "182cm",
+			weight: "75kg",
+			violence: "40%",
+			psychology: "自恋型人格，将监狱视为新商业帝国。善于收买人心。",
+			relations: "在狱中重建贩毒网络。贿赂2名低风险犯人作为眼线。",
+			notes: "所有财务记录监控。禁止接受任何外部包裹。",
+			behavior: "近期试图通过图书藏毒被发现。已加强监控等级。",
+			image: "./image/prison/NR8AVjViQ1FBM09EYzVNRGswTmpZN050Rm4qdlphQ1EhIQUAcXVuZ3o!.png"
+		},
+		{
+			id: "09394",
+			name: "邑小小干",
+			nickname: "'小干'",
+			status: "low",
+			statusText: "低风险",
+			crime: "网络诈骗 / 数据窃取",
+			entryDate: "2025-03-12",
+			sentence: "8年",
+			remaining: "6年2个月",
+			cell: "E-05（普通牢房）",
+			threatLevel: 22,
+			threatText: "技术威胁 - 无暴力倾向",
+			age: 24,
+			height: "170cm",
+			weight: "60kg",
+			violence: "5%",
+			psychology: "社交障碍，沉迷虚拟世界。无物理威胁，但可能尝试网络攻击。",
+			relations: "与P-004有技术交流。被其他犯人孤立。",
+			notes: "严格限制电子设备。表现良好，可申请减刑。",
+			behavior: "协助修复监狱管理系统漏洞。",
+			image: "./image/prison/NR8AVjViQ1FBM09EYzVNRGswTmphaU9ORm5XYlg3TFEhIQUAcXVuZ3o!.png"
+		},
+		{
+			id: "91643",
+			name: "隼人",
+			nickname: "'无名'",
+			status: "high",
+			statusText: "身份不明",
+			crime: "未知 / 拒捕时重伤害3名警员",
+			entryDate: "2025-03-12",
+			sentence: "无限期羁押",
+			remaining: "无限期",
+			cell: "X-01（最高机密）",
+			threatLevel: 88,
+			threatText: "高度未知风险",
+			age: "未知",
+			height: "180cm",
+			weight: "75kg",
+			violence: "85%",
+			psychology: "完全沉默，拒绝任何交流。虹膜与DNA无匹配记录。随身携带神秘金属牌。",
+			relations: "完全孤立。任何接近的犯人均会遭受攻击。",
+			notes: "收容于绝密区域。仅有3名高级官员知晓其存在。每日需注射镇静剂。",
+			behavior: "手指持续绘制不明符号。曾对监控设备造成电磁干扰。",
+			image: "./image/prison/NR8AVjViQ1FBM09EYzVNRGswTmpaRU85Rm5LTUdjR2chIQUAcXVuZ3o!.png"
+		},
+		{
+			id: "64865",
+			name: "木头睦头",
+			nickname: "'木头'",
+			status: "low",
+			statusText: "模范犯人",
+			crime: "过失致死 / 交通肇事",
+			entryDate: "2025-03-12",
+			sentence: "10年",
+			remaining: "8年3个月",
+			cell: "F-08（普通牢房）",
+			threatLevel: 12,
+			threatText: "无威胁",
+			age: 25,
+			height: "173cm",
+			weight: "85kg",
+			violence: "3%",
+			psychology: "深度悔罪，参加受害者家属安抚项目。严重抑郁倾向。",
+			relations: "与P-008组成忏悔者互助小组。受狱警信任。",
+			notes: "可申请日间劳动。负责监狱花园维护。表现优异。",
+			behavior: "连续6个月无违规。正在申请受害者家属原谅计划。",
+			image: "./image/prison/NR8AVjViQ1FBM09EYzVNRGswTmpZbFdORm41dlg4TVEhIQUAcXVuZ3o!.png"
+		},
+		{
+			id: "09923",
+			name: "鲸波万仞",
+			nickname: "NULL",
+			status: "high",
+			statusText: "极端暴力",
+			crime: "谋杀 / 抢劫盗窃",
+			entryDate: "2025-03-12",
+			sentence: "终身监禁",
+			remaining: "终身",
+			cell: "B-09",
+			threatLevel: 93,
+			threatText: "极度危险",
+			age: 18,
+			height: "195cm",
+			weight: "110kg",
+			violence: "96%",
+			psychology: "创伤后应激障碍，对幽闭环境有攻击性。",
+			relations: "控制狱中走私渠道。有5名暴力追随者。",
+			notes: "需特殊环境关押。每日淋浴时间不得超过5分钟。禁止接触水源。",
+			behavior: "上周打伤2名试图制止其藏水的狱警。目前处于单独监禁。",
+			image: "./image/prison/NR8AVjViQ1FBM09EYzVNRGswTmpaZlhkRm4qNWFLQ2chIQUAcXVuZ3o!.png"
+		},
+		{
+			id: "45394",
+			name: "Vricr",
+			nickname: "'V'",
+			status: "medium",
+			statusText: "间谍嫌疑",
+			crime: "间谍活动 / 窃取国家机密",
+			entryDate: "2025-03-13",
+			sentence: "40年",
+			remaining: "39年7个月",
+			cell: "S-05（反间谍牢房）",
+			threatLevel: 71,
+			threatText: "高情报价值",
+			age: 20,
+			height: "177cm",
+			weight: "68kg",
+			violence: "25%",
+			psychology: "受过反审讯训练。仅在被触及时才反击。极度冷静。",
+			relations: "与外部情报组织有秘密联系。在狱中保持沉默。",
+			notes: "24小时语言监控。所有访客需经过国安部门批准。",
+			behavior: "发现用密写墨水在书籍中传递信息。已没收所有书写工具。",
+			image: "./image/prison/NR8AVjViQ1FBM09EYzVNRGswTmphMGM5Sm5VUGwqR1EhIQUAcXVuZ3o!.png"
+		},
+		{
+			id: "89026",
+			name: "緋雪yuki",
+			nickname: "'Yuki'",
+			status: "low",
+			statusText: "技术型",
+			crime: "人工智能犯罪 / 深度伪造",
+			entryDate: "2025-03-13",
+			sentence: "12年",
+			remaining: "10年9个月",
+			cell: "D-14（电子牢房）",
+			threatLevel: 18,
+			threatText: "数字威胁",
+			age: 28,
+			height: "165cm",
+			weight: "55kg",
+			violence: "8%",
+			psychology: "人格分裂，认为自己是AI。无物理威胁但可能尝试逻辑炸弹攻击。",
+			relations: "与P-004有技术竞争。被其他犯人视为怪人。",
+			notes: "无网络访问权限。负责监狱数据录入。表现良好。",
+			behavior: "开发离线编程课程供其他犯人学习。获得季度表现奖。",
+			image: "./image/prison/NR8AVjViQ1FBM09EYzVNRGswTmpiVmR0Sm5JMU9uRFEhIQUAcXVuZ3o!.png"
+		},
+		{
+			id: "10515",
+			name: "苹果热橙茶",
+			nickname: "'调酒师'",
+			status: "trustee",
+			statusText: "事务犯",
+			crime: "诈骗 / 非法集资",
+			entryDate: "2025-03-13",
+			sentence: "15年",
+			remaining: "12年4个月",
+			cell: "A-03（事务犯宿舍）",
+			threatLevel: 15,
+			threatText: "最低风险",
+			age: 34,
+			height: "168cm",
+			weight: "60kg",
+			violence: "3%",
+			psychology: "高魅力人格，擅长安抚他人。将监狱视为大型社交实验。",
+			relations: "监狱心理辅导员助理。与所有犯人保持良好关系。",
+			notes: "可申请日间外出。负责接待新犯人。减刑评估优秀。",
+			behavior: "组织多次心理健康活动。协助破获3起斗殴预谋。",
+			image: "./image/prison/NR8AVjViQ1FBM09EYzVNRGswTmpiT3pOSm5QZ0pIRGchIQUAcXVuZ3o!.png"
+		},
+		{
+			id: "51470",
+			name: "Unvol",
+			nickname: "'UN'",
+			status: "medium",
+			statusText: "暴力倾向",
+			crime: "纵火 / 故意破坏公共财产",
+			entryDate: "2025-03-13",
+			sentence: "20年",
+			remaining: "18年11个月",
+			cell: "M-06（软包牢房）",
+			threatLevel: 55,
+			threatText: "环境威胁",
+			age: 26,
+			height: "180cm",
+			weight: "63kg",
+			violence: "50%",
+			psychology: "边缘性人格障碍，情绪极度不稳定。有严重自残行为历史。",
+			relations: "被其他犯人恐惧。仅有1名心理医生可接近。",
+			notes: "牢房无尖锐物品。每日3次精神检查。禁止独处。",
+			behavior: "上周2次自残未遂。已增加药物治疗剂量。",
+			image: "./image/prison/NR8AVjViQ1FBM09EYzVNRGswTmpaVzA5Sm5Bb2RaTmchIQUAcXVuZ3o!.png"
+		},
+		{
+			id: "11226",
+			name: "大白鹅",
+			nickname: "'鹅'",
+			status: "trustee",
+			statusText: "模范事务犯",
+			crime: "非法入侵 /  whistleblowing（泄密）",
+			entryDate: "2025-03-13",
+			sentence: "7年",
+			remaining: "4年1个月",
+			cell: "A-09（事务犯宿舍）",
+			threatLevel: 10,
+			threatText: "无威胁",
+			age: 31,
+			height: "176cm",
+			weight: "72kg",
+			violence: "1%",
+			psychology: "道德感极强，认为自己是正义执行者。在狱中广受尊重。",
+			relations: "图书馆管理员。受狱警和犯人双重信任。",
+			notes: "可申请假释。负责监狱内部新闻编辑。无任何违规记录。",
+			behavior: "正在撰写揭发前雇主的回忆录。组织识字班。获得年度模范犯人。",
+			image: "./image/prison/NR8AVjViQ1FBM09EYzVNRGswTmpicTF0Sm55SDlhTVEhIQUAcXVuZ3o!.png"
+		}
+	];
+
+    // 威胁等级颜色函数
+    function getThreatColor(level) {
+        if (level >= 90) return '#ff0000';
+        if (level >= 70) return '#ff6b35';
+        if (level >= 50) return '#ffa502';
+        if (level >= 30) return '#f1c40f';
+        if (level >= 10) return '#2ecc71';
+        return '#27ae60';
+    }
+
+    // 获取状态颜色
+    function getStatusColor(status) {
+        const colors = {
+            high: '#c41e3a',
+            medium: '#ff6b35',
+            low: '#27ae60',
+            trustee: '#1a73e8'
+        };
+        return colors[status] || '#666';
+    }
+
+    // 系统状态
+    let systemStatus = {
+        threat: 'high',
+        emergency: false,
+        lastAlert: null
+    };
+
+    // 全局变量
+    let currentFilter = 'all';
+    let isGridView = true;
+
+    // 页面加载完成后初始化
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('BLOCK 13 系统初始化...');
+
+        // 确保主容器隐藏
+        document.getElementById('mainContainer').style.display = 'none';
+
+        // 初始化安全门点击事件
+        initializeGateClick();
+
+        console.log('安全门就绪，等待点击...');
+    });
+
+    // 修复点击事件的函数
+    function initializeGateClick() {
+        const prisonGate = document.getElementById('prisonGate');
+        const clickFeedback = document.getElementById('clickFeedback');
+
+        // 移除之前的事件监听器（避免重复）
+        prisonGate.removeEventListener('click', handleGateClick);
+        prisonGate.removeEventListener('touchend', handleGateClick);
+
+        // 添加点击事件
+        prisonGate.addEventListener('click', handleGateClick);
+        prisonGate.addEventListener('touchend', handleGateClick);
+
+        // 添加键盘事件支持（Enter键）
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && prisonGate.style.display !== 'none') {
+                handleGateClick(e);
+            }
+        });
+
+        console.log('安全门点击事件已初始化');
+    }
+
+    // 处理点击事件
+    function handleGateClick(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        console.log('安全门被点击');
+
+        // 显示点击反馈
+        const clickFeedback = document.getElementById('clickFeedback');
+        clickFeedback.style.animation = 'none';
+        setTimeout(() => {
+            clickFeedback.style.animation = 'clickEffect 0.5s ease-out';
+        }, 10);
+
+        // 播放点击音效
+        playSound('select');
+
+        // 开门动画
+        openPrisonGate();
+    }
+
+    // 开门函数 - 使用原始颜色
+    function openPrisonGate() {
+        const prisonGate = document.getElementById('prisonGate');
+        const gateLeft = document.querySelector('.gate-left');
+        const gateRight = document.querySelector('.gate-right');
+        const gateText = document.querySelector('.gate-text');
+
+        // 更新文字提示
+        gateText.innerHTML = `
+            <h1><i class="fas fa-cogs"></i> 系统启动中</h1>
+            <p>正在加载监控系统...</p>
+            <div style="margin-top: 1rem; width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px;">
+                <div id="loadingBar" style="width: 0%; height: 100%; background: var(--accent-red); border-radius: 2px; transition: width 2s ease;"></div>
+            </div>
+        `;
+
+        // 开门动画 - 使用原始颜色
+        gateLeft.style.transform = 'translateX(-100%)';
+        gateRight.style.transform = 'translateX(100%)';
+
+        // 模拟加载进度
+        const loadingBar = document.getElementById('loadingBar');
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += 10;
+            loadingBar.style.width = `${progress}%`;
+
+            if (progress >= 100) {
+                clearInterval(interval);
+
+                // 加载完成后淡出
+                setTimeout(() => {
+                    prisonGate.style.opacity = '0';
+                    setTimeout(() => {
+                        prisonGate.style.display = 'none';
+                        document.getElementById('mainContainer').style.display = 'block';
+
+                        // 初始化主系统
+                        initializeMainSystem();
+
+                        // 播放系统启动音效
+                        playSound('alarm');
+                    }, 500);
+                }, 500);
+            }
+        }, 200);
+    }
+
+    // 初始化主系统
+    function initializeMainSystem() {
+        console.log('监控系统启动...');
+
+        // 加载犯人数据
+        loadInmates();
+        updateInmateCount();
+        updateSecurityLevel();
+
+        // 初始化时间显示
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // 初始化音频
+        const prisonAudio = document.getElementById('prisonAudio');
+        const volumeSlider = document.getElementById('volumeSlider');
+        prisonAudio.volume = volumeSlider.value / 100;
+
+        // 事件监听器
+        setupEventListeners();
+
+        // 显示欢迎消息
+        setTimeout(() => {
+            const alertEl = document.getElementById('emergencyAlert');
+            alertEl.textContent = '⚠ 监控系统已上线！所有犯人位置追踪激活！ ⚠';
+            alertEl.style.display = 'block';
+
+            setTimeout(() => {
+                alertEl.style.display = 'none';
+            }, 3000);
+
+            playSound('confirm');
+        }, 1000);
+
+        // 定期更新系统状态
+        setInterval(updateSystemStatus, 30000);
+
+        // 移动端检测
+        detectMobile();
+    }
+
+    // 加载犯人数据
+    function loadInmates(filter = 'all') {
+        const albumGrid = document.getElementById('albumGrid');
+        albumGrid.innerHTML = '';
+
+        const filteredInmates = filter === 'all'
+            ? inmates
+            : inmates.filter(inmate => inmate.status === filter);
+
+        filteredInmates.forEach(inmate => {
+            const gridItem = document.createElement('div');
+            gridItem.className = `grid-item ${inmate.status === 'high' ? 'high-risk' : ''}`;
+            gridItem.dataset.id = inmate.id;
+            gridItem.dataset.status = inmate.status;
+
+            const statusClass = `status-${inmate.status === 'high' ? 'high-risk' : inmate.status === 'trustee' ? 'trustee' : inmate.status === 'low' ? 'low-risk' : 'medium'}`;
+
+            gridItem.innerHTML = `
+                <div class="grid-img-container">
+                    <img src="${inmate.image}" alt="${inmate.name}" loading="lazy">
+                    <div class="grid-overlay">
+                        <div class="inmate-info">
+                            <h3>${inmate.name}</h3>
+                            <div class="inmate-id">${inmate.id}</div>
+                            <div class="inmate-status ${statusClass}">${inmate.statusText}</div>
+                            <div class="inmate-crime">${inmate.crime.split(' / ')[0]}</div>
+                            <div class="detail-meta">
+                                <span><i class="fas fa-door-closed"></i> ${inmate.cell}</span>
+                                <span><i class="fas fa-radiation"></i> 威胁: ${inmate.threatLevel}%</span>
+                            </div>
+                        </div>
+                    </div>
+                    ${inmate.status === 'high' ? '<div class="danger-badge">高危</div>' : ''}
+                    <div class="interactive-hint">点击查看详情</div>
+                </div>
+            `;
+
+            // 添加点击事件
+            gridItem.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showDetail(inmate);
+            });
+
+            // 添加触摸设备支持
+            gridItem.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                showDetail(inmate);
+            });
+
+            albumGrid.appendChild(gridItem);
+        });
+
+        // 更新视图
+        const albumGridEl = document.getElementById('albumGrid');
+        if (!isGridView) {
+            albumGridEl.classList.add('list-view');
+        } else {
+            albumGridEl.classList.remove('list-view');
+        }
+    }
+
+    // 显示详情
+    function showDetail(inmate) {
+        console.log(`查看档案: ${inmate.name}`);
+
+        // 更新详情内容
+        document.getElementById('detailTitle').textContent = `${inmate.name} ${inmate.nickname ? `"${inmate.nickname}"` : ''}`;
+        document.getElementById('detailId').textContent = `编号: ${inmate.id}`;
+        document.getElementById('detailImage').src = inmate.image;
+        document.getElementById('detailImage').alt = `${inmate.name} - ${inmate.statusText}`;
+
+        // 状态标签
+        const statusContainer = document.getElementById('detailStatus');
+        const statusClass = `status-${inmate.status === 'high' ? 'high-risk' : inmate.status === 'trustee' ? 'trustee' : inmate.status === 'low' ? 'low-risk' : 'medium'}`;
+        statusContainer.innerHTML = `<span class="inmate-status ${statusClass}">${inmate.statusText}</span>`;
+
+        // 危险标识
+        const badge = document.getElementById('detailBadge');
+        badge.textContent = inmate.status === 'high' ? '极端危险' : inmate.status === 'medium' ? '中等危险' : '低风险';
+        badge.style.background = inmate.status === 'high' ? 'linear-gradient(135deg, #c41e3a, #8b0000)' :
+                               inmate.status === 'medium' ? 'linear-gradient(135deg, #ff6b35, #cc5500)' :
+                               'linear-gradient(135deg, #1a73e8, #0d47a1)';
+
+        // 犯罪信息
+        document.getElementById('detailCrime').textContent = inmate.crime;
+
+        // 刑期信息
+        document.getElementById('detailEntryDate').textContent = inmate.entryDate;
+        document.getElementById('detailSentence').textContent = inmate.remaining;
+        document.getElementById('detailCell').textContent = inmate.cell;
+        document.getElementById('detailClass').textContent = inmate.statusText;
+
+        // 威胁等级
+        const threatFill = document.getElementById('threatFill');
+        const threatValue = document.getElementById('threatValue');
+        threatFill.style.width = `${inmate.threatLevel}%`;
+        threatFill.style.background = `linear-gradient(90deg, ${getThreatColor(inmate.threatLevel)}, ${getThreatColor(inmate.threatLevel)}80)`;
+        threatValue.textContent = `${inmate.threatLevel}% - ${inmate.threatText}`;
+        threatValue.style.color = getThreatColor(inmate.threatLevel);
+
+        // 详细信息
+        document.getElementById('detailAge').textContent = `${inmate.age}岁`;
+        document.getElementById('detailHeight').textContent = inmate.height;
+        document.getElementById('detailWeight').textContent = inmate.weight;
+        document.getElementById('detailViolence').textContent = inmate.violence;
+
+        // 心理评估和关系
+        document.getElementById('detailPsychology').textContent = inmate.psychology;
+        document.getElementById('detailRelations').textContent = inmate.relations;
+        document.getElementById('detailNotes').textContent = inmate.notes;
+        document.getElementById('detailBehavior').textContent = inmate.behavior;
+
+        // 显示详情面板
+        const detailPanel = document.getElementById('detailPanel');
+        detailPanel.classList.add('active');
+
+        // 阻止背景滚动
+        document.body.style.overflow = 'hidden';
+
+        // 播放查看音效
+        playSound('select');
+    }
+
+    // 更新犯人计数
+    function updateInmateCount() {
+        const inmateCount = document.getElementById('inmateCount');
+        inmateCount.textContent = inmates.length;
+
+        // 更新容量显示
+        const maxCapacity = document.getElementById('maxCapacity');
+        const capacity = 200;
+        const percentage = (inmates.length / capacity) * 100;
+
+        if (percentage > 90) {
+            maxCapacity.style.color = '#ff4757';
+        } else if (percentage > 75) {
+            maxCapacity.style.color = '#ffa502';
+        } else {
+            maxCapacity.style.color = '#2ecc71';
+        }
+    }
+
+    // 更新安全等级
+    function updateSecurityLevel() {
+        // 根据高危犯人数计算威胁等级
+        const highRiskCount = inmates.filter(i => i.status === 'high').length;
+        const mediumRiskCount = inmates.filter(i => i.status === 'medium').length;
+        const totalCount = inmates.length;
+
+        // 综合威胁评分
+        let threatScore = (highRiskCount * 10) + (mediumRiskCount * 5);
+        let threatPercentage = Math.min(100, (threatScore / totalCount) * 20);
+
+        let level = '低';
+        let fillPercentage = 25;
+        let levelText = '正常';
+        let color = '#2ecc71';
+
+        if (threatPercentage > 80) {
+            level = '极高';
+            fillPercentage = 95;
+            levelText = '紧急状态';
+            color = '#ff0000';
+        } else if (threatPercentage > 60) {
+            level = '高';
+            fillPercentage = 75;
+            levelText = '高度警戒';
+            color = '#ff6b35';
+        } else if (threatPercentage > 40) {
+            level = '中';
+            fillPercentage = 55;
+            levelText = '加强警戒';
+            color = '#ffa502';
+        } else if (threatPercentage > 20) {
+            level = '低';
+            fillPercentage = 35;
+            levelText = '正常';
+            color = '#f1c40f';
+        }
+
+        const securityFill = document.getElementById('securityFill');
+        const securityLevel = document.getElementById('securityLevel');
+
+        securityFill.style.width = `${fillPercentage}%`;
+        securityFill.style.background = `linear-gradient(90deg, ${color}, ${color}80)`;
+        securityLevel.textContent = levelText;
+        securityLevel.style.color = color;
+
+        // 更新系统状态显示
+        const systemStatusEl = document.getElementById('systemStatus');
+        systemStatusEl.textContent = levelText;
+        systemStatusEl.style.color = color;
+    }
+
+    // 更新时间
+    function updateTime() {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('zh-CN', {
+            hour12: false,
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        });
+
+        document.getElementById('currentTime').textContent = timeString;
+
+        // 每小时更新一次安全等级
+        if (now.getMinutes() === 0 && now.getSeconds() < 2) {
+            updateSecurityLevel();
+            playSound('update');
+        }
+
+        // 随机系统状态变化
+        if (now.getSeconds() === 0 && Math.random() > 0.8) {
+            randomSystemEvent();
+        }
+    }
+
+    // 设置事件监听器
+    function setupEventListeners() {
+        // 关闭详情
+        const closeDetail = document.getElementById('closeDetail');
+        const detailPanel = document.getElementById('detailPanel');
+
+        closeDetail.addEventListener('click', () => {
+            detailPanel.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            playSound('close');
+        });
+
+        // 点击详情面板外部关闭
+        detailPanel.addEventListener('click', (e) => {
+            if (e.target === detailPanel) {
+                detailPanel.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                playSound('close');
+            }
+        });
+
+        // 搜索功能
+        const searchBtn = document.getElementById('searchBtn');
+        const searchContainer = document.getElementById('searchContainer');
+        const searchInput = document.getElementById('searchInput');
+        const closeSearch = document.getElementById('closeSearch');
+
+        searchBtn.addEventListener('click', () => {
+            searchContainer.classList.toggle('active');
+            if (searchContainer.classList.contains('active')) {
+                searchInput.focus();
+                playSound('open');
+            } else {
+                playSound('close');
+            }
+        });
+
+        closeSearch.addEventListener('click', () => {
+            searchContainer.classList.remove('active');
+            searchInput.value = '';
+            loadInmates(currentFilter);
+            playSound('close');
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            if (searchTerm.length === 0) {
+                loadInmates(currentFilter);
+                return;
+            }
+
+            const filtered = inmates.filter(inmate =>
+                inmate.name.toLowerCase().includes(searchTerm) ||
+                inmate.id.toLowerCase().includes(searchTerm) ||
+                inmate.crime.toLowerCase().includes(searchTerm) ||
+                inmate.cell.toLowerCase().includes(searchTerm) ||
+                (inmate.nickname && inmate.nickname.toLowerCase().includes(searchTerm))
+            );
+
+            const albumGrid = document.getElementById('albumGrid');
+            albumGrid.innerHTML = '';
+
+            filtered.forEach(inmate => {
+                const gridItem = document.createElement('div');
+                gridItem.className = `grid-item ${inmate.status === 'high' ? 'high-risk' : ''}`;
+                gridItem.dataset.id = inmate.id;
+
+                const statusClass = `status-${inmate.status === 'high' ? 'high-risk' : inmate.status === 'trustee' ? 'trustee' : inmate.status === 'low' ? 'low-risk' : 'medium'}`;
+
+                gridItem.innerHTML = `
+                    <div class="grid-img-container">
+                        <img src="${inmate.image}" alt="${inmate.name}">
+                        <div class="grid-overlay">
+                            <div class="inmate-info">
+                                <h3>${inmate.name}</h3>
+                                <div class="inmate-id">${inmate.id}</div>
+                                <div class="inmate-status ${statusClass}">${inmate.statusText}</div>
+                                <div class="inmate-crime">${inmate.crime.split(' / ')[0]}</div>
+                            </div>
+                        </div>
+                        ${inmate.status === 'high' ? '<div class="danger-badge">高危</div>' : ''}
+                    </div>
+                `;
+
+                gridItem.addEventListener('click', () => showDetail(inmate));
+                albumGrid.appendChild(gridItem);
+            });
+
+            // 搜索结果提示
+            if (filtered.length === 0) {
+                albumGrid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #666;">
+                        <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <h3>未找到匹配的犯人</h3>
+                        <p>尝试其他搜索关键词</p>
+                    </div>
+                `;
+            }
+        });
+
+        // 导航过滤
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+
+                currentFilter = link.dataset.filter;
+                loadInmates(currentFilter);
+                playSound('click');
+            });
+        });
+
+        // 视图切换
+        const gridView = document.getElementById('gridView');
+        const listView = document.getElementById('listView');
+
+        gridView.addEventListener('click', () => {
+            gridView.classList.add('active');
+            listView.classList.remove('active');
+            isGridView = true;
+            document.getElementById('albumGrid').classList.remove('list-view');
+            playSound('click');
+        });
+
+        listView.addEventListener('click', () => {
+            listView.classList.add('active');
+            gridView.classList.remove('active');
+            isGridView = false;
+            document.getElementById('albumGrid').classList.add('list-view');
+            playSound('click');
+        });
+
+        // 音频控制
+        const audioBtn = document.getElementById('audioBtn');
+        const volumeSlider = document.getElementById('volumeSlider');
+        const prisonAudio = document.getElementById('prisonAudio');
+
+        audioBtn.addEventListener('click', () => {
+            if (prisonAudio.paused) {
+                prisonAudio.play().catch(e => console.log('音频播放失败:', e));
+                audioBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+                audioBtn.title = '关闭音效';
+            } else {
+                prisonAudio.pause();
+                audioBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                audioBtn.title = '开启音效';
+            }
+            playSound('click');
+        });
+
+        volumeSlider.addEventListener('input', (e) => {
+            prisonAudio.volume = e.target.value / 100;
+        });
+
+        // 锁定按钮
+        const lockdownBtn = document.getElementById('lockdownBtn');
+        lockdownBtn.addEventListener('click', () => {
+            if (!lockdownBtn.classList.contains('active')) {
+                // 启动封锁
+                lockdownBtn.classList.add('active');
+                lockdownBtn.innerHTML = '<i class="fas fa-lock"></i> 封锁中...';
+
+                // 触发紧急警报
+                triggerEmergency('手动封锁启动');
+
+                // 播放警报声
+                playSound('alarm');
+
+                // 30秒后自动解除
+                setTimeout(() => {
+                    lockdownBtn.classList.remove('active');
+                    lockdownBtn.innerHTML = '<i class="fas fa-lock"></i> 紧急封锁';
+                    systemStatus.emergency = false;
+                    updateSystemStatus();
+                }, 30000);
+            }
+        });
+
+        // 报告按钮
+        const reportBtn = document.getElementById('reportBtn');
+        reportBtn.addEventListener('click', () => {
+            playSound('click');
+
+            // 生成报告
+            const report = generateReport();
+
+            // 显示报告（简化版）
+            alert(`报告已生成:\n\n${report}\n\n报告已保存至系统日志。`);
+        });
+
+        // 详情面板内的按钮
+        document.getElementById('addNoteBtn').addEventListener('click', () => {
+            const inmateName = document.getElementById('detailTitle').textContent;
+            const note = prompt(`为 ${inmateName} 添加备注:`);
+            if (note) {
+                playSound('confirm');
+                alert('备注已添加');
+            }
+        });
+
+        document.getElementById('transferBtn').addEventListener('click', () => {
+            playSound('click');
+            alert('转移请求已发送至调度中心');
+        });
+
+        document.getElementById('viewLogsBtn').addEventListener('click', () => {
+            playSound('click');
+            alert('完整记录已加载（此处为演示）');
+        });
+
+        // 键盘快捷键
+        document.addEventListener('keydown', (e) => {
+            // ESC关闭详情面板
+            if (e.key === 'Escape' && detailPanel.classList.contains('active')) {
+                detailPanel.classList.remove('active');
+                document.body.style.overflow = 'auto';
+                playSound('close');
+            }
+
+            // Ctrl+F搜索
+            if (e.ctrlKey && e.key === 'f') {
+                e.preventDefault();
+                searchContainer.classList.add('active');
+                searchInput.focus();
+                playSound('open');
+            }
+
+            // Ctrl+L锁定
+            if (e.ctrlKey && e.key === 'l') {
+                e.preventDefault();
+                lockdownBtn.click();
+            }
+        });
+    }
+
+    // 更新系统状态
+    function updateSystemStatus() {
+        const warningSignal = document.getElementById('warningSignal');
+        const systemStatusEl = document.getElementById('systemStatus');
+
+        if (systemStatus.emergency) {
+            warningSignal.style.animationDuration = '0.5s';
+            systemStatusEl.textContent = '紧急状态';
+            systemStatusEl.style.color = '#ff0000';
+        } else {
+            // 随机轻微状态变化
+            const statuses = ['正常', '监控中', '稳定', '例行检查'];
+            const colors = ['#2ecc71', '#3498db', '#f1c40f', '#9b59b6'];
+            const randomIndex = Math.floor(Math.random() * statuses.length);
+
+            warningSignal.style.animationDuration = '2s';
+            systemStatusEl.textContent = statuses[randomIndex];
+            systemStatusEl.style.color = colors[randomIndex];
+        }
+    }
+
+    // 随机系统事件
+    function randomSystemEvent() {
+        const events = [
+            { type: 'warning', message: 'B区摄像头 #23 信号不稳定' },
+            { type: 'info', message: '例行系统扫描完成，无异常' },
+            { type: 'warning', message: 'C区温度异常，已调整空调' },
+            { type: 'info', message: '数据库备份完成' }
+        ];
+
+        const event = events[Math.floor(Math.random() * events.length)];
+        console.log(`系统事件: ${event.message}`);
+
+        // 轻微更新界面提示
+        if (event.type === 'warning') {
+            const warningSignal = document.getElementById('warningSignal');
+            const originalText = warningSignal.querySelector('span').textContent;
+
+            warningSignal.querySelector('span').textContent = `警告: ${event.message}`;
+            warningSignal.style.animationDuration = '1s';
+
+            setTimeout(() => {
+                warningSignal.querySelector('span').textContent = originalText;
+                warningSignal.style.animationDuration = '2s';
+            }, 5000);
+        }
+    }
+
+    // 触发紧急事件
+    function triggerEmergency(reason = '检测到异常活动') {
+        console.log(`紧急事件触发: ${reason}`);
+
+        systemStatus.emergency = true;
+        systemStatus.lastAlert = new Date();
+
+        const emergencyAlert = document.getElementById('emergencyAlert');
+        emergencyAlert.textContent = `⚠ 紧急情况！${reason} 所有人员立即就位！ ⚠`;
+        emergencyAlert.style.display = 'block';
+
+        // 更新系统状态
+        updateSystemStatus();
+
+        // 播放警报声
+        playSound('alarm');
+
+        // 5秒后隐藏警报
+        setTimeout(() => {
+            emergencyAlert.style.display = 'none';
+        }, 5000);
+
+        // 30秒后解除紧急状态
+        setTimeout(() => {
+            systemStatus.emergency = false;
+            updateSystemStatus();
+        }, 30000);
+    }
+
+    // 生成报告
+    function generateReport() {
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('zh-CN');
+        const timeStr = now.toLocaleTimeString('zh-CN');
+
+        const highRiskCount = inmates.filter(i => i.status === 'high').length;
+        const mediumRiskCount = inmates.filter(i => i.status === 'medium').length;
+        const lowRiskCount = inmates.filter(i => i.status === 'low').length;
+        const trusteeCount = inmates.filter(i => i.status === 'trustee').length;
+
+        return `BLOCK 13 监控报告
+生成时间: ${dateStr} ${timeStr}
+========================================
+在押犯人总数: ${inmates.length}
+- 高危犯人: ${highRiskCount} 名
+- 中等风险: ${mediumRiskCount} 名
+- 低风险: ${lowRiskCount} 名
+- 事务犯: ${trusteeCount} 名
+========================================
+系统状态: ${systemStatus.emergency ? '紧急状态' : '正常'}
+威胁等级: ${document.getElementById('securityLevel').textContent}
+========================================
+重点关注犯人:
+${inmates.filter(i => i.status === 'high').map(i => `• ${i.name} (${i.id}) - ${i.crime.split(' / ')[0]}`).join('\n')}
+========================================
+备注: 报告由系统自动生成
+`;
+    }
+
+    // 播放音效
+    function playSound(type) {
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            let frequency = 800;
+            let duration = 0.1;
+
+            switch(type) {
+                case 'click':
+                    frequency = 600;
+                    duration = 0.05;
+                    break;
+                case 'select':
+                    frequency = 800;
+                    duration = 0.1;
+                    break;
+                case 'close':
+                    frequency = 400;
+                    duration = 0.1;
+                    break;
+                case 'open':
+                    frequency = 1000;
+                    duration = 0.1;
+                    break;
+                case 'alarm':
+                    frequency = 1200;
+                    duration = 0.5;
+                    break;
+                case 'update':
+                    frequency = 700;
+                    duration = 0.2;
+                    break;
+                case 'confirm':
+                    frequency = 900;
+                    duration = 0.15;
+                    break;
+            }
+
+            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+
+            oscillator.start();
+            oscillator.stop(audioContext.currentTime + duration);
+        } catch (e) {
+            console.log('音效播放失败:', e);
+        }
+    }
+
+    // 移动端检测与优化
+    function detectMobile() {
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+        if (isMobile) {
+            console.log('移动端设备检测');
+
+            // 优化触摸体验
+            document.body.classList.add('mobile-device');
+
+            // 禁用悬停效果
+            const style = document.createElement('style');
+            style.textContent = `
+                @media (hover: none) {
+                    .grid-item:hover {
+                        transform: none !important;
+                        border-color: var(--border-dark) !important;
+                        box-shadow: none !important;
+                    }
+
+                    .nav-link:hover, button:hover {
+                        transform: none !important;
+                    }
+
+                    .stat-item:hover {
+                        transform: none !important;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+
+            // 调整音量滑块大小
+            document.getElementById('volumeSlider').style.height = '20px';
+        }
+    }
+</script>
+</body>
+</html>
