@@ -311,6 +311,54 @@
             margin: 0 2px;
         }
 
+        /* 文件消息样式 */
+        .file-message {
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            max-width: 400px;
+        }
+
+        .file-message .file-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-message .file-icon {
+            font-size: 24px;
+        }
+
+        .file-message .file-info {
+            flex: 1;
+        }
+
+        .file-message .file-name {
+            font-weight: bold;
+            margin-bottom: 4px;
+            word-break: break-all;
+        }
+
+        .file-message .file-size {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .file-message .download-btn {
+            padding: 6px 12px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+
+        .file-message .download-btn:hover {
+            background: #0056b3;
+        }
+
         /* 移动端优化 */
         @media (max-width: 768px) {
             .chat-main-container {
@@ -379,6 +427,10 @@
             }
 
             .chat-audio-message {
+                max-width: 100%;
+            }
+
+            .file-message {
                 max-width: 100%;
             }
         }
@@ -791,86 +843,156 @@
             ).toLocaleString();
 
             let displayMessage = message.message;
-            if (message.message.startsWith("{type=text, data={text=")) {
-                const start = message.message.indexOf("{text=") + 6;
-                const end = message.message.indexOf("}}", start);
-                displayMessage = message.message.substring(start, end);
-            } else if (message.message.startsWith("{type=face, data={id=")) {
-                const faceId = message.message.match(/id=(\d+)/)[1];
-                displayMessage = `[表情 ${faceId}]`;
-            } else if (message.message.startsWith("{type=image, data={")) {
-                const imageUrlMatch = message.message.match(/url=(https?:\/\/[^,]+)/);
-                if (imageUrlMatch) {
-                    const imageUrl = imageUrlMatch[1];
-                    if (!fetchedImages.has(imageUrl)) {
-                        fetchedImages.add(imageUrl);
-                        displayMessage = `<img src="${imageProxyUrl}${encodeURIComponent(imageUrl)}" alt="Image" onload="cacheImage('${imageProxyUrl}${encodeURIComponent(imageUrl)}', '${imageUrl}')">`;
+
+            // 处理 OneBot 消息段格式
+            if (message.message.startsWith("{type=")) {
+                try {
+                    // 提取消息类型
+                    const typeMatch = message.message.match(/type=([^,]+)/);
+                    if (!typeMatch) {
+                        displayMessage = "[消息格式错误]";
                     } else {
-                        const cachedUrl = localStorage.getItem(imageUrl);
-                        if (cachedUrl) {
-                            displayMessage = `<img src="${cachedUrl}" alt="Image">`;
-                        } else {
-                            displayMessage = `<img src="./Napcat/placeholder.png" alt="Image">`;
+                        const msgType = typeMatch[1];
+
+                        switch(msgType) {
+                            case 'text':
+                                const textMatch = message.message.match(/text=([^}]+)/);
+                                displayMessage = textMatch ? decodeURIComponent(textMatch[1]) : "[文本消息解析失败]";
+                                break;
+
+                            case 'face':
+                                const faceId = message.message.match(/id=(\d+)/)[1];
+                                displayMessage = `<span class="chat-face-message">[表情 ${faceId}]</span>`;
+                                break;
+
+                            case 'image':
+                                const imageUrlMatch = message.message.match(/url=(https?:\/\/[^,}]+)/);
+                                if (imageUrlMatch) {
+                                    const imageUrl = imageUrlMatch[1];
+                                    if (!fetchedImages.has(imageUrl)) {
+                                        fetchedImages.add(imageUrl);
+                                        displayMessage = `<img src="${imageProxyUrl}${encodeURIComponent(imageUrl)}" alt="Image" onload="cacheImage('${imageProxyUrl}${encodeURIComponent(imageUrl)}', '${imageUrl}')">`;
+                                    } else {
+                                        const cachedUrl = localStorage.getItem(imageUrl);
+                                        if (cachedUrl) {
+                                            displayMessage = `<img src="${cachedUrl}" alt="Image">`;
+                                        } else {
+                                            displayMessage = `<img src="./Napcat/placeholder.png" alt="Image">`;
+                                        }
+                                    }
+                                } else {
+                                    displayMessage = "[图片消息]";
+                                }
+                                break;
+
+                            case 'record':
+                                const urlMatch = message.message.match(/url=(https?:\/\/[^,}]+)/);
+                                const fileSizeMatch = message.message.match(/file_size=(\d+)/);
+
+                                if (urlMatch) {
+                                    const audioUrl = urlMatch[1];
+                                    const fileSize = fileSizeMatch ? parseInt(fileSizeMatch[1]) : 0;
+                                    const fileSizeText = fileSize > 0 ? ` (${formatFileSize(fileSize)})` : '';
+
+                                    displayMessage = `
+                                        <div class="chat-audio-message">
+                                            <div class="chat-audio-info">
+                                                <span class="chat-audio-icon">🎤</span>
+                                                <span class="chat-audio-text">语音消息${fileSizeText}</span>
+                                            </div>
+                                        </div>
+                                    `;
+                                } else {
+                                    displayMessage = "🎤 [语音消息]";
+                                }
+                                break;
+
+                            case 'at':
+                                const atUserId = message.message.match(/qq=(\d+)/)[1];
+                                displayMessage = `<span class="at">@${atUserId}</span>`;
+                                const userInfo = getUserInfo(atUserId);
+                                displayMessage += ` <span class="chat-user-info"><img src="http://q1.qlogo.cn/g?b=qq&nk=${atUserId}&s=100"><span>${userInfo.nickname}</span></span>`;
+                                break;
+
+                            case 'reply':
+                                const replyId = message.message.match(/id=(\d+)/)[1];
+                                displayMessage = `<span class="reply">[回复 ${replyId}]</span>`;
+                                break;
+
+                            case 'json':
+                                try {
+                                    const jsonData = JSON.parse(message.message.match(/{type=json, data=({.*})}/)[1]);
+                                    const meta = jsonData.data.meta.news;
+
+                                    displayMessage = `<div class="chat-json-message">
+                                        <a href="${meta.jumpUrl}" target="_blank">
+                                            <img src="${meta.preview}" alt="${meta.title}" style="max-width: 200px; max-height: 200px; border-radius: 8px;">
+                                            <div style="font-weight: bold;">${meta.title}</div>
+                                            <div>${meta.desc}</div>
+                                        </a>
+                                    </div>`;
+                                } catch (error) {
+                                    console.error('Error parsing JSON message:', error);
+                                    displayMessage = "[JSON 消息解析失败]";
+                                }
+                                break;
+
+                            case 'forward':
+                                displayMessage = `
+                                    <div class="forward-message">
+                                        <div class="forward-header">
+                                            <span class="forward-icon">✉</span>
+                                            <span class="forward-text">[合并转发消息]</span>
+                                        </div>
+                                    </div>
+                                `;
+                                break;
+
+                            case 'file':
+                                // 处理文件消息
+                                const fileNameMatch = message.message.match(/file=([^,]+)/);
+                                const fileSizeMatchFile = message.message.match(/file_size=(\d+)/);
+                                const fileUrlMatch = message.message.match(/file_id=([^,}]+)/);
+
+                                if (fileNameMatch) {
+                                    const fileName = fileNameMatch[1];
+                                    const fileSize = fileSizeMatchFile ? parseInt(fileSizeMatchFile[1]) : 0;
+                                    const fileSizeText = fileSize > 0 ? formatFileSize(fileSize) : "未知大小";
+                                    const fileUrl = fileUrlMatch ? fileUrlMatch[1] : "#";
+
+                                    displayMessage = `
+                                        <div class="file-message">
+                                            <div class="file-content">
+                                                <span class="file-icon">📎</span>
+                                                <div class="file-info">
+                                                    <div class="file-name">${fileName}</div>
+                                                    <div class="file-size">${fileSizeText}</div>
+                                                </div>
+<!--                                                ${fileUrl !== "#" ? `<a href="${fileUrl}" target="_blank" class="download-btn">下载</a>` : ""}-->
+                                            </div>
+                                        </div>
+                                    `;
+                                } else {
+                                    displayMessage = "[文件消息]";
+                                }
+                                break;
+
+                            default:
+                                // 尝试提取文本内容
+                                const textMatchDefault = message.message.match(/text=([^}]+)/);
+                                if (textMatchDefault) {
+                                    displayMessage = decodeURIComponent(textMatchDefault[1]);
+                                } else {
+                                    displayMessage = `[${msgType}类型消息]`;
+                                }
                         }
                     }
-                } else {
-                    displayMessage = "[图片链接提取失败]";
-                }
-            } else if (message.message.startsWith("{type=record, data={")) {
-                const urlMatch = message.message.match(/url=(https?:\/\/[^,]+)/);
-                const fileSizeMatch = message.message.match(/file_size=(\d+)/);
-
-                if (urlMatch) {
-                    const audioUrl = urlMatch[1];
-                    const fileSize = fileSizeMatch ? parseInt(fileSizeMatch[1]) : 0;
-                    const fileSizeText = fileSize > 0 ? ` (${formatFileSize(fileSize)})` : '';
-
-                    displayMessage = `
-                        <div class="chat-audio-message">
-                            <div class="chat-audio-info">
-                                <span class="chat-audio-icon">🎤</span>
-                                <span class="chat-audio-text">语音消息${fileSizeText}</span>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    displayMessage = "🎤 [语音消息]";
-                }
-            } else if (message.message.startsWith("{type=at, data={qq=")) {
-                const atUserId = message.message.match(/qq=(\d+)/)[1];
-                displayMessage = `<span class="at">@${atUserId}</span>`;
-                const userInfo = getUserInfo(atUserId);
-                displayMessage += ` <span class="chat-user-info"><img src="http://q1.qlogo.cn/g?b=qq&nk=${atUserId}&s=100"><span>${userInfo.nickname}</span></span>`;
-            } else if (message.message.startsWith("{type=reply, data={id=")) {
-                const replyId = message.message.match(/id=(\d+)/)[1];
-                displayMessage = `<span class="reply">[回复 ${replyId}]</span>`;
-            } else if (message.message.startsWith("{type=json, data={")) {
-                try {
-                    const jsonData = JSON.parse(message.message.match(/{type=json, data=({.*})}/)[1]);
-                    const meta = jsonData.data.meta.news;
-
-                    displayMessage = `<div class="chat-json-message">
-                        <a href="${meta.jumpUrl}" target="_blank">
-                            <img src="${meta.preview}" alt="${meta.title}" style="max-width: 200px; max-height: 200px; border-radius: 8px;">
-                            <div style="font-weight: bold;">${meta.title}</div>
-                            <div>${meta.desc}</div>
-                        </a>
-                    </div>`;
                 } catch (error) {
-                    console.error('Error parsing JSON message:', error);
-                    displayMessage = "[JSON 消息解析失败]";
+                    console.error('Error parsing message segment:', error, message.message);
+                    displayMessage = "[消息解析错误]";
                 }
-            } else if (message.message.startsWith("{type=forward, data={")) {
-                // 处理合并转发消息
-                displayMessage = `
-                <div class="forward-message">
-                    <div class="forward-header">
-                        <span class="forward-icon">✉</span>
-                        <span class="forward-text">[合并转发消息]</span>
-                    </div>
-                </div>
-            `;
             } else {
+                // 如果不是消息段格式，直接显示
                 displayMessage = message.message;
             }
 
@@ -956,7 +1078,7 @@
     }
 
     window.onload = () => {
-        fetchSystemInfo();
+        systemInfo = fetchSystemInfo();
         fetchLatestMessages();
         startFetchInterval();
         fetchUserProfile();
@@ -1043,8 +1165,6 @@
         messageDiv.appendChild(messageHeader);
         messageDiv.appendChild(contentDiv);
         messageDiv.appendChild(timestampSpan);
-
-        displayedMessages.add(message.id);
 
         container.appendChild(messageDiv);
 
