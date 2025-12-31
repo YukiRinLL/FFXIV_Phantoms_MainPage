@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sonnet Phantom - 十四行诗：幻影</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 50%, #d5d5d5 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            color: #222;
+            letter-spacing: 1px;
+            font-weight: 300;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 15px;
+            font-weight: 400;
+        }
+
+        .metadata {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .metadata span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .player-section {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .player-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .album-art {
+            width: 200px;
+            height: 200px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+            background: #ddd;
+        }
+
+        .album-art img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .album-art .placeholder {
+            font-size: 4rem;
+            color: rgba(0, 0, 0, 0.3);
+        }
+
+        .player-controls {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .time-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+            margin-bottom: 25px;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #555 0%, #222 100%);
+            border-radius: 3px;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 15px;
+        }
+
+        .control-btn {
+            background: none;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: #333;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .control-btn:hover {
+            background: rgba(0, 0, 0, 0.05);
+            transform: scale(1.05);
+        }
+
+        .control-btn.active {
+            background: rgba(0, 0, 0, 0.1);
+            color: #000;
+        }
+
+        .play-btn {
+            background: linear-gradient(135deg, #444 0%, #222 100%);
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            color: white;
+            border: none;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .volume-slider {
+            width: 100px;
+            height: 4px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .volume-progress {
+            height: 100%;
+            background: #222;
+            border-radius: 2px;
+            width: 80%;
+        }
+
+        .lyrics-section {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .lyrics-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .lyrics-title {
+            font-size: 1.5rem;
+            color: #222;
+            font-weight: 400;
+        }
+
+        .translation-toggle {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.15);
+            color: #333;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .translation-toggle:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .lyrics-container {
+            height: 400px;
+            overflow-y: auto;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            scroll-behavior: smooth;
+        }
+
+        .lyrics-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .lyrics-container::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
+        }
+
+        .lyrics-container::-webkit-scrollbar-thumb {
+            background: #555;
+            border-radius: 4px;
+        }
+
+        .lyric-line {
+            padding: 12px 15px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            line-height: 1.5;
+            color: #444;
+            opacity: 0.7;
+            min-height: 50px;
+        }
+
+        .lyric-line.active {
+            background: rgba(0, 0, 0, 0.08);
+            color: #000;
+            font-weight: 500;
+            opacity: 1;
+            border-left: 4px solid #222;
+            padding-left: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .lyric-line .translation {
+            display: block;
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+            padding-left: 10px;
+            border-left: 2px solid rgba(0, 0, 0, 0.1);
+            font-weight: 400;
+        }
+
+        .hide-translation .translation {
+            display: none;
+        }
+
+        .audio-status {
+            margin-top: 15px;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .audio-status.success {
+            color: #2d5a2d;
+        }
+
+        .audio-status.error {
+            color: #8b0000;
+        }
+
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .player-section, .lyrics-section {
+                padding: 20px;
+            }
+
+            .album-art {
+                width: 180px;
+                height: 180px;
+            }
+
+            .lyrics-container {
+                height: 350px;
+            }
+
+            .controls {
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.7rem;
+            }
+
+            .album-art {
+                width: 150px;
+                height: 150px;
+            }
+
+            .lyrics-container {
+                height: 300px;
+            }
+
+            .metadata {
+                flex-direction: column;
+                align-items: center;
+                gap: 5px;
+            }
+
+            .lyrics-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>Sonnet Phantom</h1>
+        <div class="subtitle">十四行诗：幻影</div>
+        <div class="metadata">
+            <span><i class="fas fa-user" style="color: #555;"></i> YukiRinLL</span>
+            <span><i class="fas fa-compact-disc" style="color: #555;"></i> Phantoms' Poetry Collection I</span>
+            <span><i class="fas fa-music" style="color: #555;"></i> 英文/中文双语歌词</span>
+        </div>
+    </header>
+
+    <section class="player-section">
+        <div class="player-container">
+            <div class="album-art" id="album-art">
+                <!-- 专辑图片将通过JavaScript加载 -->
+                <div class="placeholder">
+                    <i class="fas fa-compact-disc"></i>
+                </div>
+            </div>
+
+            <div class="player-controls">
+                <div class="time-info">
+                    <span id="current-time">0:00</span>
+                    <span id="total-time">0:00</span>
+                </div>
+
+                <div class="progress-bar" id="progress-bar">
+                    <div class="progress" id="progress"></div>
+                </div>
+
+                <div class="controls">
+                    <button class="control-btn" id="repeat-btn" title="重复播放">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                    <button class="control-btn" id="prev-btn" title="上一句">
+                        <i class="fas fa-step-backward"></i>
+                    </button>
+                    <button class="play-btn" id="play-btn" title="播放">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="control-btn" id="next-btn" title="下一句">
+                        <i class="fas fa-step-forward"></i>
+                    </button>
+                </div>
+
+                <div class="volume-container">
+                    <i class="fas fa-volume-up" style="color: #555;"></i>
+                    <div class="volume-slider" id="volume-slider">
+                        <div class="volume-progress" id="volume-progress"></div>
+                    </div>
+                </div>
+
+                <div class="audio-status" id="audio-status">
+                    正在加载音频文件...
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="lyrics-section">
+        <div class="lyrics-header">
+            <h2 class="lyrics-title">歌词 / Lyrics</h2>
+            <button class="translation-toggle" id="translation-toggle">
+                <i class="fas fa-language"></i> 隐藏翻译
+            </button>
+        </div>
+
+        <div class="lyrics-container" id="lyrics-container">
+            <!-- 歌词将通过JavaScript动态加载 -->
+        </div>
+    </section>
+
+    <footer>
+        <p>歌词文件: Sonnet Phantom.lrc | 音频文件: Sonnet Phantom.mp3</p>
+        <p>© YukiRinLL - Phantoms' Poetry Collection I</p>
+    </footer>
+</div>
+
+<script>
+    // 歌词数据
+    const lyricsData = [
+        { time: 0, text: "Sonnet Phantom 十四行诗：幻影", translation: "" },
+        { time: 11, text: "Beneath the veil where starlight faintly bends", translation: "星辉流转处，轻纱垂落" },
+        { time: 17, text: "A mask conceals the sighs of bygone spheres", translation: "假面之下，隐藏旧界的叹息" },
+        { time: 24, text: "Thy blade cuts through the aether's hush", translation: "剑刃斩开以太的沉默" },
+        { time: 27, text: "And rends the fragile dawn that falsehood falsely wears", translation: "撕碎谎言之虚饰，那虚伪的晨曦" },
+        { time: 36, text: "Echoes of old in every sinew dwell", translation: "旧日的回响，存于骨肉之间" },
+        { time: 47, text: "Oaths frayed yet woven into armor's thread", translation: "磨损的誓言，织入盔甲之纹" },
+        { time: 60, text: "Thou walk'st where light and shadow interswell", translation: "你行走于光与影交融之境地" },
+        { time: 73, text: "Loneliness thy sharpest, truest stead", translation: "孤独是最锋利的真实" },
+        { time: 84, text: "No knee thou bends to fate's unyielding call", translation: "面对命运强召，不曾屈膝" },
+        { time: 90, text: "On void's thin edge thou kindlest lingering flame", translation: "在虚空边缘，点燃残存之火" },
+        { time: 96, text: "Though thou must fade, like foam that leaves no pall", translation: "纵使终将消散，如泡影无痕" },
+        { time: 101, text: "This blaze shall carve thy name where time's not tame", translation: "这簇炽灼将镌刻汝名，超越时间羁绊" },
+        { time: 108, text: "For Phantoms not of dust, but stardust make sheld", translation: "乃因幻影非由尘土，而由星尘铸就庇护" },
+        { time: 120, text: "Their light outlives the dusk hue they once betrayed", translation: "其光永耀，耀于所背弃之暮色" }
+    ];
+
+    // 页面元素
+    const playBtn = document.getElementById('play-btn');
+    const progressBar = document.getElementById('progress-bar');
+    const progress = document.getElementById('progress');
+    const currentTimeEl = document.getElementById('current-time');
+    const totalTimeEl = document.getElementById('total-time');
+    const lyricsContainer = document.getElementById('lyrics-container');
+    const translationToggle = document.getElementById('translation-toggle');
+    const volumeSlider = document.getElementById('volume-slider');
+    const volumeProgress = document.getElementById('volume-progress');
+    const audioStatus = document.getElementById('audio-status');
+    const albumArt = document.getElementById('album-art');
+
+    // 创建音频对象
+    let audio = new Audio();
+    let isPlaying = false;
+    let showTranslation = true;
+
+    // 加载专辑图片
+    function loadAlbumArt() {
+        const img = new Image();
+        img.src = './6aa3d801-4793-43f1-bacd-d2163db51dff.png';
+        img.onload = function() {
+            albumArt.innerHTML = '';
+            albumArt.appendChild(img);
+            audioStatus.innerHTML = '<i class="fas fa-check-circle"></i> 专辑图片已加载';
+        };
+        img.onerror = function() {
+            audioStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> 专辑图片加载失败';
+            audioStatus.classList.add('error');
+        };
+    }
+
+    // 加载音频文件
+    function loadAudio() {
+        audio.src = './Sonnet Phantom.mp3';
+        audio.volume = 0.8;
+
+        audio.addEventListener('loadedmetadata', function() {
+            totalTimeEl.textContent = formatTime(audio.duration);
+            updateTimeDisplay();
+            audioStatus.innerHTML = `<i class="fas fa-check-circle"></i> 音频文件已加载，时长: ${formatTime(audio.duration)}`;
+            audioStatus.classList.add('success');
+        });
+
+        audio.addEventListener('error', function(e) {
+            console.error('音频加载失败:', e);
+            audioStatus.innerHTML = `<i class="fas fa-exclamation-triangle"></i> 音频文件加载失败，请确保目录下有 Sonnet Phantom.mp3 文件`;
+            audioStatus.classList.add('error');
+        });
+
+        audio.addEventListener('timeupdate', updateTimeDisplay);
+        audio.addEventListener('timeupdate', updateLyricsHighlight);
+
+        // 设置初始音量显示
+        volumeProgress.style.width = '80%';
+    }
+
+    // 初始化歌词
+    function initLyrics() {
+        lyricsContainer.innerHTML = '';
+        lyricsData.forEach((line, index) => {
+            const lyricLine = document.createElement('div');
+            lyricLine.className = 'lyric-line';
+            lyricLine.id = `lyric-${index}`;
+
+            const translationHtml = showTranslation && line.translation ?
+                `<span class="translation">${line.translation}</span>` : '';
+
+            lyricLine.innerHTML = `${line.text}${translationHtml}`;
+            lyricsContainer.appendChild(lyricLine);
+        });
+
+        // 修复：确保第一行歌词在顶部可见
+        setTimeout(() => {
+            lyricsContainer.scrollTop = 0;
+        }, 100);
+    }
+
+    // 格式化时间显示
+    function formatTime(seconds) {
+        if (isNaN(seconds)) return "0:00";
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    // 更新播放器时间显示
+    function updateTimeDisplay() {
+        if (audio.currentTime !== undefined) {
+            currentTimeEl.textContent = formatTime(audio.currentTime);
+
+            // 更新进度条
+            if (audio.duration && audio.duration > 0) {
+                const progressPercent = (audio.currentTime / audio.duration) * 100;
+                progress.style.width = `${progressPercent}%`;
+            }
+        }
+    }
+
+    // 更新歌词高亮 - 修复版
+    function updateLyricsHighlight() {
+        const currentTime = audio.currentTime || 0;
+
+        // 找到当前时间对应的歌词行
+        let currentLineIndex = -1;
+        for (let i = lyricsData.length - 1; i >= 0; i--) {
+            if (currentTime >= lyricsData[i].time) {
+                currentLineIndex = i;
+                break;
+            }
+        }
+
+        // 如果没有找到合适的歌词行，则不激活任何行
+        if (currentLineIndex === -1) {
+            document.querySelectorAll('.lyric-line').forEach(line => {
+                line.classList.remove('active');
+            });
+            return;
+        }
+
+        // 移除所有激活状态
+        document.querySelectorAll('.lyric-line').forEach(line => {
+            line.classList.remove('active');
+        });
+
+        // 激活当前行
+        const currentLine = document.getElementById(`lyric-${currentLineIndex}`);
+        if (currentLine) {
+            currentLine.classList.add('active');
+
+            // 计算当前行应该在的位置（从顶部开始1/3处）
+            const containerHeight = lyricsContainer.clientHeight;
+            const lineHeight = currentLine.offsetHeight;
+            const lineTop = currentLine.offsetTop;
+
+            // 让当前行显示在容器顶部1/3处，这样上方有空间看到前几行歌词
+            const targetScrollTop = lineTop - (containerHeight / 3);
+
+            // 使用平滑滚动
+            lyricsContainer.scrollTo({
+                top: targetScrollTop,
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    // 播放/暂停功能
+    playBtn.addEventListener('click', function() {
+        if (audio.paused) {
+            audio.play().then(() => {
+                isPlaying = true;
+                this.innerHTML = '<i class="fas fa-pause"></i>';
+                this.title = "暂停";
+            }).catch(error => {
+                console.error('播放失败:', error);
+                audioStatus.innerHTML = `<i class="fas fa-exclamation-triangle"></i> 播放失败: ${error.message}`;
+                audioStatus.classList.add('error');
+            });
+        } else {
+            audio.pause();
+            isPlaying = false;
+            this.innerHTML = '<i class="fas fa-play"></i>';
+            this.title = "播放";
+        }
+    });
+
+    // 进度条点击跳转
+    progressBar.addEventListener('click', function(e) {
+        if (audio.duration && audio.duration > 0) {
+            const rect = this.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const width = rect.width;
+            const percent = Math.min(Math.max(clickX / width, 0), 1);
+
+            if (audio.currentTime !== undefined) {
+                audio.currentTime = percent * audio.duration;
+                updateTimeDisplay();
+                updateLyricsHighlight();
+            }
+        }
+    });
+
+    // 音量控制
+    volumeSlider.addEventListener('click', function(e) {
+        const rect = this.getBoundingClientRect();
+        const clickX = e.clientX - rect.left;
+        const width = rect.width;
+        const percent = Math.min(Math.max(clickX / width, 0), 1);
+
+        audio.volume = percent;
+        volumeProgress.style.width = `${percent * 100}%`;
+    });
+
+    // 翻译切换
+    translationToggle.addEventListener('click', function() {
+        showTranslation = !showTranslation;
+
+        if (showTranslation) {
+            this.innerHTML = '<i class="fas fa-language"></i> 隐藏翻译';
+            lyricsContainer.classList.remove('hide-translation');
+        } else {
+            this.innerHTML = '<i class="fas fa-language"></i> 显示翻译';
+            lyricsContainer.classList.add('hide-translation');
+        }
+
+        // 重新初始化歌词以更新翻译显示
+        initLyrics();
+        updateLyricsHighlight();
+    });
+
+    // 控制按钮功能
+    document.getElementById('repeat-btn').addEventListener('click', function() {
+        this.classList.toggle('active');
+        audio.loop = !audio.loop;
+    });
+
+    document.getElementById('prev-btn').addEventListener('click', function() {
+        // 跳转到前一句歌词
+        const currentTime = audio.currentTime || 0;
+        let prevTime = 0;
+
+        for (let i = lyricsData.length - 1; i >= 0; i--) {
+            if (lyricsData[i].time < currentTime - 2) { // 2秒容差
+                prevTime = lyricsData[i].time;
+                break;
+            }
+        }
+
+        audio.currentTime = prevTime;
+        updateTimeDisplay();
+        updateLyricsHighlight();
+    });
+
+    document.getElementById('next-btn').addEventListener('click', function() {
+        // 跳转到下一句歌词
+        const currentTime = audio.currentTime || 0;
+        let nextTime = audio.duration || 120;
+
+        for (let i = 0; i < lyricsData.length; i++) {
+            if (lyricsData[i].time > currentTime + 2) { // 2秒容差
+                nextTime = lyricsData[i].time;
+                break;
+            }
+        }
+
+        audio.currentTime = nextTime;
+        updateTimeDisplay();
+        updateLyricsHighlight();
+    });
+
+    // 初始化
+    function init() {
+        initLyrics();
+        loadAlbumArt();
+        loadAudio();
+
+        // 初始化播放按钮状态
+        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+        playBtn.title = "播放";
+    }
+
+    // 页面加载完成后初始化
+    document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
