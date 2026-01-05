@@ -259,6 +259,7 @@
             background: rgba(255, 255, 255, 0.5);
             border-radius: 8px;
             scroll-behavior: smooth;
+            position: relative;
         }
 
         .lyrics-container::-webkit-scrollbar {
@@ -503,6 +504,7 @@
     let audio = new Audio();
     let isPlaying = false;
     let showTranslation = true;
+    let lastHighlightedIndex = -1;
 
     // 加载专辑图片
     function loadAlbumArt() {
@@ -551,6 +553,7 @@
             const lyricLine = document.createElement('div');
             lyricLine.className = 'lyric-line';
             lyricLine.id = `lyric-${index}`;
+            lyricLine.dataset.time = line.time;
 
             const translationHtml = showTranslation && line.translation ?
                 `<span class="translation">${line.translation}</span>` : '';
@@ -600,12 +603,12 @@
         }
 
         // 如果没有找到合适的歌词行，则不激活任何行
-        if (currentLineIndex === -1) {
-            document.querySelectorAll('.lyric-line').forEach(line => {
-                line.classList.remove('active');
-            });
+        if (currentLineIndex === -1 || currentLineIndex === lastHighlightedIndex) {
             return;
         }
+
+        // 更新最后高亮索引
+        lastHighlightedIndex = currentLineIndex;
 
         // 移除所有激活状态
         document.querySelectorAll('.lyric-line').forEach(line => {
@@ -617,21 +620,52 @@
         if (currentLine) {
             currentLine.classList.add('active');
 
-            // 计算当前行应该在的位置（从顶部开始1/3处）
+            // 计算滚动位置
             const containerHeight = lyricsContainer.clientHeight;
             const lineHeight = currentLine.offsetHeight;
-            const lineTop = currentLine.offsetTop;
+            const lineOffset = currentLine.offsetTop;
+            const scrollTop = lyricsContainer.scrollTop;
 
-            // 让当前行显示在容器顶部1/3处，这样上方有空间看到前几行歌词
-            const targetScrollTop = lineTop - (containerHeight / 3);
+            // 计算当前行在可视区域的位置
+            const lineTopInContainer = lineOffset - lyricsContainer.offsetTop;
+            const lineBottomInContainer = lineTopInContainer + lineHeight;
 
-            // 使用平滑滚动
-            lyricsContainer.scrollTo({
-                top: targetScrollTop,
-                behavior: 'smooth'
-            });
+            // 检查是否需要滚动
+            const buffer = 30; // 缓冲像素
+            const targetPosition = containerHeight / 3; // 目标位置：容器高度的1/3处
+
+            // 如果当前行不在理想位置，则进行滚动
+            if (lineTopInContainer < scrollTop + buffer ||
+                lineBottomInContainer > scrollTop + containerHeight - buffer ||
+                Math.abs(lineTopInContainer - (scrollTop + targetPosition)) > lineHeight) {
+
+                // 计算目标滚动位置，使当前行显示在容器1/3处
+                const targetScrollTop = lineOffset - targetPosition;
+
+                // 使用平滑滚动
+                lyricsContainer.scrollTo({
+                    top: Math.max(0, targetScrollTop),
+                    behavior: 'smooth'
+                });
+            }
         }
     }
+
+    // 手动滚动时暂停自动滚动
+    let isUserScrolling = false;
+    let scrollTimer = null;
+
+    lyricsContainer.addEventListener('scroll', function() {
+        isUserScrolling = true;
+
+        // 清除之前的定时器
+        if (scrollTimer) clearTimeout(scrollTimer);
+
+        // 设置定时器，一段时间后重置用户滚动标志
+        scrollTimer = setTimeout(() => {
+            isUserScrolling = false;
+        }, 2000); // 2秒后重置
+    });
 
     // 播放/暂停功能
     playBtn.addEventListener('click', function() {
