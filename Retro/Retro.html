@@ -372,21 +372,76 @@
             to { transform: rotate(360deg); }
         }
 
+        /* 游戏详细信息样式 */
         .game-description {
             margin-top: 20px;
-            padding: 15px;
             background: rgba(45, 45, 45, 0.6);
             border-radius: 10px;
             border-left: 3px solid var(--color-white);
+            overflow: hidden;
         }
 
         .game-description h4 {
             color: var(--color-off-white);
-            margin-bottom: 8px;
+            padding: 15px 15px 10px;
             display: flex;
             align-items: center;
             gap: 10px;
             font-weight: 600;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .game-details-content {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .detail-row.full-width {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 5px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--color-off-white);
+            min-width: 100px;
+            flex-shrink: 0;
+        }
+
+        .detail-value {
+            color: var(--color-white);
+            line-height: 1.5;
+        }
+
+        .trivia {
+            font-style: italic;
+            color: #aaa;
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            border-left: 2px solid var(--color-white);
+        }
+
+        .feature-list {
+            margin: 0;
+            padding-left: 20px;
+            color: var(--color-white);
+        }
+
+        .feature-list li {
+            margin-bottom: 5px;
+            line-height: 1.4;
         }
 
         /* 页脚 */
@@ -459,6 +514,15 @@
 
             .game-frame-container {
                 min-height: 400px;
+            }
+
+            .detail-row {
+                flex-direction: column;
+                gap: 2px;
+            }
+
+            .detail-label {
+                min-width: auto;
             }
         }
 
@@ -698,9 +762,45 @@
                 <iframe id="game-frame" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
             </div>
 
-            <div class="game-description">
-                <h4><i class="fas fa-info-circle"></i> 游戏说明</h4>
-                <p id="game-description-text">《最终幻想》是Square（现Square Enix）开发的第一部最终幻想系列作品，于1987年首次发行。游戏讲述了四名光之战士拯救世界的故事，奠定了系列的基础玩法。美版于1990年发行，对原版进行了部分调整。</p>
+            <!-- 修改后的游戏详细信息区域 -->
+            <div class="game-description" id="game-details">
+                <h4><i class="fas fa-info-circle"></i> 游戏详细信息</h4>
+                <div class="game-details-content">
+                    <div class="detail-row">
+                        <span class="detail-label">发行年份：</span>
+                        <span class="detail-value" id="detail-releaseYear">1990年（北美发行）</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">原版发行：</span>
+                        <span class="detail-value" id="detail-originalRelease">1987年（日本）</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">游戏类型：</span>
+                        <span class="detail-value" id="detail-genre">角色扮演游戏 (JRPG)</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">开发公司：</span>
+                        <span class="detail-value" id="detail-developer">Square（现Square Enix）</span>
+                    </div>
+                    <div class="detail-row full-width">
+                        <span class="detail-label">特色功能：</span>
+                        <ul class="feature-list" id="detail-notableFeatures">
+                            <li>开创性的职业系统，角色有明确的职业定位</li>
+                            <li>回合制战斗系统，后续成为JRPG标准</li>
+                            <li>元素水晶的叙事框架</li>
+                            <li>非线性探索的世界地图</li>
+                            <li>经典的开场台词："水晶的光辉正在消逝..."</li>
+                        </ul>
+                    </div>
+                    <div class="detail-row full-width">
+                        <span class="detail-label">游戏趣闻：</span>
+                        <span class="detail-value trivia" id="detail-trivia">游戏原名"Final Fantasy"源于开发团队当时的财务状况，如果这款游戏失败，Square公司可能面临破产，因此这被视作公司的"最终幻想"。</span>
+                    </div>
+                    <div class="detail-row full-width">
+                        <span class="detail-label">详细描述：</span>
+                        <p id="detail-description">《最终幻想》是Square（现Square Enix）开发的第一部最终幻想系列作品，于1987年首次发行。游戏讲述了四名光之战士拯救世界的故事，奠定了系列的基础玩法。美版于1990年发行，对原版进行了部分调整。</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1020,14 +1120,45 @@
     const gameFrame = document.getElementById('game-frame');
     const gameTitle = document.querySelector('.current-game-info h3');
     const gamePlatform = document.querySelector('.current-game-platform');
-    const gameDescription = document.getElementById('game-description-text');
     const loadingMessage = document.getElementById('loading-message');
     const reloadBtn = document.getElementById('reload-btn');
     const fullscreenBtn = document.getElementById('fullscreen-btn');
     const gameContainer = document.querySelector('.game-frame-container');
 
+    // 详细信息DOM元素
+    const detailReleaseYear = document.getElementById('detail-releaseYear');
+    const detailOriginalRelease = document.getElementById('detail-originalRelease');
+    const detailGenre = document.getElementById('detail-genre');
+    const detailDeveloper = document.getElementById('detail-developer');
+    const detailNotableFeatures = document.getElementById('detail-notableFeatures');
+    const detailTrivia = document.getElementById('detail-trivia');
+    const detailDescription = document.getElementById('detail-description');
+
     // 当前选中的游戏
     let currentGameId = 'ff1-usa';
+
+    // 更新游戏详细信息
+    function updateGameDetails(gameId) {
+        const game = gameData[gameId];
+        if (!game) return;
+
+        detailReleaseYear.textContent = game.releaseYear || '未知';
+        detailOriginalRelease.textContent = game.originalRelease || '未知';
+        detailGenre.textContent = game.genre || '未知';
+        detailDeveloper.textContent = game.developer || '未知';
+        detailDescription.textContent = game.description || '';
+        detailTrivia.textContent = game.trivia || '';
+
+        // 更新特色功能列表
+        detailNotableFeatures.innerHTML = '';
+        if (game.notableFeatures && game.notableFeatures.length > 0) {
+            game.notableFeatures.forEach(feature => {
+                const li = document.createElement('li');
+                li.textContent = feature;
+                detailNotableFeatures.appendChild(li);
+            });
+        }
+    }
 
     // 初始化加载第一个游戏
     function initFirstGame() {
@@ -1042,10 +1173,8 @@
         gameTitle.textContent = gameName;
         gamePlatform.innerHTML = `<i class="fas fa-gamepad"></i> ${platform}`;
 
-        // 更新游戏描述
-        if (gameData[gameId]) {
-            gameDescription.textContent = gameData[gameId].description;
-        }
+        // 更新游戏详细信息
+        updateGameDetails(gameId);
 
         // 加载游戏iframe
         showLoading();
@@ -1081,10 +1210,8 @@
         gameTitle.textContent = gameName;
         gamePlatform.innerHTML = `<i class="fas fa-gamepad"></i> ${platform}`;
 
-        // 更新游戏描述
-        if (gameData[gameId]) {
-            gameDescription.textContent = gameData[gameId].description;
-        }
+        // 更新游戏详细信息
+        updateGameDetails(gameId);
 
         // 加载新的游戏iframe
         showLoading();
