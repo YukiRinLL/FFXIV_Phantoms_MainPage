@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>最终幻想系列在线游戏</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        :root {
+            --color-black: #121212;
+            --color-dark-gray: #1e1e1e;
+            --color-gray: #2d2d2d;
+            --color-light-gray: #3d3d3d;
+            --color-white: #e0e0e0;
+            --color-off-white: #f0f0f0;
+            --color-accent: #4a4a4a;
+            --color-highlight: #606060;
+        }
+
+        body {
+            background:
+                linear-gradient(rgba(18, 18, 18, 0.85), rgba(18, 18, 18, 0.9)),
+                url('./1c5522f8692dbb59c3f05ea3f25a2f59575caa2f.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--color-white);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* 移动端提示 */
+        .mobile-warning {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .mobile-warning i {
+            font-size: 4rem;
+            color: var(--color-white);
+            margin-bottom: 20px;
+        }
+
+        .mobile-warning h2 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: var(--color-off-white);
+        }
+
+        .mobile-warning p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            line-height: 1.6;
+            color: var(--color-white);
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 25px;
+            background: rgba(30, 30, 30, 0.8);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--color-white), transparent);
+        }
+
+        h1 {
+            font-size: 3.2rem;
+            margin-bottom: 10px;
+            color: var(--color-off-white);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            margin-bottom: 15px;
+            color: var(--color-white);
+        }
+
+        .tagline {
+            font-style: italic;
+            color: #aaa;
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            min-height: 600px;
+        }
+
+        /* 自定义滚动条 */
+        .custom-scrollbar {
+            scrollbar-width: thin;
+            scrollbar-color: var(--color-light-gray) var(--color-dark-gray);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: var(--color-dark-gray);
+            border-radius: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: var(--color-light-gray);
+            border-radius: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: var(--color-highlight);
+        }
+
+        /* 游戏清单样式 */
+        .games-list {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(2px);
+            overflow-y: auto;
+            max-height: 800px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .games-list h2 {
+            color: var(--color-off-white);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .games-list h2 i {
+            color: var(--color-white);
+        }
+
+        .platform-group {
+            margin-bottom: 25px;
+        }
+
+        .platform-title {
+            font-size: 1.3rem;
+            color: var(--color-off-white);
+            margin-bottom: 10px;
+            padding-left: 10px;
+            border-left: 3px solid var(--color-white);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .game-item {
+            background: rgba(45, 45, 45, 0.6);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .game-item:hover {
+            background: rgba(60, 60, 60, 0.8);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .game-item.active {
+            background: rgba(80, 80, 80, 0.8);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .game-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--color-off-white);
+        }
+
+        .game-version {
+            font-size: 0.9rem;
+            color: #aaa;
+            font-family: 'Consolas', 'Monaco', monospace;
+            word-break: break-word;
+        }
+
+        .game-meta {
+            font-size: 0.9rem;
+            color: #aaa;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .language-tag {
+            background: var(--color-light-gray);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            color: var(--color-white);
+        }
+
+        .language-tag.en {
+            background: #555;
+        }
+
+        .language-tag.jp {
+            background: #333;
+        }
+
+        /* 游戏显示区域样式 */
+        .game-display {
+            flex: 2;
+            min-width: 700px;
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .current-game-info h3 {
+            font-size: 1.8rem;
+            color: var(--color-off-white);
+        }
+
+        .current-game-platform {
+            color: #aaa;
+            font-size: 1.1rem;
+            margin-top: 5px;
+        }
+
+        .game-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--color-white);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* 游戏iframe容器 */
+        .game-frame-container {
+            flex: 1;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 500px;
+        }
+
+        #game-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .loading-message {
+            position: absolute;
+            color: var(--color-white);
+            font-size: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            z-index: 10;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.2);
+            border-top-color: var(--color-white);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .game-description {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(45, 45, 45, 0.6);
+            border-radius: 10px;
+            border-left: 3px solid var(--color-white);
+        }
+
+        .game-description h4 {
+            color: var(--color-off-white);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        /* 页脚 */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: rgba(30, 30, 30, 0.7);
+            border-radius: 15px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #aaa;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(2px);
+        }
+
+        .controls-hint {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .control-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(45, 45, 45, 0.6);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .main-content {
+                flex-direction: column;
+            }
+
+            .game-display, .games-list {
+                min-width: 100%;
+            }
+
+            .game-frame-container {
+                min-height: 450px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-warning {
+                display: flex;
+            }
+
+            .container {
+                display: none;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .game-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .game-actions {
+                align-self: flex-end;
+            }
+
+            .game-frame-container {
+                min-height: 400px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .btn {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+
+            .game-name {
+                font-size: 1rem;
+            }
+
+            .game-frame-container {
+                min-height: 350px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- 移动端提示 -->
+<div class="mobile-warning">
+    <i class="fas fa-desktop"></i>
+    <h2>请在PC端访问</h2>
+    <p>本游戏中心包含大量复古游戏模拟内容，为获得最佳体验，请使用桌面浏览器访问。移动设备可能无法正常加载或操作游戏。</p>
+</div>
+
+<!-- 主容器 -->
+<div class="container">
+    <header>
+        <h1><i class="fa-solid fa-gamepad"></i>Retro Final Fantasy</h1>
+        <p class="subtitle">收录从NES到PlayStation的最终幻想1-7部分作品移植版本</p>
+        <p class="tagline">Powerd By YukiRinLL from Phantoms FC</p>
+    </header>
+
+    <div class="main-content">
+        <!-- 游戏清单侧边栏 -->
+        <div class="games-list custom-scrollbar">
+            <h2><i class="fas fa-list"></i> 游戏清单</h2>
+
+            <!-- NES/FC平台 -->
+            <div class="platform-group">
+                <div class="platform-title">
+                    <i class="fas fa-gamepad"></i> NES/FC平台
+                </div>
+                <div class="game-item active" data-id="ff1-usa" data-name="最终幻想1" data-platform="NES/FC" data-iframe="https://www.retrogames.cc/embed/17923-final-fantasy-usa.html" data-version="Final Fantasy (USA)">
+                    <div class="game-name">最终幻想1</div>
+                    <div class="game-version">Final Fantasy (USA)</div>
+                    <div class="game-meta">
+                        <span class="language-tag en">EN</span>
+                        <span>美版</span>
+                    </div>
+                </div>
+                <div class="game-item" data-id="ff1-jp" data-name="最终幻想1" data-platform="NES/FC" data-iframe="https://www.retrogames.cc/embed/20733-final-fantasy-japan-rev-b.html" data-version="Final Fantasy (Japan) (Rev B)">
+                    <div class="game-name">最终幻想1</div>
+                    <div class="game-version">Final Fantasy (Japan) (Rev B)</div>
+                    <div class="game-meta">
+                        <span class="language-tag jp">JP</span>
+                        <span>日版</span>
+                    </div>
+                </div>
+                <div class="game-item" data-id="ff2-usa" data-name="最终幻想2" data-platform="NES/FC" data-iframe="https://www.retrogames.cc/embed/21654-final-fantasy-ii-usa-proto.html" data-version="Final Fantasy II (USA) (Proto)">
+                    <div class="game-name">最终幻想2</div>
+                    <div class="game-version">Final Fantasy II (USA) (Proto)</div>
+                    <div class="game-meta">
+                        <span class="language-tag en">EN</span>
+                        <span>美版原型</span>
+                    </div>
+                </div>
+                <div class="game-item" data-id="ff2-jp" data-name="最终幻想2" data-platform="NES/FC" data-iframe="https://www.retrogames.cc/embed/20893-final-fantasy-ii-japan.html" data-version="Final Fantasy II (Japan)">
+                    <div class="game-name">最终幻想2</div>
+                    <div class="game-version">Final Fantasy II (Japan)</div>
+                    <div class="game-meta">
+                        <span class="language-tag jp">JP</span>
+                        <span>日版</span>
+                    </div>
+                </div>
+                <div class="game-item" data-id="ff3-usa" data-name="最终幻想3" data-platform="NES/FC" data-iframe="https://www.retrogames.cc/embed/19227-final-fantasy-iii-japan-en-by-a-w-jackson-neill-corlett-som2freak-v1-1.html" data-version="Final Fantasy III (Japan) [En by A.W.Jackson+Neill Corlett+SoM2Freak v1.1]">
+                    <div class="game-name">最终幻想3</div>
+                    <div class="game-version">Final Fantasy III (Japan) [En by A.W.Jackson+Neill Corlett+SoM2Freak v1.1]</div>
+                    <div class="game-meta">
+                        <span class="language-tag en">EN</span>
+                        <span>英译版</span>
+                    </div>
+                </div>
+                <div class="game-item" data-id="ff3-jp" data-name="最终幻想3" data-platform="NES/FC" data-iframe="https://www.retrogames.cc/embed/19315-final-fantasy-iii-japan.html" data-version="Final Fantasy III (Japan)">
+                    <div class="game-name">最终幻想3</div>
+                    <div class="game-version">Final Fantasy III (Japan)</div>
+                    <div class="game-meta">
+                        <span class="language-tag jp">JP</span>
+                        <span>日版</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SNES/SFC平台 -->
+            <div class="platform-group">
+                <div class="platform-title">
+                    <i class="fas fa-gamepad"></i> SNES/SFC平台
+                </div>
+                <div class="game-item" data-id="ff4-usa" data-name="最终幻想4 (美版FF2)" data-platform="SNES/SFC" data-iframe="https://www.retrogames.cc/embed/19618-final-fantasy-ii-usa.html" data-version="Final Fantasy II (USA)">
+                    <div class="game-name">最终幻想4 (美版FF2)</div>
+                    <div class="game-version">Final Fantasy II (USA)</div>
+                    <div class="game-meta">
+                        <span class="language-tag en">EN</span>
+                        <span>美版</span>
+                    </div>
+                </div>
+                <div class="game-item" data-id="ff4-jp" data-name="最终幻想4" data-platform="SNES/SFC" data-iframe="https://www.retrogames.cc/embed/24832-final-fantasy-iv-japan.html" data-version="Final Fantasy IV (Japan)">
+                    <div class="game-name">最终幻想4</div>
+                    <div class="game-version">Final Fantasy IV (Japan)</div>
+                    <div class="game-meta">
+                        <span class="language-tag jp">JP</span>
+                        <span>日版</span>
+                    </div>
+                </div>
+                <div class="game-item" data-id="ff5-usa" data-name="最终幻想5" data-platform="SNES/SFC" data-iframe="https://www.retrogames.cc/embed/24230-final-fantasy-v-japan-en-by-rpge-v1-1.html" data-version="Final Fantasy V (Japan) [En by RPGe v1.1]">
+                    <div class="game-name">最终幻想5</div>
+                    <div class="game-version">Final Fantasy V (Japan) [En by RPGe v1.1]</div>
+                    <div class="game-meta">
+                        <span class="language-tag en">EN</span>
+                        <span>英译版</span>
+                    </div>
+                </div>
+                <div class="game-item" data-id="ff5-jp" data-name="最终幻想5" data-platform="SNES/SFC" data-iframe="https://www.retrogames.cc/embed/20230-final-fantasy-v-japan.html" data-version="Final Fantasy V (Japan)">
+                    <div class="game-name">最终幻想5</div>
+                    <div class="game-version">Final Fantasy V (Japan)</div>
+                    <div class="game-meta">
+                        <span class="language-tag jp">JP</span>
+                        <span>日版</span>
+                    </div>
+                </div>
+                <div class="game-item" data-id="ff6-usa" data-name="最终幻想6 (美版FF3)" data-platform="SNES/SFC" data-iframe="https://www.retrogames.cc/embed/24569-final-fantasy-iii-usa.html" data-version="Final Fantasy III (USA)">
+                    <div class="game-name">最终幻想6 (美版FF3)</div>
+                    <div class="game-version">Final Fantasy III (USA)</div>
+                    <div class="game-meta">
+                        <span class="language-tag en">EN</span>
+                        <span>美版</span>
+                    </div>
+                </div>
+                <div class="game-item" data-id="ff6-jp" data-name="最终幻想6" data-platform="SNES/SFC" data-iframe="https://www.retrogames.cc/embed/22552-final-fantasy-vi-japan.html" data-version="Final Fantasy VI (Japan)">
+                    <div class="game-name">最终幻想6</div>
+                    <div class="game-version">Final Fantasy VI (Japan)</div>
+                    <div class="game-meta">
+                        <span class="language-tag jp">JP</span>
+                        <span>日版</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PlayStation平台 -->
+            <div class="platform-group">
+                <div class="platform-title">
+                    <i class="fa-brands fa-playstation"></i> PlayStation平台
+                </div>
+                <div class="game-item" data-id="ff7-usa" data-name="最终幻想7" data-platform="PlayStation" data-iframe="https://www.retrogames.cc/embed/43658-final-fantasy-vii-usa-disc-1.html" data-version="Final Fantasy VII (USA) (Disc 1)">
+                    <div class="game-name">最终幻想7</div>
+                    <div class="game-version">Final Fantasy VII (USA) (Disc 1-3)</div>
+                    <div class="game-meta">
+                        <span class="language-tag en">EN</span>
+                        <span>Disc 1</span>
+                    </div>
+                </div>
+                <div class="game-item" data-id="ff-tactics" data-name="最终幻想战略版" data-platform="PlayStation" data-iframe="https://www.retrogames.cc/embed/41787-final-fantasy-tactics.html" data-version="Final Fantasy Tactics">
+                    <div class="game-name">最终幻想战略版</div>
+                    <div class="game-version">Final Fantasy Tactics</div>
+                    <div class="game-meta">
+                        <span class="language-tag en">EN</span>
+                        <span>美版</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 掌机平台 -->
+            <div class="platform-group">
+                <div class="platform-title">
+                    <i class="fas fa-mobile-alt"></i> 掌机/移动端平台
+                </div>
+                <div class="game-item" data-id="ff-dawn" data-name="最终幻想1&2：灵魂黎明" data-platform="Game Boy Advance" data-iframe="https://www.retrogames.cc/embed/28795-final-fantasy-i-ii-dawn-of-souls-u-independent.html" data-version="Final Fantasy I & II - Dawn of Souls (U)(Independent)">
+                    <div class="game-name">最终幻想1&2：灵魂黎明</div>
+                    <div class="game-version">Final Fantasy I & II - Dawn of Souls (U)(Independent)</div>
+                    <div class="game-meta">
+                        <span class="language-tag en">EN</span>
+                        <span>GBA</span>
+                    </div>
+                </div>
+                <div class="game-item" data-id="ff-tactics-advance" data-name="最终幻想战略版Advance" data-platform="Game Boy Advance" data-iframe="https://www.retrogames.cc/embed/26411-final-fantasy-tactics-advance-u-eurasia.html" data-version="Final Fantasy Tactics Advance (U)(Eurasia)">
+                    <div class="game-name">最终幻想战略版Advance</div>
+                    <div class="game-version">Final Fantasy Tactics Advance (U)(Eurasia)</div>
+                    <div class="game-meta">
+                        <span class="language-tag en">EN</span>
+                        <span>GBA</span>
+                    </div>
+                </div>
+                <div class="game-item" data-id="ff3-ds" data-name="最终幻想3 3D重制版" data-platform="Nintendo DS" data-iframe="https://www.retrogames.cc/embed/35820-final-fantasy-iii-usa.html" data-version="Final Fantasy III (USA)">
+                    <div class="game-name">最终幻想3 3D重制版</div>
+                    <div class="game-version">Final Fantasy III (USA)</div>
+                    <div class="game-meta">
+                        <span class="language-tag en">EN</span>
+                        <span>NDS</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 游戏显示区域 -->
+        <div class="game-display">
+            <div class="game-header">
+                <div class="current-game-info">
+                    <h3>最终幻想1</h3>
+                    <div class="current-game-platform">
+                        <i class="fas fa-gamepad"></i> NES/FC平台
+                    </div>
+                </div>
+                <div class="game-actions">
+                    <button class="btn" id="fullscreen-btn">
+                        <i class="fas fa-expand"></i> 全屏模式
+                    </button>
+                    <button class="btn btn-primary" id="reload-btn">
+                        <i class="fas fa-redo"></i> 重新加载
+                    </button>
+                </div>
+            </div>
+
+            <div class="game-frame-container">
+                <!-- 加载提示 -->
+                <div class="loading-message" id="loading-message">
+                    <div class="loading-spinner"></div>
+                    <div>加载游戏中，请稍候...<br>加载过程可能持续1~2分钟</div>
+                </div>
+
+                <!-- 游戏iframe -->
+                <iframe id="game-frame" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
+            </div>
+
+            <div class="game-description">
+                <h4><i class="fas fa-info-circle"></i> 游戏说明</h4>
+                <p id="game-description-text">《最终幻想》是Square（现Square Enix）开发的第一部最终幻想系列作品，于1987年首次发行。游戏讲述了四名光之战士拯救世界的故事，奠定了系列的基础玩法。美版于1990年发行，对原版进行了部分调整。</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>本项目仅供学习和技术交流使用，禁止用于商业目的，游戏版权归Square Enix所有</p>
+        <div class="controls-hint">
+            <div class="control-item">
+                <i class="fas fa-mouse-pointer"></i> 点击左侧游戏清单切换游戏
+            </div>
+            <div class="control-item">
+                <i class="fas fa-expand"></i> 点击全屏按钮获得更好体验
+            </div>
+            <div class="control-item">
+                <i class="fas fa-redo"></i> 游戏异常时使用重新加载
+            </div>
+        </div>
+    </footer>
+</div>
+
+<script>
+    // 游戏数据 - 包含描述信息
+    const gameData = {
+        'ff1-usa': {
+            name: '最终幻想1',
+            platform: 'NES/FC平台',
+            releaseYear: '1990年（北美发行）',
+            originalRelease: '1987年（日本）',
+            genre: '角色扮演游戏 (JRPG)',
+            developer: 'Square（现Square Enix）',
+            description: '作为最终幻想系列的开山之作，《最终幻想》于1987年在日本首发，北美版于1990年发行。游戏讲述了四名光之战士踏上旅程，恢复被混沌侵蚀的四大元素水晶的故事。本作奠定了系列诸多经典元素：回合制战斗系统、职业系统（战士、盗贼、白魔法师、黑魔法师等）、世界地图探索和基于等级的成长机制。美版相比日版进行了多项调整：魔法系统从基于使用次数的"魔法点数"改为基于等级的"魔法槽"，部分道具和敌人名称被修改，游戏难度也有所调整。虽然画面和系统相对简单，但其开创性的设计为整个JRPG类型树立了标准。',
+            notableFeatures: [
+                '开创性的职业系统，角色有明确的职业定位',
+                '回合制战斗系统，后续成为JRPG标准',
+                '元素水晶的叙事框架',
+                '非线性探索的世界地图',
+                '经典的开场台词："水晶的光辉正在消逝..."'
+            ],
+            trivia: '游戏原名"Final Fantasy"源于开发团队当时的财务状况，如果这款游戏失败，Square公司可能面临破产，因此这被视作公司的"最终幻想"。'
+        },
+        'ff1-jp': {
+            name: '最终幻想1',
+            platform: 'NES/FC平台',
+            releaseYear: '1987年',
+            originalRelease: '1987年（日本首发）',
+            genre: '角色扮演游戏 (JRPG)',
+            developer: 'Square',
+            description: '这是最终幻想系列的原点，由坂口博信监制，植松伸夫作曲，天野喜孝负责角色设计。日版原版采用了基于使用次数的魔法系统（魔法点数MP系统），玩家需要管理每个魔法的使用次数而非整体魔法值。游戏难度较高，敌人强度、经验值获取和金钱掉落率都与美版有所不同。日版中部分道具如"治疗剂"在美版中被改名为"Potion"，魔法名称也进行了本地化调整。本作的角色成长曲线较为陡峭，需要玩家在特定区域反复练级。尽管技术限制明显（仅256KB卡带容量），但游戏通过优秀的叙事和系统设计成为FC时代的经典之作。',
+            notableFeatures: [
+                '原始的魔法点数(MP)系统',
+                '较高的游戏难度设定',
+                '经典的FC时代像素美术风格',
+                '植松伸夫的标志性配乐',
+                '天野喜孝独特的角色设计风格'
+            ],
+            trivia: '日版封面上的"FINAL FANTASY"字样下方有日文假名"ファイナルファンタジー"，这是系列首次使用这一罗马字标音。'
+        },
+        'ff2-usa': {
+            name: '最终幻想2',
+            platform: 'NES/FC平台',
+            releaseYear: '未正式发行（原型版本）',
+            originalRelease: '1988年（日本）',
+            genre: '角色扮演游戏 (JRPG)',
+            developer: 'Square',
+            description: '《最终幻想II》美版原型是一个历史遗留物，由于Square对北美市场反应的不确定性，本作的官方英文本地化从未完成。这个原型版本基于未完成的翻译，保留了日版原版的创新成长系统：废除了传统等级制，采用基于实际使用次数的"熟练度"系统——频繁使用某项技能或属性会使其增强。故事讲述了孤儿Firion、Maria、Guy和Leon在帕拉美西亚帝国侵略下的复仇与救赎之旅。对话系统也是创新之一，玩家需要通过关键词与NPC互动推进剧情。这个原型版本存在大量未翻译文本、系统漏洞和不完整的本地化内容，成为了收藏家和系列粉丝研究的珍稀资料。',
+            notableFeatures: [
+                '创新的熟练度成长系统（无传统等级）',
+                '关键词对话系统推进剧情',
+                '更注重角色发展和叙事',
+                '引入系列首个永久死亡角色',
+                '更复杂的政治剧情设定'
+            ],
+            trivia: '美版原型中大量文本直接使用日版罗马字，部分菜单选项功能不完整，是一个典型的"未完成本地化"案例。'
+        },
+        'ff2-jp': {
+            name: '最终幻想2',
+            platform: 'NES/FC平台',
+            releaseYear: '1988年',
+            originalRelease: '1988年（日本）',
+            genre: '角色扮演游戏 (JRPG)',
+            developer: 'Square',
+            description: '《最终幻想II》是系列的一次大胆实验，完全抛弃了传统的经验值等级系统，引入了基于使用频率的成长机制：频繁使用剑术会提升力量，多施放魔法会提升魔法值，多受攻击会提升生命值。这种系统虽然创新但也备受争议，因为可能导致玩家通过"自残"方式刷属性。故事线更加成熟，围绕战争、背叛和救赎展开，角色有了更明确的背景和动机。本作引入了系列多项首创：有名字和背景的主要角色（而非自定义光之战士）、更复杂的政治剧情、以及通过关键词记忆推进的对话系统。虽然系统设计存在争议，但其叙事野心为后续作品奠定了基础。',
+            notableFeatures: [
+                '完全摒弃传统等级系统的成长机制',
+                '关键词记忆对话系统',
+                '更成熟的战争与政治叙事',
+                '引入角色专属背景故事',
+                '创新的熟练度提升方式'
+            ],
+            trivia: '本作开发周期仅6个月，是系列开发时间最短的作品之一，但尝试了最多创新系统。'
+        },
+        'ff3-usa': {
+            name: '最终幻想3',
+            platform: 'NES/FC平台',
+            releaseYear: '2006年（基于英译版）',
+            originalRelease: '1990年（日本）',
+            genre: '角色扮演游戏 (JRPG)',
+            developer: 'Square',
+            description: '这个英译版是基于1990年日版原版的非官方翻译，由A.W. Jackson、Neill Corlett和SoM2Freak等爱好者合作完成，版本为v1.1。翻译团队不仅准确翻译了所有文本，还修复了原版中的多个bug，并进行了必要的本地化调整。《最终幻想III》是FC平台上系列的巅峰之作，首次引入了完整的职业转换系统：玩家可以从22种职业中选择，每种职业有独特的能力和成长曲线。游戏还引入了召唤魔法系统（虽然功能有限），以及更复杂的地形互动（如独木舟、飞空艇等交通工具）。这个英译版让西方玩家在NDS重制版发行前就能体验到完整的FF3内容，是粉丝翻译项目的典范。',
+            notableFeatures: [
+                '完整的职业转换系统（22种职业）',
+                '召唤魔法的首次引入',
+                '创新的地形与交通工具互动',
+                '改善的图形效果和动画',
+                '更平衡的战斗系统'
+            ],
+            trivia: '这个英译版项目始于1990年代，历经多次中断和重启，最终版本于2000年代中期完成，是历史最悠久的粉丝翻译项目之一。'
+        },
+        'ff3-jp': {
+            name: '最终幻想3',
+            platform: 'NES/FC平台',
+            releaseYear: '1990年',
+            originalRelease: '1990年（日本）',
+            genre: '角色扮演游戏 (JRPG)',
+            developer: 'Square',
+            description: '作为FC平台上最终幻想系列的收官之作，《最终幻想III》代表了8位机时代JRPG的技术和设计巅峰。游戏采用了扩大容量的4MBit卡带，实现了更丰富的图形、更复杂的系统和更长的剧情。本作最大的创新是职业系统：四名无名少年（后定为Luneth、Arc、Refia、Ingus）可以自由转换22种不同职业，从基础职业到进阶职业如忍者、贤者等。召唤魔法系统首次完整呈现，包括伊弗利特、希瓦、拉姆等经典召唤兽。游戏的世界也更加广阔，引入了多种交通工具和地形机制。虽然在日本大获成功，但由于当时Square对北美市场策略调整，官方英文版直到2006年的NDS重制版才问世。',
+            notableFeatures: [
+                '系列首个完整职业转换系统',
+                '召唤魔法系统正式确立',
+                '丰富的交通工具系统（陆行鸟、飞空艇等）',
+                '创新的转职系统和能力继承',
+                'FC平台上最精美的图形表现'
+            ],
+            trivia: '本作销量超过140万份，是FC时代销量最高的第三方游戏之一，但直到16年后才通过NDS重制版正式登陆西方市场。'
+        },
+        'ff4-usa': {
+            name: '最终幻想4（美版FF2）',
+            platform: 'SNES/SFC平台',
+            releaseYear: '1991年',
+            originalRelease: '1991年（日本）',
+            genre: '角色扮演游戏 (JRPG)',
+            developer: 'Square',
+            description: '在北美以《最终幻想II》名义发行的《最终幻想IV》是系列进入16位时代的里程碑作品。由于当时北美尚未发行FF2和FF3，Square决定跳过编号直接发行FF4为FF2。本作革命性地引入了ATB（动态时间战斗）系统：角色和敌人在时间条蓄满后行动，创造了实时策略感的回合制战斗。故事围绕黑暗骑士塞西尔·哈威的救赎之旅展开，拥有深刻的角色发展和情感叙事。游戏采用了固定职业的角色队伍，每个角色有独特的能力和成长路径。美版进行了大幅本地化调整：难度降低、部分剧情简化、道具和魔法名称标准化。尽管改动引发争议，但FF4成功为系列在西方市场树立了知名度。',
+            notableFeatures: [
+                '革命性的ATB（动态时间战斗）系统',
+                '深刻的人物发展和情感叙事',
+                '固定职业的角色设定',
+                '丰富的过场动画和剧情演出',
+                '植松伸夫的标志性配乐'
+            ],
+            trivia: '由于卡带容量限制，美版删除了日版中部分次要剧情和功能，包括"弱化"了游戏的难度曲线。'
+        },
+        'ff4-jp': {
+            name: '最终幻想4',
+            platform: 'SNES/SFC平台',
+            releaseYear: '1991年',
+            originalRelease: '1991年（日本首发）',
+            genre: '角色扮演游戏 (JRPG)',
+            developer: 'Square',
+            description: '《最终幻想IV》日版原版是JRPG历史上的转折点，首次将电影化叙事深度融入电子游戏。游戏讲述了黑暗骑士塞西尔从巴伦王国骑士到反抗暴政的英雄的转变历程，涉及背叛、牺牲、救赎等深刻主题。ATB系统的引入彻底改变了回合制RPG的战斗节奏，创造了紧张刺激的战斗体验。角色不再可自定义，而是拥有固定背景、能力和成长路线，使叙事更加聚焦。本作的技术表现也是突破性的：模式7的旋转缩放效果、更精细的角色精灵、多层次的音乐编曲。游戏还引入了系列经典元素：系列首个飞空艇驾驶员希德、陆行鸟牧场、以及众多有血有肉的反派角色。',
+            notableFeatures: [
+                'ATB系统的首次完整实现',
+                '电影化叙事和深刻角色发展',
+                '固定角色和职业系统',
+                '技术突破（模式7图形效果）',
+                '情感丰富的剧情转折'
+            ],
+            trivia: '植松伸夫为本作创作的"主题曲"成为最终幻想系列标志性音乐的开端，特别是"塞西尔的主题"和"爱的主题"。'
+        },
+        'ff5-usa': {
+            name: '最终幻想5',
+            platform: 'SNES/SFC平台',
+            releaseYear: '1999年（基于英译版）',
+            originalRelease: '1992年（日本）',
+            genre: '角色扮演游戏 (JRPG)',
+            developer: 'Square',
+            description: '这个英译版是基于1992年日版原版的粉丝翻译，由RPGe团队完成，版本v1.1。《最终幻想V》在系统深度和玩家自由度方面达到了系列新高，其职业系统被誉为系列最佳之一。玩家可以学习并组合不同职业的能力，创造了几乎无限的角色构建可能性。故事围绕着风之水晶破碎，四位光之战士（巴茨、蕾娜、加拉夫、法利斯）阻止异次元裂缝扩散的冒险展开。虽然叙事不如FF4严肃，但充满幽默和温暖的角色互动。英译版准确翻译了所有文本，包括大量职业描述、技能说明和幽默对话，并保持了原版的系统深度。由于官方英文版直到多年后的GBA版才发行，这个翻译版成为了西方粉丝体验完整FF5内容的重要渠道。',
+            notableFeatures: [
+                '深度的职业和能力组合系统',
+                '高自由度的角色定制',
+                '幽默温馨的叙事风格',
+                '丰富的隐藏内容和可玩性',
+                '改进的ATB系统和战斗平衡'
+            ],
+            trivia: '本作的职业系统如此成功，以至于影响了后续多代最终幻想以及许多其他JRPG的职业设计理念。'
+        },
+        'ff5-jp': {
+            name: '最终幻想5',
+            platform: 'SNES/SFC平台',
+            releaseYear: '1992年',
+            originalRelease: '1992年（日本）',
+            genre: '角色扮演游戏 (JRPG)',
+            developer: 'Square',
+            description: '《最终幻想V》日版原版是系列在系统深度上的巅峰之作，其职业系统被广泛认为是JRPG历史上最优秀的设计之一。游戏拥有22种基础职业和更多隐藏职业，每种职业都有独特的技能树和能力，玩家可以通过"能力点"系统跨职业组合技能，创造了极高的可玩性和重复游玩价值。故事相对轻松幽默，主角巴茨的冒险充满了温馨和搞笑时刻，但也包含了深刻的情感时刻（如加拉夫的牺牲）。游戏首次引入了"捕捉"怪物能力的概念，以及系列首个真正的"蓝魔法"系统。虽然当时在日本销量不如FF4，但其系统深度使其在核心粉丝中拥有极高评价，并影响了后续无数RPG游戏设计。',
+            notableFeatures: [
+                '系列最深入的职业能力系统',
+                '跨职业技能组合的自由度',
+                '蓝魔法和怪物捕捉系统',
+                '轻松幽默与深刻情感并存的叙事',
+                '丰富的隐藏boss和挑战内容'
+            ],
+            trivia: '本作的开发代号为"成本削减计划"，因为Square希望开发一款更注重系统深度而非图形技术的作品，结果却创造了系列最具深度的游戏系统。'
+        },
+        'ff6-usa': {
+            name: '最终幻想6（美版FF3）',
+            platform: 'SNES/SFC平台',
+            releaseYear: '1994年',
+            originalRelease: '1994年（日本）',
+            genre: '角色扮演游戏 (JRPG)',
+            developer: 'Square',
+            description: '在北美以《最终幻想III》名义发行的《最终幻想VI》被广泛认为是电子游戏史上最伟大的作品之一。由于北美跳过了FF2和FF5的发行，FF6成为了美版FF3。游戏打破了JRPG的诸多传统：拥有14名可玩角色，每名角色都有独特背景、动机和玩法；故事从个人复仇扩展到反抗帝国的宏大叙事，再演变为世界毁灭后的末日求生；蒸汽朋克与奇幻融合的美学风格极具开创性。战斗系统在ATB基础上加入了"必杀技"系统，每个角色有独特特殊能力。美版进行了出色的本地化，由Ted Woolsey翻译的文本在保持原意的基础上进行了文化适应，创造了诸多经典台词（如"你杀了父亲！你杀了父亲！"）。',
+            notableFeatures: [
+                '庞大的角色阵容和深度个人剧情',
+                '蒸汽朋克与奇幻的完美融合',
+                '创新的必杀技和角色专属能力',
+                '世界毁灭前后的双重结构叙事',
+                '史上最经典的游戏配乐之一'
+            ],
+            trivia: '美版标题画面保留了"FINAL FANTASY III"但游戏内所有文本和营销材料都指向这是系列第六作，造成了当时的编号混乱。'
+        },
+        'ff6-jp': {
+            name: '最终幻想6',
+            platform: 'SNES/SFC平台',
+            releaseYear: '1994年',
+            originalRelease: '1994年（日本首发）',
+            genre: '角色扮演游戏 (JRPG)',
+            developer: 'Square',
+            description: '《最终幻想VI》日版原版代表了16位机时代JRPG的艺术巅峰，也是坂口博信、植松伸夫、天野喜孝这个"黄金三角"组合的最后一次合作。游戏拥有电子游戏史上最庞大且平衡的角色阵容：从神秘的少女蒂娜到复仇的幽灵雪莉，从机械手臂的塞莉丝到滑稽的模仿师Gogo，每个角色都有完整的故事弧线和独特玩法。故事分为"魔大战前"和"世界毁灭后"两部分，探讨了生命意义、自由意志、科技与魔法的冲突等深刻主题。植松伸夫的配乐达到了新的高度，特别是"蒂娜的主题"和歌剧场景的音乐。游戏的技术表现也是突破性的：模式7的飞空艇战斗、多层卷轴背景、以及当时顶级的像素美术。',
+            notableFeatures: [
+                '14名可玩角色，各有完整故事线',
+                '世界毁灭前后的叙事结构创新',
+                '歌剧场景等电影化演出',
+                '植松伸夫大师级的配乐作品',
+                'JRPG历史上最深刻的主题探索'
+            ],
+            trivia: '本作开发团队超过60人，是当时规模最大的游戏开发项目之一，预算超过30亿日元，但最终全球销量超过340万份。'
+        },
+        'ff7-usa': {
+            name: '最终幻想7',
+            platform: 'PlayStation平台',
+            releaseYear: '1997年',
+            originalRelease: '1997年（日本）',
+            genre: '角色扮演游戏 (JRPG)',
+            developer: 'Square',
+            description: '《最终幻想VII》不仅是系列的转折点，也是整个游戏产业的里程碑。作为系列首部3D作品，它从任天堂平台转向索尼PlayStation，利用CD-ROM的大容量实现了前所未有的叙事规模和制作价值。故事围绕前神罗战士克劳德·斯特莱夫和生态恐怖组织"雪崩"对抗汲取星球生命力的神罗公司展开，逐渐揭露了更宏大的宇宙观和萨菲罗斯的灭世计划。游戏开创性地采用了预渲染背景与3D角色结合的技术，创造了当时最震撼的视觉体验。ATB系统进化为包含"极限技"和"召唤兽"的丰富战斗系统，而"魔石"系统提供了深度的角色定制。美版几乎同步发行，是系列首次真正意义上的全球同步发售，推动了PlayStation主机的普及并成为史上最畅销的最终幻想游戏。',
+            notableFeatures: [
+                '全3D角色与预渲染背景的突破性技术',
+                '深刻的环境保护与身份认同主题',
+                '魔石系统的深度角色定制',
+                '史诗级的电影化叙事规模',
+                '推动PlayStation主机普及的现象级作品'
+            ],
+            trivia: '游戏原计划在任天堂64上开发，但因卡带容量限制转为CD-ROM的PlayStation平台，这一决定改变了整个游戏行业的格局。'
+        },
+        'ff-tactics': {
+            name: '最终幻想战略版',
+            platform: 'PlayStation平台',
+            releaseYear: '1998年',
+            originalRelease: '1997年（日本）',
+            genre: '策略角色扮演游戏 (SRPG)',
+            developer: 'Square',
+            description: '《最终幻想战略版》是最终幻想系列的策略衍生作品，由松野泰己（《皇家骑士团》系列制作人）执导，融合了伊瓦利斯世界的深度设定与策略战斗的复杂性。游戏采用等距视角和网格战斗系统，讲述了青年贵族拉姆萨·贝奥鲁甫在狮子战争中的成长与抗争，揭露了教会阴谋和贵族斗争的黑暗政治。职业系统极为深入，有超过20种职业和数百种技能可供学习组合。永久死亡机制（当角色战斗不能后需要在三回合内复活）增加了战略紧张感。故事充满了背叛、阴谋和道德困境，被誉为游戏史上最成熟的政治叙事之一。美版由Alexander O. Smith进行本地化，采用莎士比亚式的古英语风格，增强了中世纪奇幻的氛围。',
+            notableFeatures: [
+                '深度策略性的网格战斗系统',
+                '复杂成熟的政治阴谋叙事',
+                '庞大的职业和技能系统',
+                '永久死亡机制增加紧张感',
+                '伊瓦利斯世界观的首次完整呈现'
+            ],
+            trivia: '松野泰己在开发期间进行了大量中世纪欧洲历史研究，游戏的政治叙事深度部分源于他对玫瑰战争等历史事件的研究。'
+        },
+        'ff-dawn': {
+            name: '最终幻想1&2：灵魂黎明',
+            platform: 'Game Boy Advance平台',
+            releaseYear: '2004年',
+            originalRelease: '2004年（日本）',
+            genre: '角色扮演游戏 (JRPG)',
+            developer: 'Square Enix, TOSE',
+            description: '《最终幻想I & II：灵魂黎明》是GBA平台上对系列最初两作的完全重制合集，不仅进行了图形升级和界面现代化，还加入了大量新内容。FF1部分新增了"灵魂之渊"——包含四个新增地下城和剧情，解释了原版未涉及的背景故事；FF2部分新增了"重生之魂"章节，讲述了原版剧情之后的续篇。两作都大幅改进了图形：重新绘制的角色精灵、更精细的地图画面、增强的魔法特效。系统方面也进行了现代化调整：FF1增加了MP系统取代原版的魔法次数限制，FF2调整了成长系统使其更友好。音乐由原作曲家植松伸夫监制重新编曲，保留了经典旋律的同时适应GBA音源特性。这个合集代表了经典作品在现代平台上的理想呈现方式。',
+            notableFeatures: [
+                'FF1和FF2的完全图形重制',
+                '新增剧情章节和地下城内容',
+                '系统现代化调整（MP系统等）',
+                '重新编曲的经典配乐',
+                'GBA平台优化的界面设计'
+            ],
+            trivia: '这是Square和Enix合并为Square Enix后发布的首个最终幻想系列作品，标志着一个新时代的开始。'
+        },
+        'ff-tactics-advance': {
+            name: '最终幻想战略版Advance',
+            platform: 'Game Boy Advance平台',
+            releaseYear: '2003年',
+            originalRelease: '2003年（日本）',
+            genre: '策略角色扮演游戏 (SRPG)',
+            developer: 'Square Enix',
+            description: '《最终幻想战略版Advance》是GBA平台上的系列续作，虽然共享策略战斗的核心玩法，但在设定和系统上与PS原版有显著不同。故事发生在现代世界与奇幻世界伊瓦利斯之间：主角马修与朋友被魔法书带入伊瓦利斯，但只有马修希望返回现实。游戏引入了"法律系统"——每场战斗都有特定规则（如禁止使用某种魔法），违反会招致裁判惩罚。职业系统更加丰富，有超过30种职业和种族（人类、邦加族、恩莫族、维埃拉族），每种有独特成长和技能。故事探讨了逃避现实与接受现实的成长主题，虽然不如原版黑暗，但更符合年轻玩家的情感体验。画面充分利用了GBA机能，创造了色彩丰富、细节精美的2D世界。',
+            notableFeatures: [
+                '创新的法律系统和裁判机制',
+                '多种族多职业的深度系统',
+                '明亮色彩和精细的GBA画面',
+                '成长与逃避现实的主题探索',
+                '丰富的支线任务和可玩内容'
+            ],
+            trivia: '虽然设定在伊瓦利斯世界，但本作与原版《最终幻想战略版》没有直接剧情联系，是一个独立的新故事。'
+        },
+        'ff3-ds': {
+            name: '最终幻想3 3D重制版',
+            platform: 'Nintendo DS平台',
+            releaseYear: '2006年',
+            originalRelease: '2006年（日本）',
+            genre: '角色扮演游戏 (JRPG)',
+            developer: 'Square Enix, Matrix Software',
+            description: '《最终幻想III 3D重制版》是NDS平台上对FC原版的完全重制，不仅将画面从2D像素升级为全3D，还增加了大量新内容。这是原版FC《最终幻想III》首次正式登陆西方市场，填补了系列历史上的重要空白。重制版在保留原版核心系统的同时进行了现代化调整：四名无名主角被赋予了名字（Luneth、Arc、Refia、Ingus）、背景和个性；新增了职业专属能力和转职惩罚系统；增加了新的召唤兽和剧情内容。游戏利用NDS双屏特性，下屏显示地图和菜单，上屏显示3D画面。音乐由原作曲植松伸夫监制重新编曲，并首次加入了配音演出。虽然3D画面在当时NDS上表现有限，但这是对经典作品的恰当致敬和现代化呈现。',
+            notableFeatures: [
+                'FC原版首次官方西方发行',
+                '2D转3D的完全图形重制',
+                '新增角色背景和配音',
+                '职业系统的平衡性调整',
+                'NDS双屏界面优化设计'
+            ],
+            trivia: '这个重制版的成功直接导致了后续FF4、FF5、FF6等作品的3D重制计划，开启了经典作品重制的新时代。'
+        }
+    };
+
+    // DOM元素
+    const gameItems = document.querySelectorAll('.game-item');
+    const gameFrame = document.getElementById('game-frame');
+    const gameTitle = document.querySelector('.current-game-info h3');
+    const gamePlatform = document.querySelector('.current-game-platform');
+    const gameDescription = document.getElementById('game-description-text');
+    const loadingMessage = document.getElementById('loading-message');
+    const reloadBtn = document.getElementById('reload-btn');
+    const fullscreenBtn = document.getElementById('fullscreen-btn');
+    const gameContainer = document.querySelector('.game-frame-container');
+
+    // 当前选中的游戏
+    let currentGameId = 'ff1-usa';
+
+    // 初始化加载第一个游戏
+    function initFirstGame() {
+        const firstGame = document.querySelector('.game-item.active');
+        const gameId = firstGame.dataset.id;
+        const iframeSrc = firstGame.dataset.iframe;
+        const gameName = firstGame.dataset.name;
+        const platform = firstGame.dataset.platform;
+
+        // 更新游戏信息
+        currentGameId = gameId;
+        gameTitle.textContent = gameName;
+        gamePlatform.innerHTML = `<i class="fas fa-gamepad"></i> ${platform}`;
+
+        // 更新游戏描述
+        if (gameData[gameId]) {
+            gameDescription.textContent = gameData[gameId].description;
+        }
+
+        // 加载游戏iframe
+        showLoading();
+        gameFrame.src = iframeSrc;
+    }
+
+    // 游戏iframe加载完成时
+    gameFrame.addEventListener('load', () => {
+        // 隐藏加载提示
+        loadingMessage.style.display = 'none';
+        gameFrame.style.display = 'block';
+    });
+
+    // 游戏加载开始时显示加载提示
+    function showLoading() {
+        loadingMessage.style.display = 'flex';
+        gameFrame.style.display = 'none';
+    }
+
+    // 切换游戏
+    function switchGame(gameId, iframeSrc, gameName, platform) {
+        // 更新选中状态
+        gameItems.forEach(item => {
+            if (item.dataset.id === gameId) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+
+        // 更新显示的游戏信息
+        currentGameId = gameId;
+        gameTitle.textContent = gameName;
+        gamePlatform.innerHTML = `<i class="fas fa-gamepad"></i> ${platform}`;
+
+        // 更新游戏描述
+        if (gameData[gameId]) {
+            gameDescription.textContent = gameData[gameId].description;
+        }
+
+        // 加载新的游戏iframe
+        showLoading();
+        gameFrame.src = iframeSrc;
+    }
+
+    // 为每个游戏项添加点击事件
+    gameItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const gameId = item.dataset.id;
+            const iframeSrc = item.dataset.iframe;
+            const gameName = item.dataset.name;
+            const platform = item.dataset.platform;
+
+            switchGame(gameId, iframeSrc, gameName, platform);
+        });
+    });
+
+    // 重新加载按钮
+    reloadBtn.addEventListener('click', () => {
+        showLoading();
+        gameFrame.src = gameFrame.src;
+    });
+
+    // 全屏按钮
+    fullscreenBtn.addEventListener('click', () => {
+        if (gameContainer.requestFullscreen) {
+            gameContainer.requestFullscreen();
+        } else if (gameContainer.webkitRequestFullscreen) {
+            gameContainer.webkitRequestFullscreen();
+        } else if (gameContainer.msRequestFullscreen) {
+            gameContainer.msRequestFullscreen();
+        }
+    });
+
+    // 检测是否在移动设备上
+    function isMobileDevice() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
+    // 页面加载完成
+    document.addEventListener('DOMContentLoaded', () => {
+        // 初始化第一个游戏
+        initFirstGame();
+
+        // 如果是移动设备，显示提示
+        if (isMobileDevice()) {
+            document.querySelector('.mobile-warning').style.display = 'flex';
+            document.querySelector('.container').style.display = 'none';
+        }
+    });
+</script>
+</body>
+</html>
