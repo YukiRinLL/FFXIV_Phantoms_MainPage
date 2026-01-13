@@ -372,6 +372,55 @@
             to { transform: rotate(360deg); }
         }
 
+        /* 封面图展示样式 */
+        .game-covers {
+            margin-top: 20px;
+            background: rgba(45, 45, 45, 0.6);
+            border-radius: 10px;
+            overflow: hidden;
+            padding: 15px;
+        }
+
+        .game-covers h4 {
+            color: var(--color-off-white);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .covers-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .cover-item {
+            flex: 1;
+            min-width: 200px;
+            max-width: 350px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .cover-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .cover-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
         /* 游戏详细信息样式 */
         .game-description {
             margin-top: 20px;
@@ -802,6 +851,14 @@
                     </div>
                 </div>
             </div>
+
+            <!-- 封面图展示区域 -->
+            <div class="game-covers">
+                <h4><i class="fas fa-images"></i> 游戏封面</h4>
+                <div class="covers-container" id="covers-container">
+                    <!-- 封面图将通过JavaScript动态加载 -->
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1137,6 +1194,46 @@
     // 当前选中的游戏
     let currentGameId = 'ff1-usa';
 
+    // 加载游戏封面图
+    function loadGameCovers(gameId) {
+        const coversContainer = document.getElementById('covers-container');
+        coversContainer.innerHTML = '';
+
+        // 游戏ID到图片前缀的映射
+        const gameIdToPrefix = {
+            'ff1-usa': 'FF1-FC-USA',
+            'ff1-jp': 'FF1-FC-JP',
+            'ff2-usa': 'FF2-FC-USA',
+            'ff2-jp': 'FF2-FC-JP',
+            'ff3-usa': 'FF3-FC-JP',  // 注意：ff3-usa对应FF3-FC-JP的图片
+            'ff3-jp': 'FF3-FC-JP'
+        };
+
+        const prefix = gameIdToPrefix[gameId];
+        if (!prefix) return;
+
+        // 尝试加载最多3张图片
+        for (let i = 1; i <= 3; i++) {
+            const imgSrc = `./img/${prefix}-${i}.png`;
+            const img = document.createElement('img');
+            const coverItem = document.createElement('div');
+            coverItem.className = 'cover-item';
+
+            // 图片加载成功时显示
+            img.onload = function() {
+                coverItem.appendChild(img);
+                coversContainer.appendChild(coverItem);
+            };
+
+            // 图片加载失败时不显示
+            img.onerror = function() {
+                // 不执行任何操作，不显示失败的图片
+            };
+
+            img.src = imgSrc;
+        }
+    }
+
     // 更新游戏详细信息
     function updateGameDetails(gameId) {
         const game = gameData[gameId];
@@ -1158,6 +1255,9 @@
                 detailNotableFeatures.appendChild(li);
             });
         }
+
+        // 加载封面图
+        loadGameCovers(gameId);
     }
 
     // 初始化加载第一个游戏
