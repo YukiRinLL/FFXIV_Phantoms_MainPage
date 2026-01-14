@@ -105,3 +105,65 @@ PlayStation平台
 17. 《最终幻想战略版》
 - 英文: Final Fantasy Tactics
 <iframe src="https://www.retrogames.cc/embed/41787-final-fantasy-tactics.html" width="600" height="450" frameborder="no" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
+
+
+
+Game Boy
+Final Fantasy Legend (USA)
+<iframe src="https://www.retrogames.cc/embed/26089-final-fantasy-legend-the-usa.html" width="600" height="450" frameborder="no" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
+
+Game Boy
+Final Fantasy Legend II (USA)
+<iframe src="https://www.retrogames.cc/embed/25558-final-fantasy-legend-ii-usa.html" width="600" height="450" frameborder="no" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
+
+Game Boy
+Final Fantasy Legend III (USA)
+<iframe src="https://www.retrogames.cc/embed/25831-final-fantasy-legend-iii-usa.html" width="600" height="450" frameborder="no" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
+
+PlayStation
+Final Fantasy Tactics - The Lion War 2.031
+<iframe src="https://www.retrogames.cc/embed/44529-final-fantasy-tactics-the-lion-war-2-031.html" width="600" height="450" frameborder="no" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
+
+Nintendo DS
+Final Fantasy XII - Revenant Wings (Japan)
+<iframe src="https://www.retrogames.cc/embed/36157-final-fantasy-xii-revenant-wings-japan.html" width="600" height="450" frameborder="no" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
+
+Nintendo DS
+Final Fantasy XII - Revenant Wings (USA)
+<iframe src="https://www.retrogames.cc/embed/36834-final-fantasy-xii-revenant-wings-usa.html" width="600" height="450" frameborder="no" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
+
+Nintendo DS
+Final Fantasy XII - Revenant Wings (Europe) (En,Fr,De,Es,It)
+<iframe src="https://www.retrogames.cc/embed/37157-final-fantasy-xii-revenant-wings-europe-en-fr-de-es-it.html" width="600" height="450" frameborder="no" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
+
+Nintendo DS
+Final Fantasy Crystal Chronicles - Ring of Fates (Japan)
+<iframe src="https://www.retrogames.cc/embed/36475-final-fantasy-crystal-chronicles-ring-of-fates-japan.html" width="600" height="450" frameborder="no" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
+
+Nintendo DS
+Final Fantasy Crystal Chronicles - Ring of Fates (USA) (En,Es)
+<iframe src="https://www.retrogames.cc/embed/37246-final-fantasy-crystal-chronicles-ring-of-fates-usa-en-es.html" width="600" height="450" frameborder="no" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
+
+Nintendo DS
+Final Fantasy Crystal Chronicles - Ring of Fates (Europe) (En,Fr,De,Es)
+<iframe src="https://www.retrogames.cc/embed/37292-final-fantasy-crystal-chronicles-ring-of-fates-europe-en-fr-de-es.html" width="600" height="450" frameborder="no" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
+
+Nintendo DS
+Final Fantasy Crystal Chronicles - Echoes of Time (Japan)
+<iframe src="https://www.retrogames.cc/embed/38471-final-fantasy-crystal-chronicles-echoes-of-time-japan.html" width="600" height="450" frameborder="no" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
+
+Nintendo DS
+Final Fantasy Crystal Chronicles - Echoes of Time (USA) (En,Fr,Es)
+<iframe src="https://www.retrogames.cc/embed/38713-final-fantasy-crystal-chronicles-echoes-of-time-usa-en-fr-es.html" width="600" height="450" frameborder="no" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
+
+Nintendo DS
+Final Fantasy Crystal Chronicles - Echoes of Time (Europe) (En,Fr,De,Es)
+<iframe src="https://www.retrogames.cc/embed/38719-final-fantasy-crystal-chronicles-echoes-of-time-europe-en-fr-de-es.html" width="600" height="450" frameborder="no" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
+
+SNES
+Final Fantasy - Mystic Quest (USA)
+<iframe src="https://www.retrogames.cc/embed/24406-final-fantasy-mystic-quest-usa.html" width="600" height="450" frameborder="no" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
+
+Game Boy
+Final Fantasy Adventure (USA)
+<iframe src="https://www.retrogames.cc/embed/18521-final-fantasy-adventure-usa.html" width="600" height="450" frameborder="no" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" scrolling="no"></iframe>
