@@ -264,6 +264,10 @@
             background: #333;
         }
 
+        .language-tag.eu {
+            background: #777;
+        }
+
         /* 游戏显示区域样式 */
         .game-display {
             flex: 2;
@@ -607,7 +611,7 @@
 <div class="container">
     <header>
         <h1><i class="fa-solid fa-gamepad"></i>Retro Final Fantasy</h1>
-        <p class="subtitle">收录从NES到PlayStation的最终幻想1-7部分作品移植版本</p>
+        <p class="subtitle">收录从NES到PlayStation的最终幻想系列作品与衍生作品</p>
         <p class="tagline">Powerd By YukiRinLL from Phantoms FC</p>
     </header>
 
@@ -621,16 +625,16 @@
                 <div class="platform-title">
                     <i class="fas fa-gamepad"></i> NES/FC平台
                 </div>
-                <div class="game-item active" data-id="ff1-usa" data-name="最终幻想1" data-platform="NES/FC" data-iframe="https://www.retrogames.cc/embed/17923-final-fantasy-usa.html" data-version="Final Fantasy (USA)">
-                    <div class="game-name">最终幻想1</div>
+                <div class="game-item active" data-id="ff1-usa" data-name="最终幻想" data-platform="NES/FC" data-iframe="https://www.retrogames.cc/embed/17923-final-fantasy-usa.html" data-version="Final Fantasy (USA)">
+                    <div class="game-name">最终幻想</div>
                     <div class="game-version">Final Fantasy (USA)</div>
                     <div class="game-meta">
                         <span class="language-tag en">EN</span>
                         <span>美版</span>
                     </div>
                 </div>
-                <div class="game-item" data-id="ff1-jp" data-name="最终幻想1" data-platform="NES/FC" data-iframe="https://www.retrogames.cc/embed/20733-final-fantasy-japan-rev-b.html" data-version="Final Fantasy (Japan) (Rev B)">
-                    <div class="game-name">最终幻想1</div>
+                <div class="game-item" data-id="ff1-jp" data-name="最终幻想" data-platform="NES/FC" data-iframe="https://www.retrogames.cc/embed/20733-final-fantasy-japan-rev-b.html" data-version="Final Fantasy (Japan) (Rev B)">
+                    <div class="game-name">最终幻想</div>
                     <div class="game-version">Final Fantasy (Japan) (Rev B)</div>
                     <div class="game-meta">
                         <span class="language-tag jp">JP</span>
@@ -724,19 +728,13 @@
                         <span>日版</span>
                     </div>
                 </div>
-            </div>
-
-            <!-- Game Boy平台 -->
-            <div class="platform-group">
-                <div class="platform-title">
-                    <i class="fas fa-gamepad"></i> Game Boy平台
-                </div>
-                <div class="game-item" data-id="ff-adventure" data-name="最终幻想外传：圣剑传说" data-platform="Game Boy" data-iframe="https://www.retrogames.cc/embed/18521-final-fantasy-adventure-usa.html" data-version="Final Fantasy Adventure (USA)">
-                    <div class="game-name">最终幻想外传：圣剑传说</div>
-                    <div class="game-version">Final Fantasy Adventure (USA)</div>
+                <!-- 新增：最终幻想 神秘历险 -->
+                <div class="game-item" data-id="ff-mystic" data-name="最终幻想 神秘历险" data-platform="SNES/SFC" data-iframe="https://www.retrogames.cc/embed/24406-final-fantasy-mystic-quest-usa.html" data-version="Final Fantasy: Mystic Quest (USA)">
+                    <div class="game-name">最终幻想 神秘历险</div>
+                    <div class="game-version">Final Fantasy: Mystic Quest (USA)</div>
                     <div class="game-meta">
                         <span class="language-tag en">EN</span>
-                        <span>美版</span>
+                        <span>美版简化版</span>
                     </div>
                 </div>
             </div>
@@ -770,9 +768,58 @@
                         <span>Disc 3</span>
                     </div>
                 </div>
-                <div class="game-item" data-id="ff-tactics" data-name="最终幻想战略版" data-platform="PlayStation" data-iframe="https://www.retrogames.cc/embed/41787-final-fantasy-tactics.html" data-version="Final Fantasy Tactics">
+                <div class="game-item" data-id="ff-tactics" data-name="最终幻想战略版" data-platform="PlayStation" data-iframe="https://www.retrogames.cc/embed/41787-final-fantasy-tactics.html" data-version="Final Fantasy Tactics (USA)">
                     <div class="game-name">最终幻想战略版</div>
-                    <div class="game-version">Final Fantasy Tactics</div>
+                    <div class="game-version">Final Fantasy Tactics (USA)</div>
+                    <div class="game-meta">
+                        <span class="language-tag en">EN</span>
+                        <span>美版</span>
+                    </div>
+                </div>
+                <!-- 新增：最终幻想战略版 狮子战争 -->
+                <div class="game-item" data-id="ff-tactics-lion" data-name="最终幻想战略版 狮子战争" data-platform="PlayStation" data-iframe="https://www.retrogames.cc/embed/44529-final-fantasy-tactics-the-lion-war-2-031.html" data-version="Final Fantasy Tactics - The Lion War 2.031">
+                    <div class="game-name">最终幻想战略版 狮子战争</div>
+                    <div class="game-version">Final Fantasy Tactics - The Lion War 2.031</div>
+                    <div class="game-meta">
+                        <span class="language-tag en">EN</span>
+                        <span>增强版</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Boy平台 -->
+            <div class="platform-group">
+                <div class="platform-title">
+                    <i class="fas fa-gamepad"></i> Game Boy平台
+                </div>
+                <div class="game-item" data-id="ff-adventure" data-name="最终幻想外传 圣剑传说" data-platform="Game Boy" data-iframe="https://www.retrogames.cc/embed/18521-final-fantasy-adventure-usa.html" data-version="Final Fantasy Adventure (USA)">
+                    <div class="game-name">最终幻想外传 圣剑传说</div>
+                    <div class="game-version">Final Fantasy Adventure (USA)</div>
+                    <div class="game-meta">
+                        <span class="language-tag en">EN</span>
+                        <span>美版</span>
+                    </div>
+                </div>
+                <!-- 新增：最终幻想 传奇系列 -->
+                <div class="game-item" data-id="ff-legend1" data-name="最终幻想 传奇" data-platform="Game Boy" data-iframe="https://www.retrogames.cc/embed/26089-final-fantasy-legend-the-usa.html" data-version="Final Fantasy Legend (USA)">
+                    <div class="game-name">最终幻想 传奇</div>
+                    <div class="game-version">Final Fantasy Legend (USA)</div>
+                    <div class="game-meta">
+                        <span class="language-tag en">EN</span>
+                        <span>美版</span>
+                    </div>
+                </div>
+                <div class="game-item" data-id="ff-legend2" data-name="最终幻想 传奇2" data-platform="Game Boy" data-iframe="https://www.retrogames.cc/embed/25558-final-fantasy-legend-ii-usa.html" data-version="Final Fantasy Legend II (USA)">
+                    <div class="game-name">最终幻想 传奇2</div>
+                    <div class="game-version">Final Fantasy Legend II (USA)</div>
+                    <div class="game-meta">
+                        <span class="language-tag en">EN</span>
+                        <span>美版</span>
+                    </div>
+                </div>
+                <div class="game-item" data-id="ff-legend3" data-name="最终幻想 传奇3" data-platform="Game Boy" data-iframe="https://www.retrogames.cc/embed/25831-final-fantasy-legend-iii-usa.html" data-version="Final Fantasy Legend III (USA)">
+                    <div class="game-name">最终幻想 传奇3</div>
+                    <div class="game-version">Final Fantasy Legend III (USA)</div>
                     <div class="game-meta">
                         <span class="language-tag en">EN</span>
                         <span>美版</span>
@@ -780,14 +827,13 @@
                 </div>
             </div>
 
-            <!-- 掌机平台 -->
+            <!-- Game Boy Advance平台 -->
             <div class="platform-group">
                 <div class="platform-title">
-                    <i class="fas fa-mobile-alt"></i> 掌机/移动端平台
+                    <i class="fas fa-gamepad"></i> Game Boy Advance平台
                 </div>
-                <!-- GBA平台游戏 -->
-                <div class="game-item" data-id="ff-dawn" data-name="最终幻想1&2：灵魂黎明" data-platform="Game Boy Advance" data-iframe="https://www.retrogames.cc/embed/28795-final-fantasy-i-ii-dawn-of-souls-u-independent.html" data-version="Final Fantasy I & II - Dawn of Souls (U)(Independent)">
-                    <div class="game-name">最终幻想1&2：灵魂黎明</div>
+                <div class="game-item" data-id="ff-dawn" data-name="最终幻想1&2 灵魂黎明" data-platform="Game Boy Advance" data-iframe="https://www.retrogames.cc/embed/28795-final-fantasy-i-ii-dawn-of-souls-u-independent.html" data-version="Final Fantasy I & II - Dawn of Souls (U)(Independent)">
+                    <div class="game-name">最终幻想1&2 灵魂黎明</div>
                     <div class="game-version">Final Fantasy I & II - Dawn of Souls (U)(Independent)</div>
                     <div class="game-meta">
                         <span class="language-tag en">EN</span>
@@ -850,23 +896,29 @@
                         <span>GBA</span>
                     </div>
                 </div>
-                <div class="game-item" data-id="ff-tactics-advance" data-name="最终幻想战略版Advance" data-platform="Game Boy Advance" data-iframe="https://www.retrogames.cc/embed/26411-final-fantasy-tactics-advance-u-eurasia.html" data-version="Final Fantasy Tactics Advance (U)(Eurasia)">
-                    <div class="game-name">最终幻想战略版Advance</div>
+                <div class="game-item" data-id="ff-tactics-advance" data-name="最终幻想战略版 Advance" data-platform="Game Boy Advance" data-iframe="https://www.retrogames.cc/embed/26411-final-fantasy-tactics-advance-u-eurasia.html" data-version="Final Fantasy Tactics Advance (U)(Eurasia)">
+                    <div class="game-name">最终幻想战略版 Advance</div>
                     <div class="game-version">Final Fantasy Tactics Advance (U)(Eurasia)</div>
                     <div class="game-meta">
                         <span class="language-tag en">EN</span>
                         <span>GBA</span>
                     </div>
                 </div>
-                <div class="game-item" data-id="ff-tactics-advance-jp" data-name="最终幻想战略版Advance" data-platform="Game Boy Advance" data-iframe="https://www.retrogames.cc/embed/26412-final-fantasy-tactics-advance-j-eurasia.html" data-version="Final Fantasy Tactics Advance (J)(Eurasia)">
-                    <div class="game-name">最终幻想战略版Advance</div>
+                <div class="game-item" data-id="ff-tactics-advance-jp" data-name="最终幻想战略版 Advance" data-platform="Game Boy Advance" data-iframe="https://www.retrogames.cc/embed/26412-final-fantasy-tactics-advance-j-eurasia.html" data-version="Final Fantasy Tactics Advance (J)(Eurasia)">
+                    <div class="game-name">最终幻想战略版 Advance</div>
                     <div class="game-version">Final Fantasy Tactics Advance (J)(Eurasia)</div>
                     <div class="game-meta">
                         <span class="language-tag jp">JP</span>
                         <span>GBA</span>
                     </div>
                 </div>
-                <!-- NDS平台游戏 -->
+            </div>
+
+            <!-- Nintendo DS平台 -->
+            <div class="platform-group">
+                <div class="platform-title">
+                    <i class="fas fa-gamepad"></i> Nintendo DS平台
+                </div>
                 <div class="game-item" data-id="ff3-ds" data-name="最终幻想3 3D重制版" data-platform="Nintendo DS" data-iframe="https://www.retrogames.cc/embed/35820-final-fantasy-iii-usa.html" data-version="Final Fantasy III (USA)">
                     <div class="game-name">最终幻想3 3D重制版</div>
                     <div class="game-version">Final Fantasy III (USA)</div>
@@ -915,6 +967,80 @@
                         <span>NDS</span>
                     </div>
                 </div>
+                <!-- 新增：最终幻想12 亡灵之翼 -->
+                <div class="game-item" data-id="ff12-rw-jp" data-name="最终幻想12 亡灵之翼" data-platform="Nintendo DS" data-iframe="https://www.retrogames.cc/embed/36157-final-fantasy-xii-revenant-wings-japan.html" data-version="Final Fantasy XII - Revenant Wings (Japan)">
+                    <div class="game-name">最终幻想12 亡灵之翼</div>
+                    <div class="game-version">Final Fantasy XII - Revenant Wings (Japan)</div>
+                    <div class="game-meta">
+                        <span class="language-tag jp">JP</span>
+                        <span>日版</span>
+                    </div>
+                </div>
+                <div class="game-item" data-id="ff12-rw-usa" data-name="最终幻想12 亡灵之翼" data-platform="Nintendo DS" data-iframe="https://www.retrogames.cc/embed/36834-final-fantasy-xii-revenant-wings-usa.html" data-version="Final Fantasy XII - Revenant Wings (USA)">
+                    <div class="game-name">最终幻想12 亡灵之翼</div>
+                    <div class="game-version">Final Fantasy XII - Revenant Wings (USA)</div>
+                    <div class="game-meta">
+                        <span class="language-tag en">EN</span>
+                        <span>美版</span>
+                    </div>
+                </div>
+                <div class="game-item" data-id="ff12-rw-eu" data-name="最终幻想12 亡灵之翼" data-platform="Nintendo DS" data-iframe="https://www.retrogames.cc/embed/37157-final-fantasy-xii-revenant-wings-europe-en-fr-de-es-it.html" data-version="Final Fantasy XII - Revenant Wings (Europe)">
+                    <div class="game-name">最终幻想12 亡灵之翼</div>
+                    <div class="game-version">Final Fantasy XII - Revenant Wings (Europe)</div>
+                    <div class="game-meta">
+                        <span class="language-tag eu">EU</span>
+                        <span>欧版</span>
+                    </div>
+                </div>
+                <!-- 新增：最终幻想水晶编年史系列 -->
+                <div class="game-item" data-id="ffcc-rof-jp" data-name="最终幻想水晶编年史 命运之轮" data-platform="Nintendo DS" data-iframe="https://www.retrogames.cc/embed/36475-final-fantasy-crystal-chronicles-ring-of-fates-japan.html" data-version="Final Fantasy CC: Ring of Fates (Japan)">
+                    <div class="game-name">最终幻想水晶编年史 命运之轮</div>
+                    <div class="game-version">Final Fantasy CC: Ring of Fates (Japan)</div>
+                    <div class="game-meta">
+                        <span class="language-tag jp">JP</span>
+                        <span>日版</span>
+                    </div>
+                </div>
+                <div class="game-item" data-id="ffcc-rof-usa" data-name="最终幻想水晶编年史 命运之轮" data-platform="Nintendo DS" data-iframe="https://www.retrogames.cc/embed/37246-final-fantasy-crystal-chronicles-ring-of-fates-usa-en-es.html" data-version="Final Fantasy CC: Ring of Fates (USA)">
+                    <div class="game-name">最终幻想水晶编年史 命运之轮</div>
+                    <div class="game-version">Final Fantasy CC: Ring of Fates (USA)</div>
+                    <div class="game-meta">
+                        <span class="language-tag en">EN</span>
+                        <span>美版</span>
+                    </div>
+                </div>
+                <div class="game-item" data-id="ffcc-rof-eu" data-name="最终幻想水晶编年史 命运之轮" data-platform="Nintendo DS" data-iframe="https://www.retrogames.cc/embed/37292-final-fantasy-crystal-chronicles-ring-of-fates-europe-en-fr-de-es.html" data-version="Final Fantasy CC: Ring of Fates (Europe)">
+                    <div class="game-name">最终幻想水晶编年史 命运之轮</div>
+                    <div class="game-version">Final Fantasy CC: Ring of Fates (Europe)</div>
+                    <div class="game-meta">
+                        <span class="language-tag eu">EU</span>
+                        <span>欧版</span>
+                    </div>
+                </div>
+                <div class="game-item" data-id="ffcc-eot-jp" data-name="最终幻想水晶编年史 时之回声" data-platform="Nintendo DS" data-iframe="https://www.retrogames.cc/embed/38471-final-fantasy-crystal-chronicles-echoes-of-time-japan.html" data-version="Final Fantasy CC: Echoes of Time (Japan)">
+                    <div class="game-name">最终幻想水晶编年史 时之回声</div>
+                    <div class="game-version">Final Fantasy CC: Echoes of Time (Japan)</div>
+                    <div class="game-meta">
+                        <span class="language-tag jp">JP</span>
+                        <span>日版</span>
+                    </div>
+                </div>
+                <div class="game-item" data-id="ffcc-eot-usa" data-name="最终幻想水晶编年史 时之回声" data-platform="Nintendo DS" data-iframe="https://www.retrogames.cc/embed/38713-final-fantasy-crystal-chronicles-echoes-of-time-usa-en-fr-es.html" data-version="Final Fantasy CC: Echoes of Time (USA)">
+                    <div class="game-name">最终幻想水晶编年史 时之回声</div>
+                    <div class="game-version">Final Fantasy CC: Echoes of Time (USA)</div>
+                    <div class="game-meta">
+                        <span class="language-tag en">EN</span>
+                        <span>美版</span>
+                    </div>
+                </div>
+                <div class="game-item" data-id="ffcc-eot-eu" data-name="最终幻想水晶编年史 时之回声" data-platform="Nintendo DS" data-iframe="https://www.retrogames.cc/embed/38719-final-fantasy-crystal-chronicles-echoes-of-time-europe-en-fr-de-es.html" data-version="Final Fantasy CC: Echoes of Time (Europe)">
+                    <div class="game-name">最终幻想水晶编年史 时之回声</div>
+                    <div class="game-version">Final Fantasy CC: Echoes of Time (Europe)</div>
+                    <div class="game-meta">
+                        <span class="language-tag eu">EU</span>
+                        <span>欧版</span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -922,7 +1048,7 @@
         <div class="game-display">
             <div class="game-header">
                 <div class="current-game-info">
-                    <h3>最终幻想1</h3>
+                    <h3>最终幻想</h3>
                     <div class="current-game-platform">
                         <i class="fas fa-gamepad"></i> NES/FC平台
                     </div>
@@ -1019,7 +1145,7 @@
     // 游戏数据 - 包含描述信息
     const gameData = {
         'ff1-usa': {
-            name: '最终幻想1',
+            name: '最终幻想',
             platform: 'NES/FC平台',
             releaseYear: '1990年（北美发行）',
             originalRelease: '1987年（日本）',
@@ -1036,7 +1162,7 @@
             trivia: '游戏原名"Final Fantasy"源于开发团队当时的财务状况，如果这款游戏失败，Square公司可能面临破产，因此这被视作公司的"最终幻想"。'
         },
         'ff1-jp': {
-            name: '最终幻想1',
+            name: '最终幻想',
             platform: 'NES/FC平台',
             releaseYear: '1987年',
             originalRelease: '1987年（日本首发）',
@@ -1093,7 +1219,7 @@
             originalRelease: '1990年（日本）',
             genre: '角色扮演游戏 (JRPG)',
             developer: 'Square',
-            description: '这个英译版是基于1990年日版原版的非官方翻译，由A.W. Jackson、Neill Corlett和SoM2Freak等爱好者合作完成，版本为v1.1。翻译团队不仅准确翻译了所有文本，还修复了原版中的多个bug，并进行了必要的本地化调整。《最终幻想III》是FC平台上系列的巅峰之作，首次引入了完整的职业转换系统：玩家可以从22种职业中选择，每种职业有独特的能力和成长曲线。游戏还引入了召唤魔法系统（虽然功能有限），以及更复杂的地形互动（如独木舟、飞空艇等交通工具）。这个英译版让西方玩家在NDS重制版发行前就能体验到完整的FF3内容，是粉丝翻译项目的典范。',
+            description: '这个英译版是基于1990年日版原版的非官方翻译，由A.W. Jackson、Neill Corlett和SoM2Freak等爱好者合作完成，版本为v1.1。翻译团队不仅准确翻译了所有文本，还修复了原版中的多个bug，并进行了必要的本地化调整。《最终幻想III》是FC平台上系列的巅峰之作，首次引入了完整的职业转换系统：玩家可以从22种职业中选择，每种职业有独特的能力和成长曲线。游戏还引入了召唤魔法系统（虽然功能有限），以及更复杂的地形互动（如独木舟、飞空艇等交通工具）。这个英译版让欧美玩家在NDS重制版发行前就能体验到完整的FF3内容，是粉丝翻译项目的典范。',
             notableFeatures: [
                 '完整的职业转换系统（22种职业）',
                 '召唤魔法的首次引入',
@@ -1118,7 +1244,7 @@
                 '创新的转职系统和能力继承',
                 'FC平台上最精美的图形表现'
             ],
-            trivia: '本作销量超过140万份，是FC时代销量最高的第三方游戏之一，但直到16年后才通过NDS重制版正式登陆西方市场。'
+            trivia: '本作销量超过140万份，是FC时代销量最高的第三方游戏之一，但直到16年后才通过NDS重制版正式登陆欧美市场。'
         },
         'ff4-usa': {
             name: '最终幻想4（美版FF2）',
@@ -1127,7 +1253,7 @@
             originalRelease: '1991年（日本）',
             genre: '角色扮演游戏 (JRPG)',
             developer: 'Square',
-            description: '在北美以《最终幻想II》名义发行的《最终幻想IV》是系列进入16位时代的里程碑作品。由于当时北美尚未发行FF2和FF3，Square决定跳过编号直接发行FF4为FF2。本作革命性地引入了ATB（动态时间战斗）系统：角色和敌人在时间条蓄满后行动，创造了实时策略感的回合制战斗。故事围绕黑暗骑士塞西尔·哈威的救赎之旅展开，拥有深刻的角色发展和情感叙事。游戏采用了固定职业的角色队伍，每个角色有独特的能力和成长路径。美版进行了大幅本地化调整：难度降低、部分剧情简化、道具和魔法名称标准化。尽管改动引发争议，但FF4成功为系列在西方市场树立了知名度。',
+            description: '在北美以《最终幻想II》名义发行的《最终幻想IV》是系列进入16位时代的里程碑作品。由于当时北美尚未发行FF2和FF3，Square决定跳过编号直接发行FF4为FF2。本作革命性地引入了ATB（动态时间战斗）系统：角色和敌人在时间条蓄满后行动，创造了实时策略感的回合制战斗。故事围绕黑暗骑士塞西尔·哈威的救赎之旅展开，拥有深刻的角色发展和情感叙事。游戏采用了固定职业的角色队伍，每个角色有独特的能力和成长路径。美版进行了大幅本地化调整：难度降低、部分剧情简化、道具和魔法名称标准化。尽管改动引发争议，但FF4成功为系列在欧美市场树立了知名度。',
             notableFeatures: [
                 '革命性的ATB（动态时间战斗）系统',
                 '深刻的人物发展和情感叙事',
@@ -1161,7 +1287,7 @@
             originalRelease: '1992年（日本）',
             genre: '角色扮演游戏 (JRPG)',
             developer: 'Square',
-            description: '这个英译版是基于1992年日版原版的粉丝翻译，由RPGe团队完成，版本v1.1。《最终幻想V》在系统深度和玩家自由度方面达到了系列新高，其职业系统被誉为系列最佳之一。玩家可以学习并组合不同职业的能力，创造了几乎无限的角色构建可能性。故事围绕着风之水晶破碎，四位光之战士（巴茨、蕾娜、加拉夫、法利斯）阻止异次元裂缝扩散的冒险展开。虽然叙事不如FF4严肃，但充满幽默和温暖的角色互动。英译版准确翻译了所有文本，包括大量职业描述、技能说明和幽默对话，并保持了原版的系统深度。由于官方英文版直到多年后的GBA版才发行，这个翻译版成为了西方粉丝体验完整FF5内容的重要渠道。',
+            description: '这个英译版是基于1992年日版原版的粉丝翻译，由RPGe团队完成，版本v1.1。《最终幻想V》在系统深度和玩家自由度方面达到了系列新高，其职业系统被誉为系列最佳之一。玩家可以学习并组合不同职业的能力，创造了几乎无限的角色构建可能性。故事围绕着风之水晶破碎，四位光之战士（巴茨、蕾娜、加拉夫、法利斯）阻止异次元裂缝扩散的冒险展开。虽然叙事不如FF4严肃，但充满幽默和温暖的角色互动。英译版准确翻译了所有文本，包括大量职业描述、技能说明和幽默对话，并保持了原版的系统深度。由于官方英文版直到多年后的GBA版才发行，这个翻译版成为了欧美粉丝体验完整FF5内容的重要渠道。',
             notableFeatures: [
                 '深度的职业和能力组合系统',
                 '高自由度的角色定制',
@@ -1288,14 +1414,31 @@
             ],
             trivia: '松野泰己在开发期间进行了大量中世纪欧洲历史研究，游戏的政治叙事深度部分源于他对玫瑰战争等历史事件的研究。'
         },
+        'ff-tactics-lion': {
+            name: '最终幻想战略版 狮子战争',
+            platform: 'PlayStation平台',
+            releaseYear: '2007年（基于改版）',
+            originalRelease: '1997年（日本原版）',
+            genre: '策略角色扮演游戏 (SRPG)',
+            developer: 'Square Enix（社区改版）',
+            description: '《最终幻想战略版 狮子战争》是基于原版FFT的社区改版，版本号2.031。这个改版修复了原版中的大量bug，平衡了游戏系统，并增加了新的内容。改版对游戏的难度曲线进行了调整，使游戏更加平衡。同时，改版还修复了原版中的翻译错误和文本问题，提升了游戏的本地化质量。这个改版是FFT社区的重要成果，为玩家提供了更加完善和平衡的游戏体验。',
+            notableFeatures: [
+                '修复原版大量bug和平衡问题',
+                '改进的翻译和本地化质量',
+                '平衡的游戏难度曲线',
+                '社区增加的新内容',
+                '优化的游戏系统和界面'
+            ],
+            trivia: '这个改版是FFT粉丝社区多年努力的成果，版本号2.031代表了多次更新和改进。'
+        },
         'ff-adventure': {
-            name: '最终幻想外传：圣剑传说',
+            name: '最终幻想外传 圣剑传说',
             platform: 'Game Boy平台',
             releaseYear: '1991年',
             originalRelease: '1991年（日本）',
             genre: '动作角色扮演游戏 (ARPG)',
             developer: 'Square',
-            description: '《最终幻想外传：圣剑传说》是《圣剑传说》系列的首部作品，虽然名义上是最终幻想的外传，但实际上开创了一个全新的系列。游戏融合了动作游戏的实时战斗和RPG的角色成长与装备系统，玩家控制一名无名英雄拯救被邪恶势力控制的世界。游戏采用了俯视视角和实时战斗系统，玩家可以使用剑、盾、魔法等多种方式战斗。虽然受到Game Boy硬件限制，画面和音效相对简单，但游戏拥有丰富的探索内容和有趣的战斗机制。它也是系列中唯一一部带有"最终幻想外传"标题的作品，后续作品直接以"圣剑传说"命名。',
+            description: '《最终幻想外传 圣剑传说》是《圣剑传说》系列的首部作品，虽然名义上是最终幻想的外传，但实际上开创了一个全新的系列。游戏融合了动作游戏的实时战斗和RPG的角色成长与装备系统，玩家控制一名无名英雄拯救被邪恶势力控制的世界。游戏采用了俯视视角和实时战斗系统，玩家可以使用剑、盾、魔法等多种方式战斗。虽然受到Game Boy硬件限制，画面和音效相对简单，但游戏拥有丰富的探索内容和有趣的战斗机制。它也是系列中唯一一部带有"最终幻想外传"标题的作品，后续作品直接以"圣剑传说"命名。',
             notableFeatures: [
                 '动作RPG与最终幻想世界观的首次结合',
                 '实时战斗系统与探索元素',
@@ -1305,8 +1448,76 @@
             ],
             trivia: '在日本，这款游戏最初名为《アドベンチャー・オブ・マナ》(Adventure of Mana)，后来才在美国以《Final Fantasy Adventure》的名义发行。'
         },
+        'ff-legend1': {
+            name: '最终幻想 传奇',
+            platform: 'Game Boy平台',
+            releaseYear: '1990年',
+            originalRelease: '1989年（日本）',
+            genre: '角色扮演游戏 (JRPG)',
+            developer: 'Square',
+            description: '《最终幻想 传奇》实际上是《SaGa》系列的第一部作品，在北美以《Final Fantasy Legend》的名义发行，利用了最终幻想品牌的影响力。游戏采用了独特的成长系统：人类角色通过使用道具提升属性，怪物角色通过吞噬敌人尸体来进化，机器人角色通过装备部件来获得能力。游戏拥有多个可玩角色和分支剧情，玩家可以组建自己的队伍进行冒险。虽然名义上是最终幻想系列，但游戏系统和世界观都与正统最终幻想有所不同，更接近《SaGa》系列的特点。',
+            notableFeatures: [
+                '独特的种族成长系统（人类、怪物、机器人）',
+                '多角色选择和队伍组建',
+                '分支剧情和多重结局',
+                'Game Boy平台上的创新RPG设计',
+                'SaGa系列的首部作品'
+            ],
+            trivia: '虽然名为《最终幻想 传奇》，但这实际上是《SaGa》系列的第一部作品，后续作品在北美也继续使用《Final Fantasy Legend》的名称。'
+        },
+        'ff-legend2': {
+            name: '最终幻想 传奇2',
+            platform: 'Game Boy平台',
+            releaseYear: '1991年',
+            originalRelease: '1990年（日本）',
+            genre: '角色扮演游戏 (JRPG)',
+            developer: 'Square',
+            description: '《最终幻想 传奇II》是《SaGa》系列的第二部作品，在北美继续使用《Final Fantasy Legend》的品牌。游戏在前作的基础上进行了多项改进：增加了更多种族和职业选择，改进了战斗系统和成长机制，故事也更加丰富。玩家可以选择不同种族的角色组建队伍，每个种族都有独特的成长方式和能力。游戏的世界观更加庞大，剧情涉及时间旅行和多个平行世界的概念。虽然受到Game Boy硬件限制，但游戏提供了丰富的RPG体验。',
+            notableFeatures: [
+                '改进的种族成长系统',
+                '更丰富的剧情和世界观',
+                '时间旅行和平行世界概念',
+                '改进的战斗系统和界面',
+                '多个可玩角色和职业'
+            ],
+            trivia: '本作在日本的销量超过100万份，是Game Boy平台上最成功的RPG之一。'
+        },
+        'ff-legend3': {
+            name: '最终幻想 传奇3',
+            platform: 'Game Boy平台',
+            releaseYear: '1993年',
+            originalRelease: '1991年（日本）',
+            genre: '角色扮演游戏 (JRPG)',
+            developer: 'Square',
+            description: '《最终幻想 传奇III》是Game Boy平台《SaGa》系列的第三部作品，也是该平台上的最终幻想品牌衍生作的最后一作。游戏采用了时间旅行的主题，玩家需要在过去、现在和未来三个时间线中穿梭，改变历史以拯救世界。本作引入了职业系统，玩家可以在冒险过程中转换角色的职业，获得不同的能力和技能。画面和音效相比前两作有明显提升，充分利用了Game Boy硬件的潜力。故事涉及命运、选择和时间的主题，是Game Boy时代最具野心的RPG之一。',
+            notableFeatures: [
+                '时间旅行主题和多时间线叙事',
+                '职业转换系统',
+                '改进的画面和音效',
+                '复杂的剧情和多重结局',
+                'Game Boy平台上技术最先进的RPG之一'
+            ],
+            trivia: '本作是首部使用电池存档的Game Boy RPG之一，之前的作品大多使用密码存档系统。'
+        },
+        'ff-mystic': {
+            name: '最终幻想 神秘历险',
+            platform: 'SNES/SFC平台',
+            releaseYear: '1992年',
+            originalRelease: '1992年（日本为《Mystic Quest Legend》）',
+            genre: '角色扮演游戏 (JRPG)',
+            developer: 'Square',
+            description: '《最终幻想 神秘历险》（在日本名为《Mystic Quest Legend》）是Square专门为欧美RPG新手设计的简化版最终幻想。游戏采用了更加直观的战斗系统、简化的装备管理和明确的任务指引，旨在吸引不熟悉日式RPG的欧美玩家。虽然系统简化，但游戏保留了最终幻想的核心元素：回合制战斗、角色成长、探索和故事驱动。游戏还引入了动作元素，如可破坏的环境和需要动作技巧的谜题。虽然被核心粉丝批评为过于简单，但它在吸引新玩家方面取得了成功。',
+            notableFeatures: [
+                '为欧美RPG新手设计的简化系统',
+                '直观的战斗和装备管理',
+                '动作元素和环境互动',
+                '明确的游戏指引和任务系统',
+                '吸引新玩家的入门级JRPG'
+            ],
+            trivia: '这款游戏在日本的标题是《Mystic Quest Legend》，在欧美则直接使用《Final Fantasy: Mystic Quest》，反映了Square对不同市场策略的差异。'
+        },
         'ff-dawn': {
-            name: '最终幻想1&2：灵魂黎明',
+            name: '最终幻想1&2 灵魂黎明',
             platform: 'Game Boy Advance平台',
             releaseYear: '2004年',
             originalRelease: '2004年（日本）',
@@ -1323,13 +1534,13 @@
             trivia: '这是Square和Enix合并为Square Enix后发布的首个最终幻想系列作品，标志着一个新时代的开始。'
         },
         'ff-tactics-advance': {
-            name: '最终幻想战略版Advance',
+            name: '最终幻想战略版 Advance',
             platform: 'Game Boy Advance平台',
             releaseYear: '2003年',
             originalRelease: '2003年（日本）',
             genre: '策略角色扮演游戏 (SRPG)',
             developer: 'Square Enix',
-            description: '《最终幻想战略版Advance》是GBA平台上的系列续作，虽然共享策略战斗的核心玩法，但在设定和系统上与PS原版有显著不同。故事发生在现代世界与奇幻世界伊瓦利斯之间：主角马修与朋友被魔法书带入伊瓦利斯，但只有马修希望返回现实。游戏引入了"法律系统"——每场战斗都有特定规则（如禁止使用某种魔法），违反会招致裁判惩罚。职业系统更加丰富，有超过30种职业和种族（人类、邦加族、恩莫族、维埃拉族），每种有独特成长和技能。故事探讨了逃避现实与接受现实的成长主题，虽然不如原版黑暗，但更符合年轻玩家的情感体验。画面充分利用了GBA机能，创造了色彩丰富、细节精美的2D世界。',
+            description: '《最终幻想战略版 Advance》是GBA平台上的系列续作，虽然共享策略战斗的核心玩法，但在设定和系统上与PS原版有显著不同。故事发生在现代世界与奇幻世界伊瓦利斯之间：主角马修与朋友被魔法书带入伊瓦利斯，但只有马修希望返回现实。游戏引入了"法律系统"——每场战斗都有特定规则（如禁止使用某种魔法），违反会招致裁判惩罚。职业系统更加丰富，有超过30种职业和种族（人类、邦加族、恩莫族、维埃拉族），每种有独特成长和技能。故事探讨了逃避现实与接受现实的成长主题，虽然不如原版黑暗，但更符合年轻玩家的情感体验。画面充分利用了GBA机能，创造了色彩丰富、细节精美的2D世界。',
             notableFeatures: [
                 '创新的法律系统和裁判机制',
                 '多种族多职业的深度系统',
@@ -1346,9 +1557,9 @@
             originalRelease: '2006年（日本）',
             genre: '角色扮演游戏 (JRPG)',
             developer: 'Square Enix, Matrix Software',
-            description: '《最终幻想III 3D重制版》是NDS平台上对FC原版的完全重制，不仅将画面从2D像素升级为全3D，还增加了大量新内容。这是原版FC《最终幻想III》首次正式登陆西方市场，填补了系列历史上的重要空白。重制版在保留原版核心系统的同时进行了现代化调整：四名无名主角被赋予了名字（Luneth、Arc、Refia、Ingus）、背景和个性；新增了职业专属能力和转职惩罚系统；增加了新的召唤兽和剧情内容。游戏利用NDS双屏特性，下屏显示地图和菜单，上屏显示3D画面。音乐由原作曲植松伸夫监制重新编曲，并首次加入了配音演出。虽然3D画面在当时NDS上表现有限，但这是对经典作品的恰当致敬和现代化呈现。',
+            description: '《最终幻想III 3D重制版》是NDS平台上对FC原版的完全重制，不仅将画面从2D像素升级为全3D，还增加了大量新内容。这是原版FC《最终幻想III》首次正式登陆欧美市场，填补了系列历史上的重要空白。重制版在保留原版核心系统的同时进行了现代化调整：四名无名主角被赋予了名字（Luneth、Arc、Refia、Ingus）、背景和个性；新增了职业专属能力和转职惩罚系统；增加了新的召唤兽和剧情内容。游戏利用NDS双屏特性，下屏显示地图和菜单，上屏显示3D画面。音乐由原作曲植松伸夫监制重新编曲，并首次加入了配音演出。虽然3D画面在当时NDS上表现有限，但这是对经典作品的恰当致敬和现代化呈现。',
             notableFeatures: [
-                'FC原版首次官方西方发行',
+                'FC原版首次官方欧美发行',
                 '2D转3D的完全图形重制',
                 '新增角色背景和配音',
                 '职业系统的平衡性调整',
@@ -1477,13 +1688,13 @@
             trivia: '这款游戏被广泛认为是系列中最优秀的作品之一，在日本地区拥有极高的人气。'
         },
         'ff-tactics-advance-jp': {
-            name: '最终幻想战略版Advance',
+            name: '最终幻想战略版 Advance',
             platform: 'Game Boy Advance平台',
             releaseYear: '2003年',
             originalRelease: '2003年（日本）',
             genre: '策略角色扮演游戏 (SRPG)',
             developer: 'Square Enix',
-            description: '《最终幻想战略版Advance》的日文原版，虽然共享策略战斗的核心玩法，但在设定和系统上与PS原版有显著不同。故事发生在现代世界与奇幻世界伊瓦利斯之间，游戏引入了"法律系统"——每场战斗都有特定规则，违反会招致裁判惩罚。职业系统更加丰富，有超过30种职业和种族，每种有独特成长和技能。',
+            description: '《最终幻想战略版 Advance》的日文原版，虽然共享策略战斗的核心玩法，但在设定和系统上与PS原版有显著不同。故事发生在现代世界与奇幻世界伊瓦利斯之间，游戏引入了"法律系统"——每场战斗都有特定规则，违反会招致裁判惩罚。职业系统更加丰富，有超过30种职业和种族，每种有独特成长和技能。',
             notableFeatures: [
                 '创新的法律系统和裁判机制',
                 '多种族多职业的深度系统',
@@ -1552,7 +1763,7 @@
             originalRelease: '2007年（日本）',
             genre: '策略角色扮演游戏 (SRPG)',
             developer: 'Square Enix',
-            description: '《最终幻想战略版A2》是NDS平台上的策略角色扮演游戏，是《最终幻想战略版Advance》的续作。游戏继承了前作的"法律系统"和职业系统，同时增加了新的种族、职业和能力。故事发生在伊瓦利斯世界，玩家将扮演一名穿越到这个奇幻世界的少年，展开一段充满冒险和挑战的旅程。游戏利用NDS的双屏特性，下屏显示地图和菜单，上屏显示战斗画面。',
+            description: '《最终幻想战略版A2》是NDS平台上的策略角色扮演游戏，是《最终幻想战略版 Advance》的续作。游戏继承了前作的"法律系统"和职业系统，同时增加了新的种族、职业和能力。故事发生在伊瓦利斯世界，玩家将扮演一名穿越到这个奇幻世界的少年，展开一段充满冒险和挑战的旅程。游戏利用NDS的双屏特性，下屏显示地图和菜单，上屏显示战斗画面。',
             notableFeatures: [
                 '深度策略性的网格战斗系统',
                 '创新的法律系统和裁判机制',
@@ -1569,7 +1780,7 @@
             originalRelease: '2007年（日本）',
             genre: '策略角色扮演游戏 (SRPG)',
             developer: 'Square Enix',
-            description: '《最终幻想战略版A2》的日文原版，是NDS平台上的策略角色扮演游戏，是《最终幻想战略版Advance》的续作。游戏继承了前作的"法律系统"和职业系统，同时增加了新的种族、职业和能力。故事发生在伊瓦利斯世界，玩家将扮演一名穿越到这个奇幻世界的少年，展开一段充满冒险和挑战的旅程。',
+            description: '《最终幻想战略版A2》的日文原版，是NDS平台上的策略角色扮演游戏，是《最终幻想战略版 Advance》的续作。游戏继承了前作的"法律系统"和职业系统，同时增加了新的种族、职业和能力。故事发生在伊瓦利斯世界，玩家将扮演一名穿越到这个奇幻世界的少年，展开一段充满冒险和挑战的旅程。',
             notableFeatures: [
                 '深度策略性的网格战斗系统',
                 '创新的法律系统和裁判机制',
@@ -1578,6 +1789,159 @@
                 '丰富的支线任务和可玩内容'
             ],
             trivia: '这款游戏的日文原版包含了一些只有在日本地区才能体验到的独家内容。'
+        },
+        'ff12-rw-jp': {
+            name: '最终幻想12 亡灵之翼',
+            platform: 'Nintendo DS平台',
+            releaseYear: '2007年',
+            originalRelease: '2007年（日本）',
+            genre: '策略角色扮演游戏 (SRPG)',
+            developer: 'Square Enix',
+            description: '《最终幻想XII：亡灵之翼》是《最终幻想XII》的续作，故事发生在《最终幻想XII》事件之后。玩家将再次扮演梵和潘妮罗，探索天空大陆并揭开新的秘密。游戏采用了即时战略与角色扮演相结合的系统，玩家可以召唤并指挥怪物组成军队进行战斗。游戏充分利用了NDS的触屏功能，玩家可以通过触屏直接指挥单位和施放魔法。',
+            notableFeatures: [
+                '即时战略与RPG结合的系统',
+                '怪物召唤和指挥系统',
+                'NDS触屏操作优化',
+                '《最终幻想XII》世界观延续',
+                '丰富的剧情和角色发展'
+            ],
+            trivia: '这是首部采用即时战略系统的最终幻想作品，为系列带来了全新的玩法体验。'
+        },
+        'ff12-rw-usa': {
+            name: '最终幻想12 亡灵之翼',
+            platform: 'Nintendo DS平台',
+            releaseYear: '2007年',
+            originalRelease: '2007年（日本）',
+            genre: '策略角色扮演游戏 (SRPG)',
+            developer: 'Square Enix',
+            description: '《最终幻想XII：亡灵之翼》美版，是《最终幻想XII》的续作，延续了伊瓦利斯世界的故事。游戏采用了创新的即时战略系统，玩家可以召唤怪物组成军队，通过触屏指挥战斗。美版对游戏的界面和操作进行了优化，以适应欧美玩家的习惯。游戏的故事和角色发展丰富，为《最终幻想XII》的粉丝提供了更多的世界观扩展。',
+            notableFeatures: [
+                '即时战略与RPG结合的系统',
+                '怪物召唤和指挥系统',
+                'NDS触屏操作优化',
+                '优化的美版界面和操作',
+                '丰富的剧情和角色发展'
+            ],
+            trivia: '美版在界面和操作上进行了本地化优化，使游戏更符合欧美玩家的操作习惯。'
+        },
+        'ff12-rw-eu': {
+            name: '最终幻想12 亡灵之翼',
+            platform: 'Nintendo DS平台',
+            releaseYear: '2007年',
+            originalRelease: '2007年（日本）',
+            genre: '策略角色扮演游戏 (SRPG)',
+            developer: 'Square Enix',
+            description: '《最终幻想XII：亡灵之翼》欧版，支持多国语言（英语、法语、德语、西班牙语、意大利语）。游戏是《最终幻想XII》的续作，采用了创新的即时战略系统，玩家可以召唤怪物组成军队，通过触屏指挥战斗。欧版提供了多语言支持，使更多欧洲玩家能够体验游戏。游戏的故事和角色发展丰富，为《最终幻想XII》的粉丝提供了更多的世界观扩展。',
+            notableFeatures: [
+                '即时战略与RPG结合的系统',
+                '怪物召唤和指挥系统',
+                '多国语言支持',
+                'NDS触屏操作优化',
+                '丰富的剧情和角色发展'
+            ],
+            trivia: '欧版提供了最全面的语言支持，包括五种欧洲主要语言。'
+        },
+        'ffcc-rof-jp': {
+            name: '最终幻想水晶编年史 命运之轮',
+            platform: 'Nintendo DS平台',
+            releaseYear: '2007年',
+            originalRelease: '2007年（日本）',
+            genre: '动作角色扮演游戏 (ARPG)',
+            developer: 'Square Enix',
+            description: '《最终幻想水晶编年史：命运之轮》是NDS平台上的动作角色扮演游戏，延续了水晶编年史系列的世界观。游戏采用了动作战斗系统，支持单人游戏和多人合作。玩家可以选择不同的种族和职业，组队探索地下城和完成任务。游戏充分利用了NDS的触屏功能，玩家可以通过触屏施放魔法和使用道具。',
+            notableFeatures: [
+                '动作角色扮演战斗系统',
+                '多人合作游戏模式',
+                '多种族和职业选择',
+                'NDS触屏操作优化',
+                '丰富的地下城和任务'
+            ],
+            trivia: '这款游戏支持NDS的无线联机功能，玩家可以和朋友一起进行多人合作游戏。'
+        },
+        'ffcc-rof-usa': {
+            name: '最终幻想水晶编年史 命运之轮',
+            platform: 'Nintendo DS平台',
+            releaseYear: '2008年',
+            originalRelease: '2007年（日本）',
+            genre: '动作角色扮演游戏 (ARPG)',
+            developer: 'Square Enix',
+            description: '《最终幻想水晶编年史：命运之轮》美版，支持英语和西班牙语。游戏是NDS平台上的动作角色扮演游戏，延续了水晶编年史系列的世界观。游戏采用了动作战斗系统，支持单人游戏和多人合作。玩家可以选择不同的种族和职业，组队探索地下城和完成任务。美版对游戏的界面和操作进行了优化。',
+            notableFeatures: [
+                '动作角色扮演战斗系统',
+                '多人合作游戏模式',
+                '多种族和职业选择',
+                '英语和西班牙语支持',
+                '丰富的地下城和任务'
+            ],
+            trivia: '美版在语言支持上进行了优化，提供了英语和西班牙语两种语言选择。'
+        },
+        'ffcc-rof-eu': {
+            name: '最终幻想水晶编年史 命运之轮',
+            platform: 'Nintendo DS平台',
+            releaseYear: '2008年',
+            originalRelease: '2007年（日本）',
+            genre: '动作角色扮演游戏 (ARPG)',
+            developer: 'Square Enix',
+            description: '《最终幻想水晶编年史：命运之轮》欧版，支持多国语言（英语、法语、德语、西班牙语）。游戏是NDS平台上的动作角色扮演游戏，延续了水晶编年史系列的世界观。游戏采用了动作战斗系统，支持单人游戏和多人合作。玩家可以选择不同的种族和职业，组队探索地下城和完成任务。欧版提供了多语言支持。',
+            notableFeatures: [
+                '动作角色扮演战斗系统',
+                '多人合作游戏模式',
+                '多种族和职业选择',
+                '多国语言支持',
+                '丰富的地下城和任务'
+            ],
+            trivia: '欧版提供了四种语言支持，覆盖了欧洲主要语言地区。'
+        },
+        'ffcc-eot-jp': {
+            name: '最终幻想水晶编年史 时之回声',
+            platform: 'Nintendo DS平台',
+            releaseYear: '2009年',
+            originalRelease: '2009年（日本）',
+            genre: '动作角色扮演游戏 (ARPG)',
+            developer: 'Square Enix',
+            description: '《最终幻想水晶编年史：时之回声》是NDS平台上的动作角色扮演游戏，是《命运之轮》的续作。游戏在保留了前作核心玩法的基础上，增加了新的种族、职业和系统。故事围绕时间旅行和回声的概念展开，玩家需要在不同的时间线中穿梭，解开世界的秘密。游戏支持单人游戏和多人合作，充分利用了NDS的硬件特性。',
+            notableFeatures: [
+                '动作角色扮演战斗系统',
+                '时间旅行主题',
+                '新的种族和职业',
+                '多人合作游戏模式',
+                'NDS触屏操作优化'
+            ],
+            trivia: '这款游戏与前作《命运之轮》共享世界观，但故事和角色都是全新的。'
+        },
+        'ffcc-eot-usa': {
+            name: '最终幻想水晶编年史 时之回声',
+            platform: 'Nintendo DS平台',
+            releaseYear: '2009年',
+            originalRelease: '2009年（日本）',
+            genre: '动作角色扮演游戏 (ARPG)',
+            developer: 'Square Enix',
+            description: '《最终幻想水晶编年史：时之回声》美版，支持多国语言（英语、法语、西班牙语）。游戏是NDS平台上的动作角色扮演游戏，是《命运之轮》的续作。游戏在保留了前作核心玩法的基础上，增加了新的种族、职业和系统。故事围绕时间旅行和回声的概念展开，玩家需要在不同的时间线中穿梭，解开世界的秘密。美版对游戏的界面和操作进行了优化。',
+            notableFeatures: [
+                '动作角色扮演战斗系统',
+                '时间旅行主题',
+                '新的种族和职业',
+                '多人合作游戏模式',
+                '多国语言支持'
+            ],
+            trivia: '美版提供了三种语言支持，包括英语、法语和西班牙语。'
+        },
+        'ffcc-eot-eu': {
+            name: '最终幻想水晶编年史 时之回声',
+            platform: 'Nintendo DS平台',
+            releaseYear: '2009年',
+            originalRelease: '2009年（日本）',
+            genre: '动作角色扮演游戏 (ARPG)',
+            developer: 'Square Enix',
+            description: '《最终幻想水晶编年史：时之回声》欧版，支持多国语言（英语、法语、德语、西班牙语）。游戏是NDS平台上的动作角色扮演游戏，是《命运之轮》的续作。游戏在保留了前作核心玩法的基础上，增加了新的种族、职业和系统。故事围绕时间旅行和回声的概念展开，玩家需要在不同的时间线中穿梭，解开世界的秘密。欧版提供了全面的语言支持。',
+            notableFeatures: [
+                '动作角色扮演战斗系统',
+                '时间旅行主题',
+                '新的种族和职业',
+                '多人合作游戏模式',
+                '全面的多国语言支持'
+            ],
+            trivia: '欧版提供了四种语言支持，是语言版本最全面的地区版本。'
         }
     };
 
@@ -1614,9 +1978,9 @@
             'ff1-jp': 'FF1-FC-JP',
             'ff2-usa': 'FF2-FC-USA',
             'ff2-jp': 'FF2-FC-JP',
-            'ff3-usa': 'FF3-FC-JP',  // 注意：ff3-usa对应FF3-FC-JP的图片
+            'ff3-usa': 'FF3-FC-JP',
             'ff3-jp': 'FF3-FC-JP',
-            'ff7-usa-disc1': 'FF7-PS',  // 为FF7的三个Disc版本添加映射
+            'ff7-usa-disc1': 'FF7-PS',
             'ff7-usa-disc2': 'FF7-PS',
             'ff7-usa-disc3': 'FF7-PS'
         };
