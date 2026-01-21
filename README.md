@@ -11,8 +11,7 @@
 [![Mobirise](https://img.shields.io/badge/Mobirise-FF5733?logo=mobirise&logoColor=white)](https://mobirise.com/)
 
 </div>
-
-![FClogo](assets/images/logo.jpg)
+![Alt](https://repobeats.axiom.co/api/embed/0dfc3854a78eff10307448e888a80bcecee8df3a.svg "Repobeats analytics image")
 
 # FFXIV Phantoms FC & Linkshell
 
