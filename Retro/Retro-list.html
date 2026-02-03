@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>最终幻想系列游戏列表</title>
+    <title>最终幻想系列汉化版本列表</title>
     <style>
         * {
             margin: 0;
@@ -13,8 +13,9 @@
 
         body {
             font-family: "微软雅黑", "Arial", sans-serif;
-            background-color: #f5f5f5;
             color: #333;
+            background-color: #ffffff;
+            background-image: url("https://www.transparenttextures.com/patterns/axiom-pattern.png");
         }
 
         .container {
@@ -59,7 +60,7 @@
 
         .game-cover {
             width: 100%;
-            height: 200px;
+            height: 244px;
             background-color: #f0f0f0;
             display: flex;
             align-items: center;
@@ -70,7 +71,8 @@
         .game-cover img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            object-position: center;
             transition: transform 0.3s ease;
             display: none;
         }
@@ -80,7 +82,7 @@
         }
 
         .game-item:hover .game-cover img.has-cover {
-            transform: scale(1.05);
+            transform: scale(1.03);
         }
 
         .game-info {
@@ -160,7 +162,7 @@
 </head>
 <body>
 <div class="container">
-    <h1>最终幻想系列游戏列表</h1>
+    <h1>最终幻想系列汉化版本列表</h1>
 
     <h2 class="platform-title">NES/FC 模拟器</h2>
     <div class="game-list" id="nesGameList"></div>
@@ -571,6 +573,8 @@
                 </div>
                 <div class="game-info">
                     ${platformTag}
+                    <button class="play-btn" onclick="openGameDetail('${encodeURIComponent(game.title)}', '${encodeURIComponent(game.iframeUrl)}', '${game.platform}')">开始游戏</button>
+                    <br>
                     <h3 class="game-title">${game.title}</h3>
                     <div class="game-details">
                         ${game.language ? `<p>语言：${game.language}</p>` : ''}
@@ -578,7 +582,6 @@
                         ${game.company ? `<p>厂商：${game.company}</p>` : ''}
                         ${game.size ? `<p>大小：${game.size}</p>` : ''}
                     </div>
-                    <button class="play-btn" onclick="openGameDetail('${encodeURIComponent(game.title)}', '${encodeURIComponent(game.iframeUrl)}', '${game.platform}')">开始游戏</button>
                 </div>
             `;
 
@@ -677,7 +680,7 @@
 </head>
 <body>
 <div class="top-mask">
-    <button class="back-btn" onclick="window.location.href='./Retro-list.html'">返回</button>
+    <button class="back-btn" onclick="window.opener.location.reload(); window.close();">返回</button>
     <div class="game-title">${decodeURIComponent(title)}</div>
     <div class="copyright-tip">内容引用自dowhat.net 如有侵权请立即与我们联系 我们将及时处理</div>
 </div>
