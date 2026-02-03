@@ -553,6 +553,212 @@
             background: #a8a8a8;
         }
 
+        /* 视图切换样式 */
+        .view-toggle-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 8px;
+            padding: 6px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border-bottom: 1px solid #ddd;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .view-toggle-btn {
+            padding: 6px 12px;
+            margin: 0 3px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background-color: #e9ecef;
+            color: #495057;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .view-toggle-btn.active {
+            background-color: #6c757d;
+            color: white;
+            box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+        }
+
+        .view-toggle-btn:hover:not(.active) {
+            background-color: #dee2e6;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .view-toggle-btn:active {
+            transform: translateY(0);
+        }
+
+        /* 游戏视图样式 */
+        .game-view-container {
+            width: 100%;
+            height: 600px;
+            background-color: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 游戏视图iframe - 响应式调整 */
+        .game-view-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+            transform-origin: top left;
+        }
+
+        /* 响应式调整 - 确保完整显示游戏画面 */
+        @media (max-width: 768px) {
+            .game-view-container {
+                height: 480px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-view-container {
+                height: 400px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .game-view-container {
+                height: 350px;
+            }
+        }
+
+        /* 视图容器 */
+        .view-container {
+            width: 100%;
+            min-height: 600px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* 聊天视图内容 */
+        #chat-view {
+            width: 100%;
+        }
+
+        /* 确保聊天消息容器可以滚动 */
+        #chat-view .chat-message-container {
+            width: 100%;
+            height: 600px;
+            overflow-y: auto;
+            background-color: #fff;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        /* 游戏视图内容 */
+        #game-view {
+            width: 100%;
+        }
+
+        .view-content {
+            display: none;
+            width: 100%;
+        }
+
+        .view-content.active {
+            display: block;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .game-view-container {
+                height: 480px;
+            }
+            
+            .view-container {
+                min-height: 480px;
+                border-radius: 6px;
+            }
+            
+            #chat-view .chat-message-container {
+                height: 480px;
+            }
+            
+            .view-toggle-container {
+                padding: 8px;
+                margin-bottom: 10px;
+            }
+
+            .view-toggle-btn {
+                padding: 8px 16px;
+                font-size: 13px;
+                margin: 0 3px;
+            }
+        }
+
+        @media (max-width: 480px) and (min-width: 360px) {
+            .game-view-container {
+                height: 400px;
+            }
+            
+            .view-container {
+                min-height: 400px;
+            }
+            
+            #chat-view .chat-message-container {
+                height: 400px;
+            }
+            
+            .view-toggle-container {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .view-toggle-btn {
+                margin: 0;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 359px) {
+            .game-view-container {
+                height: 350px;
+            }
+            
+            .view-container {
+                min-height: 350px;
+            }
+            
+            #chat-view .chat-message-container {
+                height: 350px;
+            }
+            
+            .view-toggle-container {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .view-toggle-btn {
+                margin: 0;
+                width: 100%;
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+            
+            /* 进一步优化小屏幕上的游戏显示 */
+            .game-view-wrapper {
+                max-width: 100%;
+                max-height: 100%;
+            }
+        }
+
         /* 悬浮按钮样式 */
         .floating-btn {
             position: fixed;
@@ -636,8 +842,27 @@
     <div class="align-center container-fluid">
         <!-- 替换为 QQchat 的内容 -->
         <div class="chat-main-container">
-            <!-- 消息显示区域 - 可滚动 -->
-            <div class="chat-message-container" id="chat-message-container"></div>
+            <!-- 视图容器 -->
+            <div class="view-container">
+                <!-- 聊天视图 -->
+                <div class="view-content active" id="chat-view">
+                    <!-- 消息显示区域 - 可滚动 -->
+                    <div class="chat-message-container" id="chat-message-container"></div>
+                </div>
+
+                <!-- 游戏视图 -->
+                <div class="view-content" id="game-view">
+                    <div class="game-view-container">
+                        <iframe class="game-view-iframe" src="phantom_canvas_game/phantom_canvas_game.html" title="Phantoms Game"></iframe>
+                    </div>
+                </div>
+            </div>
+                        
+            <!-- 视图切换控制器 -->
+            <div class="view-toggle-container">
+                <button class="view-toggle-btn active" data-view="chat">聊天视图</button>
+                <button class="view-toggle-btn" data-view="game">游戏视图</button>
+            </div>
 
             <!-- 固定底部表单区域 -->
             <div class="chat-fixed-form-container">
@@ -660,6 +885,7 @@
                     </div>
                 </form>
             </div>
+
         </div>
     </div>
 </section>
@@ -1125,6 +1351,28 @@
         }
         return "";
     }
+
+    // 视图切换功能
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleButtons = document.querySelectorAll('.view-toggle-btn');
+        const viewContents = document.querySelectorAll('.view-content');
+
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const targetView = this.getAttribute('data-view');
+
+                // 更新按钮状态
+                toggleButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+
+                // 更新视图显示
+                viewContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(`${targetView}-view`).classList.add('active');
+            });
+        });
+    });
 
     document.getElementById('chat-messageForm').addEventListener('submit', function(event) {
         event.preventDefault();
