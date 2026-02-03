@@ -29,7 +29,6 @@
             color: #333;
         }
 
-        /* 模拟器分类标题样式 */
         .platform-title {
             font-size: 20px;
             margin: 30px 0 20px;
@@ -73,9 +72,14 @@
             height: 100%;
             object-fit: cover;
             transition: transform 0.3s ease;
+            display: none;
         }
 
-        .game-item:hover .game-cover img {
+        .game-cover img.has-cover {
+            display: block;
+        }
+
+        .game-item:hover .game-cover img.has-cover {
             transform: scale(1.05);
         }
 
@@ -119,7 +123,6 @@
             background-color: #555;
         }
 
-        /* 平台标识标签 */
         .platform-tag {
             display: inline-block;
             padding: 3px 8px;
@@ -159,24 +162,17 @@
 <div class="container">
     <h1>最终幻想系列游戏列表</h1>
 
-    <!-- NES/FC 模拟器分类 -->
     <h2 class="platform-title">NES/FC 模拟器</h2>
-    <div class="game-list" id="nesGameList">
-    </div>
+    <div class="game-list" id="nesGameList"></div>
 
-    <!-- SNES/SFC 模拟器分类 -->
     <h2 class="platform-title">SNES/SFC 模拟器</h2>
-    <div class="game-list" id="snesGameList">
-    </div>
+    <div class="game-list" id="snesGameList"></div>
 
-    <!-- GBA 模拟器分类（新增） -->
     <h2 class="platform-title">GBA 模拟器</h2>
-    <div class="game-list" id="gbaGameList">
-    </div>
+    <div class="game-list" id="gbaGameList"></div>
 </div>
 
 <script>
-    // NES/FC 游戏数据
     const nesGames = [
         {
             title: "最终幻想1 [SSforME标题修正版]",
@@ -416,13 +412,11 @@
         }
     ];
 
-    // SNES/SFC 游戏数据
     const snesGames = [
         {
             title: "最终幻想5 (简) (v2.0)(Boco等)(20Mb)",
             language: "简体中文",
             size: "1.5MB",
-            coverUrl: "https://kod.dowhat.top/data/Group/public/home/share/snes/%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B35%20(%E7%AE%80)%20(v2.0)(Boco%E7%AD%89)(20Mb).png",
             iframeUrl: "https://dowhat.net/zh-CN/service/snes/run?name=%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B35+(%E7%AE%80)+(v2.0)(Boco%E7%AD%89)(20Mb)&v-header-subtitle=%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B35",
             platform: "SNES/SFC"
         },
@@ -430,7 +424,6 @@
             title: "最终幻想5 (繁) (v2.0)(Boco等)(20Mb)",
             language: "繁体中文",
             size: "1.5MB",
-            coverUrl: "https://kod.dowhat.top/data/Group/public/home/share/snes/%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B35%20(%E7%B9%81)%20(v2.0)(Boco%E7%AD%89)(20Mb).png",
             iframeUrl: "https://dowhat.net/zh-CN/service/snes/run?name=%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B35+(%E7%B9%81)+(v2.0)(Boco%E7%AD%89)(20Mb)&v-header-subtitle=%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B35",
             platform: "SNES/SFC"
         },
@@ -438,7 +431,6 @@
             title: "最终幻想6 (简) (v1.1) (日菜单)(勇者汉化组)(28Mb)",
             language: "简体中文",
             size: "2.2MB",
-            coverUrl: "https://kod.dowhat.top/data/Group/public/home/share/snes/%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B36%20(%E7%AE%80)%20(v1.1)%20(%E6%97%A5%E8%8F%9C%E5%8D%95)(%E5%8B%87%E8%80%85%E6%B1%89%E5%8C%96%E7%BB%84)(28Mb).png",
             iframeUrl: "https://dowhat.net/zh-CN/service/snes/run?name=%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B36+(%E7%AE%80)+(v1.1)+(%E6%97%A5%E8%8F%9C%E5%8D%95)(%E5%8B%87%E8%80%85%E6%B1%89%E5%8C%96%E7%BB%84)(28Mb)&v-header-subtitle=%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B36",
             platform: "SNES/SFC"
         },
@@ -446,7 +438,6 @@
             title: "最终幻想6 (简) (全剧情汉化) (英菜单)(Boco)(28Mb)",
             language: "简体中文",
             size: "2.2MB",
-            coverUrl: "https://kod.dowhat.top/data/Group/public/home/share/snes/%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B36%20(%E7%AE%80)%20(%E5%85%A8%E5%89%A7%E6%83%85%E6%B1%89%E5%8C%96)%20(%E8%8B%B1%E8%8F%9C%E5%8D%95)(Boco)(28Mb).png",
             iframeUrl: "https://dowhat.net/zh-CN/service/snes/run?name=%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B36+(%E7%AE%80)+(%E5%85%A8%E5%89%A7%E6%83%85%E6%B1%89%E5%8C%96)+(%E8%8B%B1%E8%8F%9C%E5%8D%95)(Boco)(28Mb)&v-header-subtitle=%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B36",
             platform: "SNES/SFC"
         },
@@ -454,21 +445,19 @@
             title: "最终幻想6 (繁) (v1.1) (日菜单)(勇者汉化组)(28Mb)",
             language: "繁体中文",
             size: "2.2MB",
-            coverUrl: "https://kod.dowhat.top/data/Group/public/home/share/snes/%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B36%20(%E7%B9%81)%20(v1.1)%20(%E6%97%A5%E8%8F%9C%E5%8D%95)(%E5%8B%87%E8%80%85%E6%B1%89%E5%8C%96%E7%BB%84)(28Mb).png",
             iframeUrl: "https://dowhat.net/zh-CN/service/snes/run?name=%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B36+(%E7%B9%81)+(v1.1)+(%E6%97%A5%E8%8F%9C%E5%8D%95)(%E5%8B%87%E8%80%85%E6%B1%89%E5%8C%96%E7%BB%84)(28Mb)&v-header-subtitle=%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B36",
             platform: "SNES/SFC"
         }
     ];
 
-    // GBA 游戏数据（新增）
     const gbaGames = [
         {
             title: "最终幻想I, II Advance[盗版&西门吹雪](简)(JP)(128Mb)",
             language: "简体中文",
             region: "日版",
             size: "10.4MB",
-            coverUrl: "https://kod.dowhat.top/data/Group/public/home/share/gba/%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B3I%2C%20II%20Advance[%E7%8B%82%E7%89%88&%E8%A5%BF%E9%97%A8%E5%90%9B%E9%9B%AA](%E7%AE%80)(JP)(128Mb).png",
-            iframeUrl: "https://dowhat.net/zh-CN/service/gba/run?name=%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B3I%2C%20II%20Advance[%E7%8B%82%E7%89%88&%E8%A5%BF%E9%97%A8%E5%90%9B%E9%9B%AA](%E7%AE%80)(JP)(128Mb)&v-header-subtitle=%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B3I%2C%20II%20Advance",
+            coverUrl: "https://kod.dowhat.top/data/Group/public/home/share/gba/%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B3I,%20II%20Advance[%E7%9B%97%E7%89%88&%E8%A5%BF%E9%97%A8%E5%90%B9%E9%9B%AA](%E7%AE%80)(JP)(128Mb).png",
+            iframeUrl: "https://dowhat.net/zh-CN/service/gba/run?name=%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B3I,+II+Advance[%E7%9B%97%E7%89%88%26%E8%A5%BF%E9%97%A8%E5%90%B9%E9%9B%AA](%E7%AE%80)(JP)(128Mb)&v-header-subtitle=%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B3I,+II+Advance",
             platform: "GBA"
         },
         {
@@ -548,13 +537,12 @@
             language: "简体中文",
             region: "日版",
             size: "5.3MB",
-            coverUrl: "https://kod.dowhat.top/data/Group/public/home/share/gba/%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B3%E6%88%98%E7%95%A5%E7%89%88Advance%E5%8E%BBBUG%E5%87%8F%E5%AE%B9%E5%B7%B2%E6%89%93%E8%A1%A5%E4%B8%81%E7%89%88[%E7%86%8A%E7%BB%84](%E7%AE%80)(JP).png",
-            iframeUrl: "https://dowhat.net/zh-CN/service/gba/run?name=%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B3%E6%88%98%E7%95%A5%E7%89%88Advance%E5%8E%BBBUG%E5%87%8F%E5%AE%B9%E5%B7%B2%E6%89%93%E8%A1%A5%E4%B8%81%E7%89%88[%E7%86%8A%E7%BB%84](%E7%AE%80)(JP)&v-header-subtitle=%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B3%E6%88%98%E7%95%A5%E7%89%88Advance",
+            coverUrl: "https://kod.dowhat.top/data/Group/public/home/share/gba/%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B3%E6%88%98%E7%95%A5%E7%89%88Advance%E5%8E%BBBUG%E5%87%8F%E5%AE%B9%E5%B7%B2%E6%89%93%E8%A1%A5%E4%B8%81%E7%89%88[%E7%86%8A%E7%BB%84](%E7%AE%80)(JP)(79.05Mb).png",
+            iframeUrl: "https://dowhat.net/zh-CN/service/gba/run?name=%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B3%E6%88%98%E7%95%A5%E7%89%88Advance%E5%8E%BBBUG%E5%87%8F%E5%AE%B9%E5%B7%B2%E6%89%93%E8%A1%A5%E4%B8%81%E7%89%88[%E7%86%8A%E7%BB%84](%E7%AE%80)(JP)(79.05Mb)&v-header-subtitle=%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B3%E6%88%98%E7%95%A5%E7%89%88Advance%E5%8E%BBBUG%E5%87%8F%E5%AE%B9%E5%B7%B2%E6%89%93%E8%A1%A5%E4%B8%81%E7%89%88",
             platform: "GBA"
         }
     ];
 
-    // 生成游戏列表（通用方法，支持不同平台）
     function generateGameList(platformGames, listId) {
         const gameList = document.querySelector(listId);
 
@@ -562,7 +550,6 @@
             const gameItem = document.createElement('div');
             gameItem.className = 'game-item';
 
-            // 拼接平台标签
             let platformTag = '';
             if (game.platform === "NES/FC") {
                 platformTag = '<span class="platform-tag nes">NES/FC</span>';
@@ -572,12 +559,15 @@
                 platformTag = '<span class="platform-tag gba">GBA</span>';
             }
 
-            // 拼接版本区域信息（GBA专属）
             const regionHtml = game.region ? `<p>版本：${game.region}</p>` : '';
+
+            const hasCover = game.coverUrl && game.coverUrl.trim() !== '';
+            const imgClass = hasCover ? 'has-cover' : '';
+            const imgSrc = hasCover ? game.coverUrl : '';
 
             gameItem.innerHTML = `
                 <div class="game-cover">
-                    <img src="${game.coverUrl}" alt="${game.title}">
+                    <img src="${imgSrc}" alt="${game.title}" class="${imgClass}">
                 </div>
                 <div class="game-info">
                     ${platformTag}
@@ -593,10 +583,16 @@
             `;
 
             gameList.appendChild(gameItem);
+
+            if (hasCover) {
+                const imgElement = gameItem.querySelector('.game-cover img');
+                imgElement.onerror = function() {
+                    this.classList.remove('has-cover');
+                };
+            }
         });
     }
 
-    // 打开游戏详情页
     function openGameDetail(title, iframeUrl, platform) {
         const detailHtml = `
 <!DOCTYPE html>
@@ -701,7 +697,6 @@
         window.open(url, '_blank');
     }
 
-    // 页面加载完成后，分别生成三个平台的游戏列表
     document.addEventListener('DOMContentLoaded', () => {
         generateGameList(nesGames, '#nesGameList');
         generateGameList(snesGames, '#snesGameList');
