@@ -35,7 +35,36 @@
         margin: 0 8px;
     }
 
+    /* 导航栏样式 - 默认（1400px以上） */
+    .navbar-nav {
+        display: flex;
+        flex-wrap: nowrap !important;
+        white-space: nowrap;
+    }
+    .nav-item {
+        flex: 0 0 auto;
+    }
+    .navbar-collapse {
+        flex-wrap: nowrap !important;
+    }
+
     /* 响应式设计 */
+    /* 1200px ~ 1400px */
+    @media (min-width: 1200px) and (max-width: 1399px) {
+        .nav-link {
+            padding: 0.5rem 0.75rem !important;
+            font-size: 0.8rem !important;
+        }
+    }
+
+    /* 1200px以下 */
+    @media (max-width: 1199px) {
+        .navbar-nav {
+            flex-wrap: wrap !important;
+        }
+    }
+
+    /* 768px以下 */
     @media (max-width: 768px) {
         .time-bar {
             font-size: 0.8rem;
@@ -112,8 +141,6 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link link text-white text-primary dropdown-toggle display-4" href="#" aria-expanded="true" data-toggle="dropdown-submenu">Community</a>
                         <div class="dropdown-menu">
-                            <a class="text-white text-primary dropdown-item display-4" href="../Retro/Retro.html#" aria-expanded="false">Retro</a>
-                            <a class="text-white text-primary dropdown-item display-4" href="../Retro/Retro-list.html#" aria-expanded="false">Retro(汉化版本)</a>
                             <a class="text-white text-primary dropdown-item display-4" href="../messageBoard/messageBoard_formed.html#" aria-expanded="false">Message Board</a>
                             <a class="text-white text-primary dropdown-item display-4" href="../chatRecords_formed.html#" aria-expanded="false">Chat Room</a>
                             <a class="text-white text-primary dropdown-item display-4" href="../risingstones/guild-member-dynamic.html"
@@ -135,6 +162,13 @@
                             <a class="text-light text-primary dropdown-item display-4" href="../album/DynamicWallpaper.html#" aria-expanded="false">Dynamic Wallpaper</a>
                             <a class="text-light text-primary dropdown-item display-4" href="../album/showImages.html" target="_blank">Images(Testing)</a>
                             <a class="text-light text-primary dropdown-item display-4" href="../uploadImage_formed.html#" aria-expanded="false">Upload Img(Testing)</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link link text-white text-primary dropdown-toggle display-4" href="#" aria-expanded="true" data-toggle="dropdown-submenu">Retro</a>
+                        <div class="dropdown-menu">
+                            <a class="text-white text-primary dropdown-item display-4" href="../Retro/Retro.html#" aria-expanded="false">OG Collection</a>
+                            <a class="text-white text-primary dropdown-item display-4" href="../Retro/Retro-list.html#" aria-expanded="false">汉化版本</a>
                         </div>
                     </li>
                 </ul>
