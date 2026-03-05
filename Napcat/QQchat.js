@@ -14,8 +14,8 @@ let fetchIntervalId;
 // 定义一个变量来存储系统信息
 let systemInfo;
 
-// 定义一个变量来存储图片代理服务的URL
-const imageProxyUrl = 'https://res.cloudinary.com/your-cloud-name/image/fetch/';
+// 图片代理服务的URL - 使用images.weserv.nl
+const imageProxyUrl = 'https://images.weserv.nl/?url=';
 
 // 语音消息代理服务（将AMR转换为MP3）
 const audioProxyUrl = 'https://audio-converter.example.com/convert?url=';

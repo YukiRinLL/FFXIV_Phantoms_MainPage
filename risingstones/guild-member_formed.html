@@ -456,8 +456,8 @@
 
 <!-- 更新后的 JavaScript 代码 -->
 <script>
-    // 图片代理服务的URL
-    const imageProxyUrl = 'https://res.cloudinary.com/your-cloud-name/image/fetch/';
+    // 图片代理服务的URL - 使用images.weserv.nl
+    const imageProxyUrl = 'https://images.weserv.nl/?url=';
     const defaultAvatar = '../assets/images/def-profile-gray.png';
 
     // 超时时间设置（10秒）
@@ -484,7 +484,7 @@
 
         // Avatar
         const avatar = document.createElement('img');
-        avatar.src = member.avatar ? imageProxyUrl + encodeURIComponent(member.avatar) : defaultAvatar;
+        avatar.src = member.avatar ? imageProxyUrl + member.avatar : defaultAvatar;
         avatar.alt = 'Avatar';
         avatar.onerror = () => fallbackToDefault(avatar);
         card.appendChild(avatar);
