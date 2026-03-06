@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FFXIV 边框切片测试（修复版）</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { padding: 20px; background: #f0f0f0; font-family: Arial; }
+
+        .test-container { max-width: 1000px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #333; margin-bottom: 30px; }
+        .editor-area { margin-bottom: 40px; }
+        textarea { width: 100%; height: 120px; padding: 15px; border: 1px solid #ddd; border-radius: 4px; resize: vertical; margin-bottom: 10px; }
+        button { padding: 8px 20px; background: #4CAF50; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #45a049; }
+        .preview-area { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .box-wrapper { padding: 20px; border: 1px solid #eee; border-radius: 4px; }
+        .box-wrapper h2 { font-size: 18px; color: #555; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 1px dashed #ddd; }
+        .tip { color: #999; font-size: 12px; margin-top: 10px; text-align: center; }
+
+        /* 核心：九宫格边框容器（蓝框/白框通用） */
+        .ffxiv-box {
+            position: relative;
+            width: 100%;
+            min-height: 120px; /* 适配切片最小高度 */
+            height: auto;
+            /* 隐藏超出容器的切片（避免边角装饰溢出） */
+            overflow: hidden;
+        }
+
+        /* 所有切片图片通用样式：绝对定位，禁止缩放（保持素材原始质感） */
+        .ffxiv-box .slice {
+            position: absolute;
+            border: none;
+            padding: 0;
+            margin: 0;
+            /* 关键：固定切片尺寸，匹配素材实际像素（根据你的图片微调） */
+            /* 竖边宽度/横边高度/角标尺寸，统一设为素材实际大小（示例：竖边宽20px，横边高10px，角标20x10px） */
+            /* 若你的素材尺寸不同，仅需修改这里的 width/height 即可 */
+        }
+
+        /* 1. 角标切片（固定位置，不拉伸） */
+        .ffxiv-box .corner { z-index: 2; position: absolute; }
+        .ffxiv-box .tl { display: block; background: url('Box-tl.png') top left no-repeat; top: 0; left: 0; width: 27px; height: 45px; }
+        .ffxiv-box .tr { display: block; background: url('Box-tr.png') top right no-repeat; top: 0; right: 0; width: 27px; height: 45px; }
+        .ffxiv-box .bl { display: block; background: url('Box-bl.png') bottom left no-repeat; bottom: 0; left: 0; width: 27px; height: 45px; }
+        .ffxiv-box .br { display: block; background: url('Box-br.png') bottom right no-repeat; bottom: 0; right: 0; width: 27px; height: 45px; }
+        .ffxiv-box .tlnobg { display: block; background: url('Box-tl-test3.png') top left no-repeat; top: 0; left: 0; width: 27px; height: 45px; }
+        .ffxiv-box .trnobg { display: block; background: url('Box-tr-test3.png') top right no-repeat; top: 0; right: 0; width: 27px; height: 45px; }
+        .ffxiv-box .blnobg { display: block; background: url('Box-bl-test3.png') bottom left no-repeat; bottom: 0; left: 0; width: 27px; height: 45px; }
+        .ffxiv-box .brnobg { display: block; background: url('Box-br-test3.png') bottom right no-repeat; bottom: 0; right: 0; width: 27px; height: 45px; }
+
+        /* 2. 边部切片（拉伸填充，适配文本框大小） */
+        .ffxiv-box .edge { z-index: 1; position: absolute; }
+        /* 上下横边：宽度拉伸，高度固定 */
+        .ffxiv-box .t-edge { top: 0; left: 27px; right: 27px; height: 45px; width: calc(100% - 54px); background: #1a2456; }
+        .ffxiv-box .b-edge { bottom: 0; left: 27px; right: 27px; height: 45px; width: calc(100% - 54px); background: #1a2456; }
+        /* 左右竖边：高度拉伸，宽度固定 */
+        .ffxiv-box .l-edge { top: 45px; bottom: 45px; left: 0; width: 27px; height: calc(100% - 90px); background: #1a2456; }
+        .ffxiv-box .r-edge { top: 45px; bottom: 45px; right: 0; width: 27px; height: calc(100% - 90px); background: #1a2456; }
+
+        /* 白框边部样式 */
+        .ffxiv-box.white .t-edge { background: #fff; border-top: 1px solid #ddd; }
+        .ffxiv-box.white .b-edge { background: #fff; border-bottom: 1px solid #ddd; }
+        .ffxiv-box.white .l-edge { background: #fff; border-left: 1px solid #ddd; }
+        .ffxiv-box.white .r-edge { background: #fff; border-right: 1px solid #ddd; }
+
+        /* 3. 内容区域（核心：避开所有切片，防止文字覆盖边框） */
+        .ffxiv-box .content {
+            position: relative;
+            z-index: 0;
+            /* padding = 角标宽度（左右）/ 角标高度（上下），精准避开边框 */
+            padding: 45px 27px;
+            font-size: 14px;
+            line-height: 1.6;
+            /* 内容区背景：匹配边框风格（蓝框用深蓝，白框用纯白） */
+        }
+
+        /* 蓝框专属：内容区背景 */
+        .ffxiv-box.blue .content { background: #1a2456; color: #fff; }
+        /* 白框专属：内容区背景 */
+        .ffxiv-box.white .content { background: #fff; color: #333; }
+    </style>
+</head>
+<body>
+<div class="test-container">
+    <h1>FFXIV 边框切片测试（蓝框/白框）</h1>
+
+    <div class="editor-area">
+            <textarea id="textInput" placeholder="输入测试文本，验证边框自适应...">艾欧泽亚百科·测试内容
+1. 蓝框适配深蓝色边框素材
+2. 白框适配纯白色边框素材
+3. 输入多行文本，边框会自动撑开高度！</textarea>
+        <button id="updateBtn">更新预览</button>
+    </div>
+
+    <div class="preview-area">
+        <!-- 蓝框版本（对应你提供的深蓝色边框素材） -->
+        <div class="box-wrapper">
+            <h2>蓝框文本框（深蓝色素材）</h2>
+            <div class="ffxiv-box blue" id="blueBox">
+                <!-- 角标切片（蓝框） -->
+                <div class="slice corner tlnobg"></div>
+                <div class="slice corner trnobg"></div>
+                <div class="slice corner blnobg"></div>
+                <div class="slice corner brnobg"></div>
+                <!-- 边部切片（蓝框） -->
+                <div class="slice edge t-edge"></div>
+                <div class="slice edge b-edge"></div>
+                <div class="slice edge l-edge"></div>
+                <div class="slice edge r-edge"></div>
+                <!-- 内容区 -->
+                <div class="content" id="blueContent">
+                    艾欧泽亚百科·测试内容
+                    1. 蓝框适配深蓝色边框素材
+                    2. 白框适配纯白色边框素材
+                    3. 输入多行文本，边框会自动撑开高度！
+                </div>
+            </div>
+            <p class="tip">提示：替换蓝框切片图片名即可显示</p>
+        </div>
+
+        <!-- 白框版本（对应你提供的纯白色边框素材） -->
+        <div class="box-wrapper">
+            <h2>白框文本框（纯白色素材）</h2>
+            <div class="ffxiv-box white" id="whiteBox">
+                <!-- 角标切片（白框） -->
+                <div class="slice corner tl"></div>
+                <div class="slice corner tr"></div>
+                <div class="slice corner bl"></div>
+                <div class="slice corner br"></div>
+                <!-- 边部切片（白框） -->
+                <div class="slice edge t-edge"></div>
+                <div class="slice edge b-edge"></div>
+                <div class="slice edge l-edge"></div>
+                <div class="slice edge r-edge"></div>
+                <!-- 内容区 -->
+                <div class="content" id="whiteContent">
+                    艾欧泽亚百科·测试内容
+                    1. 蓝框适配深蓝色边框素材
+                    2. 白框适配纯白色边框素材
+                    3. 输入多行文本，边框会自动撑开高度！
+                </div>
+            </div>
+            <p class="tip">提示：替换白框切片图片名即可显示</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 文本更新逻辑
+    const textInput = document.getElementById('textInput');
+    const updateBtn = document.getElementById('updateBtn');
+    const blueContent = document.getElementById('blueContent');
+    const whiteContent = document.getElementById('whiteContent');
+
+    updateBtn.addEventListener('click', () => {
+        const formatted = textInput.value.replace(/\n/g, '<br>');
+        blueContent.innerHTML = formatted;
+        whiteContent.innerHTML = formatted;
+    });
+
+    // 回车快速更新（Ctrl+Enter）
+    textInput.addEventListener('keydown', (e) => e.ctrlKey && e.key === 'Enter' && updateBtn.click());
+</script>
+</body>
+</html>
