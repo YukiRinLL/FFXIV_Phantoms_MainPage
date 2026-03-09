@@ -22,48 +22,45 @@
         /* 核心：九宫格边框容器（蓝框/白框通用） */
         .ffxiv-box {
             /* 动态调整切片尺寸 */
-            --bl-width: 27px;    /* bl的宽度 */
-            --bl-height: 26px;   /* bl的高度 (27*26) */
-            --tl-width: 27px;    /* tl的宽度 */
-            --tl-height: 1780px; /* tl的高度 (27*1780) */
+            --bl-width: 27px;   /* bl的宽度 (27*26) */
+            --bl-height: 26px;  /* bl的高度 */
+            --tl-width: 27px;   /* tl的宽度 (27*1780) */
+            --br-height: 26px;  /* br的高度 (974*26) */
             
             position: relative;
             width: 100%;
-            min-height: calc(var(--bl-height) + 100px); /* 最小高度 */
+            min-height: calc(var(--bl-height) + 50px);
             height: auto;
             overflow: hidden;
         }
 
         /* 1. 角标切片（4图片覆盖整个区域） */
-        .ffxiv-box .corner { z-index: 2; position: absolute; }
+        .ffxiv-box .corner { position: absolute; z-index: 1; }
         
-        /* tl: 左上部分 - 宽度固定，高度固定 */
-        .ffxiv-box .tl { display: block; background: url('Box-tl-test3.png') top left no-repeat; top: 0; left: 0; width: var(--tl-width); height: var(--tl-height); }
-        .ffxiv-box .tlnobg { display: block; background: url('Box-tl.png') top left no-repeat; top: 0; left: 0; width: var(--tl-width); height: var(--tl-height); }
+        /* tl: 左上部分 - 宽度固定，高度从顶部到底部切片 */
+        .ffxiv-box .tl { display: block; background: url('Box-tl-test3.png') top left no-repeat; top: 0; left: 0; width: var(--tl-width); bottom: var(--bl-height); }
+        .ffxiv-box .tlnobg { display: block; background: url('Box-tl.png') top left no-repeat; top: 0; left: 0; width: var(--tl-width); bottom: var(--bl-height); }
         
-        /* tr: 右上部分 - 宽度动态，高度固定 */
-        .ffxiv-box .tr { display: block; background: url('Box-tr-test3.png') top right no-repeat; top: 0; left: var(--tl-width); width: calc(100% - var(--tl-width)); height: var(--tl-height); }
-        .ffxiv-box .trnobg { display: block; background: url('Box-tr.png') top right no-repeat; top: 0; left: var(--tl-width); width: calc(100% - var(--tl-width)); height: var(--tl-height); }
+        /* tr: 右上部分 - 宽度动态，高度从顶部到底部切片 */
+        .ffxiv-box .tr { display: block; background: url('Box-tr-test3.png') top right no-repeat; top: 0; left: var(--tl-width); right: 0; bottom: var(--br-height); }
+        .ffxiv-box .trnobg { display: block; background: url('Box-tr.png') top right no-repeat; top: 0; left: var(--tl-width); right: 0; bottom: var(--br-height); }
         
         /* bl: 左下部分 - 宽高固定 */
         .ffxiv-box .bl { display: block; background: url('Box-bl-test3.png') bottom left no-repeat; bottom: 0; left: 0; width: var(--bl-width); height: var(--bl-height); }
         .ffxiv-box .blnobg { display: block; background: url('Box-bl.png') bottom left no-repeat; bottom: 0; left: 0; width: var(--bl-width); height: var(--bl-height); }
         
         /* br: 右下部分 - 高度固定，宽度动态 */
-        .ffxiv-box .br { display: block; background: url('Box-br-test3.png') bottom right no-repeat; bottom: 0; left: var(--bl-width); width: calc(100% - var(--bl-width)); height: var(--bl-height); }
-        .ffxiv-box .brnobg { display: block; background: url('Box-br.png') bottom right no-repeat; bottom: 0; left: var(--bl-width); width: calc(100% - var(--bl-width)); height: var(--bl-height); }
+        .ffxiv-box .br { display: block; background: url('Box-br-test3.png') bottom right no-repeat; bottom: 0; left: var(--bl-width); right: 0; height: var(--br-height); }
+        .ffxiv-box .brnobg { display: block; background: url('Box-br.png') bottom right no-repeat; bottom: 0; left: var(--bl-width); right: 0; height: var(--br-height); }
 
         /* 2. 边部切片 - 不需要了，隐藏 */
         .ffxiv-box .edge { display: none; }
 
         /* 3. 内容区域 - 在tl/tr和bl/br之间 */
         .ffxiv-box .content {
-            position: absolute;
-            z-index: 3;
-            top: var(--tl-height);
-            bottom: var(--bl-height);
-            left: var(--tl-width);
-            right: 0;
+            position: relative;
+            z-index: 2;
+            margin: 0 var(--tl-width) var(--bl-height) var(--tl-width);
             padding: 10px 20px;
             font-size: 14px;
             line-height: 1.6;
@@ -71,6 +68,7 @@
             align-items: center;
             justify-content: center;
             text-align: center;
+            min-height: 50px;
         }
 
         /* 蓝框专属：内容区文字颜色 */
