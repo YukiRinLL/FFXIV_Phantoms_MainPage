@@ -21,13 +21,15 @@
 
         /* 核心：九宫格边框容器（蓝框/白框通用） */
         .ffxiv-box {
-            /* 动态调整切片尺寸：修改下面三个变量即可 */
-            --corner-width: 27px;   /* tl/bl的宽度 */
-            --corner-height: 45px;  /* bl/br的高度（一行的高度） */
+            /* 动态调整切片尺寸 */
+            --bl-width: 27px;    /* bl的宽度 */
+            --bl-height: 26px;   /* bl的高度 (27*26) */
+            --tl-width: 27px;    /* tl的宽度 */
+            --tl-height: 1780px; /* tl的高度 (27*1780) */
             
             position: relative;
             width: 100%;
-            min-height: calc(var(--corner-height) * 3);
+            min-height: calc(var(--bl-height) + 100px); /* 最小高度 */
             height: auto;
             overflow: hidden;
         }
@@ -35,32 +37,32 @@
         /* 1. 角标切片（4图片覆盖整个区域） */
         .ffxiv-box .corner { z-index: 2; position: absolute; }
         
-        /* tl: 左上2格 (裁取图片左上部分) */
-        .ffxiv-box .tl { display: block; background: url('Box-tl-test3.png') top left no-repeat; top: 0; left: 0; width: var(--corner-width); height: calc(var(--corner-height) * 2); }
-        .ffxiv-box .tlnobg { display: block; background: url('Box-tl.png') top left no-repeat; top: 0; left: 0; width: var(--corner-width); height: calc(var(--corner-height) * 2); }
+        /* tl: 左上部分 - 宽度固定，高度固定 */
+        .ffxiv-box .tl { display: block; background: url('Box-tl-test3.png') top left no-repeat; top: 0; left: 0; width: var(--tl-width); height: var(--tl-height); }
+        .ffxiv-box .tlnobg { display: block; background: url('Box-tl.png') top left no-repeat; top: 0; left: 0; width: var(--tl-width); height: var(--tl-height); }
         
-        /* tr: 右上6格 (裁取图片右上部分) */
-        .ffxiv-box .tr { display: block; background: url('Box-tr-test3.png') top right no-repeat; top: 0; left: var(--corner-width); width: calc(100% - var(--corner-width)); height: calc(var(--corner-height) * 2); }
-        .ffxiv-box .trnobg { display: block; background: url('Box-tr.png') top right no-repeat; top: 0; left: var(--corner-width); width: calc(100% - var(--corner-width)); height: calc(var(--corner-height) * 2); }
+        /* tr: 右上部分 - 宽度动态，高度固定 */
+        .ffxiv-box .tr { display: block; background: url('Box-tr-test3.png') top right no-repeat; top: 0; left: var(--tl-width); width: calc(100% - var(--tl-width)); height: var(--tl-height); }
+        .ffxiv-box .trnobg { display: block; background: url('Box-tr.png') top right no-repeat; top: 0; left: var(--tl-width); width: calc(100% - var(--tl-width)); height: var(--tl-height); }
         
-        /* bl: 左下1格 (裁取图片左下部分) */
-        .ffxiv-box .bl { display: block; background: url('Box-bl-test3.png') bottom left no-repeat; bottom: 0; left: 0; width: var(--corner-width); height: var(--corner-height); }
-        .ffxiv-box .blnobg { display: block; background: url('Box-bl.png') bottom left no-repeat; bottom: 0; left: 0; width: var(--corner-width); height: var(--corner-height); }
+        /* bl: 左下部分 - 宽高固定 */
+        .ffxiv-box .bl { display: block; background: url('Box-bl-test3.png') bottom left no-repeat; bottom: 0; left: 0; width: var(--bl-width); height: var(--bl-height); }
+        .ffxiv-box .blnobg { display: block; background: url('Box-bl.png') bottom left no-repeat; bottom: 0; left: 0; width: var(--bl-width); height: var(--bl-height); }
         
-        /* br: 右下2格 (裁取图片右下部分) */
-        .ffxiv-box .br { display: block; background: url('Box-br-test3.png') bottom right no-repeat; bottom: 0; left: var(--corner-width); width: calc(100% - var(--corner-width)); height: var(--corner-height); }
-        .ffxiv-box .brnobg { display: block; background: url('Box-br.png') bottom right no-repeat; bottom: 0; left: var(--corner-width); width: calc(100% - var(--corner-width)); height: var(--corner-height); }
+        /* br: 右下部分 - 高度固定，宽度动态 */
+        .ffxiv-box .br { display: block; background: url('Box-br-test3.png') bottom right no-repeat; bottom: 0; left: var(--bl-width); width: calc(100% - var(--bl-width)); height: var(--bl-height); }
+        .ffxiv-box .brnobg { display: block; background: url('Box-br.png') bottom right no-repeat; bottom: 0; left: var(--bl-width); width: calc(100% - var(--bl-width)); height: var(--bl-height); }
 
         /* 2. 边部切片 - 不需要了，隐藏 */
         .ffxiv-box .edge { display: none; }
 
-        /* 3. 内容区域 - 居中显示 */
+        /* 3. 内容区域 - 在tl/tr和bl/br之间 */
         .ffxiv-box .content {
             position: absolute;
             z-index: 3;
-            top: var(--corner-height);
-            bottom: var(--corner-height);
-            left: var(--corner-width);
+            top: var(--tl-height);
+            bottom: var(--bl-height);
+            left: var(--tl-width);
             right: 0;
             padding: 10px 20px;
             font-size: 14px;
@@ -71,10 +73,10 @@
             text-align: center;
         }
 
-        /* 蓝框专属：内容区背景 */
-        .ffxiv-box.blue .content { background: #1a2456; color: #fff; }
-        /* 白框专属：内容区背景 */
-        .ffxiv-box.white .content { background: #fff; color: #333; }
+        /* 蓝框专属：内容区文字颜色 */
+        .ffxiv-box.blue .content { color: #fff; }
+        /* 白框专属：内容区文字颜色 */
+        .ffxiv-box.white .content { color: #333; }
     </style>
 </head>
 <body>
