@@ -47,7 +47,7 @@
         .chat-main-container {
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            min-height: 70vh;
         }
 
         /* 消息容器 - 可滚动区域 */
@@ -821,6 +821,200 @@
                 font-size: 20px;
             }
         }
+
+        /* 图片发送弹窗样式 */
+        .image-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            display: none;
+        }
+
+        .image-modal {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            width: 90%;
+            max-width: 500px;
+            overflow: hidden;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .image-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e1e1e1;
+            background-color: #f8f9fa;
+        }
+
+        .image-modal-title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .image-modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .image-modal-close:hover {
+            background-color: #e9ecef;
+            color: #333;
+        }
+
+        .image-modal-body {
+            padding: 20px;
+        }
+
+        .image-modal-form-group {
+            margin-bottom: 20px;
+        }
+
+        .image-modal-form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .image-modal-form-group input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: #fafafa;
+        }
+
+        .image-modal-form-group input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #fafafa;
+        }
+
+        .image-modal-form-group input[type="text"]:focus {
+            outline: none;
+            border-color: #007bff;
+            background-color: #fff;
+        }
+
+        .image-preview {
+            margin-top: 15px;
+            border: 1px solid #e1e1e1;
+            border-radius: 6px;
+            padding: 10px;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 4px;
+            object-fit: contain;
+        }
+
+        .image-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 15px 20px;
+            border-top: 1px solid #e1e1e1;
+            background-color: #f8f9fa;
+        }
+
+        .image-modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .image-modal-btn.cancel {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .image-modal-btn.cancel:hover {
+            background-color: #5a6268;
+        }
+
+        .image-modal-btn.send {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .image-modal-btn.send:hover {
+            background-color: #0069d9;
+        }
+
+        .image-modal-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* 发送图片按钮样式 */
+        .send-image-btn {
+            background: Black;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-image-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .send-image-btn:active {
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body>
@@ -837,7 +1031,7 @@
 </script>
 
 <!--plugin began-->
-<section class="header1 cid-s48MCQYojq mbr-fullscreen" id="chatRecords-f">
+<section class="header1 cid-s48MCQYojq" id="chatRecords-f">
     <div class="mbr-overlay" style="opacity:1; background-color: #ffffff;"></div>
     <div class="align-center container-fluid">
         <!-- 替换为 QQchat 的内容 -->
@@ -875,12 +1069,26 @@
                         <label for="chat-signature">Signature[署名]:</label>
                         <input type="text" id="chat-signature" name="signature" required placeholder="请输入您的署名">
                     </div>
-                    <div class="chat-form-group">
-                        <button type="submit">Send</button>
+                    <div class="chat-form-group" style="display: flex; gap: 10px;">
+                        <button type="button" class="send-image-btn" id="open-image-modal" style="flex: 0 0 80px;">Pic</button>
+                        <button type="submit" id="send-message-btn" style="flex: 1;">Send</button>
                     </div>
+                    <!-- 遮罩式加载指示器 -->
+                    <div id="loading-indicator" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255, 255, 255, 0.8); z-index: 2500; align-items: center; justify-content: center;">
+                        <div style="background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); text-align: center;">
+                            <div style="font-size: 18px; color: #333; margin-bottom: 10px;">发送中...</div>
+                            <div style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+                        </div>
+                    </div>
+                    <style>
+                        @keyframes spin {
+                            0% { transform: rotate(0deg); }
+                            100% { transform: rotate(360deg); }
+                        }
+                    </style>
                     <div class="chat-form-group">
                         <p style="color: gray; font-size: 0.9em; margin: 0; text-align: center;">
-                            音频/图片/链接相关功能不可用，仅发送文字消息
+                            音频/链接相关功能不可用，图片功能已启用
                         </p>
                     </div>
                 </form>
@@ -1382,6 +1590,15 @@
 
         const formattedMessage = `[${signature}] ${message}`;
 
+        // 显示加载指示器
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const sendButton = document.getElementById('send-message-btn');
+        const picButton = document.getElementById('open-image-modal');
+        
+        loadingIndicator.style.display = 'flex';
+        sendButton.disabled = true;
+        picButton.disabled = true;
+
         startFetchInterval();
 
         const container = document.getElementById('chat-message-container');
@@ -1425,20 +1642,296 @@
             },
             body: JSON.stringify({ message: formattedMessage, systemInfo: systemInfo })
         })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                document.getElementById('chat-message').value = '';
+            } else {
+                alert('Failed to send message: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while sending the message.'+ error.message);
+        })
+        .finally(() => {
+            // 隐藏加载指示器
+            loadingIndicator.style.display = 'none';
+            sendButton.disabled = false;
+            picButton.disabled = false;
+        });
+    });
+
+    // 图片发送功能
+    document.addEventListener('DOMContentLoaded', function() {
+        const imageModalOverlay = document.getElementById('image-modal-overlay');
+        const openImageModalBtn = document.getElementById('open-image-modal');
+        const closeImageModalBtn = document.getElementById('close-image-modal');
+        const cancelImageSendBtn = document.getElementById('cancel-image-send');
+        const confirmImageSendBtn = document.getElementById('confirm-image-send');
+        const imageTypeRadios = document.querySelectorAll('input[name="image-type"]');
+        const localImageSection = document.getElementById('local-image-section');
+        const urlImageSection = document.getElementById('url-image-section');
+        const imageUpload = document.getElementById('image-upload');
+        const imageUrl = document.getElementById('image-url');
+        const imagePreview = document.getElementById('image-preview');
+        const urlImagePreview = document.getElementById('url-image-preview');
+        const previewPlaceholder = document.getElementById('preview-placeholder');
+        const urlPreviewPlaceholder = document.getElementById('url-preview-placeholder');
+
+        // 打开图片发送弹窗
+        openImageModalBtn.addEventListener('click', function() {
+            imageModalOverlay.style.display = 'flex';
+        });
+
+        // 关闭图片发送弹窗
+        function closeImageModal() {
+            imageModalOverlay.style.display = 'none';
+            // 重置表单
+            imageUpload.value = '';
+            imageUrl.value = '';
+            imagePreview.innerHTML = '<span id="preview-placeholder">预览区域</span>';
+            urlImagePreview.innerHTML = '<span id="url-preview-placeholder">预览区域</span>';
+        }
+
+        closeImageModalBtn.addEventListener('click', closeImageModal);
+        cancelImageSendBtn.addEventListener('click', closeImageModal);
+
+        // 点击弹窗外部关闭
+        imageModalOverlay.addEventListener('click', function(e) {
+            if (e.target === imageModalOverlay) {
+                closeImageModal();
+            }
+        });
+
+        // 切换图片发送方式
+        imageTypeRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'local') {
+                    localImageSection.style.display = 'block';
+                    urlImageSection.style.display = 'none';
+                } else {
+                    localImageSection.style.display = 'none';
+                    urlImageSection.style.display = 'block';
+                }
+            });
+        });
+
+        // 本地图片预览
+        imageUpload.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.innerHTML = `<img src="${e.target.result}" alt="预览图片">`;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.innerHTML = '<span id="preview-placeholder">预览区域</span>';
+            }
+        });
+
+        // 网络图片预览
+        imageUrl.addEventListener('input', function() {
+            const url = this.value;
+            if (url) {
+                urlImagePreview.innerHTML = `<img src="${url}" alt="预览图片" onerror="this.onerror=null; this.src='./Napcat/placeholder.png';">`;
+            } else {
+                urlImagePreview.innerHTML = '<span id="url-preview-placeholder">预览区域</span>';
+            }
+        });
+
+        // 发送图片
+        confirmImageSendBtn.addEventListener('click', function() {
+            const signature = document.getElementById('chat-signature').value;
+            if (!signature) {
+                alert('请先填写署名');
+                return;
+            }
+
+            const selectedType = document.querySelector('input[name="image-type"]:checked').value;
+            let imageData = null;
+
+            // 显示加载指示器
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const sendButton = document.getElementById('send-message-btn');
+            const picButton = document.getElementById('open-image-modal');
+            
+            loadingIndicator.style.display = 'flex';
+            sendButton.disabled = true;
+            picButton.disabled = true;
+            confirmImageSendBtn.disabled = true;
+            cancelImageSendBtn.disabled = true;
+
+            if (selectedType === 'local') {
+                const file = imageUpload.files[0];
+                if (!file) {
+                    alert('请选择本地图片');
+                    // 隐藏加载指示器
+                    loadingIndicator.style.display = 'none';
+                    sendButton.disabled = false;
+                    picButton.disabled = false;
+                    confirmImageSendBtn.disabled = false;
+                    cancelImageSendBtn.disabled = false;
+                    return;
+                }
+
+                // 转换为base64
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Data = e.target.result.split(',')[1]; // 移除data:image/xxx;base64,前缀
+                    sendImageToAPI(signature, `base64://${base64Data}`, loadingIndicator, sendButton, picButton, confirmImageSendBtn, cancelImageSendBtn);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                const url = imageUrl.value;
+                if (!url) {
+                    alert('请输入图片URL');
+                    // 隐藏加载指示器
+                    loadingIndicator.style.display = 'none';
+                    sendButton.disabled = false;
+                    picButton.disabled = false;
+                    confirmImageSendBtn.disabled = false;
+                    cancelImageSendBtn.disabled = false;
+                    return;
+                }
+                sendImageToAPI(signature, url, loadingIndicator, sendButton, picButton, confirmImageSendBtn, cancelImageSendBtn);
+            }
+        });
+
+        // 发送图片到API
+        function sendImageToAPI(signature, imageFile, loadingIndicator, sendButton, picButton, confirmImageSendBtn, cancelImageSendBtn) {
+            const container = document.getElementById('chat-message-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message';
+
+            const messageHeader = document.createElement('div');
+            messageHeader.className = 'chat-message-header';
+
+            const avatarImg = document.createElement('img');
+            avatarImg.className = 'chat-user-avatar';
+            avatarImg.src = `http://q1.qlogo.cn/g?b=qq&nk=${signature}&s=100`;
+
+            const userName = document.createElement('strong');
+            userName.textContent = signature;
+            userName.style.marginLeft = '8px';
+
+            messageHeader.appendChild(avatarImg);
+            messageHeader.appendChild(userName);
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'chat-message-content';
+            
+            // 显示图片预览
+            if (imageFile.startsWith('base64://')) {
+                const base64Data = imageFile.replace('base64://', '');
+                contentDiv.innerHTML = `<img src="data:image/jpeg;base64,${base64Data}" alt="发送的图片">`;
+            } else {
+                contentDiv.innerHTML = `<img src="${imageFile}" alt="发送的图片" onerror="this.onerror=null; this.src='./Napcat/placeholder.png';">`;
+            }
+
+            const timestampSpan = document.createElement('span');
+            timestampSpan.className = 'chat-timestamp';
+            timestampSpan.textContent = new Date().toLocaleString();
+
+            messageDiv.appendChild(messageHeader);
+            messageDiv.appendChild(contentDiv);
+            messageDiv.appendChild(timestampSpan);
+
+            container.appendChild(messageDiv);
+
+            // 发送到API
+            const payload = {
+                "group_id": "787909466",
+                "message": [
+                    {
+                        "type": "image",
+                        "data": {
+                            "file": imageFile
+                        }
+                    }
+                ]
+            };
+
+            fetch('https://qjplikqiufzx.us-west-1.clawcloudrun.com/send_group_msg', {
+                method: 'POST',
+                headers: {
+                    'Authorization': '7saligia',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'ok') {
-                    document.getElementById('chat-message').value = '';
+                    closeImageModal();
+                    alert('图片发送成功');
                 } else {
-                    alert('Failed to send message: ' + data.error);
+                    alert('发送失败: ' + (data.error || '未知错误'));
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('An error occurred while sending the message.'+ error.message);
+                alert('发送失败: ' + error.message);
+            })
+            .finally(() => {
+                // 隐藏加载指示器
+                loadingIndicator.style.display = 'none';
+                sendButton.disabled = false;
+                picButton.disabled = false;
+                confirmImageSendBtn.disabled = false;
+                cancelImageSendBtn.disabled = false;
             });
+        }
     });
 </script>
+
+<!-- 图片发送弹窗 -->
+<div class="image-modal-overlay" id="image-modal-overlay">
+    <div class="image-modal">
+        <div class="image-modal-header">
+            <h3 class="image-modal-title">发送图片</h3>
+            <button class="image-modal-close" id="close-image-modal">&times;</button>
+        </div>
+        <div class="image-modal-body">
+            <div class="image-modal-form-group">
+                <label>选择发送方式</label>
+                <div style="display: flex; gap: 10px; margin-top: 8px;">
+                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                        <input type="radio" name="image-type" value="local" checked>
+                        本地图片
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                        <input type="radio" name="image-type" value="url">
+                        网络图片URL
+                    </label>
+                </div>
+            </div>
+            
+            <!-- 本地图片上传 -->
+            <div id="local-image-section" class="image-modal-form-group">
+                <label for="image-upload">选择图片文件</label>
+                <input type="file" id="image-upload" accept="image/*">
+                <div class="image-preview" id="image-preview">
+                    <span id="preview-placeholder">预览区域</span>
+                </div>
+            </div>
+            
+            <!-- 网络图片URL -->
+            <div id="url-image-section" class="image-modal-form-group" style="display: none;">
+                <label for="image-url">图片URL</label>
+                <input type="text" id="image-url" placeholder="请输入图片URL">
+                <div class="image-preview" id="url-image-preview">
+                    <span id="url-preview-placeholder">预览区域</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-modal-footer">
+            <button class="image-modal-btn cancel" id="cancel-image-send">取消</button>
+            <button class="image-modal-btn send" id="confirm-image-send">发送图片</button>
+        </div>
+    </div>
+</div>
 
 </body>
 
