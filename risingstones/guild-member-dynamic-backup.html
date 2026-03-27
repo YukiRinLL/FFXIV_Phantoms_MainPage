@@ -1279,7 +1279,7 @@
 
         card.innerHTML = `
             <div class="activity-header">
-                <img src="${avatarUrl}" alt="头像" class="avatar" onerror="this.src='${DEFAULT_AVATAR}'">
+                <img src="${avatarUrl}" alt="头像" class="avatar" onerror="this.onerror=null; this.src='${DEFAULT_AVATAR}'">
                 <div class="character-info">
                     <div class="character-name">${escapeHtml(activity.character_name)}</div>
                     <div class="server-info">${escapeHtml(activity.area_name)} · ${escapeHtml(activity.group_name)}</div>
@@ -1290,7 +1290,7 @@
             <div class="activity-content">
                 <div class="activity-title">${escapeHtml(title || '无标题')}</div>
                 <div class="activity-preview">${escapeHtml(content)}</div>
-                ${coverUrl ? `<img src="${coverUrl}" class="cover-image" alt="封面" onerror="this.style.display='none'">` : ''}
+                ${coverUrl ? `<img src="${coverUrl}" class="cover-image" alt="封面" onerror="this.onerror=null; this.style.display='none'">` : ''}
             </div>
 
             ${badges.length > 0 ? `
@@ -1374,7 +1374,7 @@
 
         section.innerHTML = `
             <div class="modal-character-info">
-                <img src="${avatarUrl}" alt="头像" class="modal-character-avatar" onerror="this.src='${DEFAULT_AVATAR}'">
+                <img src="${avatarUrl}" alt="头像" class="modal-character-avatar" onerror="this.onerror=null; this.src='${DEFAULT_AVATAR}'">
                 <div class="modal-character-details">
                     <div class="modal-character-name">${escapeHtml(activity.character_name)}</div>
                     <div class="modal-character-server">${escapeHtml(activity.area_name)} · ${escapeHtml(activity.group_name)}</div>
@@ -1423,7 +1423,7 @@
         let imagesHtml = '';
         if (activity.pic_url) {
             const proxiedUrl = getProxiedImageUrl(activity.pic_url);
-            imagesHtml = `<img src="${proxiedUrl}" class="modal-image" alt="动态图片" onerror="this.style.display='none'">`;
+            imagesHtml = `<img src="${proxiedUrl}" class="modal-image" alt="动态图片" onerror="this.onerror=null; this.style.display='none'">`;
         }
 
         section.innerHTML = `
@@ -1557,7 +1557,7 @@
             const proxiedUrl = getProxiedImageUrl(emojiUrl);
 
             // 返回图片标签，设置合适的大小
-            return `<img src="${proxiedUrl}" alt="表情${emojiId}" class="emoji" onerror="this.style.display='none'">`;
+            return `<img src="${proxiedUrl}" alt="表情${emojiId}" class="emoji" onerror="this.onerror=null; this.style.display='none'">`;
         });
     }
 
