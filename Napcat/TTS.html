@@ -14,10 +14,12 @@
             display: flex; flex-direction: column; gap: 4px;
         }
         label { font-size: 12px; color: #666; }
-        input[type="checkbox"] { transform: scale(1.1); }
         .skip-btn {
             padding: 6px 12px; background: #ff4d4f; color: #fff;
             border: none; border-radius: 6px; cursor: pointer;
+        }
+        .voice-select {
+            padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc;
         }
         .message-box {
             background: #fff; padding: 16px; border-radius: 8px;
@@ -40,13 +42,21 @@
 </head>
 <body>
 
-<!-- TTS 控制面板 + 跳过按钮 -->
+<!-- 控制面板 -->
 <div class="panel">
-    <button class="skip-btn" id="skipBtn">⏭️ 跳过当前语音并播放下一条</button>
+    <button class="skip-btn" id="skipBtn">⏭️ 跳过当前</button>
+
     <div class="item">
         <label>播报用户名</label>
         <input type="checkbox" id="readName" checked>
     </div>
+
+    <!-- 音色选择 -->
+    <div class="item">
+        <label>音色</label>
+        <select id="voiceSelect" class="voice-select"></select>
+    </div>
+
     <div class="item">
         <label>语速：<span id="rateVal">1</span></label>
         <input type="range" id="rate" min="0.5" max="2" step="0.1" value="1">
@@ -67,8 +77,9 @@
     const API_URL = "https://phantoms-backend.onrender.com/onebot/latest?limit=30";
     const messageBox = document.getElementById("messageBox");
     const skipBtn = document.getElementById("skipBtn");
+    const voiceSelect = document.getElementById("voiceSelect");
 
-    // TTS 参数
+    // 配置
     const config = {
         readName: document.getElementById("readName"),
         rate: document.getElementById("rate"),
@@ -76,21 +87,52 @@
         volume: document.getElementById("volume"),
         rateVal: document.getElementById("rateVal"),
         pitchVal: document.getElementById("pitchVal"),
-        volVal: document.getElementById("volVal")
+        volVal: document.getElementById("volVal"),
+        currentVoice: null
     };
 
-    // 显示数值
+    // 数值显示
     config.rate.addEventListener('input', () => config.rateVal.textContent = config.rate.value);
     config.pitch.addEventListener('input', () => config.pitchVal.textContent = config.pitch.value);
     config.volume.addEventListener('input', () => config.volVal.textContent = config.volume.value);
 
-    // 顺序播报队列
+    // 语音队列
     const playedIds = new Set();
     let isSpeaking = false;
     let speechQueue = [];
 
     // ======================================
-    // 跳过当前语音 → 播放下一条
+    // 加载音色列表（自动获取系统所有中文音色）
+    // ======================================
+    function loadVoices() {
+        const voices = window.speechSynthesis.getVoices();
+        const zhVoices = voices.filter(v => v.lang.includes("zh") || v.lang.includes("cmn"));
+
+        voiceSelect.innerHTML = "";
+        zhVoices.forEach(v => {
+            const opt = document.createElement("option");
+            opt.value = v.name;
+            opt.textContent = `${v.name} (${v.lang})`;
+            voiceSelect.appendChild(opt);
+        });
+
+        if (zhVoices.length > 0) {
+            config.currentVoice = zhVoices[0];
+            voiceSelect.value = zhVoices[0].name;
+        }
+    }
+
+    // 浏览器音色加载完成事件
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+
+    // 切换音色
+    voiceSelect.addEventListener("change", () => {
+        const voices = window.speechSynthesis.getVoices();
+        config.currentVoice = voices.find(v => v.name === voiceSelect.value);
+    });
+
+    // ======================================
+    // 跳过按钮
     // ======================================
     skipBtn.addEventListener("click", () => {
         window.speechSynthesis.cancel();
@@ -98,7 +140,9 @@
         setTimeout(() => speakNext(), 100);
     });
 
-    // 播放下一条
+    // ======================================
+    // 播放下一条（使用选中的音色）
+    // ======================================
     function speakNext() {
         if (isSpeaking || speechQueue.length === 0) return;
         isSpeaking = true;
@@ -111,6 +155,7 @@
         u.rate = parseFloat(config.rate.value);
         u.pitch = parseFloat(config.pitch.value);
         u.volume = parseFloat(config.volume.value);
+        u.voice = config.currentVoice; // 使用选中的音色
 
         u.onend = () => {
             isSpeaking = false;
@@ -125,26 +170,23 @@
         window.speechSynthesis.speak(u);
     }
 
-    // 加入队列
     function pushToQueue(nickname, text) {
         speechQueue.push({ nickname, text });
         speakNext();
     }
 
-    // 解析 text 消息
+    // 解析文本消息
     function parseText(msg) {
         if (!msg.message.startsWith("{type=text")) return null;
         const m = msg.message.match(/text=([^}]+)}/);
         return m ? m[1] : null;
     }
 
-    // 加载消息（逆序数组）
+    // 加载消息（逆序）
     async function loadMessages() {
         try {
             const res = await fetch(API_URL);
             let list = await res.json();
-
-            // 逆序数组（你要的顺序）
             list = list.reverse();
 
             messageBox.innerHTML = "";
@@ -182,6 +224,5 @@
     loadMessages();
     setInterval(loadMessages, 5000);
 </script>
-
 </body>
 </html>
