@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TTS 消息播报</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
         .panel {
@@ -42,7 +43,6 @@
 </head>
 <body>
 
-<!-- 控制面板 -->
 <div class="panel">
     <button class="skip-btn" id="skipBtn">⏭️ 跳过当前</button>
 
@@ -51,7 +51,6 @@
         <input type="checkbox" id="readName" checked>
     </div>
 
-    <!-- 音色选择 -->
     <div class="item">
         <label>音色</label>
         <select id="voiceSelect" class="voice-select"></select>
@@ -79,7 +78,6 @@
     const skipBtn = document.getElementById("skipBtn");
     const voiceSelect = document.getElementById("voiceSelect");
 
-    // 配置
     const config = {
         readName: document.getElementById("readName"),
         rate: document.getElementById("rate"),
@@ -88,139 +86,163 @@
         rateVal: document.getElementById("rateVal"),
         pitchVal: document.getElementById("pitchVal"),
         volVal: document.getElementById("volVal"),
-        currentVoice: null
+        currentVoice: null,
+        selectedVoiceName: localStorage.getItem("selectedVoice") || ""
     };
 
-    // 数值显示
-    config.rate.addEventListener('input', () => config.rateVal.textContent = config.rate.value);
-    config.pitch.addEventListener('input', () => config.pitchVal.textContent = config.pitch.value);
-    config.volume.addEventListener('input', () => config.volVal.textContent = config.volume.value);
-
-    // 语音队列
     const playedIds = new Set();
     let isSpeaking = false;
     let speechQueue = [];
+    let currentUtterance = null;
+    let voiceCache = [];
 
-    // ======================================
-    // 加载音色列表（自动获取系统所有中文音色）
-    // ======================================
+    // 加载音色
     function loadVoices() {
         const voices = window.speechSynthesis.getVoices();
-        const zhVoices = voices.filter(v => v.lang.includes("zh") || v.lang.includes("cmn"));
+        if (!voices || voices.length === 0) return;
+
+        voiceCache = voices.filter(v => v.lang.includes("zh") || v.lang.includes("cmn"));
+        if (voiceCache.length === 0) return;
 
         voiceSelect.innerHTML = "";
-        zhVoices.forEach(v => {
+        voiceCache.forEach(v => {
             const opt = document.createElement("option");
             opt.value = v.name;
             opt.textContent = `${v.name} (${v.lang})`;
             voiceSelect.appendChild(opt);
         });
 
-        if (zhVoices.length > 0) {
-            config.currentVoice = zhVoices[0];
-            voiceSelect.value = zhVoices[0].name;
-        }
+        let targetVoice = voiceCache.find(v => v.name === config.selectedVoiceName) || voiceCache[0];
+        config.currentVoice = targetVoice;
+        voiceSelect.value = targetVoice.name;
     }
 
-    // 浏览器音色加载完成事件
-    window.speechSynthesis.onvoiceschanged = loadVoices;
+    // 延迟初始化，防止DOM未加载完
+    setTimeout(() => {
+        loadVoices();
+        window.speechSynthesis.onvoiceschanged = () => {
+            if (voiceCache.length === 0) loadVoices();
+        };
+    }, 300);
 
     // 切换音色
     voiceSelect.addEventListener("change", () => {
-        const voices = window.speechSynthesis.getVoices();
-        config.currentVoice = voices.find(v => v.name === voiceSelect.value);
+        const target = voiceCache.find(v => v.name === voiceSelect.value);
+        if (target) {
+            config.currentVoice = target;
+            localStorage.setItem("selectedVoice", target.name);
+        }
     });
 
-    // ======================================
-    // 跳过按钮
-    // ======================================
+    // 跳过
     skipBtn.addEventListener("click", () => {
         window.speechSynthesis.cancel();
         isSpeaking = false;
+        currentUtterance = null;
         setTimeout(() => speakNext(), 100);
     });
 
-    // ======================================
-    // 播放下一条（使用选中的音色）
-    // ======================================
+    // 播放下一条
     function speakNext() {
         if (isSpeaking || speechQueue.length === 0) return;
         isSpeaking = true;
 
         const { nickname, text } = speechQueue.shift();
         let content = config.readName.checked ? `${nickname}说，${text}` : text;
+        content = content.replace(/[\x00-\x1F\x7F]/g, "").trim();
+        if (!content) {
+            isSpeaking = false;
+            return speakNext();
+        }
 
         const u = new SpeechSynthesisUtterance(content);
         u.lang = "zh-CN";
-        u.rate = parseFloat(config.rate.value);
-        u.pitch = parseFloat(config.pitch.value);
-        u.volume = parseFloat(config.volume.value);
-        u.voice = config.currentVoice; // 使用选中的音色
+        u.rate = +config.rate.value;
+        u.pitch = +config.pitch.value;
+        u.volume = +config.volume.value;
+        u.voice = config.currentVoice;
+        currentUtterance = u;
 
         u.onend = () => {
             isSpeaking = false;
-            setTimeout(() => speakNext(), 200);
-        };
-        u.onerror = () => {
-            isSpeaking = false;
-            speakNext();
+            currentUtterance = null;
+            setTimeout(() => speakNext(), 120);
         };
 
-        window.speechSynthesis.cancel();
+        u.onerror = () => {
+            isSpeaking = false;
+            currentUtterance = null;
+            window.speechSynthesis.cancel();
+            setTimeout(() => speakNext(), 300);
+        };
+
         window.speechSynthesis.speak(u);
     }
 
+    // 加入队列
     function pushToQueue(nickname, text) {
+        if (!text || !text.trim()) return;
         speechQueue.push({ nickname, text });
-        speakNext();
+        if (!isSpeaking) speakNext();
     }
 
-    // 解析文本消息
+    // 解析文本
     function parseText(msg) {
-        if (!msg.message.startsWith("{type=text")) return null;
+        if (!msg?.message?.startsWith("{type=text")) return null;
         const m = msg.message.match(/text=([^}]+)}/);
-        return m ? m[1] : null;
+        return m ? m[1].trim() : null;
     }
 
-    // 加载消息（逆序）
+    // 加载消息
     async function loadMessages() {
         try {
             const res = await fetch(API_URL);
+            if (!res.ok) return;
             let list = await res.json();
-            list = list.reverse();
+            list = Array.isArray(list) ? list.reverse() : [];
+            const newIds = new Set();
+            let html = "";
 
-            messageBox.innerHTML = "";
-
-            for (const item of list) {
+            list.forEach(item => {
                 const text = parseText(item);
-                if (!text) continue;
-
-                const name = item.nickname || "用户";
+                if (!text) return;
+                const name = (item.nickname || "用户").replace(/'/g, "\\'");
+                const safeText = text.replace(/'/g, "\\'");
                 const time = new Date(...item.timestamp).toLocaleString();
+                newIds.add(item.id);
 
-                messageBox.innerHTML += `
+                html += `
                 <div class="msg-item">
                     <div class="content">
                         <div class="name">${name}</div>
                         <div class="text">${text}</div>
                         <div class="time">${time}</div>
                     </div>
-                    <button class="play-btn" onclick="pushToQueue('${name.replace(/'/g, "\\'")}', '${text.replace(/'/g, "\\'")}')">播放</button>
+                    <button class="play-btn" onclick="pushToQueue('${name}','${safeText}')">播放</button>
                 </div>`;
 
                 if (!playedIds.has(item.id)) {
                     playedIds.add(item.id);
                     pushToQueue(name, text);
                 }
-            }
+            });
+
+            if (html) messageBox.innerHTML = html;
+            playedIds.forEach(id => { if (!newIds.has(id)) playedIds.delete(id); });
         } catch (e) {}
     }
 
-    // 解锁音频
+    // 滑块显示
+    config.rate.addEventListener("input", () => config.rateVal.textContent = config.rate.value);
+    config.pitch.addEventListener("input", () => config.pitchVal.textContent = config.pitch.value);
+    config.volume.addEventListener("input", () => config.volVal.textContent = config.volume.value);
+
+    // 解锁语音
     document.addEventListener("click", () => {
         window.speechSynthesis.resume();
     }, { once: true });
 
+    // 启动
     loadMessages();
     setInterval(loadMessages, 5000);
 </script>
