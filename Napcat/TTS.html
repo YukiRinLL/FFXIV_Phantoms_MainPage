@@ -1,3 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TTS 消息播报</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
+        .panel {
+            background: #fff; padding: 12px 16px; border-radius: 8px;
+            margin-bottom: 12px; box-shadow: 0 0 6px #0000000a;
+            display: flex; gap: 16px; flex-wrap: wrap; align-items: center;
+        }
+        .item {
+            display: flex; flex-direction: column; gap: 4px;
+        }
+        label { font-size: 12px; color: #666; }
+        .skip-btn {
+            padding: 6px 12px; background: #ff4d4f; color: #fff;
+            border: none; border-radius: 6px; cursor: pointer;
+        }
+        .voice-select {
+            padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc;
+        }
+        .message-box {
+            background: #fff; padding: 16px; border-radius: 8px;
+            box-shadow: 0 0 8px #00000010; max-height: 70vh;
+            overflow-y: auto;
+        }
+        .msg-item {
+            padding: 10px; border-bottom: 1px solid #eee;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .content { flex: 1; }
+        .name { font-weight: bold; margin-bottom: 4px; }
+        .text { font-size: 14px; }
+        .time { font-size: 12px; color: #999; }
+        .play-btn {
+            padding: 4px 10px; background: #42b983; color: #fff;
+            border: none; border-radius: 4px; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="panel">
+    <button class="skip-btn" id="skipBtn">⏭️ 跳过当前</button>
+
+    <div class="item">
+        <label>播报用户名</label>
+        <input type="checkbox" id="readName" checked>
+    </div>
+
+    <div class="item">
+        <label>音色</label>
+        <select id="voiceSelect" class="voice-select"></select>
+    </div>
+
+    <div class="item">
+        <label>语速：<span id="rateVal">1</span></label>
+        <input type="range" id="rate" min="0.5" max="2" step="0.1" value="1">
+    </div>
+    <div class="item">
+        <label>音调：<span id="pitchVal">1</span></label>
+        <input type="range" id="pitch" min="0.5" max="2" step="0.1" value="1">
+    </div>
+    <div class="item">
+        <label>音量：<span id="volVal">1</span></label>
+        <input type="range" id="volume" min="0.1" max="1" step="0.1" value="1">
+    </div>
+</div>
+
+<div class="message-box" id="messageBox"></div>
+
 <script>
     const API_URL = "https://phantoms-backend.onrender.com/onebot/latest?limit=30";
     const messageBox = document.getElementById("messageBox");
@@ -5,197 +79,172 @@
     const voiceSelect = document.getElementById("voiceSelect");
 
     const config = {
-      readName: document.getElementById("readName"),
-      rate: document.getElementById("rate"),
-      pitch: document.getElementById("pitch"),
-      volume: document.getElementById("volume"),
-      rateVal: document.getElementById("rateVal"),
-      pitchVal: document.getElementById("pitchVal"),
-      volVal: document.getElementById("volVal"),
-      currentVoice: null,
-      selectedVoiceName: localStorage.getItem("selectedVoice") || ""
+        readName: document.getElementById("readName"),
+        rate: document.getElementById("rate"),
+        pitch: document.getElementById("pitch"),
+        volume: document.getElementById("volume"),
+        rateVal: document.getElementById("rateVal"),
+        pitchVal: document.getElementById("pitchVal"),
+        volVal: document.getElementById("volVal"),
+        currentVoice: null,
+        selectedVoiceName: localStorage.getItem("selectedVoice") || ""
     };
 
     const playedIds = new Set();
     let isSpeaking = false;
     let speechQueue = [];
     let currentUtterance = null;
-
-    // 预缓存音色列表，避免切换时重新加载导致卡顿
     let voiceCache = [];
+
+    // 加载音色
     function loadVoices() {
-      const voices = window.speechSynthesis.getVoices();
-      if (!voices || voices.length === 0) return;
+        const voices = window.speechSynthesis.getVoices();
+        if (!voices || voices.length === 0) return;
 
-      voiceCache = voices.filter(v => v.lang.includes("zh") || v.lang.includes("cmn"));
-      if (voiceCache.length === 0) return;
+        voiceCache = voices.filter(v => v.lang.includes("zh") || v.lang.includes("cmn"));
+        if (voiceCache.length === 0) return;
 
-      voiceSelect.innerHTML = "";
-      voiceCache.forEach(v => {
-        const opt = document.createElement("option");
-        opt.value = v.name;
-        opt.textContent = `${v.name} (${v.lang})`;
-        voiceSelect.appendChild(opt);
-      });
-
-      let targetVoice = voiceCache.find(v => v.name === config.selectedVoiceName);
-      if (!targetVoice) targetVoice = voiceCache[0];
-
-      config.currentVoice = targetVoice;
-      config.selectedVoiceName = targetVoice.name;
-      voiceSelect.value = targetVoice.name;
-      localStorage.setItem("selectedVoice", targetVoice.name);
-    }
-
-    // 只初始化一次，切换音色不再 reloadVoices
-    setTimeout(() => {
-      loadVoices();
-      window.speechSynthesis.onvoiceschanged = () => {
-        if (voiceCache.length === 0) loadVoices();
-      };
-    }, 500);
-
-    // 切换音色：直接从缓存取，不重载，不卡顿
-    voiceSelect.addEventListener("change", () => {
-      const target = voiceCache.find(v => v.name === voiceSelect.value);
-      if (target) {
-        config.currentVoice = target;
-        config.selectedVoiceName = target.name;
-        localStorage.setItem("selectedVoice", target.name);
-      }
-    });
-
-    // 跳过按钮
-    skipBtn.addEventListener("click", () => {
-      if (currentUtterance) currentUtterance.onend = null;
-      window.speechSynthesis.cancel();
-      isSpeaking = false;
-      speechQueue = [];
-      currentUtterance = null;
-      setTimeout(() => speakNext(), 100);
-    });
-
-    // 核心播放函数
-    function speakNext() {
-      if (isSpeaking || speechQueue.length === 0) return;
-      isSpeaking = true;
-
-      const { nickname, text } = speechQueue.shift();
-      let content = config.readName.checked ? `${nickname}说，${text}` : text;
-      content = content.replace(/[\x00-\x1F\x7F]/g, "").trim();
-      if (!content) {
-        isSpeaking = false;
-        return speakNext();
-      }
-
-      const u = new SpeechSynthesisUtterance(content);
-      u.lang = "zh-CN";
-      u.rate = +config.rate.value;
-      u.pitch = +config.pitch.value;
-      u.volume = +config.volume.value;
-      u.voice = config.currentVoice;
-      currentUtterance = u;
-
-      u.onend = () => {
-        isSpeaking = false;
-        currentUtterance = null;
-        setTimeout(() => speakNext(), 120);
-      };
-      u.onerror = (e) => {
-        console.error("TTS错误", e);
-        isSpeaking = false;
-        currentUtterance = null;
-        window.speechSynthesis.cancel();
-        setTimeout(() => speakNext(), 300);
-      };
-
-      if (!window.speechSynthesis.speaking) {
-        window.speechSynthesis.speak(u);
-      }
-    }
-
-    function pushToQueue(nickname, text) {
-      if (!text || !text.trim()) return;
-      speechQueue.push({ nickname, text });
-      if (!isSpeaking) speakNext();
-    }
-
-    function parseText(msg) {
-      if (!msg?.message?.startsWith("{type=text")) return null;
-      const m = msg.message.match(/text=([^}]+)}/);
-      return m ? m[1].trim() : null;
-    }
-
-    async function loadMessages() {
-      try {
-        const res = await fetch(API_URL);
-        if (!res.ok) return;
-        let list = await res.json();
-        list = Array.isArray(list) ? list.reverse() : [];
-        const newIds = new Set();
-        let html = "";
-
-        list.forEach(item => {
-          const text = parseText(item);
-          if (!text) return;
-          const name = (item.nickname || "用户").replace(/'/g, "\\'");
-          const safeText = text.replace(/'/g, "\\'");
-          const time = new Date(...item.timestamp).toLocaleString();
-          newIds.add(item.id);
-
-          html += `
-          <div class="msg-item">
-            <div class="content">
-              <div class="name">${name}</div>
-              <div class="text">${text}</div>
-              <div class="time">${time}</div>
-            </div>
-            <button class="play-btn" onclick="pushToQueue('${name}','${safeText}')">播放</button>
-          </div>`;
-
-          if (!playedIds.has(item.id)) {
-            playedIds.add(item.id);
-            pushToQueue(name, text);
-          }
+        voiceSelect.innerHTML = "";
+        voiceCache.forEach(v => {
+            const opt = document.createElement("option");
+            opt.value = v.name;
+            opt.textContent = `${v.name} (${v.lang})`;
+            voiceSelect.appendChild(opt);
         });
 
-        if (html) messageBox.innerHTML = html;
-        playedIds.forEach(id => { if (!newIds.has(id)) playedIds.delete(id); });
-      } catch (e) {}
+        let targetVoice = voiceCache.find(v => v.name === config.selectedVoiceName) || voiceCache[0];
+        config.currentVoice = targetVoice;
+        voiceSelect.value = targetVoice.name;
     }
 
-    // 点击解锁音频上下文（必须）
-    document.addEventListener("click", () => {
-      window.speechSynthesis.resume();
-      const empty = new SpeechSynthesisUtterance("");
-      window.speechSynthesis.speak(empty);
-      empty.onend = () => window.speechSynthesis.cancel();
-    }, { once: true });
+    // 延迟初始化，防止DOM未加载完
+    setTimeout(() => {
+        loadVoices();
+        window.speechSynthesis.onvoiceschanged = () => {
+            if (voiceCache.length === 0) loadVoices();
+        };
+    }, 300);
 
-    // ======================================
-    // ✅ 关键修复：切后台不断播
-    // ======================================
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) {
-        // 切后台：什么都不做，不pause！
-      } else {
-        // 切回来：强制唤醒引擎，续播
-        window.speechSynthesis.resume();
-        if (!isSpeaking && speechQueue.length > 0) speakNext();
-      }
+    // 切换音色
+    voiceSelect.addEventListener("change", () => {
+        const target = voiceCache.find(v => v.name === voiceSelect.value);
+        if (target) {
+            config.currentVoice = target;
+            localStorage.setItem("selectedVoice", target.name);
+        }
     });
 
-    // 防止浏览器冻结标签（Chrome 有效）
-    if (navigator.userAgent.includes("Chrome")) {
-      setInterval(() => {
-        window.postMessage("keep-alive", "*");
-      }, 3000);
+    // 跳过
+    skipBtn.addEventListener("click", () => {
+        window.speechSynthesis.cancel();
+        isSpeaking = false;
+        currentUtterance = null;
+        setTimeout(() => speakNext(), 100);
+    });
+
+    // 播放下一条
+    function speakNext() {
+        if (isSpeaking || speechQueue.length === 0) return;
+        isSpeaking = true;
+
+        const { nickname, text } = speechQueue.shift();
+        let content = config.readName.checked ? `${nickname}说，${text}` : text;
+        content = content.replace(/[\x00-\x1F\x7F]/g, "").trim();
+        if (!content) {
+            isSpeaking = false;
+            return speakNext();
+        }
+
+        const u = new SpeechSynthesisUtterance(content);
+        u.lang = "zh-CN";
+        u.rate = +config.rate.value;
+        u.pitch = +config.pitch.value;
+        u.volume = +config.volume.value;
+        u.voice = config.currentVoice;
+        currentUtterance = u;
+
+        u.onend = () => {
+            isSpeaking = false;
+            currentUtterance = null;
+            setTimeout(() => speakNext(), 120);
+        };
+
+        u.onerror = () => {
+            isSpeaking = false;
+            currentUtterance = null;
+            window.speechSynthesis.cancel();
+            setTimeout(() => speakNext(), 300);
+        };
+
+        window.speechSynthesis.speak(u);
     }
 
+    // 加入队列
+    function pushToQueue(nickname, text) {
+        if (!text || !text.trim()) return;
+        speechQueue.push({ nickname, text });
+        if (!isSpeaking) speakNext();
+    }
+
+    // 解析文本
+    function parseText(msg) {
+        if (!msg?.message?.startsWith("{type=text")) return null;
+        const m = msg.message.match(/text=([^}]+)}/);
+        return m ? m[1].trim() : null;
+    }
+
+    // 加载消息
+    async function loadMessages() {
+        try {
+            const res = await fetch(API_URL);
+            if (!res.ok) return;
+            let list = await res.json();
+            list = Array.isArray(list) ? list.reverse() : [];
+            const newIds = new Set();
+            let html = "";
+
+            list.forEach(item => {
+                const text = parseText(item);
+                if (!text) return;
+                const name = (item.nickname || "用户").replace(/'/g, "\\'");
+                const safeText = text.replace(/'/g, "\\'");
+                const time = new Date(...item.timestamp).toLocaleString();
+                newIds.add(item.id);
+
+                html += `
+                <div class="msg-item">
+                    <div class="content">
+                        <div class="name">${name}</div>
+                        <div class="text">${text}</div>
+                        <div class="time">${time}</div>
+                    </div>
+                    <button class="play-btn" onclick="pushToQueue('${name}','${safeText}')">播放</button>
+                </div>`;
+
+                if (!playedIds.has(item.id)) {
+                    playedIds.add(item.id);
+                    pushToQueue(name, text);
+                }
+            });
+
+            if (html) messageBox.innerHTML = html;
+            playedIds.forEach(id => { if (!newIds.has(id)) playedIds.delete(id); });
+        } catch (e) {}
+    }
+
+    // 滑块显示
     config.rate.addEventListener("input", () => config.rateVal.textContent = config.rate.value);
     config.pitch.addEventListener("input", () => config.pitchVal.textContent = config.pitch.value);
     config.volume.addEventListener("input", () => config.volVal.textContent = config.volume.value);
 
+    // 解锁语音
+    document.addEventListener("click", () => {
+        window.speechSynthesis.resume();
+    }, { once: true });
+
+    // 启动
     loadMessages();
-    setInterval(loadMessages, 10000);
+    setInterval(loadMessages, 5000);
 </script>
+</body>
+</html>
