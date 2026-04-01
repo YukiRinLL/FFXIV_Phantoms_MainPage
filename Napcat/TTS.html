@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
+        .panel {
+            background: #fff; padding: 12px 16px; border-radius: 8px;
+            margin-bottom: 12px; box-shadow: 0 0 6px #0000000a;
+            display: flex; gap: 16px; flex-wrap: wrap; align-items: center;
+        }
+        .item {
+            display: flex; flex-direction: column; gap: 4px;
+        }
+        label { font-size: 12px; color: #666; }
+        input[type="checkbox"] { transform: scale(1.1); }
+        .skip-btn {
+            padding: 6px 12px; background: #ff4d4f; color: #fff;
+            border: none; border-radius: 6px; cursor: pointer;
+        }
+        .message-box {
+            background: #fff; padding: 16px; border-radius: 8px;
+            box-shadow: 0 0 8px #00000010; max-height: 70vh;
+            overflow-y: auto;
+        }
+        .msg-item {
+            padding: 10px; border-bottom: 1px solid #eee;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .content { flex: 1; }
+        .name { font-weight: bold; margin-bottom: 4px; }
+        .text { font-size: 14px; }
+        .time { font-size: 12px; color: #999; }
+        .play-btn {
+            padding: 4px 10px; background: #42b983; color: #fff;
+            border: none; border-radius: 4px; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<!-- TTS 控制面板 + 跳过按钮 -->
+<div class="panel">
+    <button class="skip-btn" id="skipBtn">⏭️ 跳过当前语音并播放下一条</button>
+    <div class="item">
+        <label>播报用户名</label>
+        <input type="checkbox" id="readName" checked>
+    </div>
+    <div class="item">
+        <label>语速：<span id="rateVal">1</span></label>
+        <input type="range" id="rate" min="0.5" max="2" step="0.1" value="1">
+    </div>
+    <div class="item">
+        <label>音调：<span id="pitchVal">1</span></label>
+        <input type="range" id="pitch" min="0.5" max="2" step="0.1" value="1">
+    </div>
+    <div class="item">
+        <label>音量：<span id="volVal">1</span></label>
+        <input type="range" id="volume" min="0.1" max="1" step="0.1" value="1">
+    </div>
+</div>
+
+<div class="message-box" id="messageBox"></div>
+
+<script>
+    const API_URL = "https://phantoms-backend.onrender.com/onebot/latest?limit=30";
+    const messageBox = document.getElementById("messageBox");
+    const skipBtn = document.getElementById("skipBtn");
+
+    // TTS 参数
+    const config = {
+        readName: document.getElementById("readName"),
+        rate: document.getElementById("rate"),
+        pitch: document.getElementById("pitch"),
+        volume: document.getElementById("volume"),
+        rateVal: document.getElementById("rateVal"),
+        pitchVal: document.getElementById("pitchVal"),
+        volVal: document.getElementById("volVal")
+    };
+
+    // 显示数值
+    config.rate.addEventListener('input', () => config.rateVal.textContent = config.rate.value);
+    config.pitch.addEventListener('input', () => config.pitchVal.textContent = config.pitch.value);
+    config.volume.addEventListener('input', () => config.volVal.textContent = config.volume.value);
+
+    // 顺序播报队列
+    const playedIds = new Set();
+    let isSpeaking = false;
+    let speechQueue = [];
+
+    // ======================================
+    // 跳过当前语音 → 播放下一条
+    // ======================================
+    skipBtn.addEventListener("click", () => {
+        window.speechSynthesis.cancel();
+        isSpeaking = false;
+        setTimeout(() => speakNext(), 100);
+    });
+
+    // 播放下一条
+    function speakNext() {
+        if (isSpeaking || speechQueue.length === 0) return;
+        isSpeaking = true;
+
+        const { nickname, text } = speechQueue.shift();
+        let content = config.readName.checked ? `${nickname}说，${text}` : text;
+
+        const u = new SpeechSynthesisUtterance(content);
+        u.lang = "zh-CN";
+        u.rate = parseFloat(config.rate.value);
+        u.pitch = parseFloat(config.pitch.value);
+        u.volume = parseFloat(config.volume.value);
+
+        u.onend = () => {
+            isSpeaking = false;
+            setTimeout(() => speakNext(), 200);
+        };
+        u.onerror = () => {
+            isSpeaking = false;
+            speakNext();
+        };
+
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(u);
+    }
+
+    // 加入队列
+    function pushToQueue(nickname, text) {
+        speechQueue.push({ nickname, text });
+        speakNext();
+    }
+
+    // 解析 text 消息
+    function parseText(msg) {
+        if (!msg.message.startsWith("{type=text")) return null;
+        const m = msg.message.match(/text=([^}]+)}/);
+        return m ? m[1] : null;
+    }
+
+    // 加载消息（逆序数组）
+    async function loadMessages() {
+        try {
+            const res = await fetch(API_URL);
+            let list = await res.json();
+
+            // 逆序数组（你要的顺序）
+            list = list.reverse();
+
+            messageBox.innerHTML = "";
+
+            for (const item of list) {
+                const text = parseText(item);
+                if (!text) continue;
+
+                const name = item.nickname || "用户";
+                const time = new Date(...item.timestamp).toLocaleString();
+
+                messageBox.innerHTML += `
+                <div class="msg-item">
+                    <div class="content">
+                        <div class="name">${name}</div>
+                        <div class="text">${text}</div>
+                        <div class="time">${time}</div>
+                    </div>
+                    <button class="play-btn" onclick="pushToQueue('${name.replace(/'/g, "\\'")}', '${text.replace(/'/g, "\\'")}')">播放</button>
+                </div>`;
+
+                if (!playedIds.has(item.id)) {
+                    playedIds.add(item.id);
+                    pushToQueue(name, text);
+                }
+            }
+        } catch (e) {}
+    }
+
+    // 解锁音频
+    document.addEventListener("click", () => {
+        window.speechSynthesis.resume();
+    }, { once: true });
+
+    loadMessages();
+    setInterval(loadMessages, 5000);
+</script>
+
+</body>
+</html>
