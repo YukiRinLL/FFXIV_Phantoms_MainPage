@@ -79,7 +79,7 @@
     const skipBtn = document.getElementById("skipBtn");
     const voiceSelect = document.getElementById("voiceSelect");
 
-    // 配置
+    // 配置 - 新增保存用户选中的音色名称
     const config = {
         readName: document.getElementById("readName"),
         rate: document.getElementById("rate"),
@@ -88,7 +88,8 @@
         rateVal: document.getElementById("rateVal"),
         pitchVal: document.getElementById("pitchVal"),
         volVal: document.getElementById("volVal"),
-        currentVoice: null
+        currentVoice: null,
+        selectedVoiceName: "" // 保存用户手动选中的音色名称
     };
 
     // 数值显示
@@ -96,18 +97,22 @@
     config.pitch.addEventListener('input', () => config.pitchVal.textContent = config.pitch.value);
     config.volume.addEventListener('input', () => config.volVal.textContent = config.volume.value);
 
-    // 语音队列
+    // 语音队列 - 优化状态管理
     const playedIds = new Set();
     let isSpeaking = false;
     let speechQueue = [];
+    let currentUtterance = null; // 保存当前正在播放的语音实例
 
     // ======================================
-    // 加载音色列表（自动获取系统所有中文音色）
+    // 加载音色列表（修复：保留用户选中的音色）
     // ======================================
     function loadVoices() {
         const voices = window.speechSynthesis.getVoices();
         const zhVoices = voices.filter(v => v.lang.includes("zh") || v.lang.includes("cmn"));
 
+        if (zhVoices.length === 0) return;
+
+        // 先清空下拉框
         voiceSelect.innerHTML = "";
         zhVoices.forEach(v => {
             const opt = document.createElement("option");
@@ -116,32 +121,50 @@
             voiceSelect.appendChild(opt);
         });
 
-        if (zhVoices.length > 0) {
-            config.currentVoice = zhVoices[0];
-            voiceSelect.value = zhVoices[0].name;
+        // 优先恢复用户选中的音色，无则选第一个
+        let targetVoice = null;
+        if (config.selectedVoiceName) {
+            targetVoice = zhVoices.find(v => v.name === config.selectedVoiceName);
         }
+        if (!targetVoice) {
+            targetVoice = zhVoices[0];
+            config.selectedVoiceName = targetVoice.name; // 初始化默认选中
+        }
+
+        config.currentVoice = targetVoice;
+        voiceSelect.value = targetVoice.name;
     }
 
-    // 浏览器音色加载完成事件
-    window.speechSynthesis.onvoiceschanged = loadVoices;
+    // 延迟加载音色（避免浏览器触发时机问题）
+    setTimeout(() => {
+        loadVoices();
+        // 监听音色变化，但不再覆盖用户选择
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+    }, 500);
 
-    // 切换音色
+    // 切换音色 - 保存用户选择
     voiceSelect.addEventListener("change", () => {
         const voices = window.speechSynthesis.getVoices();
-        config.currentVoice = voices.find(v => v.name === voiceSelect.value);
+        config.selectedVoiceName = voiceSelect.value; // 保存用户手动选的音色名
+        config.currentVoice = voices.find(v => v.name === config.selectedVoiceName);
     });
 
     // ======================================
-    // 跳过按钮
+    // 跳过按钮 - 优化状态重置
     // ======================================
     skipBtn.addEventListener("click", () => {
+        // 彻底停止当前语音
+        if (currentUtterance) {
+            currentUtterance.onend = null; // 防止触发后续逻辑
+        }
         window.speechSynthesis.cancel();
         isSpeaking = false;
+        speechQueue = []; // 清空队列，避免残留异常
         setTimeout(() => speakNext(), 100);
     });
 
     // ======================================
-    // 播放下一条（使用选中的音色）
+    // 播放下一条 - 修复卡顿/咔咔声问题
     // ======================================
     function speakNext() {
         if (isSpeaking || speechQueue.length === 0) return;
@@ -150,79 +173,133 @@
         const { nickname, text } = speechQueue.shift();
         let content = config.readName.checked ? `${nickname}说，${text}` : text;
 
+        // 清理无效字符（避免合成服务解析异常）
+        content = content.replace(/[\x00-\x1F\x7F]/g, "").trim();
+        if (!content) {
+            isSpeaking = false;
+            speakNext();
+            return;
+        }
+
         const u = new SpeechSynthesisUtterance(content);
         u.lang = "zh-CN";
-        u.rate = parseFloat(config.rate.value);
-        u.pitch = parseFloat(config.pitch.value);
-        u.volume = parseFloat(config.volume.value);
-        u.voice = config.currentVoice; // 使用选中的音色
+        u.rate = Math.max(0.5, Math.min(2, parseFloat(config.rate.value))); // 限制范围
+        u.pitch = Math.max(0.5, Math.min(2, parseFloat(config.pitch.value)));
+        u.volume = Math.max(0.1, Math.min(1, parseFloat(config.volume.value)));
+        u.voice = config.currentVoice;
+
+        // 保存当前播放实例
+        currentUtterance = u;
 
         u.onend = () => {
             isSpeaking = false;
+            currentUtterance = null;
             setTimeout(() => speakNext(), 200);
         };
-        u.onerror = () => {
+        u.onerror = (e) => {
+            console.error("语音合成错误：", e);
             isSpeaking = false;
-            speakNext();
+            currentUtterance = null;
+            // 错误后重置合成服务状态
+            window.speechSynthesis.cancel();
+            setTimeout(() => speakNext(), 500);
         };
 
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(u);
+        // 避免连续调用cancel导致的资源锁死
+        if (!window.speechSynthesis.speaking) {
+            window.speechSynthesis.speak(u);
+        }
     }
 
     function pushToQueue(nickname, text) {
+        // 过滤空内容，避免无效队列
+        if (!text || text.trim() === "") return;
         speechQueue.push({ nickname, text });
         speakNext();
     }
 
-    // 解析文本消息
+    // 解析文本消息 - 增强容错
     function parseText(msg) {
-        if (!msg.message.startsWith("{type=text")) return null;
+        if (!msg || !msg.message || !msg.message.startsWith("{type=text")) return null;
         const m = msg.message.match(/text=([^}]+)}/);
-        return m ? m[1] : null;
+        return m ? m[1].trim() : null;
     }
 
-    // 加载消息（逆序）
+    // 加载消息（逆序）- 优化重复播放
     async function loadMessages() {
         try {
             const res = await fetch(API_URL);
+            if (!res.ok) throw new Error("接口返回异常");
             let list = await res.json();
-            list = list.reverse();
+            list = Array.isArray(list) ? list.reverse() : [];
 
-            messageBox.innerHTML = "";
+            // 先更新DOM，避免频繁操作
+            let html = "";
+            const newIds = new Set(); // 临时存储新ID，避免重复添加
 
             for (const item of list) {
                 const text = parseText(item);
                 if (!text) continue;
 
-                const name = item.nickname || "用户";
+                const name = (item.nickname || "用户").replace(/'/g, "\\'");
+                const safeText = text.replace(/'/g, "\\'");
                 const time = new Date(...item.timestamp).toLocaleString();
 
-                messageBox.innerHTML += `
+                html += `
                 <div class="msg-item">
                     <div class="content">
                         <div class="name">${name}</div>
                         <div class="text">${text}</div>
                         <div class="time">${time}</div>
                     </div>
-                    <button class="play-btn" onclick="pushToQueue('${name.replace(/'/g, "\\'")}', '${text.replace(/'/g, "\\'")}')">播放</button>
+                    <button class="play-btn" onclick="pushToQueue('${name}', '${safeText}')">播放</button>
                 </div>`;
 
+                newIds.add(item.id);
                 if (!playedIds.has(item.id)) {
                     playedIds.add(item.id);
                     pushToQueue(name, text);
                 }
             }
-        } catch (e) {}
+
+            // 批量更新DOM，减少重绘
+            if (html) messageBox.innerHTML = html;
+
+            // 清理过期ID（防止Set无限增大）
+            playedIds.forEach(id => {
+                if (!newIds.has(id)) playedIds.delete(id);
+            });
+
+        } catch (e) {
+            console.error("加载消息失败：", e);
+        }
     }
 
-    // 解锁音频
+    // 解锁音频 - 增强兼容性
     document.addEventListener("click", () => {
         window.speechSynthesis.resume();
+        // 唤醒合成服务，避免后台挂起后休眠
+        const testUtterance = new SpeechSynthesisUtterance("");
+        window.speechSynthesis.speak(testUtterance);
+        testUtterance.onend = () => window.speechSynthesis.cancel();
     }, { once: true });
 
+    // 优化轮询频率（5秒太频繁，易导致队列堆积）
     loadMessages();
-    setInterval(loadMessages, 5000);
+    setInterval(loadMessages, 10000); // 改为10秒一次
+
+    // 后台/前台切换时重置合成状态
+    document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+            // 后台时暂停，避免资源占用
+            window.speechSynthesis.pause();
+        } else {
+            // 前台时恢复，重置状态
+            window.speechSynthesis.resume();
+            isSpeaking = false;
+            currentUtterance = null;
+        }
+    });
 </script>
 </body>
 </html>
