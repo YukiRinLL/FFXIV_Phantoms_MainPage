@@ -1,305 +1,201 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
-        .panel {
-            background: #fff; padding: 12px 16px; border-radius: 8px;
-            margin-bottom: 12px; box-shadow: 0 0 6px #0000000a;
-            display: flex; gap: 16px; flex-wrap: wrap; align-items: center;
-        }
-        .item {
-            display: flex; flex-direction: column; gap: 4px;
-        }
-        label { font-size: 12px; color: #666; }
-        .skip-btn {
-            padding: 6px 12px; background: #ff4d4f; color: #fff;
-            border: none; border-radius: 6px; cursor: pointer;
-        }
-        .voice-select {
-            padding: 4px 8px; border-radius: 4px; border: 1px solid #ccc;
-        }
-        .message-box {
-            background: #fff; padding: 16px; border-radius: 8px;
-            box-shadow: 0 0 8px #00000010; max-height: 70vh;
-            overflow-y: auto;
-        }
-        .msg-item {
-            padding: 10px; border-bottom: 1px solid #eee;
-            display: flex; align-items: center; gap: 10px;
-        }
-        .content { flex: 1; }
-        .name { font-weight: bold; margin-bottom: 4px; }
-        .text { font-size: 14px; }
-        .time { font-size: 12px; color: #999; }
-        .play-btn {
-            padding: 4px 10px; background: #42b983; color: #fff;
-            border: none; border-radius: 4px; cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-
-<!-- 控制面板 -->
-<div class="panel">
-    <button class="skip-btn" id="skipBtn">⏭️ 跳过当前</button>
-
-    <div class="item">
-        <label>播报用户名</label>
-        <input type="checkbox" id="readName" checked>
-    </div>
-
-    <!-- 音色选择 -->
-    <div class="item">
-        <label>音色</label>
-        <select id="voiceSelect" class="voice-select"></select>
-    </div>
-
-    <div class="item">
-        <label>语速：<span id="rateVal">1</span></label>
-        <input type="range" id="rate" min="0.5" max="2" step="0.1" value="1">
-    </div>
-    <div class="item">
-        <label>音调：<span id="pitchVal">1</span></label>
-        <input type="range" id="pitch" min="0.5" max="2" step="0.1" value="1">
-    </div>
-    <div class="item">
-        <label>音量：<span id="volVal">1</span></label>
-        <input type="range" id="volume" min="0.1" max="1" step="0.1" value="1">
-    </div>
-</div>
-
-<div class="message-box" id="messageBox"></div>
-
 <script>
     const API_URL = "https://phantoms-backend.onrender.com/onebot/latest?limit=30";
     const messageBox = document.getElementById("messageBox");
     const skipBtn = document.getElementById("skipBtn");
     const voiceSelect = document.getElementById("voiceSelect");
 
-    // 配置 - 新增保存用户选中的音色名称
     const config = {
-        readName: document.getElementById("readName"),
-        rate: document.getElementById("rate"),
-        pitch: document.getElementById("pitch"),
-        volume: document.getElementById("volume"),
-        rateVal: document.getElementById("rateVal"),
-        pitchVal: document.getElementById("pitchVal"),
-        volVal: document.getElementById("volVal"),
-        currentVoice: null,
-        selectedVoiceName: "" // 保存用户手动选中的音色名称
+      readName: document.getElementById("readName"),
+      rate: document.getElementById("rate"),
+      pitch: document.getElementById("pitch"),
+      volume: document.getElementById("volume"),
+      rateVal: document.getElementById("rateVal"),
+      pitchVal: document.getElementById("pitchVal"),
+      volVal: document.getElementById("volVal"),
+      currentVoice: null,
+      selectedVoiceName: localStorage.getItem("selectedVoice") || ""
     };
 
-    // 数值显示
-    config.rate.addEventListener('input', () => config.rateVal.textContent = config.rate.value);
-    config.pitch.addEventListener('input', () => config.pitchVal.textContent = config.pitch.value);
-    config.volume.addEventListener('input', () => config.volVal.textContent = config.volume.value);
-
-    // 语音队列 - 优化状态管理
     const playedIds = new Set();
     let isSpeaking = false;
     let speechQueue = [];
-    let currentUtterance = null; // 保存当前正在播放的语音实例
+    let currentUtterance = null;
 
-    // ======================================
-    // 加载音色列表（修复：保留用户选中的音色）
-    // ======================================
+    // 预缓存音色列表，避免切换时重新加载导致卡顿
+    let voiceCache = [];
     function loadVoices() {
-        const voices = window.speechSynthesis.getVoices();
-        const zhVoices = voices.filter(v => v.lang.includes("zh") || v.lang.includes("cmn"));
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices || voices.length === 0) return;
 
-        if (zhVoices.length === 0) return;
+      voiceCache = voices.filter(v => v.lang.includes("zh") || v.lang.includes("cmn"));
+      if (voiceCache.length === 0) return;
 
-        // 先清空下拉框
-        voiceSelect.innerHTML = "";
-        zhVoices.forEach(v => {
-            const opt = document.createElement("option");
-            opt.value = v.name;
-            opt.textContent = `${v.name} (${v.lang})`;
-            voiceSelect.appendChild(opt);
-        });
+      voiceSelect.innerHTML = "";
+      voiceCache.forEach(v => {
+        const opt = document.createElement("option");
+        opt.value = v.name;
+        opt.textContent = `${v.name} (${v.lang})`;
+        voiceSelect.appendChild(opt);
+      });
 
-        // 优先恢复用户选中的音色，无则选第一个
-        let targetVoice = null;
-        if (config.selectedVoiceName) {
-            targetVoice = zhVoices.find(v => v.name === config.selectedVoiceName);
-        }
-        if (!targetVoice) {
-            targetVoice = zhVoices[0];
-            config.selectedVoiceName = targetVoice.name; // 初始化默认选中
-        }
+      let targetVoice = voiceCache.find(v => v.name === config.selectedVoiceName);
+      if (!targetVoice) targetVoice = voiceCache[0];
 
-        config.currentVoice = targetVoice;
-        voiceSelect.value = targetVoice.name;
+      config.currentVoice = targetVoice;
+      config.selectedVoiceName = targetVoice.name;
+      voiceSelect.value = targetVoice.name;
+      localStorage.setItem("selectedVoice", targetVoice.name);
     }
 
-    // 延迟加载音色（避免浏览器触发时机问题）
+    // 只初始化一次，切换音色不再 reloadVoices
     setTimeout(() => {
-        loadVoices();
-        // 监听音色变化，但不再覆盖用户选择
-        window.speechSynthesis.onvoiceschanged = loadVoices;
+      loadVoices();
+      window.speechSynthesis.onvoiceschanged = () => {
+        if (voiceCache.length === 0) loadVoices();
+      };
     }, 500);
 
-    // 切换音色 - 保存用户选择
+    // 切换音色：直接从缓存取，不重载，不卡顿
     voiceSelect.addEventListener("change", () => {
-        const voices = window.speechSynthesis.getVoices();
-        config.selectedVoiceName = voiceSelect.value; // 保存用户手动选的音色名
-        config.currentVoice = voices.find(v => v.name === config.selectedVoiceName);
+      const target = voiceCache.find(v => v.name === voiceSelect.value);
+      if (target) {
+        config.currentVoice = target;
+        config.selectedVoiceName = target.name;
+        localStorage.setItem("selectedVoice", target.name);
+      }
     });
 
-    // ======================================
-    // 跳过按钮 - 优化状态重置
-    // ======================================
+    // 跳过按钮
     skipBtn.addEventListener("click", () => {
-        // 彻底停止当前语音
-        if (currentUtterance) {
-            currentUtterance.onend = null; // 防止触发后续逻辑
-        }
-        window.speechSynthesis.cancel();
-        isSpeaking = false;
-        speechQueue = []; // 清空队列，避免残留异常
-        setTimeout(() => speakNext(), 100);
+      if (currentUtterance) currentUtterance.onend = null;
+      window.speechSynthesis.cancel();
+      isSpeaking = false;
+      speechQueue = [];
+      currentUtterance = null;
+      setTimeout(() => speakNext(), 100);
     });
 
-    // ======================================
-    // 播放下一条 - 修复卡顿/咔咔声问题
-    // ======================================
+    // 核心播放函数
     function speakNext() {
-        if (isSpeaking || speechQueue.length === 0) return;
-        isSpeaking = true;
+      if (isSpeaking || speechQueue.length === 0) return;
+      isSpeaking = true;
 
-        const { nickname, text } = speechQueue.shift();
-        let content = config.readName.checked ? `${nickname}说，${text}` : text;
+      const { nickname, text } = speechQueue.shift();
+      let content = config.readName.checked ? `${nickname}说，${text}` : text;
+      content = content.replace(/[\x00-\x1F\x7F]/g, "").trim();
+      if (!content) {
+        isSpeaking = false;
+        return speakNext();
+      }
 
-        // 清理无效字符（避免合成服务解析异常）
-        content = content.replace(/[\x00-\x1F\x7F]/g, "").trim();
-        if (!content) {
-            isSpeaking = false;
-            speakNext();
-            return;
-        }
+      const u = new SpeechSynthesisUtterance(content);
+      u.lang = "zh-CN";
+      u.rate = +config.rate.value;
+      u.pitch = +config.pitch.value;
+      u.volume = +config.volume.value;
+      u.voice = config.currentVoice;
+      currentUtterance = u;
 
-        const u = new SpeechSynthesisUtterance(content);
-        u.lang = "zh-CN";
-        u.rate = Math.max(0.5, Math.min(2, parseFloat(config.rate.value))); // 限制范围
-        u.pitch = Math.max(0.5, Math.min(2, parseFloat(config.pitch.value)));
-        u.volume = Math.max(0.1, Math.min(1, parseFloat(config.volume.value)));
-        u.voice = config.currentVoice;
+      u.onend = () => {
+        isSpeaking = false;
+        currentUtterance = null;
+        setTimeout(() => speakNext(), 120);
+      };
+      u.onerror = (e) => {
+        console.error("TTS错误", e);
+        isSpeaking = false;
+        currentUtterance = null;
+        window.speechSynthesis.cancel();
+        setTimeout(() => speakNext(), 300);
+      };
 
-        // 保存当前播放实例
-        currentUtterance = u;
-
-        u.onend = () => {
-            isSpeaking = false;
-            currentUtterance = null;
-            setTimeout(() => speakNext(), 200);
-        };
-        u.onerror = (e) => {
-            console.error("语音合成错误：", e);
-            isSpeaking = false;
-            currentUtterance = null;
-            // 错误后重置合成服务状态
-            window.speechSynthesis.cancel();
-            setTimeout(() => speakNext(), 500);
-        };
-
-        // 避免连续调用cancel导致的资源锁死
-        if (!window.speechSynthesis.speaking) {
-            window.speechSynthesis.speak(u);
-        }
+      if (!window.speechSynthesis.speaking) {
+        window.speechSynthesis.speak(u);
+      }
     }
 
     function pushToQueue(nickname, text) {
-        // 过滤空内容，避免无效队列
-        if (!text || text.trim() === "") return;
-        speechQueue.push({ nickname, text });
-        speakNext();
+      if (!text || !text.trim()) return;
+      speechQueue.push({ nickname, text });
+      if (!isSpeaking) speakNext();
     }
 
-    // 解析文本消息 - 增强容错
     function parseText(msg) {
-        if (!msg || !msg.message || !msg.message.startsWith("{type=text")) return null;
-        const m = msg.message.match(/text=([^}]+)}/);
-        return m ? m[1].trim() : null;
+      if (!msg?.message?.startsWith("{type=text")) return null;
+      const m = msg.message.match(/text=([^}]+)}/);
+      return m ? m[1].trim() : null;
     }
 
-    // 加载消息（逆序）- 优化重复播放
     async function loadMessages() {
-        try {
-            const res = await fetch(API_URL);
-            if (!res.ok) throw new Error("接口返回异常");
-            let list = await res.json();
-            list = Array.isArray(list) ? list.reverse() : [];
+      try {
+        const res = await fetch(API_URL);
+        if (!res.ok) return;
+        let list = await res.json();
+        list = Array.isArray(list) ? list.reverse() : [];
+        const newIds = new Set();
+        let html = "";
 
-            // 先更新DOM，避免频繁操作
-            let html = "";
-            const newIds = new Set(); // 临时存储新ID，避免重复添加
+        list.forEach(item => {
+          const text = parseText(item);
+          if (!text) return;
+          const name = (item.nickname || "用户").replace(/'/g, "\\'");
+          const safeText = text.replace(/'/g, "\\'");
+          const time = new Date(...item.timestamp).toLocaleString();
+          newIds.add(item.id);
 
-            for (const item of list) {
-                const text = parseText(item);
-                if (!text) continue;
+          html += `
+          <div class="msg-item">
+            <div class="content">
+              <div class="name">${name}</div>
+              <div class="text">${text}</div>
+              <div class="time">${time}</div>
+            </div>
+            <button class="play-btn" onclick="pushToQueue('${name}','${safeText}')">播放</button>
+          </div>`;
 
-                const name = (item.nickname || "用户").replace(/'/g, "\\'");
-                const safeText = text.replace(/'/g, "\\'");
-                const time = new Date(...item.timestamp).toLocaleString();
+          if (!playedIds.has(item.id)) {
+            playedIds.add(item.id);
+            pushToQueue(name, text);
+          }
+        });
 
-                html += `
-                <div class="msg-item">
-                    <div class="content">
-                        <div class="name">${name}</div>
-                        <div class="text">${text}</div>
-                        <div class="time">${time}</div>
-                    </div>
-                    <button class="play-btn" onclick="pushToQueue('${name}', '${safeText}')">播放</button>
-                </div>`;
-
-                newIds.add(item.id);
-                if (!playedIds.has(item.id)) {
-                    playedIds.add(item.id);
-                    pushToQueue(name, text);
-                }
-            }
-
-            // 批量更新DOM，减少重绘
-            if (html) messageBox.innerHTML = html;
-
-            // 清理过期ID（防止Set无限增大）
-            playedIds.forEach(id => {
-                if (!newIds.has(id)) playedIds.delete(id);
-            });
-
-        } catch (e) {
-            console.error("加载消息失败：", e);
-        }
+        if (html) messageBox.innerHTML = html;
+        playedIds.forEach(id => { if (!newIds.has(id)) playedIds.delete(id); });
+      } catch (e) {}
     }
 
-    // 解锁音频 - 增强兼容性
+    // 点击解锁音频上下文（必须）
     document.addEventListener("click", () => {
-        window.speechSynthesis.resume();
-        // 唤醒合成服务，避免后台挂起后休眠
-        const testUtterance = new SpeechSynthesisUtterance("");
-        window.speechSynthesis.speak(testUtterance);
-        testUtterance.onend = () => window.speechSynthesis.cancel();
+      window.speechSynthesis.resume();
+      const empty = new SpeechSynthesisUtterance("");
+      window.speechSynthesis.speak(empty);
+      empty.onend = () => window.speechSynthesis.cancel();
     }, { once: true });
 
-    // 优化轮询频率（5秒太频繁，易导致队列堆积）
-    loadMessages();
-    setInterval(loadMessages, 10000); // 改为10秒一次
-
-    // 后台/前台切换时重置合成状态
+    // ======================================
+    // ✅ 关键修复：切后台不断播
+    // ======================================
     document.addEventListener("visibilitychange", () => {
-        if (document.hidden) {
-            // 后台时暂停，避免资源占用
-            window.speechSynthesis.pause();
-        } else {
-            // 前台时恢复，重置状态
-            window.speechSynthesis.resume();
-            isSpeaking = false;
-            currentUtterance = null;
-        }
+      if (document.hidden) {
+        // 切后台：什么都不做，不pause！
+      } else {
+        // 切回来：强制唤醒引擎，续播
+        window.speechSynthesis.resume();
+        if (!isSpeaking && speechQueue.length > 0) speakNext();
+      }
     });
+
+    // 防止浏览器冻结标签（Chrome 有效）
+    if (navigator.userAgent.includes("Chrome")) {
+      setInterval(() => {
+        window.postMessage("keep-alive", "*");
+      }, 3000);
+    }
+
+    config.rate.addEventListener("input", () => config.rateVal.textContent = config.rate.value);
+    config.pitch.addEventListener("input", () => config.pitchVal.textContent = config.pitch.value);
+    config.volume.addEventListener("input", () => config.volVal.textContent = config.volume.value);
+
+    loadMessages();
+    setInterval(loadMessages, 10000);
 </script>
-</body>
-</html>
