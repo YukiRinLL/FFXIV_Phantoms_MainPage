@@ -826,8 +826,8 @@
 
 <script>
     // API端点
-    const API_URL = 'https://phantoms-backend.onrender.com/onebot/monthly-stats';
-    const USER_STATS_API_URL = 'https://phantoms-backend.onrender.com/onebot/user-stats';
+    const API_URL = (window.getApiUrl && window.getApiUrl('onebotMonthlyStats')) || 'https://phantoms-backend.onrender.com/onebot/monthly-stats';
+    const USER_STATS_API_URL = (window.getApiUrl && window.getApiUrl('onebotUserStats')) || 'https://phantoms-backend.onrender.com/onebot/user-stats';
 
     // 全局数据存储
     let statsData = null;

@@ -222,6 +222,9 @@
                     }
 
                     function getCookie(name) {
+                        if (window.CookieUtil && window.CookieUtil.get) {
+                            return window.CookieUtil.get(name);
+                        }
                         var value = "; " + document.cookie;
                         var parts = value.split("; " + name + "=");
                         if (parts.length == 2) return parts.pop().split(";").shift();
@@ -272,13 +275,13 @@
 
                             // Get the user's ID
                         //  fetch(`https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com/rest/v1/users?select=*&user_id=eq.${user_id}`
-                            fetch(`https://dshmbsawwrbuycnivcjs.supabase.co/rest/v1/users?select=*&user_id=eq.${user_id}`, {
+                            fetch(`${(window.APP_CONFIG && window.APP_CONFIG.SUPABASE_URL) || 'https://dshmbsawwrbuycnivcjs.supabase.co'}/rest/v1/users?select=*&user_id=eq.${user_id}`, {
                                 method: 'GET',
                                 headers: {
                                     //'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
-                                    'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzaG1ic2F3d3JidXljbml2Y2pzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5Mjg2OTAsImV4cCI6MjA2OTUwNDY5MH0.fwRJD-WuST7mCbJf9h2i2Xk0z6mtCMCeV--JGUecC6A',
+                                    'apikey': (window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || '',
                                     //'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
-                                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzaG1ic2F3d3JidXljbml2Y2pzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5Mjg2OTAsImV4cCI6MjA2OTUwNDY5MH0.fwRJD-WuST7mCbJf9h2i2Xk0z6mtCMCeV--JGUecC6A',
+                                    'Authorization': 'Bearer ' + ((window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || ''),
                                     'Content-Type': 'application/json',
                                     'Prefer': 'return=minimal'
                                 }
@@ -301,13 +304,13 @@
                                 var name = randomN + '_profile';
 
                             //  fetch('https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com/rest/v1/user_profile'
-                                fetch('https://dshmbsawwrbuycnivcjs.supabase.co/rest/v1/user_profile', {
+                                fetch(`${(window.APP_CONFIG && window.APP_CONFIG.SUPABASE_URL) || 'https://dshmbsawwrbuycnivcjs.supabase.co'}/rest/v1/user_profile`, {
                                     method: 'POST',
                                     headers: {
                                         //'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
-                                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzaG1ic2F3d3JidXljbml2Y2pzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5Mjg2OTAsImV4cCI6MjA2OTUwNDY5MH0.fwRJD-WuST7mCbJf9h2i2Xk0z6mtCMCeV--JGUecC6A',
+                                        'apikey': (window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || '',
                                         //'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
-                                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzaG1ic2F3d3JidXljbml2Y2pzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5Mjg2OTAsImV4cCI6MjA2OTUwNDY5MH0.fwRJD-WuST7mCbJf9h2i2Xk0z6mtCMCeV--JGUecC6A',
+                                        'Authorization': 'Bearer ' + ((window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || ''),
                                         'Content-Type': 'application/json',
                                         'Prefer': 'return=minimal'
                                     },
