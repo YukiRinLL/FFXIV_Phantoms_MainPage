@@ -98,6 +98,8 @@
                     <span></span>
                 </div>
             </button>
+            <!-- 头像占位符放在 navbar-collapse 外面，确保移动端始终可见 -->
+            <div class="nav-avatar-placeholder"></div>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true">
                     <li class="nav-item dropdown">
@@ -194,6 +196,9 @@
         </div>
     </nav>
 </section>
+
+<!-- 引入头像组件 -->
+<script src="./assets/js/avatar-widget.js"></script>
 
 <script>
     // 更新时间函数
