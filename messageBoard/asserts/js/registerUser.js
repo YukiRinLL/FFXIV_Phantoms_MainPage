@@ -1,11 +1,12 @@
+// registerUser.js
+// 依赖：assets/js/config.js, utils.js（通过 shared-loader.js 加载）
+
+// 从全局配置获取（如果未加载则使用回退值）
 const config = {
-    apiKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzaG1ic2F3d3JidXljbml2Y2pzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5Mjg2OTAsImV4cCI6MjA2OTUwNDY5MH0.fwRJD-WuST7mCbJf9h2i2Xk0z6mtCMCeV--JGUecC6A',
-    authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzaG1ic2F3d3JidXljbml2Y2pzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5Mjg2OTAsImV4cCI6MjA2OTUwNDY5MH0.fwRJD-WuST7mCbJf9h2i2Xk0z6mtCMCeV--JGUecC6A',
-    //apiKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzIzOTg2MzAwNSwiaWF0IjoxNzAxOTQzMDA1LCJpc3MiOiJzdXBhYmFzZSJ9.LYLqWA0Ov-yKdFBXksbu3JNnldMOM-7Kth3LPFhLmA8',
-    //authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzIzOTg2MzAwNSwiaWF0IjoxNzAxOTQzMDA1LCJpc3MiOiJzdXBhYmFzZSJ9.LYLqWA0Ov-yKdFBXksbu3JNnldMOM-7Kth3LPFhLmA8',
+    apiKey: (window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || '',
+    authorization: 'Bearer ' + ((window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || ''),
     prefer: 'return=minimal',
-//    baseUrl: 'https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com'
-    baseUrl: 'https://dshmbsawwrbuycnivcjs.supabase.co'
+    baseUrl: (window.APP_CONFIG && window.APP_CONFIG.SUPABASE_URL) || 'https://dshmbsawwrbuycnivcjs.supabase.co'
 };
 
 function reversibleHash4to6(str) {
@@ -121,8 +122,11 @@ function showTooltip() {
     document.getElementById('tooltip').style.display = 'block';
 }
 
-// 获取cookie的函数
+// 获取cookie的函数（使用全局 CookieUtil，如果可用）
 function getCookie(name) {
+    if (window.CookieUtil && window.CookieUtil.get) {
+        return window.CookieUtil.get(name);
+    }
     var value = "; " + document.cookie;
     var parts = value.split("; " + name + "=");
     if (parts.length == 2) return parts.pop().split(";").shift();
