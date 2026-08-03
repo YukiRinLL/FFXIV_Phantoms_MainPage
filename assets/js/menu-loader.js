@@ -303,8 +303,8 @@
                 const prefix = self.detectPathPrefix();
                 const fullMenuPath = prefix + menuPath;
 
-                // 使用 fetch 加载菜单
-                fetch(fullMenuPath)
+                // 使用 fetch 加载菜单（no-cache 确保 menu.html 更新及时生效）
+                fetch(fullMenuPath, { cache: 'no-cache' })
                     .then(function(response) {
                         if (!response.ok) {
                             throw new Error('菜单加载失败: HTTP ' + response.status);

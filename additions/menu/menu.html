@@ -2,6 +2,8 @@
 
 <!-- 在现有的样式表之后添加 -->
 <link rel="stylesheet" href="./assets/thewakingsands/ff14-fonts.css">
+<!-- Jost 字体 - Mobirise 原生字体，使用国内镜像加载 -->
+<link rel="stylesheet" href="https://fonts.googleapis.cn/css?family=Jost:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap">
 
 <!-- 引入 EorzeaTime.js -->
 <script src="./assets/thewakingsands/EorzeaTime_localized.js"></script>
@@ -254,6 +256,97 @@
     // 每秒更新一次时间
     setInterval(updateTime, 1000);
 
+    // ===== 路径自动修正（必须在移动端链接调整之前执行）=====
+    let menuPrefix = './'; // 菜单路径前缀
+
+    function detectMenuPrefix() {
+        const pathname = window.location.pathname;
+        const pathParts = pathname.split('/').filter(p => p.length > 0);
+        if (pathParts.length === 0) return './';
+        let depth;
+        if (pathname.endsWith('/')) {
+            depth = pathParts.length;
+        } else {
+            depth = pathParts.length - 1;
+        }
+        if (depth === 0) return './';
+        return '../'.repeat(depth);
+    }
+
+    function fixMenuUrl(url, prefix) {
+        if (!url) return url;
+        if (/^(https?:\/\/|mailto:|tel:|#|javascript:)/.test(url)) return url;
+        // 移除所有 ./ 和 ../ 前缀，然后用当前页面的前缀重新拼接
+        if (url.startsWith('./') || url.startsWith('../')) {
+            let cleanUrl = url.replace(/^(\.\.?\/)+/, '');
+            return prefix + cleanUrl;
+        }
+        if (url.startsWith('/')) {
+            return prefix + url.substring(1);
+        }
+        return prefix + url;
+    }
+
+    function fixMenuLinks(container) {
+        if (!container) return;
+        const prefix = detectMenuPrefix();
+        menuPrefix = prefix;
+
+        // 修正所有 a 标签
+        container.querySelectorAll('a[href]').forEach(function(link) {
+            const href = link.getAttribute('href');
+            const newHref = fixMenuUrl(href, prefix);
+            if (newHref !== href) {
+                link.setAttribute('href', newHref);
+                link.setAttribute('data-fixed-href', newHref);
+                if (!link.hasAttribute('data-original-href')) {
+                    link.setAttribute('data-original-href', href);
+                }
+            }
+            const mobileHref = link.getAttribute('data-mobile-href');
+            if (mobileHref) {
+                const newMobileHref = fixMenuUrl(mobileHref, prefix);
+                if (newMobileHref !== mobileHref) {
+                    link.setAttribute('data-mobile-href', newMobileHref);
+                }
+            }
+        });
+
+        // 修正 img 标签
+        container.querySelectorAll('img[src]').forEach(function(img) {
+            const src = img.getAttribute('src');
+            const newSrc = fixMenuUrl(src, prefix);
+            if (newSrc !== src) {
+                img.setAttribute('src', newSrc);
+            }
+        });
+
+        // 修正 stylesheet
+        container.querySelectorAll('link[rel="stylesheet"][href]').forEach(function(link) {
+            const href = link.getAttribute('href');
+            const newHref = fixMenuUrl(href, prefix);
+            if (newHref !== href) {
+                link.setAttribute('href', newHref);
+            }
+        });
+    }
+
+    // 立即执行路径修正
+    (function autoFixMenuPaths() {
+        var container = document.querySelector('#menu') ||
+                       document.querySelector('.menu') ||
+                       document.querySelector('section.menu');
+        if (container) {
+            fixMenuLinks(container);
+        } else {
+            setTimeout(autoFixMenuPaths, 100);
+        }
+    })();
+
+    // 暴露到全局
+    window.fixMenuLinks = fixMenuLinks;
+    window.detectMenuPrefix = detectMenuPrefix;
+
     // ===== 移动端链接调整 =====
     let linkObserver = null;
 
@@ -282,9 +375,10 @@
                     link.setAttribute('href', mobileHref);
                 }
             } else {
-                const originalHref = link.getAttribute('data-original-href');
-                if (originalHref && link.getAttribute('href') !== originalHref) {
-                    link.setAttribute('href', originalHref);
+                // 使用修正后的路径（data-fixed-href），如果没有则回退到 data-original-href
+                const fixedHref = link.getAttribute('data-fixed-href') || link.getAttribute('data-original-href');
+                if (fixedHref && link.getAttribute('href') !== fixedHref) {
+                    link.setAttribute('href', fixedHref);
                 }
             }
         });
@@ -327,7 +421,7 @@
         });
     }
 
-    // 初始化
+    // 初始化（路径修正已在前面执行）
     initLinkStorage();
     adjustLinks();
     observeDynamicContent();
@@ -341,103 +435,4 @@
     window.addEventListener('load', function() {
         setTimeout(adjustLinks, 500);
     });
-</script>
-
-<script>
-    // ===== 路径自动修正 =====
-    // 检测当前页面路径深度，自动修正链接前缀
-    (function() {
-        function detectPrefix() {
-            const pathname = window.location.pathname;
-            const pathParts = pathname.split('/').filter(p => p.length > 0);
-            if (pathParts.length === 0) return './';
-            let depth;
-            if (pathname.endsWith('/')) {
-                depth = pathParts.length;
-            } else {
-                depth = pathParts.length - 1;
-            }
-            if (depth === 0) return './';
-            return '../'.repeat(depth);
-        }
-
-        function fixUrl(url, prefix) {
-            if (!url) return url;
-            if (/^(https?:\/\/|mailto:|tel:|#|javascript:)/.test(url)) return url;
-            if (url.startsWith('./') || url.startsWith('../')) {
-                let cleanUrl = url.replace(/^\.\//, '').replace(/^\.\.\//, '');
-                return prefix + cleanUrl;
-            }
-            if (url.startsWith('/')) {
-                return prefix + url.substring(1);
-            }
-            return prefix + url;
-        }
-
-        function fixMenuLinks(container) {
-            if (!container) return;
-            const prefix = detectPrefix();
-
-            // 修正所有 a 标签
-            container.querySelectorAll('a[href]').forEach(function(link) {
-                const href = link.getAttribute('href');
-                const newHref = fixUrl(href, prefix);
-                if (newHref !== href) {
-                    link.setAttribute('href', newHref);
-                    if (!link.hasAttribute('data-original-href')) {
-                        link.setAttribute('data-original-href', href);
-                    }
-                }
-                const mobileHref = link.getAttribute('data-mobile-href');
-                if (mobileHref) {
-                    const newMobileHref = fixUrl(mobileHref, prefix);
-                    if (newMobileHref !== mobileHref) {
-                        link.setAttribute('data-mobile-href', newMobileHref);
-                    }
-                }
-            });
-
-            // 修正 img 标签
-            container.querySelectorAll('img[src]').forEach(function(img) {
-                const src = img.getAttribute('src');
-                const newSrc = fixUrl(src, prefix);
-                if (newSrc !== src) {
-                    img.setAttribute('src', newSrc);
-                }
-            });
-
-            // 修正 stylesheet
-            container.querySelectorAll('link[rel="stylesheet"][href]').forEach(function(link) {
-                const href = link.getAttribute('href');
-                const newHref = fixUrl(href, prefix);
-                if (newHref !== href) {
-                    link.setAttribute('href', newHref);
-                }
-            });
-        }
-
-        // 等待 DOM 就绪后修正路径
-        function autoFix() {
-            // 查找菜单容器
-            var container = document.querySelector('#menu') || 
-                           document.querySelector('.menu') ||
-                           document.querySelector('section.menu');
-            if (container) {
-                fixMenuLinks(container);
-            } else {
-                // 如果还没加载，等待一下
-                setTimeout(autoFix, 100);
-            }
-        }
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', autoFix);
-        } else {
-            autoFix();
-        }
-
-        // 暴露到全局，便于外部调用
-        window.fixMenuLinks = fixMenuLinks;
-        window.detectMenuPrefix = detectPrefix;
-    })();
 </script>
