@@ -7,11 +7,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        @import url(https://fonts.googleapis.cn/css?family=Jost:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap);
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            font-family: 'Jost', sans-serif;
         }
 
         body {
@@ -826,8 +827,8 @@
 
 <script>
     // API端点
-    const API_URL = 'https://phantoms-backend.onrender.com/onebot/monthly-stats';
-    const USER_STATS_API_URL = 'https://phantoms-backend.onrender.com/onebot/user-stats';
+    const API_URL = (window.getApiUrl && window.getApiUrl('onebotMonthlyStats')) || 'https://phantoms-backend.onrender.com/onebot/monthly-stats';
+    const USER_STATS_API_URL = (window.getApiUrl && window.getApiUrl('onebotUserStats')) || 'https://phantoms-backend.onrender.com/onebot/user-stats';
 
     // 全局数据存储
     let statsData = null;

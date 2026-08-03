@@ -1,6 +1,9 @@
-// 定义 Supabase 的 URL 和 API 密钥
-const supabaseURL = 'https://dshmbsawwrbuycnivcjs.supabase.co';
-const supabaseAPIKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzaG1ic2F3d3JidXljbml2Y2pzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5Mjg2OTAsImV4cCI6MjA2OTUwNDY5MH0.fwRJD-WuST7mCbJf9h2i2Xk0z6mtCMCeV--JGUecC6A';
+// QQchat.js
+// 依赖：assets/js/config.js, utils.js（全局配置和工具函数）
+
+// 从全局配置获取（如果已加载）
+const supabaseURL = (window.APP_CONFIG && window.APP_CONFIG.SUPABASE_URL) || 'https://dshmbsawwrbuycnivcjs.supabase.co';
+const supabaseAPIKey = (window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || '';
 
 // 定义一个集合来存储已经显示过的消息ID
 const displayedMessages = new Set();
@@ -14,15 +17,19 @@ let fetchIntervalId;
 // 定义一个变量来存储系统信息
 let systemInfo;
 
-// 图片代理服务的URL - 使用images.weserv.nl
-const imageProxyUrl = 'https://images.weserv.nl/?url=';
+// 图片代理服务的URL - 从全局配置获取
+const imageProxyUrl = (window.APP_CONFIG && window.APP_CONFIG.PROXY && window.APP_CONFIG.PROXY.image) || 'https://images.weserv.nl/?url=';
 
 // 语音消息代理服务（将AMR转换为MP3）
 const audioProxyUrl = 'https://audio-converter.example.com/convert?url=';
 
-// 辅助函数：将图片存储到本地缓存
+// 辅助函数：将图片存储到本地缓存（使用全局工具函数）
 function cacheImage(proxyUrl, originalUrl) {
-    localStorage.setItem(originalUrl, proxyUrl);
+    if (window.cacheImage) {
+        window.cacheImage(proxyUrl, originalUrl);
+    } else {
+        localStorage.setItem(originalUrl, proxyUrl);
+    }
 }
 
 // 辅助函数：回退到代理URL
@@ -113,7 +120,9 @@ function startFetchInterval() {
 // 定义一个函数来获取最新消息
 async function fetchLatestMessages() {
     try {
-        const response = await fetch('https://phantoms-backend.onrender.com/onebot/latest?limit=30');
+        const apiUrl = (window.getApiUrl && window.getApiUrl('onebotLatest')) 
+            || 'https://phantoms-backend.onrender.com/onebot/latest';
+        const response = await fetch(`${apiUrl}?limit=30`);
         if (!response.ok) {
             throw new Error('Network response was not ok ' + response.statusText);
         }
@@ -298,8 +307,12 @@ function displayMessages(messages) {
     });
 }
 
-// 格式化文件大小
+// 格式化文件大小（使用全局 formatFileSize，如果可用）
 function formatFileSize(bytes) {
+    if (window.formatFileSize) {
+        return window.formatFileSize(bytes);
+    }
+    // 回退实现
     if (bytes === 0) return '0 B';
     const k = 1024;
     const sizes = ['B', 'KB', 'MB', 'GB'];
@@ -391,8 +404,12 @@ function updateSignature(username) {
     signatureInput.value = username; // 设置署名为用户名
 }
 
-// 获取cookie
+// 获取cookie（使用全局 CookieUtil，如果可用）
 function getCookie(name) {
+    if (window.CookieUtil && window.CookieUtil.get) {
+        return window.CookieUtil.get(name);
+    }
+    // 回退实现
     let cookieArray = document.cookie.split(';');
     for (let i = 0; i < cookieArray.length; i++) {
         let cookie = cookieArray[i].trim();
@@ -454,7 +471,9 @@ document.getElementById('messageForm').addEventListener('submit', function(event
     container.appendChild(messageDiv);
 
     // 发送消息和系统信息到服务器
-    const url = new URL('https://phantoms-backend.onrender.com/onebot/send-to-group');
+    const apiUrl = (window.getApiUrl && window.getApiUrl('onebotSendGroup')) 
+        || 'https://phantoms-backend.onrender.com/onebot/send-to-group';
+    const url = new URL(apiUrl);
     url.searchParams.append('groupId', '787909466');
     fetch(url, {
         method: 'POST',
