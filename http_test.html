@@ -31,7 +31,6 @@
     </title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
             margin: 0;
             padding: 20px;
@@ -152,9 +151,14 @@
 <script src="./assets/web/assets/jquery/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-        $("#menu").load("./additions/menu/menu1.html", function() {
-            adjustLinks();
-            window.addEventListener('resize', adjustLinks);
+        $("#menu").load("./additions/menu/menu.html", function() {
+            // 延迟一小段时间，确保 menu.html 中的脚本已执行
+            setTimeout(function() {
+                if (typeof adjustLinks === 'function') {
+                    adjustLinks();
+                    window.addEventListener('resize', adjustLinks);
+                }
+            }, 100);
         });
     });
 </script>
@@ -409,7 +413,7 @@
 <script src="./assets/web/assets/jquery/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-        $("#foot").load("./additions/foot/profile-round.html");
+        
     });
 </script>
 

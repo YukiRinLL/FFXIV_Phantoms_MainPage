@@ -282,10 +282,10 @@
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
 <script>
-    // 配置常量
+    // 配置常量（从全局配置获取，如果未加载则使用回退值）
     const CONFIG = {
-        anonPubKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzaG1ic2F3d3JidXljbml2Y2pzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5Mjg2OTAsImV4cCI6MjA2OTUwNDY5MH0.fwRJD-WuST7mCbJf9h2i2Xk0z6mtCMCeV--JGUecC6A',
-        apiURL: 'https://dshmbsawwrbuycnivcjs.supabase.co/rest/v1/visitor_stats',
+        anonPubKey: (window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || '',
+        apiURL: ((window.APP_CONFIG && window.APP_CONFIG.SUPABASE_URL) || 'https://dshmbsawwrbuycnivcjs.supabase.co') + '/rest/v1/visitor_stats',
         refreshInterval: 60000, // 60秒刷新
         maxMarkers: 100, // 最大标记数量
         cacheTimeout: 30000 // 缓存30秒

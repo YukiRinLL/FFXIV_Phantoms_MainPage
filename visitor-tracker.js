@@ -1,9 +1,11 @@
 // visitor-tracker.js
+// 依赖：assets/js/config.js（全局配置）
 
 class VisitorTracker {
     constructor(supabaseUrl, supabaseKey, options = {}) {
-        this.supabaseUrl = supabaseUrl;
-        this.supabaseKey = supabaseKey;
+        // 如果未传入，尝试从全局配置获取
+        this.supabaseUrl = supabaseUrl || (window.APP_CONFIG && window.APP_CONFIG.SUPABASE_URL) || '';
+        this.supabaseKey = supabaseKey || (window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || '';
         this.options = {
             trackLocation: true,
             trackDevice: true,
@@ -122,8 +124,8 @@ class VisitorTracker {
 // 创建默认实例并自动收集数据（如果配置了自动跟踪）
 if (typeof window !== 'undefined' && window.VisitorTrackerAutoInit !== false) {
     const defaultTracker = new VisitorTracker(
-        'https://dshmbsawwrbuycnivcjs.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzaG1ic2F3d3JidXljbml2Y2pzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5Mjg2OTAsImV4cCI6MjA2OTUwNDY5MH0.fwRJD-WuST7mCbJf9h2i2Xk0z6mtCMCeV--JGUecC6A',
+        null, // 自动从 window.APP_CONFIG 获取
+        null,
         {
             trackLocation: true,
             trackDevice: true,

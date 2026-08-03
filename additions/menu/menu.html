@@ -1,5 +1,9 @@
+<!-- 统一菜单模板 - 所有路径使用 ./ 前缀，由 menu-loader.js 自动修正 -->
+
 <!-- 在现有的样式表之后添加 -->
 <link rel="stylesheet" href="./assets/thewakingsands/ff14-fonts.css">
+<!-- Jost 字体 - Mobirise 原生字体，使用国内镜像加载 -->
+<link rel="stylesheet" href="https://fonts.googleapis.cn/css?family=Jost:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap">
 
 <!-- 引入 EorzeaTime.js -->
 <script src="./assets/thewakingsands/EorzeaTime_localized.js"></script>
@@ -82,11 +86,11 @@
         <div class="container">
             <div class="navbar-brand">
                 <span class="navbar-logo">
-                    <a href="index.html#features14-t">
-                        <img src="assets/images/frame-1-121x121.png" alt="Mobirise" style="height: 3.8rem;">
+                    <a href="./index.html#features14-t">
+                        <img src="./assets/images/frame-1-121x121.png" alt="Mobirise" style="height: 3.8rem;">
                     </a>
                 </span>
-                <span class="navbar-caption-wrap"><a class="navbar-caption text-white text-primary display-7" href="index.html">Phantoms</a></span>
+                <span class="navbar-caption-wrap"><a class="navbar-caption text-white text-primary display-7" href="./index.html">Phantoms</a></span>
             </div>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <div class="hamburger">
@@ -96,78 +100,80 @@
                     <span></span>
                 </div>
             </button>
+            <!-- 头像占位符放在 navbar-collapse 外面，确保移动端始终可见 -->
+            <div class="nav-avatar-placeholder"></div>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true">
                     <li class="nav-item dropdown">
                         <a class="nav-link link text-white text-primary dropdown-toggle display-4" href="#" data-toggle="dropdown-submenu" aria-expanded="false">HOME</a>
                         <div class="dropdown-menu">
-                            <a class="text-white text-primary dropdown-item display-4" href="index.html" aria-expanded="false">Top</a>
-                            <a class="text-white text-primary dropdown-item display-4" href="index.html#features14-t">Detail</a>
-                            <a class="text-white text-primary dropdown-item display-4" href="http_test.html">Switch Line</a>
+                            <a class="text-white text-primary dropdown-item display-4" href="./index.html" aria-expanded="false">Top</a>
+                            <a class="text-white text-primary dropdown-item display-4" href="./index.html#features14-t">Detail</a>
+                            <a class="text-white text-primary dropdown-item display-4" href="./http_test.html">Switch Line</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link link text-white text-primary dropdown-toggle display-4" href="#" aria-expanded="true" data-toggle="dropdown-submenu">About FC</a>
                         <div class="dropdown-menu">
-                            <a class="text-white text-primary dropdown-item display-4" href="history.html#" aria-expanded="false">History</a>
-                            <a class="text-white text-primary dropdown-item display-4" href="audio/Song.html#" target="_blank" aria-expanded="false">Theme Song</a>
-                            <a class="text-white text-primary dropdown-item display-4" href="risingstones/guild-member_formed.html#" aria-expanded="false">Members</a>
-                            <a class="text-white text-primary dropdown-item display-4" href="profiles/profiles_formed.html#" data-mobile-href="profiles/profiles-mobile_formed.html#" aria-expanded="false">Member Profiles</a>
-                            <a class="text-white text-primary dropdown-item display-4" href="expeditionary/editableTable.html"
-                               data-mobile-href="expeditionary/editableTable-mobile.html" target="_blank">
+                            <a class="text-white text-primary dropdown-item display-4" href="./history.html#" aria-expanded="false">History</a>
+                            <a class="text-white text-primary dropdown-item display-4" href="./audio/Song.html#" target="_blank" aria-expanded="false">Theme Song</a>
+                            <a class="text-white text-primary dropdown-item display-4" href="./risingstones/guild-member_formed.html#" aria-expanded="false">Members</a>
+                            <a class="text-white text-primary dropdown-item display-4" href="./profiles/profiles_formed.html#" data-mobile-href="./profiles/profiles-mobile_formed.html#" aria-expanded="false">Member Profiles</a>
+                            <a class="text-white text-primary dropdown-item display-4" href="./expeditionary/editableTable.html"
+                               data-mobile-href="./expeditionary/editableTable-mobile.html" target="_blank">
                                 Expeditionary</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link link text-white text-primary dropdown-toggle display-4" href="#" aria-expanded="true" data-toggle="dropdown-submenu">Tools</a>
                         <div class="dropdown-menu">
-                            <a class="text-light text-primary dropdown-item display-4" href="tools.html" data-mobile-href="tools-mobile.html" aria-expanded="false">All Tools Index</a>
+                            <a class="text-light text-primary dropdown-item display-4" href="./tools.html" data-mobile-href="./tools-mobile.html" aria-expanded="false">All Tools Index</a>
                             <a class="text-light text-primary dropdown-item display-4" href="https://ckpzivke.us-west-1.clawcloudrun.com" aria-expanded="false" target="_blank">File server(Testing)</a>
                             <a class="text-light text-primary dropdown-item display-4" href="https://phantoms-t65xf0p6.maozi.io/Littlenightmare/Recruitment.html" aria-expanded="false" target="_blank">历史招募查询</a>
-                            <a class="text-white text-primary dropdown-item display-4" href="tools/xivpf.html#" aria-expanded="false">Remote Party Finder</a>
-<!--                            <a class="text-white text-primary dropdown-item display-4" href="tools/BlueMagicebook.html#" aria-expanded="false">BlueMagicbook</a>-->
-<!--                            <a class="text-white text-primary dropdown-item display-4" href="tools/V5.html#" aria-expanded="false">V5配方计算器</a>-->
-                            <a class="text-white text-primary dropdown-item display-4" href="tools/crafter.html#" aria-expanded="false">V7生产模拟器</a>
-<!--                            <a class="text-white text-primary dropdown-item display-4" href="tools/wanahome.html#" aria-expanded="false">I Wanna Home</a>-->
-                            <a class="text-white text-primary dropdown-item display-4" href="tools/house_ffxiv_cyou.html#" aria-expanded="false">艾欧泽亚售楼中心</a>
-                            <a class="text-white text-primary dropdown-item display-4" href="tools/fauxhollowsprobabilisticsolver.html#" aria-expanded="false">幻巧拼图计算器</a>
-<!--                            <a class="text-white text-primary dropdown-item display-4" href="tools/what-zc-today.html#" aria-expanded="false">今天什么战场</a>-->
-                            <a class="text-white text-primary dropdown-item display-4" href="tools/wakingsands.html#" aria-expanded="false">XIV 文本检索</a>
-                            <a class="text-white text-primary dropdown-item display-4" href="tools/ffxiv-weather.html#" aria-expanded="false">天气查询</a>
-                            <a class="text-white text-primary dropdown-item display-4" href="tools/InteractiveMap.html#" aria-expanded="false">交互地图</a>
-                            <a class="text-white text-primary dropdown-item display-4" href="XIVAPI/sheet_index.html#" aria-expanded="false" target="_blank">XIVAPI Sheet(Testing)</a>
+                            <a class="text-white text-primary dropdown-item display-4" href="./tools/xivpf.html#" aria-expanded="false">Remote Party Finder</a>
+                            <a class="text-white text-primary dropdown-item display-4" href="./tools/BlueMagicebook.html#" aria-expanded="false">BlueMagicbook</a>
+<!--                            <a class="text-white text-primary dropdown-item display-4" href="./tools/V5.html#" aria-expanded="false">V5配方计算器</a>-->
+                            <a class="text-white text-primary dropdown-item display-4" href="./tools/crafter.html#" aria-expanded="false">V7生产模拟器</a>
+<!--                            <a class="text-white text-primary dropdown-item display-4" href="./tools/wanahome.html#" aria-expanded="false">I Wanna Home</a>-->
+                            <a class="text-white text-primary dropdown-item display-4" href="./tools/house_ffxiv_cyou.html#" aria-expanded="false">艾欧泽亚售楼中心</a>
+                            <a class="text-white text-primary dropdown-item display-4" href="./tools/fauxhollowsprobabilisticsolver.html#" aria-expanded="false">幻巧拼图计算器</a>
+                            <a class="text-white text-primary dropdown-item display-4" href="./tools/what-zc-today.html#" aria-expanded="false">今天什么战场</a>
+                            <a class="text-white text-primary dropdown-item display-4" href="./tools/wakingsands.html#" aria-expanded="false">XIV 文本检索</a>
+                            <a class="text-white text-primary dropdown-item display-4" href="./tools/ffxiv-weather.html#" aria-expanded="false">天气查询</a>
+                            <a class="text-white text-primary dropdown-item display-4" href="./tools/InteractiveMap.html#" aria-expanded="false">交互地图</a>
+                            <a class="text-white text-primary dropdown-item display-4" href="./XIVAPI/sheet_index.html#" aria-expanded="false" target="_blank">XIVAPI Sheet(Testing)</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link link text-white text-primary dropdown-toggle display-4" href="#" aria-expanded="true" data-toggle="dropdown-submenu">Community</a>
                         <div class="dropdown-menu">
-                            <a class="text-white text-primary dropdown-item display-4" href="messageBoard/messageBoard_formed.html#" aria-expanded="false">Message Board</a>
-                            <a class="text-white text-primary dropdown-item display-4" href="chatRecords_formed.html#" aria-expanded="false">Chat Room</a>
-                            <a class="text-white text-primary dropdown-item display-4" href="risingstones/guild-member-dynamic.html" target="_blank">Feed</a>
-<!--                            <a class="text-white text-primary dropdown-item display-4" href="messageBoard/user_conf/registerUser.html#" aria-expanded="false">Register</a>-->
-<!--                            <a class="text-white text-primary dropdown-item display-4" href="additions/foot/login.html#" aria-expanded="false">Login</a>-->
-<!--                            <a class="text-white text-primary dropdown-item display-4" href="messageBoard/user_conf/userListWithProfile_fromed.html#" aria-expanded="false">User List</a>-->
-<!--                            <a class="text-white text-primary dropdown-item display-4" href="messageBoard/user_conf/updateProfilie.html#" aria-expanded="false">Upload Profile</a>-->
+                            <a class="text-white text-primary dropdown-item display-4" href="./messageBoard/messageBoard_formed.html#" aria-expanded="false">Message Board</a>
+                            <a class="text-white text-primary dropdown-item display-4" href="./chatRecords_formed.html#" aria-expanded="false">Chat Room</a>
+                            <a class="text-white text-primary dropdown-item display-4" href="./risingstones/guild-member-dynamic.html" target="_blank">Feed</a>
+<!--                            <a class="text-white text-primary dropdown-item display-4" href="./messageBoard/user_conf/registerUser.html#" aria-expanded="false">Register</a>-->
+<!--                            <a class="text-white text-primary dropdown-item display-4" href="./additions/foot/login.html#" aria-expanded="false">Login</a>-->
+<!--                            <a class="text-white text-primary dropdown-item display-4" href="./messageBoard/user_conf/userListWithProfile_fromed.html#" aria-expanded="false">User List</a>-->
+<!--                            <a class="text-white text-primary dropdown-item display-4" href="./messageBoard/user_conf/updateProfilie.html#" aria-expanded="false">Upload Profile</a>-->
                             <a class="text-light text-primary dropdown-item display-4" href="https://oopz.cn/i/9XgUt9" target="_blank">Oopz</a>
-                            <a class="text-light text-primary dropdown-item display-4" href="Kook.html" aria-expanded="false">Kook</a>
+                            <a class="text-light text-primary dropdown-item display-4" href="./Kook.html" aria-expanded="false">Kook</a>
                             <a class="text-light text-primary dropdown-item display-4" href="https://swzlutsfsivu.ap-southeast-1.clawcloudrun.com" target="_blank">VoceChat(Testing)</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link link text-white text-primary dropdown-toggle display-4" href="#" aria-expanded="true" data-toggle="dropdown-submenu">Gallery</a>
                         <div class="dropdown-menu">
-                            <a class="text-light text-primary dropdown-item display-4" href="albums.html#" aria-expanded="false">Albums</a>
-                            <a class="text-light text-primary dropdown-item display-4" href="artExhibition.html#" aria-expanded="false">Arts Exhibition</a>
+                            <a class="text-light text-primary dropdown-item display-4" href="./albums.html#" aria-expanded="false">Albums</a>
+                            <a class="text-light text-primary dropdown-item display-4" href="./artExhibition.html#" aria-expanded="false">Arts Exhibition</a>
                             <a class="text-light text-primary dropdown-item display-4" href="./album/DynamicWallpaper.html#" aria-expanded="false">Dynamic Wallpaper</a>
                             <a class="text-light text-primary dropdown-item display-4" href="./album/showImages.html" target="_blank">Images(Testing)</a>
-                            <a class="text-light text-primary dropdown-item display-4" href="uploadImage_formed.html#" aria-expanded="false">Upload Img(Testing)</a>
+                            <a class="text-light text-primary dropdown-item display-4" href="./uploadImage_formed.html#" aria-expanded="false">Upload Img(Testing)</a>
                         </div>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link link text-white text-primary dropdown-toggle display-4" href="#" aria-expanded="true" data-toggle="dropdown-submenu">Retro</a>
                         <div class="dropdown-menu">
-                            <a class="text-white text-primary dropdown-item display-4" href="Retro/Retro.html#" aria-expanded="false">OG Collection</a>
-                            <a class="text-white text-primary dropdown-item display-4" href="Retro/Retro-list.html#" aria-expanded="false">汉化版本</a>
+                            <a class="text-white text-primary dropdown-item display-4" href="./Retro/Retro.html#" aria-expanded="false">OG Collection</a>
+                            <a class="text-white text-primary dropdown-item display-4" href="./Retro/Retro-list.html#" aria-expanded="false">汉化版本</a>
                         </div>
                     </li>
                 </ul>
@@ -192,6 +198,9 @@
         </div>
     </nav>
 </section>
+
+<!-- 引入头像组件 -->
+<script src="./assets/js/avatar-widget.js?v=3"></script>
 
 <script>
     // 更新时间函数
@@ -247,53 +256,134 @@
     // 每秒更新一次时间
     setInterval(updateTime, 1000);
 
-    // 改进的移动端链接调整功能
+    // ===== 路径自动修正（必须在移动端链接调整之前执行）=====
+    let menuPrefix = './'; // 菜单路径前缀
+
+    function detectMenuPrefix() {
+        const pathname = window.location.pathname;
+        const pathParts = pathname.split('/').filter(p => p.length > 0);
+        if (pathParts.length === 0) return './';
+        let depth;
+        if (pathname.endsWith('/')) {
+            depth = pathParts.length;
+        } else {
+            depth = pathParts.length - 1;
+        }
+        if (depth === 0) return './';
+        return '../'.repeat(depth);
+    }
+
+    function fixMenuUrl(url, prefix) {
+        if (!url) return url;
+        if (/^(https?:\/\/|mailto:|tel:|#|javascript:)/.test(url)) return url;
+        // 移除所有 ./ 和 ../ 前缀，然后用当前页面的前缀重新拼接
+        if (url.startsWith('./') || url.startsWith('../')) {
+            let cleanUrl = url.replace(/^(\.\.?\/)+/, '');
+            return prefix + cleanUrl;
+        }
+        if (url.startsWith('/')) {
+            return prefix + url.substring(1);
+        }
+        return prefix + url;
+    }
+
+    function fixMenuLinks(container) {
+        if (!container) return;
+        const prefix = detectMenuPrefix();
+        menuPrefix = prefix;
+
+        // 修正所有 a 标签
+        container.querySelectorAll('a[href]').forEach(function(link) {
+            const href = link.getAttribute('href');
+            const newHref = fixMenuUrl(href, prefix);
+            if (newHref !== href) {
+                link.setAttribute('href', newHref);
+                link.setAttribute('data-fixed-href', newHref);
+                if (!link.hasAttribute('data-original-href')) {
+                    link.setAttribute('data-original-href', href);
+                }
+            }
+            const mobileHref = link.getAttribute('data-mobile-href');
+            if (mobileHref) {
+                const newMobileHref = fixMenuUrl(mobileHref, prefix);
+                if (newMobileHref !== mobileHref) {
+                    link.setAttribute('data-mobile-href', newMobileHref);
+                }
+            }
+        });
+
+        // 修正 img 标签
+        container.querySelectorAll('img[src]').forEach(function(img) {
+            const src = img.getAttribute('src');
+            const newSrc = fixMenuUrl(src, prefix);
+            if (newSrc !== src) {
+                img.setAttribute('src', newSrc);
+            }
+        });
+
+        // 修正 stylesheet
+        container.querySelectorAll('link[rel="stylesheet"][href]').forEach(function(link) {
+            const href = link.getAttribute('href');
+            const newHref = fixMenuUrl(href, prefix);
+            if (newHref !== href) {
+                link.setAttribute('href', newHref);
+            }
+        });
+    }
+
+    // 立即执行路径修正
+    (function autoFixMenuPaths() {
+        var container = document.querySelector('#menu') ||
+                       document.querySelector('.menu') ||
+                       document.querySelector('section.menu');
+        if (container) {
+            fixMenuLinks(container);
+        } else {
+            setTimeout(autoFixMenuPaths, 100);
+        }
+    })();
+
+    // 暴露到全局
+    window.fixMenuLinks = fixMenuLinks;
+    window.detectMenuPrefix = detectMenuPrefix;
+
+    // ===== 移动端链接调整 =====
     let linkObserver = null;
 
-    // 初始化链接存储
     function initLinkStorage() {
         const links = document.querySelectorAll('a[data-mobile-href]');
         links.forEach(function(link) {
-            // 存储原始链接
             if (!link.hasAttribute('data-original-href')) {
                 link.setAttribute('data-original-href', link.getAttribute('href'));
             }
         });
     }
 
-    // 检测是否为移动设备
     function isMobileDevice() {
         return window.innerWidth <= 768 ||
             /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     }
 
-    // 调整链接函数
     function adjustLinks() {
         const links = document.querySelectorAll('a[data-mobile-href]');
         const isMobile = isMobileDevice();
 
-        console.log(`调整链接: 移动端=${isMobile}, 找到${links.length}个链接`);
-
         links.forEach(function(link) {
             if (isMobile) {
-                // 移动端：使用移动端链接
                 const mobileHref = link.getAttribute('data-mobile-href');
-                if (mobileHref && link.href !== mobileHref) {
-                    link.href = mobileHref;
-                    console.log(`设置为移动端链接: ${mobileHref}`);
+                if (mobileHref && link.getAttribute('href') !== mobileHref) {
+                    link.setAttribute('href', mobileHref);
                 }
             } else {
-                // 桌面端：恢复原始链接
-                const originalHref = link.getAttribute('data-original-href');
-                if (originalHref && link.href !== originalHref) {
-                    link.href = originalHref;
-                    console.log(`恢复桌面端链接: ${originalHref}`);
+                // 使用修正后的路径（data-fixed-href），如果没有则回退到 data-original-href
+                const fixedHref = link.getAttribute('data-fixed-href') || link.getAttribute('data-original-href');
+                if (fixedHref && link.getAttribute('href') !== fixedHref) {
+                    link.setAttribute('href', fixedHref);
                 }
             }
         });
     }
 
-    // 监听DOM变化
     function observeDynamicContent() {
         if (linkObserver) {
             linkObserver.disconnect();
@@ -303,9 +393,8 @@
             let shouldAdjust = false;
             mutations.forEach(function(mutation) {
                 if (mutation.type === 'childList') {
-                    // 检查新增的节点中是否有需要处理的链接
                     mutation.addedNodes.forEach(function(node) {
-                        if (node.nodeType === 1) { // Element node
+                        if (node.nodeType === 1) {
                             if (node.matches && node.matches('a[data-mobile-href]')) {
                                 shouldAdjust = true;
                             }
@@ -332,29 +421,17 @@
         });
     }
 
-    // 页面加载完成后的初始化
-    document.addEventListener("DOMContentLoaded", function() {
-        // 初始化链接存储
-        initLinkStorage();
+    // 初始化（路径修正已在前面执行）
+    initLinkStorage();
+    adjustLinks();
+    observeDynamicContent();
 
-        // 立即调整链接
-        adjustLinks();
-
-        // 开始监听DOM变化
-        observeDynamicContent();
-
-        // 监听窗口大小变化
-        window.addEventListener('resize', adjustLinks);
-
-        // 监听页面显示变化（处理浏览器标签页切换）
-        document.addEventListener('visibilitychange', function() {
-            if (!document.hidden) {
-                setTimeout(adjustLinks, 100);
-            }
-        });
+    window.addEventListener('resize', adjustLinks);
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            setTimeout(adjustLinks, 100);
+        }
     });
-
-    // 确保在页面完全加载后再次检查
     window.addEventListener('load', function() {
         setTimeout(adjustLinks, 500);
     });

@@ -73,7 +73,7 @@
 <div class="message-box" id="messageBox"></div>
 
 <script>
-    const API_URL = "https://phantoms-backend.onrender.com/onebot/latest?limit=30";
+    const API_URL = ((window.getApiUrl && window.getApiUrl('onebotLatest')) || 'https://phantoms-backend.onrender.com/onebot/latest') + "?limit=30";
     const messageBox = document.getElementById("messageBox");
     const skipBtn = document.getElementById("skipBtn");
     const voiceSelect = document.getElementById("voiceSelect");
