@@ -154,7 +154,7 @@
                     font-size: 0.85rem;
                 }
 
-                /* 登录弹窗样式 */
+                /* 登录弹窗样式 - 黑白配色 */
                 .nav-login-modal {
                     display: none;
                     position: fixed;
@@ -162,11 +162,13 @@
                     left: 0;
                     width: 100%;
                     height: 100%;
-                    background: rgba(0, 0, 0, 0.6);
+                    background: rgba(0, 0, 0, 0.5);
                     z-index: 9999;
                     justify-content: center;
                     align-items: center;
                     animation: modalFadeIn 0.3s ease;
+                    padding: 16px;
+                    box-sizing: border-box;
                 }
 
                 @keyframes modalFadeIn {
@@ -175,13 +177,17 @@
                 }
 
                 .nav-login-modal-content {
-                    background: #1a1a2e;
+                    background: #fff;
                     border-radius: 12px;
                     padding: 30px;
                     max-width: 400px;
-                    width: 90%;
-                    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+                    width: 100%;
+                    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
                     animation: modalSlideUp 0.3s ease;
+                    border: 1px solid #e0e0e0;
+                    max-height: 90vh;
+                    overflow-y: auto;
+                    box-sizing: border-box;
                 }
 
                 @keyframes modalSlideUp {
@@ -189,10 +195,27 @@
                     to { transform: translateY(0); opacity: 1; }
                 }
 
+                /* 小屏幕 (≤480px) */
                 @media (max-width: 480px) {
+                    .nav-login-modal {
+                        padding: 12px;
+                        align-items: flex-start;
+                    }
                     .nav-login-modal-content {
-                        padding: 20px;
+                        padding: 20px 16px;
                         border-radius: 10px;
+                        max-height: 85vh;
+                    }
+                }
+
+                /* 极窄屏幕 (≤360px) */
+                @media (max-width: 360px) {
+                    .nav-login-modal {
+                        padding: 8px;
+                    }
+                    .nav-login-modal-content {
+                        padding: 16px 12px;
+                        border-radius: 8px;
                     }
                 }
             </style>
@@ -435,28 +458,28 @@
                     </div>
                 </div>
 
-                <!-- 登录弹窗 -->
+                <!-- 登录弹窗 - 黑白配色 -->
                 <div id="nav-login-modal" class="nav-login-modal">
                     <div class="nav-login-modal-content">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-                            <h3 style="color:#fff;margin:0;font-size:1.2rem;">Login</h3>
-                            <span onclick="AvatarWidget.hideLoginModal()" style="color:#999;font-size:28px;cursor:pointer;line-height:1;">&times;</span>
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-shrink:0;">
+                            <h3 style="color:#111;margin:0;font-size:1.2rem;font-weight:600;">Login</h3>
+                            <span onclick="AvatarWidget.hideLoginModal()" style="color:#999;font-size:28px;cursor:pointer;line-height:1;flex-shrink:0;user-select:none;">&times;</span>
                         </div>
-                        <form id="nav-login-form" onsubmit="event.preventDefault(); AvatarWidget.handleLoginSubmit();">
+                        <form id="nav-login-form" onsubmit="event.preventDefault(); AvatarWidget.handleLoginSubmit();" style="flex-shrink:0;">
                             <div style="margin-bottom:15px;">
-                                <label style="display:block;color:#aaa;margin-bottom:5px;font-size:0.85rem;">Email</label>
-                                <input type="email" id="nav-login-email" required style="width:100%;padding:10px 12px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:#fff;font-size:0.9rem;box-sizing:border-box;">
+                                <label style="display:block;color:#555;margin-bottom:5px;font-size:0.85rem;">Email</label>
+                                <input type="email" id="nav-login-email" required style="width:100%;padding:10px 12px;background:#f5f5f5;border:1px solid #ccc;border-radius:6px;color:#111;font-size:0.9rem;box-sizing:border-box;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='#111'" onblur="this.style.borderColor='#ccc'">
                             </div>
                             <div style="margin-bottom:20px;">
-                                <label style="display:block;color:#aaa;margin-bottom:5px;font-size:0.85rem;">Password (PIN)</label>
-                                <input type="password" id="nav-login-password" required style="width:100%;padding:10px 12px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:6px;color:#fff;font-size:0.9rem;box-sizing:border-box;">
+                                <label style="display:block;color:#555;margin-bottom:5px;font-size:0.85rem;">Password (PIN)</label>
+                                <input type="password" id="nav-login-password" required style="width:100%;padding:10px 12px;background:#f5f5f5;border:1px solid #ccc;border-radius:6px;color:#111;font-size:0.9rem;box-sizing:border-box;outline:none;transition:border-color 0.2s;" onfocus="this.style.borderColor='#111'" onblur="this.style.borderColor='#ccc'">
                             </div>
-                            <button type="submit" style="width:100%;padding:12px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border:none;border-radius:6px;color:#fff;font-size:0.95rem;cursor:pointer;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                            <button type="submit" style="width:100%;padding:12px;background:#111;border:none;border-radius:6px;color:#fff;font-size:0.95rem;cursor:pointer;transition:background 0.2s;" onmouseover="this.style.background='#333'" onmouseout="this.style.background='#111'">
                                 Login
                             </button>
                         </form>
-                        <div style="margin-top:15px;text-align:center;">
-                            <a href="${prefix}messageBoard/user_conf/registerUser.html" style="color:#667eea;text-decoration:none;font-size:0.85rem;">Don't have an account? Register</a>
+                        <div style="margin-top:15px;text-align:center;flex-shrink:0;">
+                            <a href="${prefix}messageBoard/user_conf/registerUser.html" style="color:#555;text-decoration:none;font-size:0.85rem;">Don't have an account? Register</a>
                         </div>
                     </div>
                 </div>
@@ -464,6 +487,12 @@
         `;
 
         avatarPlaceholder.outerHTML = avatarHTML;
+
+        // 将登录弹窗移到 body 下，避免受 .nav-avatar-container 的 transform 影响导致窄屏下定位异常
+        const loginModal = document.getElementById('nav-login-modal');
+        if (loginModal && loginModal.parentNode !== document.body) {
+            document.body.appendChild(loginModal);
+        }
 
         // 获取新创建的元素
         const container = document.querySelector('.nav-avatar-container');
@@ -557,6 +586,12 @@
         if (modal) {
             modal.style.display = 'flex';
             document.querySelector('.nav-avatar-dropdown').style.display = 'none';
+            // 锁定页面滚动
+            document.body.style.overflow = 'hidden';
+            // ESC 键关闭
+            document.addEventListener('keydown', handleModalKeydown);
+            // 点击遮罩关闭
+            modal.addEventListener('click', handleModalBackdropClick);
         }
     }
 
@@ -565,6 +600,26 @@
         const modal = document.getElementById('nav-login-modal');
         if (modal) {
             modal.style.display = 'none';
+            // 解锁页面滚动
+            document.body.style.overflow = '';
+            // 移除事件监听
+            document.removeEventListener('keydown', handleModalKeydown);
+            modal.removeEventListener('click', handleModalBackdropClick);
+        }
+    }
+
+    // ESC 键关闭弹窗
+    function handleModalKeydown(e) {
+        if (e.key === 'Escape') {
+            hideLoginModal();
+        }
+    }
+
+    // 点击遮罩关闭弹窗
+    function handleModalBackdropClick(e) {
+        const modal = document.getElementById('nav-login-modal');
+        if (e.target === modal) {
+            hideLoginModal();
         }
     }
 
