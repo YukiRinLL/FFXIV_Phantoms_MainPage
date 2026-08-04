@@ -4,7 +4,7 @@
 class VisitorTracker {
     constructor(supabaseUrl, supabaseKey, options = {}) {
         // 如果未传入，尝试从全局配置获取
-        this.supabaseUrl = supabaseUrl || (window.APP_CONFIG && window.APP_CONFIG.SUPABASE_URL) || '';
+        this.supabaseUrl = supabaseUrl || (window.APP_CONFIG && window.APP_CONFIG.SUPABASE_URL) || 'https://dshmbsawwrbuycnivcjs.supabase.co';
         this.supabaseKey = supabaseKey || (window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || '';
         this.options = {
             trackLocation: true,
