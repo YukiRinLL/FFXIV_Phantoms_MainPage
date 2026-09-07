@@ -45,7 +45,7 @@ function hideLoadingOverlay() {
 document.getElementById('messageForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
-    var access_token = getCookie('access_token');
+    var access_token = sessionStorage.getItem('supabase_access_token');
     if (!access_token) {
         alert('You must be logged in to post a comment.');
         return;
@@ -83,7 +83,7 @@ document.getElementById('messageForm').addEventListener('submit', function(event
                 method: 'POST',
                 headers: {
                     'apikey': config.apiKey,
-                    'Authorization': `Bearer ${getCookie('access_token')}`, // 使用 cookie 中的 token
+                    'Authorization': `Bearer ${sessionStorage.getItem('supabase_access_token') || ''}`,
                     'Content-Type': 'application/json',
                     'Prefer': config.prefer
                 },
@@ -136,7 +136,7 @@ function getCookie(name) {
 
 // 在文档加载完成后立即检查是否登录，并显示提示
 window.addEventListener('DOMContentLoaded', function() {
-    var access_token = getCookie('access_token');
+    var access_token = sessionStorage.getItem('supabase_access_token');
     if (!access_token) {
         document.getElementById('loginSuggest').style.display = 'block';
     }

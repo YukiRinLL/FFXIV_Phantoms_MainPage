@@ -51,15 +51,25 @@ window.getApiUrl = function(endpointKey) {
  */
 window.getSupabaseConfig = function() {
     const config = window.APP_CONFIG;
+    const accessToken = sessionStorage.getItem('supabase_access_token');
     return {
         url: config.SUPABASE_URL,
         headers: {
             'apikey': config.ANON_KEY,
-            'Authorization': 'Bearer ' + config.ANON_KEY,
+            'Authorization': 'Bearer ' + (accessToken || config.ANON_KEY),
             'Content-Type': 'application/json',
             'Prefer': 'return=minimal'
         }
     };
+};
+
+window.getSupabaseAccessToken = function() {
+    return sessionStorage.getItem('supabase_access_token') || '';
+};
+
+window.clearSupabaseSession = function() {
+    sessionStorage.removeItem('supabase_access_token');
+    sessionStorage.removeItem('supabase_user_id');
 };
 
 /**

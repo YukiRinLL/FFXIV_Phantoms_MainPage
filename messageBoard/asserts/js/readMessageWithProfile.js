@@ -136,7 +136,7 @@ function deleteMessage(messageId) {
         method: 'DELETE',
         headers: {
             'apikey': config.apiKey,
-            'Authorization': `Bearer ${getCookie('access_token')}`, // 使用 cookie 中的 token
+            'Authorization': `Bearer ${sessionStorage.getItem('supabase_access_token') || ''}`,
             'Prefer': config.prefer
         }
     })
@@ -177,7 +177,7 @@ function updateMessage(messageId) {
                 method: 'PATCH',
                 headers: {
                     'apikey': config.apiKey,
-                    'Authorization': `Bearer ${getCookie('access_token')}`, // 使用 cookie 中的 token
+                    'Authorization': `Bearer ${sessionStorage.getItem('supabase_access_token') || ''}`,
                     'Content-Type': 'application/json',
                     'Prefer': config.prefer
                 },
