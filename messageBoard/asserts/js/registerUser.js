@@ -9,6 +9,7 @@ const config = {
     baseUrl: (window.APP_CONFIG && window.APP_CONFIG.SUPABASE_URL) || 'https://dshmbsawwrbuycnivcjs.supabase.co'
 };
 
+// 发送注册请求
 function reversibleHash4to6(str) {
     const primeMultiplier = 7;
     const offset = 100000;
@@ -16,27 +17,20 @@ function reversibleHash4to6(str) {
     const hash = ((num * primeMultiplier) + offset) % 1000000;
     return hash.toString().padStart(6, '0');
 }
-function reversibleHash6to4(hashStr) {
-    const primeMultiplier = 7;
-    const offset = 100000;
-    const hash = parseInt(hashStr, 10);
-    const original = ((hash - offset) / primeMultiplier) | 0;
-    return original.toString().padStart(4, '0');
-}
 
-// 发送注册请求
 function sendSignupRequest(email, password) {
-    const hashedPassword = reversibleHash4to6(password);
-    const url = `${config.baseUrl}/auth/v1/signup?apikey=${config.apiKey}&Content-Type=application/json`;
+    const url = `${config.baseUrl}/auth/v1/signup`;
+    const legacyPassword = reversibleHash4to6(password);
 
     return fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
+            , 'apikey': config.apiKey
         },
         body: JSON.stringify({
             email: email,
-            password: hashedPassword
+            password: legacyPassword
         })
     })
     .then(function(response) {
@@ -48,12 +42,10 @@ function sendSignupRequest(email, password) {
     })
     .then(function(data) { // 这里处理解析后的JSON对象
         //console.log(data);
-        const userToken = data.access_token;
-        //const userId = data.id; // Phantoms_DB 使用的json格式
-        const userId = data.user.id // Phantoms_DB_Reboot 使用的json格式
-        document.cookie = `access_token=${userToken}; path=/; secure;`;
-        document.cookie = `user_id=${userId}; path=/; secure;`;
-        console.log('Cookie has been set. Cookie content:', getCookie('access_token'), getCookie('user_id')); // 打印cookie内容
+        if (data.access_token && data.user) {
+            sessionStorage.setItem('supabase_access_token', data.access_token);
+            sessionStorage.setItem('supabase_user_id', data.user.id);
+        }
         return data; // 确保返回解析后的data对象
     })
     .catch(function(error) {
@@ -73,15 +65,14 @@ function registerUser(username, email, password, access_token) {
         method: 'POST',
         headers: {
             'apikey': config.apiKey,
-            'Authorization': `Bearer ${access_token}`, //使用注册返回的access_token
-            'apikey': config.apiKey,
+            'Authorization': `Bearer ${access_token}`,
             'Content-Type': 'application/json',
             'Prefer': config.prefer
         },
         body: JSON.stringify({
             username: username,
             email: email,
-            password: password
+            password: password,
         })
     })
     .then(function(response) {
@@ -110,7 +101,7 @@ document.querySelector('form').addEventListener('submit', function(event) {
     sendSignupRequest(email, password)
         .then(function(responseData) { // 确保这里处理的是解析后的JSON对象
             //console.log('responseData:', responseData); // 在控制台打印responseData
-            const accessToken = responseData.access_token;
+            const accessToken = responseData.access_token || '';
             registerUser(username, email, password, accessToken); // 使用access_token
         })
         .catch(function(error) {

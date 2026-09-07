@@ -200,19 +200,13 @@
         login(email, password); // 调用登录函数
     });
 
+
     function reversibleHash4to6(str) {
-        const primeMultiplier = 7;
-        const offset = 100000;
-        const num = parseInt(str, 10);
-        const hash = ((num * primeMultiplier) + offset) % 1000000;
-        return hash.toString().padStart(6, '0');
-    }
-    function reversibleHash6to4(hashStr) {
-        const primeMultiplier = 7;
-        const offset = 100000;
-        const hash = parseInt(hashStr, 10);
-        const original = ((hash - offset) / primeMultiplier) | 0;
-        return original.toString().padStart(4, '0');
+      const primeMultiplier = 7;
+      const offset = 100000;
+      const num = parseInt(str, 10);
+      const hash = ((num * primeMultiplier) + offset) % 1000000;
+      return hash.toString().padStart(6, '0');
     }
 
     // 显示加载遮罩层
@@ -277,10 +271,8 @@
             userToken = data.access_token; // 存储access_token
             userId = data.user.id; // 存储user_id
             // 改为不设置httpOnly;
-            //document.cookie = `access_token=${userToken}; path=/; secure; httpOnly;`; // 设置cookie
-            document.cookie = `access_token=${userToken}; path=/; secure;`;
-            document.cookie = `user_id=${userId}; path=/; secure;`; // 设置user_id cookie
-            console.log('Cookie has been set. Cookie content:', getCookie('access_token'), getCookie('user_id')); // 打印cookie内容
+            sessionStorage.setItem('supabase_access_token', userToken);
+            sessionStorage.setItem('supabase_user_id', userId);
             // 登录成功后刷新页面
             alert('Login success! Please click OK to continue.');
             // 用户点击确定后刷新页面
@@ -303,7 +295,7 @@
     // 函数：登出用户
     function logout() {
       showLoadingOverlay(); // 加载遮罩层
-      userToken = getCookie('access_token');
+      userToken = sessionStorage.getItem('supabase_access_token') || '';
       // 发送登出请求
       fetch(`${supabaseURL}/auth/v1/logout`, {
         method: 'POST',
@@ -318,8 +310,8 @@
         // 登出成功后清除cookie
         userToken = ''; // 清除用户token
         userId = ''; // 清除用户user_id
-        document.cookie = 'access_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; secure;'; // 清除cookie
-        document.cookie = 'user_id=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; secure;'; // 清除user_id cookie
+        sessionStorage.removeItem('supabase_access_token');
+        sessionStorage.removeItem('supabase_user_id');
         console.log('Cookie has been cleared.'); // 打印清除cookie的信息
         hideLoadingOverlay(); // 隐藏加载遮罩层
         // 登出成功后刷新页面
@@ -334,7 +326,7 @@
 
     // 函数：获取用户信息
     function getUserInfo() {
-      const token = getCookie('access_token'); // 从cookie中获取access_token
+      const token = sessionStorage.getItem('supabase_access_token') || '';
       fetch(`${supabaseURL}/auth/v1/user`, {
         method: 'GET',
         headers: {
@@ -364,7 +356,7 @@
 
     // 函数：更新用户信息
     function updateUser(email, password, userData) {
-      const token = getCookie('access_token'); // 从cookie中获取access_token
+      const token = sessionStorage.getItem('supabase_access_token') || '';
       fetch(`${supabaseURL}/auth/v1/user`, {
         method: 'PUT',
         headers: {
@@ -385,7 +377,7 @@
         method: 'POST',
         headers: {
           'apikey': supabaseAPIKey,
-          'Authorization': `Bearer ${supabaseAPIKey}`, // 使用service_role_key
+          'Authorization': `Bearer ${sessionStorage.getItem('supabase_access_token') || supabaseAPIKey}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ email })
@@ -539,7 +531,7 @@
 
     // 检查用户是否登录的函数
     function isLoggedIn() {
-        return getCookie('access_token') !== '';
+        return sessionStorage.getItem('supabase_access_token') !== null;
     }
 
     // 显示弹窗的函数

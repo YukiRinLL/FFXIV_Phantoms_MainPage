@@ -271,7 +271,7 @@
         document.cookie = name + "=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; secure;";
     }
 
-    // 密码哈希（可逆）
+
     function reversibleHash4to6(str) {
         const primeMultiplier = 7;
         const offset = 100000;
@@ -297,14 +297,14 @@
 
     // 检查登录状态
     function isLoggedIn() {
-        return getCookie('access_token') !== '';
+        return Boolean(sessionStorage.getItem('supabase_access_token'));
     }
 
     // 登录
     function login(email, password) {
         const config = getConfig();
         const loadingOverlay = showLoadingOverlay();
-        const hashedPassword = reversibleHash4to6(password);
+        const legacyPassword = reversibleHash4to6(password);
 
         fetch(`${config.supabaseURL}/auth/v1/token?grant_type=password`, {
             method: 'POST',
@@ -312,14 +312,14 @@
                 'apikey': config.supabaseAPIKey,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ email, password: hashedPassword })
+                body: JSON.stringify({ email, password: legacyPassword })
         })
         .then(response => response.json())
         .then(data => {
             hideLoadingOverlay(loadingOverlay);
             if (data.access_token) {
-                setCookie('access_token', data.access_token);
-                setCookie('user_id', data.user.id);
+                sessionStorage.setItem('supabase_access_token', data.access_token);
+                sessionStorage.setItem('supabase_user_id', data.user.id);
                 alert('Login success! Please click OK to continue.');
                 window.location.reload();
             } else {
@@ -337,7 +337,7 @@
     function logout() {
         const config = getConfig();
         const loadingOverlay = showLoadingOverlay();
-        const token = getCookie('access_token');
+            const token = sessionStorage.getItem('supabase_access_token') || '';
 
         fetch(`${config.supabaseURL}/auth/v1/logout`, {
             method: 'POST',
@@ -348,8 +348,8 @@
             }
         })
         .then(() => {
-            eraseCookie('access_token');
-            eraseCookie('user_id');
+            sessionStorage.removeItem('supabase_access_token');
+            sessionStorage.removeItem('supabase_user_id');
             hideLoadingOverlay(loadingOverlay);
             window.location.reload();
         })
@@ -363,12 +363,15 @@
     // 获取用户头像
     function fetchUserAvatar() {
         const config = getConfig();
-        const userId = getCookie('user_id');
+        const userId = sessionStorage.getItem('supabase_user_id');
         if (!userId) return;
 
         fetch(`${config.supabaseURL}/rest/v1/user_profile?user_id=eq.${userId}`, {
             method: 'GET',
-            headers: { 'apikey': config.supabaseAPIKey }
+            headers: {
+                'apikey': config.supabaseAPIKey,
+                'Authorization': `Bearer ${sessionStorage.getItem('supabase_access_token') || config.supabaseAPIKey}`
+            }
         })
         .then(response => response.json())
         .then(data => {

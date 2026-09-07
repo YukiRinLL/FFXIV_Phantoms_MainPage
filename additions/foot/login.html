@@ -101,21 +101,11 @@
         const hash = ((num * primeMultiplier) + offset) % 1000000;
         return hash.toString().padStart(6, '0');
     }
-    function reversibleHash6to4(hashStr) {
-        const primeMultiplier = 7;
-        const offset = 100000;
-        const hash = parseInt(hashStr, 10);
-        const original = ((hash - offset) / primeMultiplier) | 0;
-        return original.toString().padStart(4, '0');
-    }
-
-
 
     // 函数：邮箱/密码登录
     function login() {
         const email = document.getElementById('email').value;
-        const passwd = document.getElementById('password').value;
-        const password = reversibleHash4to6(passwd);
+        const password = reversibleHash4to6(document.getElementById('password').value);
 
         // 假设你的 Supabase URL 和 API 密钥
         const supabaseURL = (window.APP_CONFIG && window.APP_CONFIG.SUPABASE_URL) || 'https://dshmbsawwrbuycnivcjs.supabase.co';
@@ -137,9 +127,8 @@
                     const userToken = data.access_token;
                     const userId = data.user.id;
 
-                    // 设置 Cookie
-                    document.cookie = `access_token=${userToken}; path=/; secure; SameSite=Lax;`;
-                    document.cookie = `user_id=${userId}; path=/; secure; SameSite=Lax;`;
+                    sessionStorage.setItem('supabase_access_token', userToken);
+                    sessionStorage.setItem('supabase_user_id', userId);
 
                     // 跳转到主页
                     window.location.href = './index.html';
