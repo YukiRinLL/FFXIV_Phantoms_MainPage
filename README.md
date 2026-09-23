@@ -145,7 +145,7 @@
 如果你喜欢我的作品, 可以"Star"我的项目, 或者点击右上角的"Fork"按钮, 将项目复制到你的个人GitHub仓库中。
 本项目可以提供给其他游戏爱好者替换内容进行复用。
 也欢迎你为本项目贡献代码或者重构
-（初版设计仅为静态页面展示，没有考虑到会有这么多功能，目前正在考虑使用VUE前端+Java后端服务+其他第三方服务/组件进行重构）
+初版是静态页面，目前已经形成“旧版静态主页 + Vue 3 前端 + Java Spring Boot 后端”的并行结构。新版前端位于同级目录 `../ffxiv_phantoms_mainpage_vue`，后端位于 `../phantoms-backend`；本仓库本身仍以静态资源和历史页面为主。
 
 ## 致谢
 
@@ -161,13 +161,11 @@
 
 ## 许可证
 
-本项目采用MIT Commercial Restriction & Creative Commons许可证.
-允许非商业用途的使用 修改和分发, 同时要求注明原作者.
-商业用途必须获得单独的许可.
+许可证信息需要以仓库中实际存在的 LICENSE 文件或各资源的原始许可证为准。当前 README 中的“MIT Commercial Restriction & Creative Commons”不是一个标准的单一许可证名称，不能据此推断全部资源都允许同样方式使用。第三方库、图片、字体、音频和 FF14 相关素材可能分别受其各自许可约束。
 
 ## 开发备注
 
-请在`main`分支中进行修改和commit, 然后使用deploy脚本进行部署。
+请先确认远程仓库和分支配置，再决定是否使用 `deploy.sh` 或 `deploy.ps1` 部署。脚本会执行 Git 分支合并和远程 push，属于有副作用的操作，不应在未检查工作区和远程分支的情况下直接运行。
 
 这个脚本会将`main`分支中的改动merge到`redefine_url_new`和`none-25M-for-deployment`分支并push到远程仓库，触发自动部署
 
