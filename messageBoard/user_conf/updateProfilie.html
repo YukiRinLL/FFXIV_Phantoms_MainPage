@@ -273,7 +273,13 @@
                         reader.onloadend = function() {
                             var data = reader.result;
                             //var uploaded_by = document.getElementById('uploaded_by').value;
-                            var user_id = getCookie('user_id');
+                            var user_id = sessionStorage.getItem('supabase_user_id');
+                            var accessToken = sessionStorage.getItem('supabase_access_token');
+                            if (!user_id || !accessToken) {
+                                hideLoadingOverlay();
+                                alert('You must be logged in to upload a profile.');
+                                return;
+                            }
 
                             // Get the user's ID
                         //  fetch(`https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com/rest/v1/users?select=*&user_id=eq.${user_id}`
@@ -283,7 +289,7 @@
                                     //'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
                                     'apikey': (window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || '',
                                     //'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
-                                    'Authorization': 'Bearer ' + ((window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || ''),
+                                    'Authorization': 'Bearer ' + accessToken,
                                     'Content-Type': 'application/json',
                                     'Prefer': 'return=minimal'
                                 }
@@ -312,7 +318,7 @@
                                         //'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
                                         'apikey': (window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || '',
                                         //'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
-                                        'Authorization': 'Bearer ' + ((window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || ''),
+                                        'Authorization': 'Bearer ' + accessToken,
                                         'Content-Type': 'application/json',
                                         'Prefer': 'return=minimal'
                                     },
@@ -321,7 +327,7 @@
                                         legacy_user_id: legacyUserId,
                                         data: data,
                                         uploaded_by: uploaded_by,
-                                        user_id: getCookie('user_id')
+                                        user_id: user_id
                                     })
                                 })
                                 .then(function(response) {
