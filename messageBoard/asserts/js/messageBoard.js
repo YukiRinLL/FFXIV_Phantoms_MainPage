@@ -4,7 +4,7 @@
 // 从全局配置获取（如果未加载则使用回退值）
 const config = {
     apiKey: (window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || '',
-    authorization: 'Bearer ' + ((window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || ''),
+    authorization: 'Bearer ' + (sessionStorage.getItem('supabase_access_token') || ((window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || '')),
     prefer: 'return=minimal',
     baseUrl: (window.APP_CONFIG && window.APP_CONFIG.SUPABASE_URL) || 'https://dshmbsawwrbuycnivcjs.supabase.co'
 };
@@ -52,7 +52,12 @@ document.getElementById('messageForm').addEventListener('submit', function(event
     }
 
     var message = document.getElementById('message').value;
-    var authUserId = getCookie('user_id'); // 从cookie中获取user_id
+    var authUserId = sessionStorage.getItem('supabase_user_id');
+    if (!authUserId) {
+        alert('Your login session is missing the user ID. Please log in again.');
+        hideLoadingOverlay();
+        return;
+    }
 
     // 显示遮罩层
     showLoadingOverlay();
@@ -79,7 +84,7 @@ document.getElementById('messageForm').addEventListener('submit', function(event
             var legacy_user_id = data[0].id;
 
             // Create a new message
-            fetch(`${config.baseUrl}/rest/v1/messages`, {
+            return fetch(`${config.baseUrl}/rest/v1/messages`, {
                 method: 'POST',
                 headers: {
                     'apikey': config.apiKey,
@@ -95,22 +100,27 @@ document.getElementById('messageForm').addEventListener('submit', function(event
             .then(function(response) {
                 if (response.ok) {
                     console.log('Message posted successfully');
+                    document.getElementById('message').value = '';
                     // Reload the iframe to update the messages
                     var iframe = document.querySelector('#messages iframe');
                     iframe.src = iframe.src;
                 } else {
-                    console.log('Message posting failed');
+                    return response.text().then(function(details) {
+                        throw new Error(`Message posting failed: ${response.status} ${details}`);
+                    });
                 }
             })
             .catch(function(error) {
                 console.error('Error:', error);
+                alert('Failed to post the message. Please try again.');
             });
         } else {
-            console.log('User not found');
+            throw new Error('No legacy user record found for the logged-in account.');
         }
     })
     .catch(function(error) {
         console.error('Error fetching user:', error);
+        alert('Unable to find your user profile. Please log in again.');
     })
     .finally(() => {
         // 隐藏遮罩层

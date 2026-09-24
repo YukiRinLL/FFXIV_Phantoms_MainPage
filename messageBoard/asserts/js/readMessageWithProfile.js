@@ -4,7 +4,7 @@
 // 从全局配置获取（如果未加载则使用回退值）
 const config = {
     apiKey: (window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || '',
-    authorization: 'Bearer ' + ((window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || ''),
+    authorization: 'Bearer ' + (sessionStorage.getItem('supabase_access_token') || ((window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || '')),
     prefer: 'return=minimal',
     baseUrl: (window.APP_CONFIG && window.APP_CONFIG.SUPABASE_URL) || 'https://dshmbsawwrbuycnivcjs.supabase.co'
 };
@@ -136,7 +136,7 @@ function deleteMessage(messageId) {
         method: 'DELETE',
         headers: {
             'apikey': config.apiKey,
-            'Authorization': `Bearer ${sessionStorage.getItem('supabase_access_token') || ''}`,
+            'Authorization': config.authorization,
             'Prefer': config.prefer
         }
     })
@@ -177,7 +177,7 @@ function updateMessage(messageId) {
                 method: 'PATCH',
                 headers: {
                     'apikey': config.apiKey,
-                    'Authorization': `Bearer ${sessionStorage.getItem('supabase_access_token') || ''}`,
+                    'Authorization': config.authorization,
                     'Content-Type': 'application/json',
                     'Prefer': config.prefer
                 },
