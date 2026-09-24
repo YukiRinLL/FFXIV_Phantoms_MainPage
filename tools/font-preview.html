@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FFXIV Font Preview</title>
+    <link rel="stylesheet" href="../assets/thewakingsands/ff14-fonts.css">
+    <style>
+        :root { color-scheme: dark; }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #171719;
+            color: #ece8df;
+            font-family: Arial, sans-serif;
+        }
+        main { width: min(1180px, calc(100% - 32px)); margin: 36px auto 60px; }
+        h1 { margin: 0 0 8px; font-size: clamp(28px, 4vw, 46px); letter-spacing: .04em; }
+        .page-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+        .language-select { width: 120px; padding: 7px 9px; border: 1px solid #55555a; border-radius: 7px; background: #242426; color: #eee; }
+        .intro { margin: 0 0 28px; color: #aaa6a0; }
+        .control-panel {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 16px;
+            align-items: end;
+            padding: 20px;
+            background: #242426;
+            border: 1px solid #3d3d40;
+            border-radius: 12px;
+        }
+        label { display: block; margin-bottom: 8px; color: #c9c4ba; font-size: 14px; }
+        textarea {
+            display: block;
+            width: 100%;
+            min-height: 110px;
+            resize: vertical;
+            padding: 14px;
+            border: 1px solid #55555a;
+            border-radius: 8px;
+            background: #111113;
+            color: #fff;
+            font: 18px/1.5 Arial, sans-serif;
+        }
+        .special-panel {
+            margin-top: 16px;
+            padding: 16px 20px;
+            background: #242426;
+            border: 1px solid #3d3d40;
+            border-radius: 12px;
+        }
+        .font-tools-section {
+            margin-top: 20px;
+            padding: 0;
+        }
+        .font-tools-section > header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #3d3d40;
+        }
+        .font-tools-section > header h2 {
+            margin: 0;
+            color: #eee8dc;
+            font-size: 20px;
+        }
+        .section-kicker {
+            color: #8f8b84;
+            font-size: 12px;
+        }
+        .special-section {
+            margin-top: 20px;
+            padding: 14px 16px;
+            background: #1d2528;
+            border: 1px solid #40555a;
+            border-radius: 14px;
+        }
+        .special-section .special-panel {
+            margin-top: 0;
+            padding: 0;
+            background: transparent;
+            border: 0;
+            border-radius: 0;
+        }
+        .special-section .special-panel > .special-heading {
+            margin-bottom: 10px;
+        }
+        .special-panel summary {
+            cursor: pointer;
+            color: #d3ad6d;
+            font-weight: bold;
+        }
+        .special-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            min-height: 30px;
+        }
+        .special-heading summary { flex: 1 1 auto; }
+        .special-heading h2 { margin: 0; color: #d3ad6d; font-size: 16px; line-height: 1.2; }
+        .special-download { flex: 0 0 auto; padding: 6px 9px; font-size: 10px; }
+        .special-help { margin: 4px 0 8px; color: #8f9698; font-size: 11px; line-height: 1.3; }
+        .special-input {
+            min-height: 54px;
+            margin-bottom: 8px;
+            font-family: 'FFXIV';
+            font-size: 24px;
+        }
+        .special-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(66px, 1fr));
+            gap: 5px;
+        }
+        .special-button {
+            min-height: 52px;
+            padding: 4px;
+            background: #303034;
+            color: #eee;
+            border: 1px solid #4a4a4f;
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            font-weight: normal;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .special-button:hover { background: #414147; }
+        .special-glyph {
+            display: block;
+            margin-bottom: 2px;
+            color: #f0ece3;
+            font: 22px/1 'FFXIV';
+            white-space: nowrap;
+        }
+        .special-code {
+            display: block;
+            overflow: hidden;
+            color: #aaa6a0;
+            font-size: 10px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        button {
+            border: 0;
+            border-radius: 7px;
+            padding: 11px 16px;
+            background: #b99a61;
+            color: #171719;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover { background: #d0b477; }
+        .previews { display: grid; gap: 16px; margin-top: 24px; }
+        .font-card {
+            padding: 12px 14px;
+            background: #252d35;
+            border: 1px solid #43515d;
+            border-radius: 12px;
+        }
+        .font-card header { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+        .font-name { color: #d3ad6d; font-size: 14px; }
+        .font-description {
+            margin: 8px 0 0;
+            color: #aaa6a0;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .font-input {
+            width: 100%;
+            min-height: 48px;
+            margin-top: 8px;
+            padding: 8px 10px;
+            resize: vertical;
+            border: 1px solid #55555a;
+            border-radius: 7px;
+            background: #111113;
+            color: #fff;
+            font: 18px/1.45 Arial, sans-serif;
+        }
+        .mapped-panel { margin-top: 8px; }
+        .mapped-panel summary { cursor: pointer; color: #aaa6a0; font-size: 12px; }
+        .mapped-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            min-width: 0;
+        }
+        .mapped-heading summary { min-width: 0; flex: 1 1 auto; }
+        .mapped-help { margin: 8px 0; color: #777; font-size: 12px; }
+        .mapped-search {
+            width: 150px;
+            flex: 0 1 150px;
+            margin: 0;
+            padding: 4px 8px;
+            border: 1px solid #444449;
+            border-radius: 999px;
+            background: #111113;
+            color: #eee;
+            font-size: 11px;
+        }
+        .mapped-search::placeholder { color: #777; }
+        @media (max-width: 520px) {
+            .mapped-heading { align-items: stretch; flex-wrap: wrap; }
+            .mapped-search { width: 100%; flex-basis: 100%; }
+        }
+        .mapped-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+            gap: 5px;
+        }
+        .mapped-button {
+            min-height: 48px;
+            padding: 3px;
+            border: 1px solid #444449;
+            background: #303034;
+            color: #eee;
+            font-size: 10px;
+            font-weight: normal;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        .mapped-button:hover { background: #414147; }
+        .mapped-glyph {
+            display: block;
+            overflow: hidden;
+            font-size: 22px;
+            line-height: 1.1;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .mapped-button > span:not(.mapped-glyph):not(.mapped-code) {
+            display: block;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .mapped-code {
+            display: block;
+            overflow: hidden;
+            color: #888;
+            font-size: 9px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .preview {
+            min-height: 66px;
+            margin: 10px 0 2px;
+            padding: 10px 12px;
+            overflow-wrap: anywhere;
+            white-space: pre-wrap;
+            border-radius: 8px;
+            background: #f0ece3;
+            color: #1c1b1a;
+            font-size: clamp(22px, 3.5vw, 36px);
+            line-height: 1.25;
+        }
+        .download { padding: 8px 12px; font-size: 12px; }
+        .tabs {
+            display: inline-flex;
+            gap: 4px;
+            margin: 24px 0 16px;
+            padding: 4px;
+            border: 1px solid #4a4a4f;
+            border-radius: 999px;
+            background: #202022;
+        }
+        .tab-button {
+            min-width: 150px;
+            padding: 9px 18px;
+            border: 0;
+            border-radius: 999px;
+            background: transparent;
+            color: #aaa6a0;
+            font-size: 13px;
+            transition: background-color .2s ease, color .2s ease, box-shadow .2s ease;
+        }
+        .tab-button.active {
+            background: #b99a61;
+            color: #171719;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .28);
+        }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+        .mixed-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 14px;
+            background: #242426;
+            border: 1px solid #3d3d40;
+            border-radius: 12px;
+        }
+        .mixed-toolbar select { min-width: 180px; }
+        #downloadMixed { margin-left: auto; }
+        .mixed-editor {
+            min-height: 220px;
+            padding: 18px;
+            overflow-wrap: anywhere;
+            border: 1px solid #55555a;
+            border-radius: 8px;
+            background: #f0ece3;
+            color: #1c1b1a;
+            font: 30px/1.45 Arial, sans-serif;
+            outline: none;
+        }
+        .mixed-editor:focus { border-color: #b99a61; }
+        .mixed-help { color: #aaa6a0; font-size: 13px; }
+        @media (max-width: 680px) {
+            main { width: min(100% - 20px, 1180px); margin-top: 22px; }
+            .tabs { display: flex; width: 100%; }
+            .tab-button { min-width: 0; flex: 1 1 50%; padding-inline: 10px; }
+            .control-panel { grid-template-columns: 1fr; }
+            .control-panel button { width: 100%; }
+            .font-card header { align-items: flex-start; flex-direction: column; }
+            #downloadMixed { margin-left: 0; }
+        }
+        @media (max-width: 420px) {
+            .special-heading { align-items: flex-start; flex-wrap: wrap; }
+            .special-download { margin-left: auto; }
+        }
+    </style>
+</head>
+<body>
+<main>
+    <div class="page-heading">
+        <div>
+            <h1 data-i18n="title">FFXIV Font Preview</h1>
+            <p class="intro" data-i18n="intro">输入英文文段，预览不同艾欧泽亚字体，并将喜欢的样式导出为 PNG。</p>
+        </div>
+        <select id="languageSelect" class="language-select" aria-label="Language">
+            <option value="zh">中文</option>
+            <option value="en">English</option>
+            <option value="ja">日本語</option>
+        </select>
+    </div>
+
+    <nav class="tabs" aria-label="Font tools" role="tablist">
+        <button class="tab-button active" type="button" role="tab" aria-selected="true" data-tab="font-tab" data-i18n="fontPreview">Font Preview</button>
+        <button class="tab-button" type="button" role="tab" aria-selected="false" data-tab="mixed-tab" data-i18n="mixedEditor">Mixed Font Editor</button>
+    </nav>
+
+    <section id="font-tab" class="tab-panel active">
+        <section class="special-section">
+            <div class="special-panel">
+                <div class="special-heading">
+                    <h2 data-i18n="specialCharacters">FFXIV Special Characters</h2>
+                    <button id="downloadSpecial" class="special-download" type="button" data-i18n="downloadSpecial">Download Special PNG</button>
+                </div>
+                <p class="special-help" data-i18n="specialHelp">点击按钮将 Axis 图标字符插入下方输入框。</p>
+                <textarea id="specialText" class="special-input" spellcheck="false" aria-label="FFXIV special characters"></textarea>
+                <div id="specialCharacters" class="special-grid"></div>
+            </div>
+        </section>
+        <section class="font-tools-section">
+        <section class="control-panel">
+            <div>
+                <label for="fontText" data-i18n="allPreviewText">All font preview text</label>
+                <textarea id="fontText" spellcheck="false">The adventure begins beyond the horizon.</textarea>
+            </div>
+            <button id="downloadAll" type="button" data-i18n="downloadAll">Download All PNG</button>
+        </section>
+        <section id="previews" class="previews" aria-live="polite"></section>
+        </section>
+    </section>
+
+    <section id="mixed-tab" class="tab-panel">
+        <p class="mixed-help"><span data-i18n="mixedHelp1">在编辑器中输入文字，选中单词或字符后选择字体，再点击 Apply Font。</span><br><span data-i18n="mixedHelp2">特殊字符按钮会插入到当前光标位置。</span></p>
+        <div class="mixed-toolbar">
+            <select id="mixedFontSelect" aria-label="Mixed editor font"></select>
+            <button id="applyMixedFont" type="button" data-i18n="applyFont">Apply Font</button>
+            <button id="downloadMixed" type="button" data-i18n="downloadMixed">Download Mixed PNG</button>
+        </div>
+        <div id="mixedEditor" class="mixed-editor" contenteditable="true" spellcheck="false">The adventure begins beyond the horizon.</div>
+        <details class="special-panel" open>
+            <summary data-i18n="mixedSpecial">Special characters for mixed editor</summary>
+            <div id="mixedSpecialCharacters" class="special-grid"></div>
+        </details>
+    </section>
+</main>
+<script>
+    const axisFont = new FontFace('FFXIV', 'url("../assets/thewakingsands/axis-font-icons/FFXIV_Lodestone_SSF.ttf")');
+    document.fonts.add(axisFont);
+    axisFont.load().catch(() => {});
+
+    const specialCodeRanges = [
+        [0xe020, 0xe029], [0xe02a, 0xe02b], [0xe031, 0xe035], [0xe037, 0xe03f],
+        [0xe040, 0xe044], [0xe048, 0xe04e], [0xe050, 0xe05f], [0xe060, 0xe06e],
+        [0xe06f, 0xe070], [0xe071, 0xe08a], [0xe08f, 0xe0af], [0xe0b0, 0xe0bf],
+        [0xe0c0, 0xe0c6], [0xe0d0, 0xe0db]
+    ];
+    const specialDescriptions = {
+        e020: '全宽平假名', e021: '全宽片假名', e022: '英文输入法', e023: '半宽片假名', e024: '半宽英数', e025: '韩文输入法', e026: '中文输入法-汉字', e027: '中文输入法-英数', e028: '分钟-国际服', e029: '分钟-国服', e02a: '左方头括号', e02b: '右方头括号',
+        e031: '任务时钟', e033: '物品品级', e034: '苗圃交互', e035: '房屋交互', e037: '知见等级', e038: '义军等级', e039: '状态修正', e03a: '元素等级', e03b: '武具投影', e03c: '优质道具', e03d: '收藏品', e03f: '小数点',
+        e040: '定型文-左', e041: '定型文-右', e042: '攻击标记', e043: '禁止标记', e044: '止步标记', e048: '水晶栏', e049: '金币', e04a: '圆圈标记', e04b: '方块标记', e04c: '叉号标记', e04d: '三角标记', e04e: '十字标记',
+        e050: '鼠标', e051: '鼠标左键', e052: '鼠标右键', e053: '鼠标左右键', e054: '鼠标滚轮', e055: '鼠标按键1', e056: '鼠标按键2', e057: '鼠标按键3', e058: '鼠标按键4', e059: '鼠标按键5', e05b: '负面状态', e05c: '增益状态', e05d: '跨服标记',
+        e06a: '等级', e06b: '等级-德语', e06c: '等级-法语', e06d: '上午', e06e: '下午', e06f: '提示箭头', e070: '帮助提示',
+        e0af: '特殊热键栏', e0bb: '链接', e0bc: '等级同步', e0bd: '反向等级同步', e0be: '等级调整任务', e0bf: '职业固定任务',
+        e0c0: '云冠群岛-恶名精英', e0c1: '云冠群岛-1级', e0c2: '云冠群岛-2级', e0c3: '云冠群岛-3级', e0c4: '云冠群岛-4级', e0c5: '云冠群岛-5级', e0c6: '云冠群岛-6级',
+        e0d0: '本地时间', e0d1: '服务器时间', e0d2: '艾欧泽亚时间', e0d3: '本地时间-德语', e0d4: '服务器时间-德语', e0d5: '艾欧泽亚时间-德语', e0d6: '本地时间-法语', e0d7: '服务器时间-法语', e0d8: '艾欧泽亚时间-法语', e0d9: '本地时间-中文', e0da: '服务器时间-中文', e0db: '艾欧泽亚时间-中文'
+    };
+    const specialCharacters = specialCodeRanges.flatMap(([start, end]) => Array.from({ length: end - start + 1 }, (_, index) => {
+        const code = (start + index).toString(16);
+        return [code, specialDescriptions[`e${code.slice(1)}`] || `FFXIV Icon U+${code.toUpperCase()}`];
+    }));
+    const mappedCharacters = [
+        ...Array.from({ length: 10 }, (_, index) => String(index)),
+        '.', ',', '!', '?', ';', ':', "'", '"', '(', ')', '[', ']', '{', '}',
+        '+', '-', '=', '*', '/', '<', '>', '|', '_', '~', '@', '#', '$', '%', '^', '&', '`'
+    ];
+    const fonts = [
+        { name: 'Hingashi Extended', family: 'FF14-Hingashi', file: 'HingashiExtended.ttf', mappedCharacters: mappedCharacters.filter(character => !['[', ']'].includes(character)), mappedCjk: ['也', '事', '候', '和'] },
+        { name: 'Eorzea', family: 'FF14-Eorzea', file: 'Eorzea.ttf', mappedCharacters },
+        { name: 'Eorzean Replica', family: 'Eorzean', file: 'EorzeanReplicaForHuijiwiki.woff2', mappedCharacters },
+        { name: 'First World', family: 'FF14-FirstWorld', file: '第一世界字体1.0-抹茶燕球.otf', mappedCharacters },
+        { name: 'Jupiter', family: 'FF14-Jupiter', file: 'Jupiter-Pro_25613.ttf', mappedCharacters },
+        { name: 'Jupiter Bold', family: 'FF14-Jupiter-Bold', file: 'Jupiter-Pro-Bold_25612.ttf', mappedCharacters },
+        { name: 'Eurostar Chat', family: 'FF14-Chat', file: 'eurostarregularextended.ttf', mappedCharacters },
+        { name: 'Axis UI', family: 'FF14-Axis', file: 'axisstd-extralight.otf', mappedCharacters }
+    ];
+    const hingashiCharacters = ['也', '事', '候', '和'];
+    const hingashiJapaneseCharacters = [
+        ...Array.from({ length: 0x308d - 0x3041 + 1 }, (_, index) => String.fromCodePoint(0x3041 + index)),
+        'ﾟ', 'ゎ', 'を', 'ん',
+        ...Array.from({ length: 0x30ed - 0x30a1 + 1 }, (_, index) => String.fromCodePoint(0x30a1 + index)),
+        'ヮ', 'ヰ', 'ヲ', 'ン', 'ー',
+        ...Array.from({ length: 10 }, (_, index) => String.fromCodePoint(0xff10 + index)),
+        '｡', '､', 'ﾜ'
+    ];
+    const translations = {
+        zh: {
+            title: 'FFXIV 字体预览', intro: '输入英文文段，预览不同艾欧泽亚字体，并将喜欢的样式导出为 PNG。', fontPreview: '字体预览', mixedEditor: '混合字体编辑器', specialCharacters: 'FFXIV 特殊字符', specialHelp: '点击按钮将 Axis 图标字符插入下方输入框。', downloadSpecial: '下载特殊字符 PNG', downloadPng: '下载 PNG', regularFonts: '普通字体', allPreviewText: '所有字体预览文本', downloadAll: '下载全部 PNG', mixedHelp1: '在编辑器中输入文字，选中单词或字符后选择字体，再点击应用字体。', mixedHelp2: '特殊字符按钮会插入到当前光标位置。', applyFont: '应用字体', insertSpecial: '插入特殊字符', downloadMixed: '下载混排 PNG', mixedSpecial: '混排编辑器特殊字符', mappedCharacters: '映射字符', filter: '筛选 / U+ 码点', chinese: 'Hingashi 映射汉字', japanese: 'Hingashi 映射日文字符', language: '语言'
+        },
+        en: {
+            title: 'FFXIV Font Preview', intro: 'Enter English text, preview Eorzean fonts, and export your favorite styles as PNG.', fontPreview: 'Font Preview', mixedEditor: 'Mixed Font Editor', specialCharacters: 'FFXIV Special Characters', specialHelp: 'Click a button to insert an Axis icon into the input below.', downloadSpecial: 'Download Special PNG', downloadPng: 'Download PNG', regularFonts: 'Regular font families', allPreviewText: 'All font preview text', downloadAll: 'Download All PNG', mixedHelp1: 'Enter text, select a word or character, choose a font, then click Apply Font.', mixedHelp2: 'Special character buttons insert at the current cursor position.', applyFont: 'Apply Font', insertSpecial: 'Insert Special Character', downloadMixed: 'Download Mixed PNG', mixedSpecial: 'Special Characters for Mixed Editor', mappedCharacters: 'Mapped characters', filter: 'Filter / U+ code', chinese: 'Hingashi Mapped Chinese Characters', japanese: 'Hingashi Mapped Japanese Characters', language: 'Language'
+        },
+        ja: {
+            title: 'FFXIV フォントプレビュー', intro: '英文を入力してエオルゼア風フォントを確認し、お気に入りのスタイルを PNG で保存できます。', fontPreview: 'フォントプレビュー', mixedEditor: '混合フォントエディター', specialCharacters: 'FFXIV 特殊文字', specialHelp: 'ボタンをクリックして Axis アイコンを下の入力欄に挿入します。', downloadSpecial: '特殊文字 PNG を保存', downloadPng: 'PNG を保存', regularFonts: '通常フォント', allPreviewText: '全フォント共通プレビューテキスト', downloadAll: 'すべて PNG 保存', mixedHelp1: '文字を入力し、単語または文字を選択してフォントを選び、「フォントを適用」をクリックします。', mixedHelp2: '特殊文字ボタンは現在のカーソル位置に挿入されます。', applyFont: 'フォントを適用', insertSpecial: '特殊文字を挿入', downloadMixed: '混合 PNG を保存', mixedSpecial: '混合エディター用特殊文字', mappedCharacters: 'マッピング文字', filter: '検索 / U+ コード', chinese: 'Hingashi 中国語マッピング', japanese: 'Hingashi 日本語マッピング', language: '言語'
+        }
+    };
+    const specialLabels = {
+        e020: ['全宽平假名', 'Full-width Hiragana', '全角ひらがな'], e021: ['全宽片假名', 'Full-width Katakana', '全角カタカナ'], e022: ['英文输入法', 'English IME', '英語入力'], e023: ['半宽片假名', 'Half-width Katakana', '半角カタカナ'], e031: ['任务时钟', 'Quest timer', 'クエスト時計'], e033: ['物品品级', 'Item level', 'アイテムレベル'], e048: ['水晶栏', 'Crystal inventory', 'クリスタル'], e049: ['金币', 'Gil', 'ギル'], e03c: ['优质道具', 'High quality', '高品質'], e03d: ['收藏品', 'Collectable', 'コレクション'], e042: ['攻击标记', 'Attack marker', '攻撃マーカー'], e043: ['禁止标记', 'Prohibited marker', '禁止マーカー'], e048: ['水晶栏', 'Crystal inventory', 'クリスタル'], e06a: ['等级', 'Level', 'レベル'], e0bb: ['链接', 'Link', 'リンク'], e0d2: ['艾欧泽亚时间', 'Eorzea time', 'エオルゼア時間']
+    };
+    const fontDescriptions = {
+        'Hingashi Extended': { zh: '输入拉丁字母时显示普通艾欧泽亚字符；数字/部分汉字/日语平假名和片假名会显示为东方风格字符。[作者 Florin Dupontel on Mateus]', en: 'Latin letters use the regular Eorzean style; numbers, selected Chinese characters, Hiragana and Katakana use the Eastern style. [Author: Florin Dupontel on Mateus]', ja: 'ラテン文字は通常のエオルゼア風、数字・一部の漢字・ひらがな・カタカナは東洋風で表示されます。[作者: Florin Dupontel on Mateus]' },
+        'Eorzea': { zh: '艾欧泽亚字体 [作者 Myranda]', en: 'Eorzea Font [Author: Myranda]', ja: 'エオルゼアフォント [作者: Myranda]' },
+        'Eorzean Replica': { zh: '艾欧泽亚字体复刻版', en: 'Eorzean font replica', ja: 'エオルゼア風フォント レプリカ' },
+        'First World': { zh: '第一世界风格字体', en: 'First World style font', ja: '第一世界風フォント' },
+        'Jupiter': { zh: '任务英语名称字体', en: 'Quest title font', ja: 'クエスト名フォント' },
+        'Jupiter Bold': { zh: '任务英语名称加粗字体', en: 'Bold quest title font', ja: '太字クエスト名フォント' },
+        'Eurostar Chat': { zh: '游戏内聊天栏字体', en: 'In-game chat font', ja: 'ゲーム内チャットフォント' },
+        'Axis UI': { zh: '游戏内主要字体', en: 'Main in-game UI font', ja: 'ゲーム内メイン UI フォント' }
+    };
+    let currentLanguage = localStorage.getItem('ffxiv-font-language') || 'zh';
+    const textInput = document.getElementById('fontText');
+    const specialInput = document.getElementById('specialText');
+    const previews = document.getElementById('previews');
+    const fontTexts = fonts.map(() => textInput.value);
+
+    function t(key) { return translations[currentLanguage][key] || translations.en[key] || key; }
+
+    function applyLanguage() {
+        document.documentElement.lang = currentLanguage === 'zh' ? 'zh-CN' : currentLanguage === 'ja' ? 'ja' : 'en';
+        document.querySelectorAll('[data-i18n]').forEach(element => { element.textContent = t(element.dataset.i18n); });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(element => { element.placeholder = t(element.dataset.i18nPlaceholder); });
+        document.getElementById('languageSelect').value = currentLanguage;
+        renderSpecialCharacters();
+        renderMixedSpecialCharacters();
+        render();
+    }
+
+    function insertSpecialCharacter(code) {
+        const character = String.fromCodePoint(parseInt(code, 16));
+        const start = specialInput.selectionStart;
+        const end = specialInput.selectionEnd;
+        specialInput.value = specialInput.value.slice(0, start) + character + specialInput.value.slice(end);
+        specialInput.focus();
+        specialInput.selectionStart = specialInput.selectionEnd = start + character.length;
+        specialInput.dispatchEvent(new Event('input'));
+    }
+
+    function renderSpecialCharacters() {
+        const container = document.getElementById('specialCharacters');
+        container.innerHTML = '';
+        specialCharacters.forEach(([code, label]) => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'special-button';
+            button.title = `${label} U+${code.toUpperCase()}`;
+            const translatedLabel = specialLabels[code] ? specialLabels[code][currentLanguage === 'zh' ? 0 : currentLanguage === 'ja' ? 2 : 1] : label;
+            button.innerHTML = `<span class="special-glyph">&#x${code};</span><span>${translatedLabel}</span><span class="special-code">U+${code.toUpperCase()}</span>`;
+            button.addEventListener('click', () => insertSpecialCharacter(code));
+            container.appendChild(button);
+        });
+    }
+
+    function insertIntoMixedEditor(code) {
+        const editor = document.getElementById('mixedEditor');
+        const character = String.fromCodePoint(parseInt(code, 16));
+        editor.focus();
+        const selection = window.getSelection();
+        const range = selection.rangeCount ? selection.getRangeAt(0) : document.createRange();
+        if (!selection.rangeCount || !editor.contains(range.commonAncestorContainer)) {
+            range.selectNodeContents(editor);
+            range.collapse(false);
+        }
+        range.deleteContents();
+        const specialCharacter = document.createElement('span');
+        specialCharacter.style.fontFamily = "'FFXIV'";
+        specialCharacter.textContent = character;
+        range.insertNode(specialCharacter);
+        range.collapse(false);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+
+    function renderMixedSpecialCharacters() {
+        const container = document.getElementById('mixedSpecialCharacters');
+        container.innerHTML = '';
+        specialCharacters.forEach(([code, label]) => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'special-button';
+            button.title = `${label} U+${code.toUpperCase()}`;
+            const translatedLabel = specialLabels[code] ? specialLabels[code][currentLanguage === 'zh' ? 0 : currentLanguage === 'ja' ? 2 : 1] : label;
+            button.innerHTML = `<span class="special-glyph">&#x${code};</span><span>${translatedLabel}</span><span class="special-code">U+${code.toUpperCase()}</span>`;
+            button.addEventListener('click', () => insertIntoMixedEditor(code));
+            container.appendChild(button);
+        });
+    }
+
+    function applyMixedFont() {
+        const editor = document.getElementById('mixedEditor');
+        const selection = window.getSelection();
+        if (!selection.rangeCount || selection.isCollapsed || !editor.contains(selection.anchorNode)) return;
+        const span = document.createElement('span');
+        span.style.fontFamily = document.getElementById('mixedFontSelect').value;
+        span.appendChild(selection.getRangeAt(0).extractContents());
+        selection.getRangeAt(0).insertNode(span);
+        selection.removeAllRanges();
+        const range = document.createRange();
+        range.selectNodeContents(span);
+        selection.addRange(range);
+    }
+
+    async function downloadMixedPng() {
+        const editor = document.getElementById('mixedEditor');
+        const canvas = document.createElement('canvas');
+        const scale = 2;
+        const padding = 48;
+        const fontSize = 42;
+        const width = Math.max(640, editor.scrollWidth) + padding * 2;
+        const height = Math.max(220, editor.scrollHeight) + padding * 2;
+        canvas.width = width * scale;
+        canvas.height = height * scale;
+        const context = canvas.getContext('2d');
+        context.scale(scale, scale);
+        context.fillStyle = '#f0ece3';
+        context.fillRect(0, 0, width, height);
+        context.textBaseline = 'top';
+        let x = padding;
+        let y = padding;
+        const draw = node => {
+            if (node.nodeType === Node.TEXT_NODE) {
+                const text = node.nodeValue || '';
+                for (const character of text) {
+                    if (character === '\n') { x = padding; y += fontSize * 1.45; continue; }
+                    context.fillText(character, x, y);
+                    x += context.measureText(character).width;
+                }
+                return;
+            }
+            if (node.nodeType !== Node.ELEMENT_NODE) return;
+            const previousFont = context.font;
+            const family = node.style.fontFamily || 'Arial';
+            context.font = `${fontSize}px ${family}`;
+            node.childNodes.forEach(draw);
+            context.font = previousFont;
+        };
+        context.fillStyle = '#1c1b1a';
+        context.font = `${fontSize}px Arial`;
+        editor.childNodes.forEach(draw);
+        const link = document.createElement('a');
+        link.download = 'ffxiv-mixed-font.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    }
+
+    function initializeTabs() {
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelectorAll('.tab-button').forEach(item => {
+                    const active = item === button;
+                    item.classList.toggle('active', active);
+                    item.setAttribute('aria-selected', String(active));
+                });
+                document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.toggle('active', panel.id === button.dataset.tab));
+            });
+        });
+        const select = document.getElementById('mixedFontSelect');
+        fonts.forEach(font => {
+            const option = document.createElement('option');
+            option.value = `'${font.family}'`;
+            option.textContent = font.name;
+            select.appendChild(option);
+        });
+        document.getElementById('applyMixedFont').addEventListener('click', applyMixedFont);
+        document.getElementById('downloadMixed').addEventListener('click', downloadMixedPng);
+        const languageSelect = document.getElementById('languageSelect');
+        languageSelect.addEventListener('change', () => {
+            currentLanguage = languageSelect.value;
+            localStorage.setItem('ffxiv-font-language', currentLanguage);
+            applyLanguage();
+        });
+    }
+
+    function safeFileName(name) {
+        return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'font';
+    }
+
+    function render() {
+        previews.innerHTML = '';
+        fonts.forEach((font, index) => {
+            const card = document.createElement('article');
+            card.className = 'font-card';
+            const hingashiPanel = font.family === 'FF14-Hingashi'
+                ? `<details class="mapped-panel" open><summary>${t('chinese')}</summary><div class="mapped-grid hingashi-grid"></div></details>`
+                : '';
+            const fontDescription = fontDescriptions[font.name][currentLanguage];
+            card.innerHTML = `<header><span class="font-name">${font.name}</span><button class="download" type="button" data-index="${index}">${t('downloadPng')}</button></header><p class="font-description">${fontDescription}</p><div class="preview" style="font-family:'${font.family}', sans-serif"></div><textarea class="font-input" spellcheck="false" aria-label="${font.name} text"></textarea><details class="mapped-panel" open><div class="mapped-heading"><summary>${t('mappedCharacters')} (${font.mappedCharacters.length})</summary><input class="mapped-search" type="search" placeholder="${t('filter')}" aria-label="${t('filter')}"></div><div class="mapped-grid"></div></details>${hingashiPanel}`;
+            const input = card.querySelector('.font-input');
+            const preview = card.querySelector('.preview');
+            input.value = fontTexts[index];
+            preview.textContent = fontTexts[index] || ' ';
+            input.addEventListener('input', () => {
+                fontTexts[index] = input.value;
+                preview.textContent = input.value || ' ';
+            });
+            const mappedGrid = card.querySelector('.mapped-grid');
+            const mappedSearch = card.querySelector('.mapped-search');
+            const createMappedButton = character => {
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'mapped-button';
+                button.innerHTML = `<span class="mapped-glyph" style="font-family:'${font.family}', sans-serif"></span><span>${character === ' ' ? 'space' : character}</span><span class="mapped-code">U+${character.codePointAt(0).toString(16).toUpperCase().padStart(4, '0')}</span>`;
+                button.querySelector('.mapped-glyph').textContent = character;
+                button.addEventListener('click', () => {
+                    const start = input.selectionStart;
+                    const end = input.selectionEnd;
+                    input.value = input.value.slice(0, start) + character + input.value.slice(end);
+                    input.focus();
+                    input.selectionStart = input.selectionEnd = start + character.length;
+                    input.dispatchEvent(new Event('input'));
+                });
+                return button;
+            };
+            const renderMappedCharacters = () => {
+                const query = mappedSearch.value.toLowerCase();
+                const characters = font.mappedCharacters.filter(character => {
+                    const code = character.codePointAt(0).toString(16).padStart(4, '0');
+                    return !query || character.toLowerCase().includes(query) || `u+${code}`.includes(query);
+                });
+                mappedGrid.innerHTML = '';
+                const fragment = document.createDocumentFragment();
+                characters.forEach(character => fragment.appendChild(createMappedButton(character)));
+                mappedGrid.appendChild(fragment);
+            };
+            mappedSearch.addEventListener('input', renderMappedCharacters);
+            renderMappedCharacters();
+            if (font.family === 'FF14-Hingashi') {
+                const hingashiGrid = card.querySelector('.hingashi-grid');
+                hingashiCharacters.forEach(character => hingashiGrid.appendChild(createMappedButton(character)));
+                const japanesePanel = document.createElement('details');
+                japanesePanel.className = 'mapped-panel';
+                japanesePanel.open = true;
+                japanesePanel.innerHTML = `<summary>${t('japanese')}</summary><div class="mapped-grid hingashi-japanese-grid"></div>`;
+                card.appendChild(japanesePanel);
+                const japaneseGrid = japanesePanel.querySelector('.hingashi-japanese-grid');
+                hingashiJapaneseCharacters.forEach(character => japaneseGrid.appendChild(createMappedButton(character)));
+            }
+            card.querySelector('.download').addEventListener('click', () => downloadPng(font));
+            previews.appendChild(card);
+        });
+    }
+
+    async function loadFont(font) {
+        const fontPath = font.path || `fonts/${encodeURIComponent(font.file)}`;
+        const source = `url("../assets/thewakingsands/${fontPath}")`;
+        const loaded = new FontFace(font.family, source);
+        await loaded.load();
+        document.fonts.add(loaded);
+    }
+
+    async function downloadPng(font) {
+        const fontIndex = fonts.indexOf(font);
+        const button = document.querySelector(`[data-index="${fontIndex}"]`);
+        if (button) button.disabled = true;
+        try {
+            await loadFont(font);
+            const scale = 2;
+            const padding = 48;
+            const fontSize = 48;
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            context.font = `${fontSize}px "${font.family}"`;
+            const sourceText = font.family === 'FFXIV' ? specialInput.value : fontTexts[fontIndex];
+            const lines = (sourceText || ' ').split('\n');
+            const width = Math.max(320, ...lines.map(line => context.measureText(line || ' ').width)) + padding * 2;
+            const height = lines.length * fontSize * 1.4 + padding * 2;
+            canvas.width = Math.ceil(width * scale);
+            canvas.height = Math.ceil(height * scale);
+            context.scale(scale, scale);
+            context.fillStyle = '#f0ece3';
+            context.fillRect(0, 0, width, height);
+            context.fillStyle = '#1c1b1a';
+            context.font = `${fontSize}px "${font.family}"`;
+            context.textBaseline = 'top';
+            lines.forEach((line, lineIndex) => context.fillText(line || ' ', padding, padding + lineIndex * fontSize * 1.4));
+            const link = document.createElement('a');
+            link.download = `ffxiv-${safeFileName(font.name)}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        } finally {
+            if (button) button.disabled = false;
+        }
+    }
+
+    textInput.addEventListener('input', () => {
+        fonts.forEach((font, index) => {
+            if (fontTexts[index] !== textInput.value) fontTexts[index] = textInput.value;
+        });
+        render();
+    });
+    specialInput.addEventListener('input', render);
+    document.getElementById('downloadAll').addEventListener('click', async () => {
+        for (const font of fonts) await downloadPng(font);
+    });
+    document.getElementById('downloadSpecial').addEventListener('click', async () => {
+        await downloadPng({ name: 'FFXIV Axis Icons', family: 'FFXIV', path: 'axis-font-icons/FFXIV_Lodestone_SSF.ttf' });
+    });
+    renderSpecialCharacters();
+    renderMixedSpecialCharacters();
+    initializeTabs();
+    applyLanguage();
+    render();
+</script>
+</body>
+</html>
