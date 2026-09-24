@@ -27,6 +27,7 @@
     <meta property="og:image" content="assets/images/index-meta.jpg">
     <meta name="twitter:title" content="Phantoms">
     <link rel="stylesheet" href="additions/mouse.css">
+    <link rel="stylesheet" href="additions/tools-status.css">
     <!--added by Yuki 20221002-->
     <style>
         body {
@@ -84,6 +85,17 @@
             background-color: #f9f9f9;
             border-top: 1px solid #ddd;
         }
+
+        /* 一级、二级目录默认收起，避免移动端初始页面过长。 */
+        .my-container > .accordion > .accordion-content {
+            display: none;
+        }
+
+        /* 二级目录展开后，三级及以下链接默认可见。 */
+        .my-container > .accordion > .accordion-content > .accordion > .accordion-content {
+            display: block;
+        }
+
         .accordion-content a {
             display: block;
             margin: 10px 0;
@@ -399,6 +411,7 @@
     </div>
 </section>
 <!--plugin end-->
+<script src="assets/js/tools-status.js"></script>
 <section style="background-color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif; color:#aaa; font-size:12px; padding: 0; align-items: center; display: flex;">
     <div class="container">
         <div class="row justify-content-center" style="opacity:1; background-color: rgb(255, 255, 255);">
