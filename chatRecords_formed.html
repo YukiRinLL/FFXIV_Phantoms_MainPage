@@ -1531,7 +1531,7 @@
     };
 
     function fetchUserProfile() {
-        const userId = getCookie('user_id');
+        const userId = sessionStorage.getItem('supabase_user_id');
 
         if (!userId) {
             console.log('No user_id found in cookies.');
@@ -1541,7 +1541,8 @@
         fetch(`${supabaseURL}/rest/v1/users?select=username&user_id=eq.${userId}`, {
             method: 'GET',
             headers: {
-                'apikey': supabaseAPIKey
+                'apikey': supabaseAPIKey,
+                'Authorization': `Bearer ${sessionStorage.getItem('supabase_access_token') || supabaseAPIKey}`
             }
         })
             .then(response => response.json())

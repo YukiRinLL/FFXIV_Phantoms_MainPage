@@ -27,6 +27,7 @@
     <meta property="og:image" content="assets/images/index-meta.jpg">
     <meta name="twitter:title" content="Phantoms">
     <link rel="stylesheet" href="additions/mouse.css">
+    <link rel="stylesheet" href="additions/tools-status.css">
     <!--added by Yuki 20221002-->
     <style>
         body {
@@ -84,6 +85,17 @@
             background-color: #f9f9f9;
             border-top: 1px solid #ddd;
         }
+
+        /* 一级、二级目录默认收起，避免移动端初始页面过长。 */
+        .my-container > .accordion > .accordion-content {
+            display: none;
+        }
+
+        /* 二级目录展开后，三级及以下链接默认可见。 */
+        .my-container > .accordion > .accordion-content > .accordion > .accordion-content {
+            display: block;
+        }
+
         .accordion-content a {
             display: block;
             margin: 10px 0;
@@ -137,17 +149,29 @@
                                     <a href="https://na.finalfantasyxiv.com/lodestone/" target="_blank">FFXIV The Lodestone</a>
                                     <a href="https://lodestone.finalfantasyxiv.com/" target="_blank">FFXIV The Lodestone 1.0</a>
                                     <a href="https://jp.finalfantasyxiv.com/lodestone/playguide/db/" target="_blank">Lodestone DB</a>
+                                    <a href="https://jp.finalfantasyxiv.com/lodestone/playguide/contentsguide/datacentertravel/" target="_blank">トラベルガイド（データセンタートラベル）</a>
                                     <a href="https://press.na.square-enix.com/FINAL-FANTASY-XIV-Shadowbringers#" target="_blank">SQUARE ENIX PRESS</a>
                                     <a href="https://www.finalfantasyxiv.com/beginner/read/index.html" target="_blank">初心者の館 新米冒険者ガイド</a>
+                                    <a href="https://forum.square-enix.com/ffxiv" target="_blank">SE Forum</a>
                                     <a href="https://ff.web.sdo.com/" target="_blank">中文官方网站</a>
+                                    <a href="https://ff14risingstones.web.sdo.com/pc/index.html" target="_blank">石之家社区</a>
                                     <a href="https://act1.ff.sdo.com/recruit/web/" target="_blank">拂晓招募</a>
                                     <a href="https://actff1.web.sdo.com/20190315Zhaodai/index.html#/index" target="_blank">萌新招待</a>
                                     <a href="https://actff1.web.sdo.com/Project/20181018ffactive/index.html" target="_blank">艾欧泽亚活动中心</a>
                                     <a href="https://actff1.web.sdo.com/project/20210621ffviolation/index.html#/index" target="_blank">陌迪翁监狱</a>
                                     <a href="https://ff.web.sdo.com/web8/index.html#/servers" target="_blank">服务器状况</a>
+                                    <a href="https://actff1.web.sdo.com/project/20190613worldvisit/d9o81h971g9128hiashd21/pc/datacentertravel.html" target="_blank">传送指南</a>
                                     <a href="https://ff.web.sdo.com/web8/index.html#/shop" target="_blank">商城</a>
                                     <a href="https://pay.sdo.com/" target="_blank">游戏充值中心</a>
+                                    <a href="https://actff1.web.sdo.com/project/141028dgf/index.html" target="_blank">大国防联军后勤补给站</a>
+                                    <a href="https://ffpay.sdo.com/pc/giftsStation/index.html#/index" target="_blank">陆行鸟礼物站</a>
+                                    <a href="https://qu.sdo.com/personal-center" target="_blank">积分中心</a>
+                                    <a href="https://actff1.web.sdo.com/20200908JingCai/index.html#/index" target="_blank">竞猜中心</a>
+                                    <a href="https://actff1.web.sdo.com/project/20190917jobguid/#/index" target="_blank">官方职业指南</a>
+                                    <a href="https://actff1.web.sdo.com/Project/ff14help/jp/index.htm" target="_blank">随身神典石(已废弃项目)</a>
+                                    <a href="https://actff1.web.sdo.com/project/151019shuijin/index.asp" target="_blank">水晶传承站(已废弃项目)</a>
                                     <a href="https://actff1.web.sdo.com/project/200103ishgardian/index.html" target="_blank">重建伊修加德</a>
+                                    <a href="https://actff1.web.sdo.com/project/20250619cosmicexploration/v4kjfz92uewnum597r5wr0fa3km7bg/index.html#/cosmic_exploration" target="_blank">宇宙探索</a>
                                     <a href="https://actff1.web.sdo.com/DeathRank20170502/index.html?rank=party" target="_blank">死者宫殿排行榜</a>
                                     <a href="https://actff1.web.sdo.com/20181108deepdungeon2/index1.html?rank=party" target="_blank">天之御柱排行榜</a>
                                     <a href="https://actff1.web.sdo.com/20230711deepdungeon3/" target="_blank">正统优雷卡排行榜</a>
@@ -157,6 +181,10 @@
                                     <a href="https://actff1.web.sdo.com/20180525HeroList/index190128.html" target="_blank">欧米茄零式时空夹缝英雄榜</a>
                                     <a href="https://actff1.web.sdo.com/20180525HeroList/index210406.html" target="_blank">伊甸零式希望乐园英雄榜</a>
                                     <a href="https://actff1.web.sdo.com/20180525HeroList/index220401.html" target="_blank">零式万魔殿英雄榜</a>
+                                    <a href="https://actff1.web.sdo.com/20180525HeroList/index260105.html" target="_blank">阿卡迪亚零式登天斗技场英雄榜</a>
+                                    <a href="https://actff1.web.sdo.com/project/ffcrystranking/index.html#/index" target="_blank">水晶冲突排行榜</a>
+                                    <a href="https://actff1.web.sdo.com/arenaRank/reward.html" target="_blank">狼群盛宴排行榜</a>
+                                    <a href="https://actff1.web.sdo.com/project/20260819crucible_ranking/d10gyvdniqje/index.html#/" target="_blank">斗兽奇弈排行榜</a>
                                 </div>
                             </div>
                             <div class="accordion">
@@ -170,6 +198,7 @@
                                     <a href="https://eriones.com/" target="_blank">FF14 ERIONES 百科</a>
                                     <a href="https://ffxiv.gamerescape.com/" target="_blank">Gamer Escape WIKI</a>
                                     <a href="https://ffxiv.consolegameswiki.com/" target="_blank">Console Games WIKI</a>
+                                    <a href="https://wikiwiki.jp/ffdic/" target="_blank">FF用語辭典</a>
                                 </div>
                             </div>
                             <div class="accordion">
@@ -191,11 +220,14 @@
                                 <div class="accordion-content" id="introduction-site">
                                     <a href="https://xivstrat.com/" target="_blank">XivStrat中文攻略站</a>
                                     <a href="https://gl.ffsusu.com/" target="_blank">gl.ffsusu.com(玩家投稿攻略)</a>
-                                    <a href="https://moeshen.cn/" target="_blank">XivStrat中文攻略站</a>
+                                    <a href="https://moeshen.cn/" target="_blank">萌神神的攻略站</a>
                                     <a href="https://www.ffxiv.cn/" target="_blank">最终幻想14中文攻略站(素素)</a>
                                     <a href="https://www.ffcafe.cn/" target="_blank">肥肥咖啡 FFCAFE 国服资料站</a>
                                     <a href="https://ff14.org/" target="_blank">新大陆见闻录 超实用萌新手册</a>
                                     <a href="https://ff14moomoo.com/" target="_blank">むーむーのネタ帳</a>
+                                    <a href="https://www.akhmorning.com/" target="_blank">AkhMorning 国际服攻略站</a>
+                                    <a href="https://saltedxiv.com/" target="_blank">SaltedXIV 国际服攻略站</a>
+                                    <a href="https://www.thebalanceffxiv.com/" target="_blank">The Balance 职业指南</a>
                                 </div>
                             </div>
                             <div class="accordion">
@@ -217,6 +249,8 @@
                                     <a href="https://ricecake404.gitee.io/ff14-list" target="_blank">鱼糕 - 钓鱼时钟(旧版本)</a>
                                     <a href="https://ashe10.home.blog/shb-crafting-macros/" target="_blank">FFXIV Crafting Macros by Ashe10</a>
                                     <a href="https://white94850.gitee.io/ffxiv-610-helper/" target="_blank">ffxiv-610-helper(已停止维护)</a>
+                                    <a href="https://mooglecrafter.cn/" target="_blank">莫古锤子 采集工具</a>
+                                    <a href="https://hqhelper.nbb.fan/#/" target="_blank">HQ Helper 生产成本计算器</a>
                                 </div>
                             </div>
                             <div class="accordion">
@@ -233,6 +267,7 @@
                                     <a href="https://housingsnap.com/" target="_blank">HOUSING SNAP</a>
                                     <a href="http://zh.ffxivgardening.com/" target="_blank">FF14 栽培手册</a>
                                     <a href="http://ffxivchocobo.com/" target="_blank">FFXIV Chocobo Colour Calculator</a>
+                                    <a href="shturl.cc/zrkJrRUBPp031lBSoroPhq6Gc" target="_blank">MakePlace 装修模拟器(已停止维护)</a>
                                 </div>
                             </div>
                             <div class="accordion">
@@ -282,6 +317,7 @@
                                             <a href="https://xivanalysis.com/" target="_blank">Xivanalysis</a>
                                             <a href="https://sumemo.dev/" target="_blank">酥卷</a>
                                             <a href="https://dlog.luyulight.cn" target="_blank">导随记录器</a>
+                                            <a href="https://parser.ffxiv.cyou/" target="_blank">日志解析工具</a>
                                         </div>
                                     </div>
                                     <div class="accordion">
@@ -302,6 +338,10 @@
                                             <a href="https://bmp.trotlinebeercan.com/" target="_blank">Midi Repository</a>
                                             <a href="https://eorzeasongbook.com/" target="_blank">The Eorzea Songbook</a>
                                             <a href="https://www.xivmac.com/" target="_blank">XIV on Mac</a>
+                                            <a href="https://act.diemoe.net/" target="_blank">ACT呆萌版</a>
+                                            <a href="https://www.ffcafe.cn/act/" target="_blank">ACT Cafe版</a>
+                                            <a href="https://www.ffxiv-textools.net/" target="_blank">FFXIV TexTools</a>
+                                            <a href="https://heliosphere.app" target="_blank">Heliosphere MOD站</a>
                                             <a href="https://ff14-clientdown.bluefissure.com/" target="_blank">水獭下崽器</a>
                                         </div>
                                     </div>
@@ -314,6 +354,7 @@
                                             <a href="https://www.ffxiv.ws/" target="_blank">亚历山德里亚王国经济系统</a>
                                             <a href="https://ff14.unlucky.ninja/" target="_blank">杂七杂八工具箱</a>
                                             <a href="https://www.ff14pvp.top/" target="_blank">罗薇娜的手抄本</a>
+                                            <a href="https://gamecircum.com/tools/ffxiv-trade-calculator/" target="_blank">FF14交易计算工具</a>
                                         </div>
                                     </div>
                                     <a href="https://tools.ffxiv.cn/lajipai/index.html" target="_blank">素素辣鸡排</a>
@@ -321,10 +362,13 @@
                                     <a href="https://eorzeaworld.com/en/home" target="_blank">Eorzea World the guide on FFXIV</a>
                                     <a href="http://kdygsz.vps6.mydnns.com/BlueMagicebook/" target="_blank">BlueMagicebook(旧版本)</a>
                                     <a href="http://www.timelysnow.com.cn/bluemagicebook/" target="_blank">BlueMagicebook</a>
+                                    <a href="https://thewakingsands.github.io/blue-mage/" target="_blank">青魔法师技能学习指南</a>
                                     <a href="http://118.195.206.75:88/ff14/" target="_blank">寻找宗长 V1.2</a>
                                     <a href="https://leejswit-hcn.github.io/foxcalculator/" target="_blank">幻巧拼图小工具</a>
                                     <a href="https://thewakingsands.github.io/FauxHollowsProbabilisticSolver/" target="_blank">幻巧拼图计算器(Chi)</a>
                                     <a href="https://sturalke.github.io/FauxHollowsProbabilisticSolver/" target="_blank">幻巧拼图计算器(Eng)</a>
+                                    <a href="https://island.ffxiv.cyou/" target="_blank">无人岛工坊求解器</a>
+                                    <a href="https://ffxivvenues.com/" target="_blank">FFXIV VENUES</a>
                                     <a href="https://strings.wakingsands.com/" target="_blank">文本检索工具</a>
                                     <a href="https://nekowoods.github.io/what-zc-today/index.html" target="_blank">今天什么战场？</a>
                                     <a href="https://ff14rp.miraheze.org" target="_blank">最终幻想14 RolePlay Wiki</a>
@@ -332,6 +376,9 @@
                                     <a href="https://www.mogship.com/" target="_blank">Mogship(潜水艇/飞空艇相关)</a>
                                     <a href="https://yilegendoflink.github.io/" target="_blank">石之家人口普查计划</a>
                                     <a href="https://uptime.ff14.xin/" target="_blank">限时奖励监控</a>
+                                    <a href="https://annangela.github.io/FFXIVSightseeingGuide/#/" target="_blank">探索笔记时钟</a>
+                                    <a href="https://asvel.github.io/ffxiv-weather/" target="_blank">天气查询</a>
+                                    <a href="https://eorzea-weather.com/" target="_blank">艾欧泽亚天气</a>
                                     <a href="https://map.wakingsands.com/#f=area&id=92" target="_blank">FFXIV Interactive Map</a>
                                     <a href="http://ffxivsquadron.com/" target="_blank">FFXIV Squadron 冒险者小队数值计算器</a>
                                     <a href="https://www.xivsim.com/game/" target="_blank">xivsim 模拟器</a>
@@ -343,6 +390,7 @@
                                     <a href="https://ffxiv.dlunch.net/" target="_blank">dlunch's ffxiv tools</a>
                                     <a href="https://ffxivcollect.com/" target="_blank">FFXIV Collect</a>
                                     <a href="https://xivtodo.com/" target="_blank">XIV ToDo</a>
+                                    <a href="https://xivapi.com/" target="_blank">XIV API 开发者接口</a>
                                 </div>
                             </div>
                         </div>
@@ -363,6 +411,7 @@
     </div>
 </section>
 <!--plugin end-->
+<script src="assets/js/tools-status.js"></script>
 <section style="background-color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif; color:#aaa; font-size:12px; padding: 0; align-items: center; display: flex;">
     <div class="container">
         <div class="row justify-content-center" style="opacity:1; background-color: rgb(255, 255, 255);">

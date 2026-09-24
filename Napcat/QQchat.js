@@ -373,7 +373,7 @@ window.onload = () => {
 
 // 获取用户信息并自动填写署名
 function fetchUserProfile() {
-    const userId = getCookie('user_id'); // 从cookie中获取user_id
+    const userId = sessionStorage.getItem('supabase_user_id');
 
     if (!userId) {
         console.log('No user_id found in cookies.');
@@ -383,7 +383,8 @@ function fetchUserProfile() {
     fetch(`${supabaseURL}/rest/v1/users?select=username&user_id=eq.${userId}`, {
         method: 'GET',
         headers: {
-            'apikey': supabaseAPIKey
+            'apikey': supabaseAPIKey,
+            'Authorization': `Bearer ${sessionStorage.getItem('supabase_access_token') || supabaseAPIKey}`
         }
     })
         .then(response => response.json())
