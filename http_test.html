@@ -11,7 +11,7 @@
     <meta property="og:image" content="assets/images/index-meta.jpg">
     <meta name="twitter:title" content="Phantoms">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-    <link rel="shortcut icon" href="https://img.picgo.net/2024/10/18/frame-1-121x121bc5d878c1dd0d5fc.png"
+    <link rel="shortcut icon" href="https://dlink.host/wx4.sinaimg.cn/large/006fhRoTly8i8u7pljsfoj3045044dfp.jpg"
           onerror="this.onerror=null;this.src='./assets/images/frame-1-121x121.png';"
           type="image/x-icon">
     <meta name="description" content="FF14、FC/CWLS Phantomsのホームページです。">
@@ -31,7 +31,6 @@
     </title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
             margin: 0;
             padding: 20px;
@@ -145,6 +144,8 @@
             }
         }
     </style>
+    <!-- 全局配置（必须在其他脚本之前加载） -->
+    <script src="./assets/js/config.js"></script>
 </head>
 <body>
 
@@ -152,9 +153,14 @@
 <script src="./assets/web/assets/jquery/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-        $("#menu").load("./additions/menu/menu1.html", function() {
-            adjustLinks();
-            window.addEventListener('resize', adjustLinks);
+        $("#menu").load("./additions/menu/menu.html", function() {
+            // 延迟一小段时间，确保 menu.html 中的脚本已执行
+            setTimeout(function() {
+                if (typeof adjustLinks === 'function') {
+                    adjustLinks();
+                    window.addEventListener('resize', adjustLinks);
+                }
+            }, 100);
         });
     });
 </script>
@@ -409,7 +415,7 @@
 <script src="./assets/web/assets/jquery/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-        $("#foot").load("./additions/foot/profile-round.html");
+        
     });
 </script>
 

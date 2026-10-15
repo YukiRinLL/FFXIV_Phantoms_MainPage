@@ -10,7 +10,7 @@
     <meta property="og:image" content="../../assets/images/index-meta.jpg">
     <meta name="twitter:title" content="Phantoms">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-    <link rel="shortcut icon" href="https://img.picgo.net/2024/10/18/frame-1-121x121bc5d878c1dd0d5fc.png"
+    <link rel="shortcut icon" href="https://dlink.host/wx4.sinaimg.cn/large/006fhRoTly8i8u7pljsfoj3045044dfp.jpg"
           onerror="this.onerror=null;this.src='./assets/images/frame-1-121x121.png';"
           type="image/x-icon">
     <meta name="description" content="FF14、FC/CWLS Phantomsのホームページです。">
@@ -93,6 +93,8 @@
         }
 
     </style>
+    <!-- 全局配置（必须在其他脚本之前加载） -->
+    <script src="../../assets/js/config.js"></script>
 </head>
 
 
@@ -102,7 +104,7 @@
 <script src="../../assets/web/assets/jquery/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-        $("#menu").load("../../additions/menu/menu3.html", function() {
+        $("#menu").load("../../additions/menu/menu.html", function() {
             adjustLinks();
             window.addEventListener('resize', adjustLinks);
         });
@@ -222,6 +224,9 @@
                     }
 
                     function getCookie(name) {
+                        if (window.CookieUtil && window.CookieUtil.get) {
+                            return window.CookieUtil.get(name);
+                        }
                         var value = "; " + document.cookie;
                         var parts = value.split("; " + name + "=");
                         if (parts.length == 2) return parts.pop().split(";").shift();
@@ -268,17 +273,23 @@
                         reader.onloadend = function() {
                             var data = reader.result;
                             //var uploaded_by = document.getElementById('uploaded_by').value;
-                            var user_id = getCookie('user_id');
+                            var user_id = sessionStorage.getItem('supabase_user_id');
+                            var accessToken = sessionStorage.getItem('supabase_access_token');
+                            if (!user_id || !accessToken) {
+                                hideLoadingOverlay();
+                                alert('You must be logged in to upload a profile.');
+                                return;
+                            }
 
                             // Get the user's ID
                         //  fetch(`https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com/rest/v1/users?select=*&user_id=eq.${user_id}`
-                            fetch(`https://dshmbsawwrbuycnivcjs.supabase.co/rest/v1/users?select=*&user_id=eq.${user_id}`, {
+                            fetch(`${(window.APP_CONFIG && window.APP_CONFIG.SUPABASE_URL) || 'https://dshmbsawwrbuycnivcjs.supabase.co'}/rest/v1/users?select=*&user_id=eq.${user_id}`, {
                                 method: 'GET',
                                 headers: {
                                     //'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
-                                    'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzaG1ic2F3d3JidXljbml2Y2pzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5Mjg2OTAsImV4cCI6MjA2OTUwNDY5MH0.fwRJD-WuST7mCbJf9h2i2Xk0z6mtCMCeV--JGUecC6A',
+                                    'apikey': (window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || '',
                                     //'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
-                                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzaG1ic2F3d3JidXljbml2Y2pzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5Mjg2OTAsImV4cCI6MjA2OTUwNDY5MH0.fwRJD-WuST7mCbJf9h2i2Xk0z6mtCMCeV--JGUecC6A',
+                                    'Authorization': 'Bearer ' + accessToken,
                                     'Content-Type': 'application/json',
                                     'Prefer': 'return=minimal'
                                 }
@@ -301,13 +312,13 @@
                                 var name = randomN + '_profile';
 
                             //  fetch('https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com/rest/v1/user_profile'
-                                fetch('https://dshmbsawwrbuycnivcjs.supabase.co/rest/v1/user_profile', {
+                                fetch(`${(window.APP_CONFIG && window.APP_CONFIG.SUPABASE_URL) || 'https://dshmbsawwrbuycnivcjs.supabase.co'}/rest/v1/user_profile`, {
                                     method: 'POST',
                                     headers: {
                                         //'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
-                                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzaG1ic2F3d3JidXljbml2Y2pzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5Mjg2OTAsImV4cCI6MjA2OTUwNDY5MH0.fwRJD-WuST7mCbJf9h2i2Xk0z6mtCMCeV--JGUecC6A',
+                                        'apikey': (window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || '',
                                         //'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzI4NjY4NTY3OSwiaWF0IjoxNzA5ODg1Njc5LCJpc3MiOiJzdXBhYmFzZSJ9.Y3loZqk0iqgFwofs_Sa107YheczRlttX_ZTOMboaf7c',
-                                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzaG1ic2F3d3JidXljbml2Y2pzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5Mjg2OTAsImV4cCI6MjA2OTUwNDY5MH0.fwRJD-WuST7mCbJf9h2i2Xk0z6mtCMCeV--JGUecC6A',
+                                        'Authorization': 'Bearer ' + accessToken,
                                         'Content-Type': 'application/json',
                                         'Prefer': 'return=minimal'
                                     },
@@ -316,7 +327,7 @@
                                         legacy_user_id: legacyUserId,
                                         data: data,
                                         uploaded_by: uploaded_by,
-                                        user_id: getCookie('user_id')
+                                        user_id: user_id
                                     })
                                 })
                                 .then(function(response) {
@@ -393,128 +404,8 @@
 
 
 <footer>
-
-    <!--回到顶部按钮-->
-    <!--Yuki:20190724-->
-    <style>
-        .box{
-            position:fixed;
-            right:20px;
-            bottom: 480px;
-            height:50px;
-            width: 50px;
-            text-align:center;
-            padding-top:20px;
-            background-color: black;
-            border-radius: 20%;
-            overflow: hidden;
-        }.box:hover:before{
-             top:50%
-         }.box:hover .box-in{
-              visibility: hidden;
-          }.box:before{
-               position: absolute;
-               top: -50%;
-               left: 50%;
-               transform: translate(-50%,-50%);
-               content:'TOP';
-               width: 40px;
-               color:white;
-               font-weight:bold;
-           }.box-in{
-                visibility: visible;
-                display:inline-block;
-                height:20px;
-                width: 20px;
-                border: 3px solid black;
-                border-color: white transparent transparent white;
-                transform:rotate(45deg);
-            }
-    </style>
-    <div id="box" class="box">
-        <div class="box-in"></div>
-    </div>
-    <script>
-        var timer  = null;
-        box.onclick = function(){
-            cancelAnimationFrame(timer);
-            timer = requestAnimationFrame(
-                function fn(){
-                    var oTop = document.body.scrollTop || document.documentElement.scrollTop;
-                    if(oTop > 0){
-                        document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
-                        timer = requestAnimationFrame(fn);
-                    }
-                    else{
-                        cancelAnimationFrame(timer);
-                    }
-                }
-            );
-        }
-    </script>
-
-    <!--更改网页标题-->
-    <!--Yuki:20190724-->
-    <title>标题</title>
-    <script>
-        document.title = '(ノ￣▽￣) Phantoms !'
-    </script>
-    <!--网页标题(title)动态改变-->
-    <!--离开和回到当前页 网页标题改变-->
-    <script>
-        window.onload = function () {
-            var OriginTitile = document.title;
-            var titleTime;
-            document.addEventListener('visibilitychange', function () {
-                if (document.hidden) {
-                    //$('[rel="shortcut icon"]').attr('href', "/Content/Images/fail.ico");
-                    document.title = '( * ￣▽￣)／肿么不看了呢？';
-                    clearTimeout(titleTime);
-                }
-                else {
-                    //$('[rel="shortcut icon"]').attr('href', "/Content/Images/icon.png");
-                    // document.title = '(～￣▽￣)～咦！又开始看了！' + OriginTitile;
-                    document.title = '(～￣▽￣)～咦！又开始看了！';
-                    titleTime = setTimeout(function () {
-                        document.title = OriginTitile;
-                    }, 2000);
-                }
-            });
-        }
-    </script>
-
-    <!--text click effect-->
-    <!--Yuki:20190724-->
-    <script type="text/javascript">
-        var a_idx = 0;
-        jQuery(document).ready(function($) {
-            $("body").click(function(e) {
-                var a = new Array("Astral","Umbral","Arcanum","Polyglot","Transcendent","Material","Original","Xenogeneic","Etheral","Sin" ,"Missionary","Requiem","Clement","Cristal","Zodiac");
-                var $i = $("<span></span>").text(a[a_idx]);
-                a_idx = (a_idx + 1) % a.length;
-                var x = e.pageX,
-                    y = e.pageY;
-                $i.css({
-                    "z-index": 999999999999999999999999999999999999999999999999999999999999999999999,
-                    "top": y - 20,
-                    "left": x,
-                    "position": "absolute",
-                    "font-weight": "bold",
-                    "color": "rgb("+~~(255*Math.random())+","+~~(255*Math.random())+","+~~(255*Math.random())+")"
-                });
-                $("body").append($i);
-                $i.animate({
-                        "top": y - 180,
-                        "opacity": 0
-                    },
-                    1500,
-                    function() {
-                        $i.remove();
-                    });
-            });
-        });
-    </script>
-
+    <link rel="stylesheet" href="../../additions/foot/common.css">
+    <script src="../../additions/foot/common.js"></script>
 </footer>
 
 

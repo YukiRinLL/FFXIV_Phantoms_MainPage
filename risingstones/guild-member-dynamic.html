@@ -1,3 +1,4 @@
+<!--todo 这个页面有分页加载的问题，同时从.json和后端获取数据并且合并的时候没有实现点开显示明细，以及重新排序-->
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -5,11 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phantoms成员动态</title>
     <style>
+        @import url(https://fonts.googleapis.cn/css?family=Jost:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap);
+        /* 所有原有样式保持不变 */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            font-family: 'Jost', sans-serif;
         }
 
         /* 美化滚动条 */
@@ -114,6 +117,20 @@
 
         button:hover {
             background-color: #707070;
+        }
+
+        /* 警告信息样式 */
+        .warning-message {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 12px;
+            margin-bottom: 25px;
+            border-radius: 4px;
+            text-align: center;
+            display: none;
+            font-size: 1rem;
+            font-weight: 500;
         }
 
         .stats {
@@ -281,6 +298,47 @@
             padding: 50px;
             color: #d0d0d0;
             font-size: 1.3rem;
+        }
+
+        /* 错误容器样式 */
+        .error-container {
+            text-align: center;
+            padding: 50px;
+            background: #2a2a2a;
+            border-radius: 8px;
+            border: 1px solid #505050;
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .error-title {
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            color: #ff6b6b;
+            font-weight: 600;
+        }
+
+        .error-message {
+            color: #b0b0b0;
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        .reload-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #606060;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .reload-button:hover {
+            background: #707070;
+            transform: translateY(-2px);
         }
 
         .cover-image {
@@ -571,8 +629,15 @@
             .subtitle {
                 font-size: 1.1rem;
             }
+
+            .warning-message {
+                font-size: 0.9rem;
+                padding: 10px;
+            }
         }
     </style>
+    <!-- 全局配置（必须在其他脚本之前加载） -->
+    <script src="../assets/js/config.js"></script>
 </head>
 <body>
 <div class="container">
@@ -580,6 +645,11 @@
         <h1>Feed & Post</h1>
         <p class="subtitle">Phantoms FC 成员最新动态</p>
     </header>
+
+    <!-- 警告信息 -->
+    <div class="warning-message" id="warningMessage">
+        正在使用本地缓存数据展示
+    </div>
 
     <div class="controls">
         <div class="filter-controls">
@@ -648,6 +718,9 @@
     // API端点
     const API_URL = 'https://phantoms-backend.onrender.com/api/risingstones/guild-member-dynamic';
 
+    // 本地数据源路径
+    const LOCAL_DATA_SOURCE = './sample/guild-member-dynamic-modified.json';
+
     // 图片代理服务 - 使用images.weserv.nl
     const IMAGE_PROXY_URL = 'https://images.weserv.nl/?url=';
 
@@ -655,15 +728,22 @@
     const DEFAULT_AVATAR = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjYwIiBoZWlnaHQ9IjYwIiByeD0iMzAiIGZpbGw9IiMyNjJmNDkiLz4KPHN2ZyB4PSIxNSIgeT0iMTUiIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiNlOTQ1NjAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj4KPHBhdGggZD0iTTIwIDIxdi0yYTQgNCAwIDAgMC00LTRINGE0IDQgMCAwIDAtNCA0djIiLz4KPGNpcmNsZSBjeD0iMTIiIGN5PSI3IiByPSI0Ii8+Cjwvc3ZnPgo8L3N2Zz4K';
 
     // 全局变量存储数据
-    let activitiesData = [];
+    let allActivitiesData = []; // 存储所有本地数据
+    let activitiesData = []; // 当前显示的数据
     let filteredData = [];
 
     // 分页相关变量
     let currentPage = 1;
+    const ITEMS_PER_PAGE = 1000;
     let hasMoreData = true;
     let isLoading = false;
     let currentFilterType = 'all';
-    let currentSortBy = 'newest';
+    let currentSortBy = 'popular';
+    let isUsingLocalData = false; // 标记是否在使用本地数据
+
+    // 超时相关变量
+    const REQUEST_TIMEOUT = 10000; // 10秒超时
+    let requestTimeoutId = null;
 
     // 页面加载完成后获取数据
     document.addEventListener('DOMContentLoaded', function() {
@@ -688,13 +768,15 @@
         document.getElementById('refresh-btn').addEventListener('click', function() {
             currentPage = 1;
             hasMoreData = true;
+            isUsingLocalData = false;
+            hideWarningMessage();
             fetchData(1, true);
         });
 
         // 加载更多按钮事件
         document.getElementById('load-more-btn').addEventListener('click', function() {
             if (!isLoading && hasMoreData) {
-                fetchData(currentPage + 1, false);
+                loadMoreData();
             }
         });
 
@@ -716,6 +798,11 @@
         // 如果正在加载或没有更多数据，则不处理
         if (isLoading || !hasMoreData) return;
 
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        if (!loadMoreBtn || loadMoreBtn.style.display === 'none') {
+            return;
+        }
+
         // 计算距离底部的距离
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         const windowHeight = window.innerHeight;
@@ -723,16 +810,227 @@
 
         // 当滚动到距离底部200px以内时，自动加载更多
         if (scrollTop + windowHeight >= documentHeight - 200) {
+            loadMoreData();
+        }
+    }
+
+    // 加载更多数据（统一处理本地和远程）
+    function loadMoreData() {
+        if (isLoading || !hasMoreData) return;
+
+        isLoading = true;
+        showLoadingMore();
+
+        if (isUsingLocalData) {
+            // 使用本地数据的分页
+            loadMoreLocalData();
+        } else {
+            // 使用API的分页
             fetchData(currentPage + 1, false);
         }
     }
 
+    // 显示警告信息
+    function showWarningMessage() {
+        const warningElement = document.getElementById('warningMessage');
+        warningElement.style.display = 'block';
+        isUsingLocalData = true;
+    }
+
+    // 隐藏警告信息
+    function hideWarningMessage() {
+        const warningElement = document.getElementById('warningMessage');
+        warningElement.style.display = 'none';
+        isUsingLocalData = false;
+    }
+
+    // 从本地JSON文件加载数据
+    async function loadLocalData() {
+        try {
+            const response = await fetch(LOCAL_DATA_SOURCE);
+            if (!response.ok) {
+                throw new Error('Failed to load local data');
+            }
+            const data = await response.json();
+
+            // 统一数据格式处理
+            if (data.code === 10000 && data.data) {
+                return {
+                    code: 10000,
+                    data: data.data
+                };
+            } else if (data.data && data.data.rows) {
+                return {
+                    code: 10000,
+                    data: data.data
+                };
+            } else if (data.rows) {
+                return {
+                    code: 10000,
+                    data: {
+                        rows: data.rows,
+                        count: data.count || data.rows.length
+                    }
+                };
+            } else {
+                throw new Error('Invalid local data format');
+            }
+        } catch (error) {
+            console.error('Failed to load local data:', error);
+            return null;
+        }
+    }
+
+    // 合并API数据和本地JSON数据
+    function mergeApiAndJsonData(apiData, jsonData) {
+        if (!apiData || !apiData.data) {
+            return jsonData;
+        }
+        if (!jsonData || !jsonData.data) {
+            return apiData;
+        }
+
+        const apiRows = apiData.data.rows || [];
+        const jsonRows = jsonData.data.rows || [];
+
+        // 创建一个Map用于合并数据，JSON数据优先级更高
+        const mergedMap = new Map();
+
+        // 先添加API数据
+        apiRows.forEach(item => {
+            if (item.id) {
+                mergedMap.set(item.id, item);
+            }
+        });
+
+        // 再添加JSON数据，相同ID会覆盖API数据
+        jsonRows.forEach(item => {
+            if (item.id) {
+                mergedMap.set(item.id, item);
+            }
+        });
+
+        // 转换为数组
+        const mergedRows = Array.from(mergedMap.values());
+
+        // 返回合并后的数据结构
+        return {
+            ...apiData,
+            data: {
+                ...apiData.data,
+                rows: mergedRows,
+                count: mergedRows.length
+            }
+        };
+    }
+
+    // 本地数据分页（客户端分页）
+    async function loadMoreLocalData() {
+        try {
+            // 如果还没有加载所有本地数据，先加载
+            if (allActivitiesData.length === 0) {
+                const localData = await loadLocalData();
+                if (!localData) {
+                    throw new Error('无法加载本地数据');
+                }
+                allActivitiesData = localData.data.rows || [];
+
+                // 先进行过滤和排序
+                filterAndSortAllActivities();
+            }
+
+            // 计算要显示的下一页数据
+            const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+            const endIndex = startIndex + ITEMS_PER_PAGE;
+
+            const newActivities = filteredData.slice(startIndex, endIndex);
+
+            if (newActivities.length === 0) {
+                hasMoreData = false;
+                showNoMoreData();
+                return;
+            }
+
+            // 如果是第一页，替换所有数据，否则追加数据
+            if (currentPage === 1) {
+                activitiesData = newActivities;
+            } else {
+                activitiesData = [...activitiesData, ...newActivities];
+            }
+
+            // 更新统计数据
+            updateStats({
+                code: 10000,
+                data: {
+                    count: filteredData.length
+                }
+            });
+
+            // 显示数据
+            displayActivities();
+
+            // 更新分页状态
+            if (endIndex >= filteredData.length) {
+                hasMoreData = false;
+                showNoMoreData();
+            } else {
+                currentPage++;
+                hasMoreData = true;
+                showLoadMoreButton();
+            }
+
+        } catch (error) {
+            console.error('Error loading more local data:', error);
+            showLoadMoreError('加载数据失败', error.message);
+        } finally {
+            isLoading = false;
+            hideLoadingMore();
+        }
+    }
+
+    // 过滤和排序所有本地数据
+    function filterAndSortAllActivities() {
+        // 过滤数据
+        if (currentFilterType === 'all') {
+            filteredData = [...allActivitiesData];
+        } else if (currentFilterType === 'post') {
+            filteredData = allActivitiesData.filter(activity => activity.from === 2);
+        } else if (currentFilterType === 'recruit') {
+            filteredData = allActivitiesData.filter(activity =>
+                activity.from === 5 || activity.from === 6 || activity.from === 9 || activity.from === 7);
+        } else if (currentFilterType === 'rp') {
+            filteredData = allActivitiesData.filter(activity => activity.from === 8);
+        }
+
+        // 排序数据
+        if (currentSortBy === 'newest') {
+            filteredData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        } else if (currentSortBy === 'oldest') {
+            filteredData.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+        } else if (currentSortBy === 'popular') {
+            filteredData.sort((a, b) => {
+                const aLikes = parseInt(a.like_count) || 0;
+                const bLikes = parseInt(b.like_count) || 0;
+                return bLikes - aLikes;
+            });
+        }
+    }
+
     // 获取数据函数
-    async function fetchData(page = 1, isRefresh = false) {
+    async function fetchData(page = 1, isRefresh = true) {
         // 防止重复请求
         if (isLoading) return;
 
         isLoading = true;
+
+        // 设置超时定时器
+        if (requestTimeoutId) {
+            clearTimeout(requestTimeoutId);
+        }
+
+        requestTimeoutId = setTimeout(() => {
+            handleRequestTimeout(isRefresh);
+        }, REQUEST_TIMEOUT);
 
         // 显示加载状态
         if (isRefresh) {
@@ -740,62 +1038,186 @@
             container.innerHTML = '<div class="loading">正在加载数据...</div>';
             hideLoadMoreButton();
         } else {
-            // 只有在有加载更多按钮时才显示加载状态
-            const loadMoreBtn = document.getElementById('load-more-btn');
-            if (loadMoreBtn && loadMoreBtn.style.display !== 'none') {
-                showLoadingMore();
-            }
+            showLoadingMore();
         }
 
         try {
-            const response = await fetch(`${API_URL}?page=${page}&limit=10`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
+            // 并行请求API和本地JSON数据
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
 
-            if (data.code === 10000) {
-                const newActivities = data.data.rows;
+            const [apiResponse, jsonResponse] = await Promise.all([
+                fetch(`${API_URL}?page=${page}&limit=${ITEMS_PER_PAGE}`, { signal: controller.signal })
+                    .catch(error => {
+                        console.error('API请求失败:', error);
+                        return null;
+                    }),
+                fetch(LOCAL_DATA_SOURCE).catch(error => {
+                    console.error('本地数据加载失败:', error);
+                    return null;
+                })
+            ]);
+
+            clearTimeout(timeoutId);
+            clearTimeout(requestTimeoutId);
+
+            let apiData = null;
+            let jsonData = null;
+
+            // 处理API响应
+            if (apiResponse && apiResponse.ok) {
+                apiData = await apiResponse.json();
+            }
+
+            // 处理本地JSON响应
+            if (jsonResponse && jsonResponse.ok) {
+                jsonData = await jsonResponse.json();
+            }
+
+            // 合并数据
+            const mergedData = mergeApiAndJsonData(apiData, jsonData);
+
+            if (mergedData && mergedData.code === 10000) {
+                // 合并成功，隐藏警告信息
+                hideWarningMessage();
+                isUsingLocalData = false;
+
+                // 更新统计数据
+                updateStats(mergedData);
+
+                // 处理数据加载逻辑
+                const newActivities = mergedData.data.rows || [];
+                
+                if (isRefresh) {
+                    // 刷新时重置数据
+                    currentPage = 1;
+                    allActivitiesData = newActivities;
+                    filterAndSortActivities(true);
+                } else {
+                    // 加载更多时追加数据到allActivitiesData
+                    // 但需要确保没有重复数据
+                    const existingIds = new Set(allActivitiesData.map(item => item.id));
+                    const uniqueNewActivities = newActivities.filter(item => !existingIds.has(item.id));
+                    allActivitiesData = [...allActivitiesData, ...uniqueNewActivities];
+                    
+                    // 重新过滤和排序所有数据，但不重置分页
+                    filterAndSortActivities(false);
+                }
 
                 // 检查是否还有更多数据
-                if (newActivities.length === 0) {
-                    hasMoreData = false;
+                const totalItems = mergedData.data.count || 0;
+                hasMoreData = (allActivitiesData.length < totalItems);
+
+                if (!hasMoreData) {
                     showNoMoreData();
-                } else {
-                    currentPage = page;
-
-                    if (isRefresh) {
-                        // 刷新时替换所有数据
-                        activitiesData = newActivities;
-                        updateStats(data); // 传入完整的data对象
-                        filterAndSortActivities(true);
-                    } else {
-                        // 加载更多时追加数据
-                        activitiesData = [...activitiesData, ...newActivities];
-                        // 对于加载更多，我们仍然使用API返回的总数
-                        updateStats(data);
-                        filterAndSortActivities(false);
-                    }
-
-                    hasMoreData = true;
                 }
             } else {
-                throw new Error(`API error: ${data.msg}`);
+                throw new Error('数据合并失败');
             }
         } catch (error) {
-            console.error('Error fetching data:', error);
-            if (isRefresh) {
-                const container = document.getElementById('activity-container');
-                container.innerHTML = `<div class="error">加载数据失败: ${error.message}</div>`;
+            clearTimeout(requestTimeoutId);
+            console.error('数据获取失败:', error);
+
+            // 尝试加载本地数据作为最后手段
+            const localData = await loadLocalData();
+
+            if (localData) {
+                // 本地数据加载成功
+                isUsingLocalData = true;
+                allActivitiesData = localData.data.rows || [];
+
+                if (isRefresh) {
+                    currentPage = 1;
+                    filterAndSortAllActivities();
+                    await loadMoreLocalData();
+                } else {
+                    await loadMoreLocalData();
+                }
+            } else {
+                // 本地数据也加载失败，显示错误
+                if (isRefresh) {
+                    const container = document.getElementById('activity-container');
+                    let errorMessage = '加载数据失败';
+                    let errorDetail = error.message;
+
+                    if (error.message.includes('Failed to get guild member dynamic info')) {
+                        errorMessage = '石之家功能维护中';
+                        errorDetail = '请稍后再试，或联系管理员';
+                    } else if (error.name === 'AbortError' || error.message.includes('timeout')) {
+                        errorMessage = '石之家功能维护中';
+                        errorDetail = '请求超时，请稍后再试';
+                    } else if (error.message.includes('服务器返回错误')) {
+                        errorMessage = '石之家功能维护中';
+                        errorDetail = error.message || '请稍后再试，或联系管理员';
+                    }
+
+                    container.innerHTML = `
+                        <div class="error-container">
+                            <div class="error-title">${errorMessage}</div>
+                            <div class="error-message">${errorDetail}</div>
+                            <button onclick="location.reload()" class="reload-button">
+                                重新加载
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    showLoadMoreError('加载数据失败', error.message);
+                }
+                hasMoreData = false;
+                showNoMoreData();
             }
-            hasMoreData = true;
         } finally {
             isLoading = false;
             hideLoadingMore();
 
-            // 只有在有更多数据且不是刷新操作时才显示加载更多按钮
-            if (hasMoreData && !isRefresh) {
-                showLoadMoreButton();
+            if (requestTimeoutId) {
+                clearTimeout(requestTimeoutId);
+                requestTimeoutId = null;
+            }
+        }
+    }
+
+    // 添加加载更多时的错误显示函数
+    function showLoadMoreError(errorMessage, errorDetail) {
+        // 创建一个临时的错误提示元素
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-container';
+        errorDiv.innerHTML = `
+            <div class="error-title">${errorMessage}</div>
+            <div class="error-message">${errorDetail}</div>
+        `;
+
+        // 将错误提示插入到活动列表后面
+        const container = document.getElementById('activity-container');
+        container.parentNode.insertBefore(errorDiv, container.nextSibling);
+
+        // 5秒后自动移除错误提示
+        setTimeout(() => {
+            if (errorDiv.parentNode) {
+                errorDiv.parentNode.removeChild(errorDiv);
+            }
+        }, 5000);
+    }
+
+    // 超时处理函数
+    function handleRequestTimeout(isRefresh) {
+        if (isLoading) {
+            isLoading = false;
+            hideLoadingMore();
+
+            if (isRefresh) {
+                const container = document.getElementById('activity-container');
+                container.innerHTML = `
+                    <div class="error-container">
+                        <div class="error-title">石之家功能维护中</div>
+                        <div class="error-message">请求超时，尝试加载本地数据...</div>
+                        <button onclick="location.reload()" class="reload-button">
+                            重新加载
+                        </button>
+                    </div>
+                `;
+            } else {
+                showLoadMoreError('石之家功能维护中', '请求超时，尝试加载本地数据...');
             }
         }
     }
@@ -807,15 +1229,15 @@
         if (data && data.data && data.data.count) {
             totalCount = parseInt(data.data.count);
         } else {
-            totalCount = activitiesData.length;
+            totalCount = allActivitiesData.length;
         }
         document.getElementById('total-count').textContent = totalCount;
 
         // 其他统计保持不变
-        const postCount = activitiesData.filter(activity => activity.from === 2).length;
-        const recruitCount = activitiesData.filter(activity =>
+        const postCount = allActivitiesData.filter(activity => activity.from === 2).length;
+        const recruitCount = allActivitiesData.filter(activity =>
             activity.from === 5 || activity.from === 6 || activity.from === 9 || activity.from === 7).length;
-        const rpCount = activitiesData.filter(activity => activity.from === 8).length;
+        const rpCount = allActivitiesData.filter(activity => activity.from === 8).length;
 
         document.getElementById('post-count').textContent = postCount;
         document.getElementById('recruit-count').textContent = recruitCount;
@@ -824,21 +1246,16 @@
 
     // 过滤和排序活动
     function filterAndSortActivities(resetPagination = true) {
-        if (resetPagination) {
-            currentPage = 1;
-            hasMoreData = true;
-        }
-
         // 过滤数据
         if (currentFilterType === 'all') {
-            filteredData = [...activitiesData];
+            filteredData = [...allActivitiesData];
         } else if (currentFilterType === 'post') {
-            filteredData = activitiesData.filter(activity => activity.from === 2);
+            filteredData = allActivitiesData.filter(activity => activity.from === 2);
         } else if (currentFilterType === 'recruit') {
-            filteredData = activitiesData.filter(activity =>
+            filteredData = allActivitiesData.filter(activity =>
                 activity.from === 5 || activity.from === 6 || activity.from === 9 || activity.from === 7);
         } else if (currentFilterType === 'rp') {
-            filteredData = activitiesData.filter(activity => activity.from === 8);
+            filteredData = allActivitiesData.filter(activity => activity.from === 8);
         }
 
         // 排序数据
@@ -854,14 +1271,39 @@
             });
         }
 
+        // 计算当前已显示的数据数量
+        const currentDisplayCount = resetPagination ? 0 : activitiesData.length;
+        
+        // 分页显示
+        const startIndex = currentDisplayCount;
+        const endIndex = startIndex + ITEMS_PER_PAGE;
+        
+        if (resetPagination) {
+            // 刷新时替换数据
+            activitiesData = filteredData.slice(startIndex, endIndex);
+            currentPage = 2; // 下一页是第2页
+        } else {
+            // 加载更多时追加数据
+            activitiesData = [...activitiesData, ...filteredData.slice(startIndex, endIndex)];
+            currentPage++;
+        }
+
         displayActivities();
+
+        // 检查是否还有更多数据
+        hasMoreData = endIndex < filteredData.length;
+        if (!hasMoreData) {
+            showNoMoreData();
+        } else {
+            showLoadMoreButton();
+        }
     }
 
     // 显示活动
     function displayActivities() {
         const container = document.getElementById('activity-container');
 
-        if (filteredData.length === 0) {
+        if (activitiesData.length === 0) {
             container.innerHTML = '<div class="loading">没有找到匹配的活动</div>';
             hideLoadMoreButton();
             return;
@@ -870,7 +1312,7 @@
         container.innerHTML = '<div class="activity-list"></div>';
         const activityList = container.querySelector('.activity-list');
 
-        filteredData.forEach(activity => {
+        activitiesData.forEach(activity => {
             const activityCard = createActivityCard(activity);
             activityList.appendChild(activityCard);
         });
@@ -887,7 +1329,7 @@
     function createActivityCard(activity) {
         const card = document.createElement('div');
         card.className = 'activity-card';
-        card.dataset.activity = JSON.stringify(activity);
+        card.dataset.activityId = activity.id || activity.created_at;
 
         // 解析徽章数据
         let badges = [];
@@ -909,41 +1351,51 @@
 
         card.innerHTML = `
             <div class="activity-header">
-                <img src="${avatarUrl}" alt="头像" class="avatar" onerror="this.src='${DEFAULT_AVATAR}'">
+                <img src="${avatarUrl}" alt="头像" class="avatar" onerror="this.onerror=null; this.src='${DEFAULT_AVATAR}'">
                 <div class="character-info">
-                    <div class="character-name">${activity.character_name}</div>
-                    <div class="server-info">${activity.area_name} · ${activity.group_name}</div>
-                    <span class="activity-type">${typeText}</span>
+                    <div class="character-name">${escapeHtml(activity.character_name)}</div>
+                    <div class="server-info">${escapeHtml(activity.area_name)} · ${escapeHtml(activity.group_name)}</div>
+                    <span class="activity-type">${escapeHtml(typeText)}</span>
                 </div>
             </div>
 
             <div class="activity-content">
-                <div class="activity-title">${title || '无标题'}</div>
-                <div class="activity-preview">${content}</div>
-                ${coverUrl ? `<img src="${coverUrl}" class="cover-image" alt="封面" onerror="this.style.display='none'">` : ''}
+                <div class="activity-title">${escapeHtml(title || '无标题')}</div>
+                <div class="activity-preview">${escapeHtml(content)}</div>
+                ${coverUrl ? `<img src="${coverUrl}" class="cover-image" alt="封面" onerror="this.onerror=null; this.style.display='none'">` : ''}
             </div>
 
             ${badges.length > 0 ? `
             <div class="badges">
                 ${badges.slice(0, 3).map(badge =>
-            `<span class="badge">${badge.badgeName}</span>`
-        ).join('')}
+                    `<span class="badge">${escapeHtml(badge.badgeName)}</span>`
+                ).join('')}
                 ${badges.length > 3 ? `<span class="badge">+${badges.length - 3}更多</span>` : ''}
             </div>
             ` : ''}
 
             <div class="activity-meta">
                 <div>${formatDate(activity.created_at)}</div>
-                <div>❤️ ${activity.like_count} · 💬 ${activity.comment_count}</div>
+                <div>❤️ ${escapeHtml(activity.like_count)} · 💬 ${escapeHtml(activity.comment_count)}</div>
             </div>
         `;
 
         // 添加点击事件打开弹窗
-        card.addEventListener('click', function() {
-            openModal(activity);
+        card.addEventListener('click', function(e) {
+            if (!e.target.closest('.badge')) { // 避免点击徽章时打开弹窗
+                openModal(activity);
+            }
         });
 
         return card;
+    }
+
+    // HTML转义函数
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 
     // 打开弹窗显示详细信息
@@ -962,7 +1414,7 @@
         const contentSection = createContentSection(activity);
         modalBody.appendChild(contentSection);
 
-        // 如果有额外信息，创建详细信息部分
+        // 创建详细信息部分
         const detailSection = createDetailSection(activity);
         if (detailSection) {
             modalBody.appendChild(detailSection);
@@ -978,78 +1430,78 @@
         section.className = 'modal-section';
 
         const avatarUrl = activity.avatar ? getProxiedImageUrl(activity.avatar) : DEFAULT_AVATAR;
+
+        // 解析徽章数据
+        let badges = [];
+        try {
+            if (activity.badge && activity.badge !== '[]') {
+                badges = JSON.parse(activity.badge);
+            }
+        } catch (e) {
+            console.error('Error parsing badges:', e);
+            badges = [];
+        }
+
         const { typeText } = getActivityDetails(activity);
 
         section.innerHTML = `
             <div class="modal-character-info">
-                <img src="${avatarUrl}" alt="头像" class="modal-character-avatar" onerror="this.src='${DEFAULT_AVATAR}'">
+                <img src="${avatarUrl}" alt="头像" class="modal-character-avatar" onerror="this.onerror=null; this.src='${DEFAULT_AVATAR}'">
                 <div class="modal-character-details">
-                    <div class="modal-character-name">${activity.character_name}</div>
-                    <div class="modal-character-server">${activity.area_name} · ${activity.group_name}</div>
-                    <span class="modal-activity-type">${typeText}</span>
+                    <div class="modal-character-name">${escapeHtml(activity.character_name)}</div>
+                    <div class="modal-character-server">${escapeHtml(activity.area_name)} · ${escapeHtml(activity.group_name)}</div>
+                    <div class="modal-activity-type">${escapeHtml(typeText)}</div>
+                    <div class="label-container">
+                        ${badges.map(badge =>
+                            `<span class="label">${escapeHtml(badge.badgeName)}</span>`
+                        ).join('')}
+                    </div>
                 </div>
-            </div>
-            <div class="activity-meta">
-                <div>发布于 ${formatFullDate(activity.created_at)}</div>
-                <div>❤️ ${activity.like_count} 个赞 · 💬 ${activity.comment_count} 条评论</div>
             </div>
         `;
 
         return section;
     }
 
-    // 创建内容部分
+    // 创建活动内容部分
     function createContentSection(activity) {
         const section = document.createElement('div');
         section.className = 'modal-section';
 
-        const { title, content, coverImage } = getActivityDetails(activity);
+        const { title } = getActivityDetails(activity);
+        let content = '';
 
-        // 处理HTML内容中的图片代理和样式
-        let processedContent = content;
-        if (processedContent) {
-            // 先处理表情标记
-            processedContent = convertEmojiTags(processedContent);
-
-            // 再处理其他HTML内容
-            if (processedContent.includes('<img') || processedContent.includes('src=')) {
-                processedContent = processHtmlImages(processedContent);
-            }
+        // 根据活动类型获取内容
+        if (activity.from === 2 && activity.from_info) { // 帖子
+            content = activity.from_info.content || '';
+        } else if (activity.from === 5 && activity.from_info) { // 导师招募
+            content = activity.from_info.detail || '';
+        } else if (activity.from === 6 && activity.from_info) { // 副本招募
+            content = activity.from_info.progress || '';
+        } else if (activity.from === 7 && activity.from_info) { // 分享招募
+            content = activity.from_info.detail || '';
+        } else if (activity.from === 8 && activity.from_info) { // RP活动
+            content = activity.from_info.profile || '';
+        } else if (activity.from === 9 && activity.from_info) { // 其他招募
+            content = activity.from_info.detail || '';
+        } else {
+            content = activity.mask_content || '';
         }
 
-        // 对于mask_content也需要单独处理（针对case 1的情况）
-        let maskContentHtml = '';
-        if (activity.mask_content) {
-            let processedMaskContent = convertEmojiTags(activity.mask_content);
-            if (processedMaskContent.includes('<img') || processedMaskContent.includes('src=')) {
-                processedMaskContent = processHtmlImages(processedMaskContent);
-            }
-            maskContentHtml = processedMaskContent;
-        }
+        // 处理表情标记
+        content = convertEmojiTags(content);
 
-        // 处理封面图片
+        // 处理图片
         let imagesHtml = '';
-        if (coverImage) {
-            const images = coverImage.split(',');
-            imagesHtml = `
-                <div class="modal-images">
-                    ${images.map(img => `
-                        <img src="${getProxiedImageUrl(img)}" class="modal-image" alt="内容图片"
-                             onerror="this.style.display='none'">
-                    `).join('')}
-                </div>
-            `;
+        if (activity.pic_url) {
+            const proxiedUrl = getProxiedImageUrl(activity.pic_url);
+            imagesHtml = `<img src="${proxiedUrl}" class="modal-image" alt="动态图片" onerror="this.onerror=null; this.style.display='none'">`;
         }
 
         section.innerHTML = `
-            <h3>内容详情</h3>
-            ${title ? `<div class="modal-field"><div class="modal-field-value" style="font-weight: bold; font-size: 1.2rem; margin-bottom: 10px;">${title}</div></div>` : ''}
-            ${processedContent || maskContentHtml ? `
-                <div class="modal-content-text">
-                    ${processedContent || maskContentHtml}
-                </div>
-            ` : '<div class="modal-content-text">暂无详细内容</div>'}
-            ${imagesHtml}
+            <h3>${escapeHtml(title || '动态内容')}</h3>
+            <div class="modal-content-text">${content}</div>
+            ${imagesHtml ? `<div class="modal-images">${imagesHtml}</div>` : ''}
         `;
 
         return section;
@@ -1057,199 +1509,111 @@
 
     // 创建详细信息部分
     function createDetailSection(activity) {
-        if (!activity.from_info) return null;
-
         const section = document.createElement('div');
         section.className = 'modal-section';
 
-        let detailsHtml = '';
+        const fields = [];
 
-        // 根据活动类型显示不同的详细信息
-        switch(activity.from) {
-            case 1: // 普通动态
-                if (activity.mask_content) {
-                    // 处理表情标记
-                    let processedMaskContent = convertEmojiTags(activity.mask_content);
-                    if (processedMaskContent.includes('<img') || processedMaskContent.includes('src=')) {
-                        processedMaskContent = processHtmlImages(processedMaskContent);
-                    }
+        // 添加基本字段
+        fields.push({
+            label: '发布时间',
+            value: formatFullDate(activity.created_at)
+        });
 
-                    detailsHtml += `
-                    <div class="modal-field">
-                        <div class="modal-field-value">动态内容：</div>
-                        <div class="modal-content-text">${processedMaskContent}</div>
-                    </div>
-                    `;
-                }
-                // 处理动态图片
-                if (activity.pic_url) {
-                    const images = activity.pic_url.split(',');
-                    detailsHtml += `
-                    <div class="modal-field">
-                        <div class="modal-field-value">图片：</div>
-                        <div class="modal-images">
-                            ${images.map(img => `
-                                <img src="${getProxiedImageUrl(img)}" class="modal-image" alt="动态图片"
-                                     onerror="this.style.display='none'">
-                            `).join('')}
-                        </div>
-                    </div>
-                    `;
-                }
-                break;
-            case 2: // 帖子
-            case 5: // 导师招募
-            case 9: // 其他招募
-            case 6: // 副本招募
-                if (activity.from_info.fb_name) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">副本：${activity.from_info.fb_name}</div></div>`;
-                }
-                if (activity.from_info.progress) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">进度：${activity.from_info.progress}</div></div>`;
-                }
-                if (activity.from_info.fb_time) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">时间：${activity.from_info.fb_time}</div></div>`;
-                }
-                if (activity.from_info.team_composition) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">队伍构成：${activity.from_info.team_composition}</div></div>`;
-                }
-                if (activity.from_info.strategy) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">攻略：${activity.from_info.strategy}</div></div>`;
-                }
-                if (activity.from_info.labelInfo) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">标签：</div><div class="label-container">${activity.from_info.labelInfo.map(label => `<span class="label">${label.name}</span>`).join('')}</div></div>`;
-                }
-                break;
+        fields.push({
+            label: '点赞数',
+            value: activity.like_count || '0'
+        });
 
-            case 7: // 分享招募
-                if (activity.from_info.guild_name) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">部队：${activity.from_info.guild_name}</div></div>`;
-                }
-                if (activity.from_info.guild_tag) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">部队简称：${activity.from_info.guild_tag}</div></div>`;
-                }
-                if (activity.from_info.active_member_num) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">活跃成员：${activity.from_info.active_member_num}人</div></div>`;
-                }
-                if (activity.from_info.target_recruit_num) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">目标招募：${activity.from_info.target_recruit_num}人</div></div>`;
-                }
-                if (activity.from_info.weekend_time && activity.from_info.weekend_time !== '00:00-00:00') {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">周末活跃时间：${activity.from_info.weekend_time}</div></div>`;
-                }
-                if (activity.from_info.weekday_time && activity.from_info.weekday_time !== '00:00-00:00') {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">工作日活跃时间：${activity.from_info.weekday_time}</div></div>`;
-                }
-                if (activity.from_info.labelInfo && activity.from_info.labelInfo.length > 0) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">标签：</div><div class="label-container">${activity.from_info.labelInfo.map(label => `<span class="label">${label.name}</span>`).join('')}</div></div>`;
-                }
-                if (activity.from_info.detail_mask) {
-                    // 处理detail_mask中的表情标记
-                    let processedDetailMask = convertEmojiTags(activity.from_info.detail_mask);
-                    if (processedDetailMask.includes('<img') || processedDetailMask.includes('src=')) {
-                        processedDetailMask = processHtmlImages(processedDetailMask);
-                    }
+        fields.push({
+            label: '评论数',
+            value: activity.comment_count || '0'
+        });
 
-                    detailsHtml += `
-                    <div class="modal-field">
-                        <div class="modal-field-value">详情：</div>
-                        <div class="modal-content-text" id="detail-mask-content-${activity.id}">
-                            ${processedDetailMask}
-                        </div>
-                    </div>
-                    `;
-                }
-                break;
-
-            case 8: // RP活动
-                if (activity.from_info.rp_name) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">活动名称：${activity.from_info.rp_name}</div></div>`;
-                }
-                if (activity.from_info.profile) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">活动简介：${activity.from_info.profile}</div></div>`;
-                }
-                if (activity.from_info.start_time) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">开始时间：${formatFullDate(activity.from_info.start_time)}</div></div>`;
-                }
-                if (activity.from_info.address) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">地址：${activity.from_info.address}</div></div>`;
-                }
-                if (activity.from_info.open_time) {
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">开放时间：${activity.from_info.open_time}</div></div>`;
-                }
-                if (activity.from_info.custom_label) {
-                    const labels = activity.from_info.custom_label.split(',');
-                    detailsHtml += `<div class="modal-field"><div class="modal-field-value">标签：</div><div class="label-container">${labels.map(label => `<span class="label">${label}</span>`).join('')}</div></div>`;
-                }
-                // 处理detail_mask中的图片和表情
-                if (activity.from_info.detail_mask) {
-                    // 处理detail_mask中的表情标记
-                    let processedDetailMask = convertEmojiTags(activity.from_info.detail_mask);
-                    if (processedDetailMask.includes('<img') || processedDetailMask.includes('src=')) {
-                        processedDetailMask = processHtmlImages(processedDetailMask);
-                    }
-
-                    detailsHtml += `
-                    <div class="modal-field">
-                        <div class="modal-field-value">活动详情：</div>
-                        <div class="modal-content-text" id="detail-mask-content-${activity.id}">
-                            ${processedDetailMask}
-                        </div>
-                    </div>
-                    `;
-                }
-                break;
+        // 根据活动类型添加特定字段
+        if (activity.from === 2 && activity.from_info) { // 帖子
+            if (activity.from_info.tags) {
+                fields.push({
+                    label: '标签',
+                    value: activity.from_info.tags
+                });
+            }
+        } else if (activity.from === 5 && activity.from_info) { // 导师招募
+            if (activity.from_info.requirements) {
+                fields.push({
+                    label: '要求',
+                    value: activity.from_info.requirements
+                });
+            }
+            if (activity.from_info.contact) {
+                fields.push({
+                    label: '联系方式',
+                    value: activity.from_info.contact
+                });
+            }
+        } else if (activity.from === 6 && activity.from_info) { // 副本招募
+            if (activity.from_info.difficulty) {
+                fields.push({
+                    label: '难度',
+                    value: activity.from_info.difficulty
+                });
+            }
+            if (activity.from_info.party_size) {
+                fields.push({
+                    label: '队伍规模',
+                    value: activity.from_info.party_size
+                });
+            }
+        } else if (activity.from === 8 && activity.from_info) { // RP活动
+            if (activity.from_info.time) {
+                fields.push({
+                    label: '活动时间',
+                    value: activity.from_info.time
+                });
+            }
+            if (activity.from_info.location) {
+                fields.push({
+                    label: '活动地点',
+                    value: activity.from_info.location
+                });
+            }
         }
 
-        if (!detailsHtml) return null;
+        if (fields.length === 3) return null; // 如果只有基本字段，不显示详情部分
+
+        let fieldsHtml = '';
+        fields.forEach(field => {
+            fieldsHtml += `
+                <div class="modal-field">
+                    <strong>${escapeHtml(field.label)}：</strong>
+                    <span class="modal-field-value">${escapeHtml(field.value)}</span>
+                </div>
+            `;
+        });
 
         section.innerHTML = `
-            <h3>活动详情</h3>
-            ${detailsHtml}
+            <h3>详细信息</h3>
+            ${fieldsHtml}
         `;
 
-        // 在DOM插入后处理图片
-        setTimeout(() => {
-            processImagesInElement(section, activity.id);
-        }, 0);
-
         return section;
-    }
-
-    // 处理元素内的所有图片
-    function processImagesInElement(element, activityId) {
-        const contentElement = element.querySelector(`#detail-mask-content-${activityId}`);
-        if (!contentElement) return;
-
-        const images = contentElement.querySelectorAll('img');
-        images.forEach(img => {
-            const originalSrc = img.getAttribute('src');
-            if (originalSrc && !originalSrc.startsWith('data:') && !originalSrc.includes('weserv.nl')) {
-                const proxiedSrc = getProxiedImageUrl(originalSrc);
-                img.setAttribute('src', proxiedSrc);
-
-                // 移除原有的width/height属性，让CSS控制尺寸
-                img.removeAttribute('width');
-                img.removeAttribute('height');
-
-                // 添加错误处理
-                img.onerror = function() {
-                    console.warn('代理图片加载失败，尝试使用原始URL:', originalSrc);
-                    this.setAttribute('src', originalSrc);
-
-                    // 如果原始图片也加载失败，隐藏图片
-                    this.onerror = function() {
-                        this.style.display = 'none';
-                    };
-                };
-            }
-        });
     }
 
     // 关闭弹窗
     function closeModal() {
         const modal = document.getElementById('detailModal');
         modal.style.display = 'none';
+    }
+
+    // 获取代理图片URL
+    function getProxiedImageUrl(originalUrl) {
+        // 如果已经是代理URL，直接返回
+        if (originalUrl.includes('weserv.nl')) {
+            return originalUrl;
+        }
+
+        // 使用images.weserv.nl代理服务
+        return `${IMAGE_PROXY_URL}${encodeURIComponent(originalUrl)}`;
     }
 
     // 表情标记转换函数
@@ -1265,55 +1629,8 @@
             const proxiedUrl = getProxiedImageUrl(emojiUrl);
 
             // 返回图片标签，设置合适的大小
-            return `<img src="${proxiedUrl}" alt="表情${emojiId}" class="emoji" onerror="this.style.display='none'">`;
+            return `<img src="${proxiedUrl}" alt="表情${emojiId}" class="emoji" onerror="this.onerror=null; this.style.display='none'">`;
         });
-    }
-
-    // 获取代理图片URL
-    function getProxiedImageUrl(originalUrl) {
-        // 如果已经是代理URL，直接返回
-        if (originalUrl.includes('weserv.nl')) {
-            return originalUrl;
-        }
-
-        // 使用images.weserv.nl代理服务
-        return `${IMAGE_PROXY_URL}${encodeURIComponent(originalUrl)}`;
-    }
-
-    // 处理HTML内容中的图片代理和样式
-    function processHtmlImages(htmlContent) {
-        if (!htmlContent) return htmlContent;
-
-        // 创建临时DOM元素来解析和修改HTML
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = htmlContent;
-
-        // 处理所有img标签
-        const images = tempDiv.querySelectorAll('img');
-        images.forEach(img => {
-            const originalSrc = img.getAttribute('src');
-            if (originalSrc && !originalSrc.startsWith('data:')) { // 排除data URI
-                const proxiedSrc = getProxiedImageUrl(originalSrc);
-                img.setAttribute('src', proxiedSrc);
-
-                // 移除原有的width/height属性，让CSS控制尺寸
-                img.removeAttribute('width');
-                img.removeAttribute('height');
-
-                // 添加错误处理
-                img.onerror = function() {
-                    console.warn('代理图片加载失败，尝试使用原始URL:', originalSrc);
-                    this.setAttribute('src', originalSrc);
-
-                    // 如果原始图片也加载失败，隐藏图片
-                    this.onerror = function() {
-                        this.style.display = 'none';
-                    };
-                };
-            }
-        });
-
-        return tempDiv.innerHTML;
     }
 
     // 获取活动详情
@@ -1327,15 +1644,13 @@
         switch(activity.from) {
             case 1: // 普通动态
                 typeText = '发布了动态';
-                // 移除表情标记用于预览
-                content = activity.mask_content ?
-                    activity.mask_content.replace(/\[emo\d+\]/g, '[表情]') : '';
+                content = activity.mask_content || '';
                 coverImage = activity.pic_url || '';
                 break;
             case 2: // 帖子
                 typeText = '发表了帖子';
                 if (activity.from_info) {
-                    title = activity.from_info.title;
+                    title = activity.from_info.title || '';
                     content = activity.from_info.content_pre || '';
                     coverImage = activity.from_info.cover_pic || '';
                 }
@@ -1343,15 +1658,14 @@
             case 5: // 导师招募
                 typeText = '发布了导师招募';
                 if (activity.from_info) {
-                    title = activity.from_info.title;
-                    content = activity.from_info.detail_mask ?
-                        activity.from_info.detail_mask.replace(/<[^>]*>/g, '').substring(0, 100) + '...' : '';
+                    title = activity.from_info.title || '';
+                    content = activity.from_info.detail_mask || '';
                 }
                 break;
             case 6: // 副本招募
                 typeText = '发布了副本招募';
                 if (activity.from_info) {
-                    title = activity.from_info.fb_name;
+                    title = activity.from_info.fb_name || '';
                     content = activity.from_info.progress || '';
                 }
                 break;
@@ -1359,15 +1673,14 @@
                 typeText = '分享了招募';
                 if (activity.from_info) {
                     title = (activity.from_info.guild_name || '') + (activity.from_info.guild_tag ? ` <${activity.from_info.guild_tag}>` : '');
-                    content = activity.from_info.detail_mask ?
-                        activity.from_info.detail_mask.replace(/<[^>]*>/g, '').substring(0, 100) + '...' : '';
+                    content = activity.from_info.detail_mask || '';
                     coverImage = activity.from_info.cover_pic || '';
                 }
                 break;
             case 8: // RP活动
                 typeText = '发布了RP活动';
                 if (activity.from_info) {
-                    title = activity.from_info.rp_name;
+                    title = activity.from_info.rp_name || '';
                     content = activity.from_info.profile || '';
                     coverImage = activity.from_info.cover_pic || '';
                 }
@@ -1375,16 +1688,15 @@
             case 9: // 其他招募
                 typeText = '发布了招募';
                 if (activity.from_info) {
-                    title = activity.from_info.title;
-                    content = activity.from_info.detail_mask ?
-                        activity.from_info.detail_mask.replace(/<[^>]*>/g, '').substring(0, 100) + '...' : '';
+                    title = activity.from_info.title || '';
+                    content = activity.from_info.detail_mask || '';
                 }
                 break;
             default:
                 typeText = activity.mask_content || '发布了内容';
         }
 
-        // 如果内容为空，使用mask_content（但需要过滤掉无意义的默认文本）
+        // 如果内容为空，使用mask_content
         if (!content && activity.mask_content) {
             const meaninglessTexts = ['发表了帖子：', '发布了招募：', '发布了RP：', '上架了招募：', '分享招募-'];
             const isMeaningless = meaninglessTexts.some(text => activity.mask_content.includes(text));
@@ -1399,7 +1711,7 @@
             content = content.replace(/<[^>]*>/g, '');
         }
 
-        // 限制内容长度
+        // 限制内容长度用于预览
         if (content && content.length > 100) {
             content = content.substring(0, 100) + '...';
         }
@@ -1465,10 +1777,7 @@
     // 显示加载中状态
     function showLoadingMore() {
         const button = document.getElementById('load-more-btn');
-        // 检查按钮是否存在且可见
-        if (!button || button.style.display === 'none') {
-            return; // 如果按钮不存在或隐藏，直接返回
-        }
+        if (!button) return;
 
         const loadingIcon = button.querySelector('.loading-more');
 
@@ -1482,34 +1791,14 @@
     // 隐藏加载中状态
     function hideLoadingMore() {
         const button = document.getElementById('load-more-btn');
-        // 检查按钮是否存在
-        if (!button) {
-            return;
-        }
+        if (!button) return;
 
         button.disabled = false;
+        const loadingIcon = button.querySelector('.loading-more');
+        if (loadingIcon) {
+            loadingIcon.style.display = 'none';
+        }
         button.innerHTML = '加载更多';
-    }
-
-    // 修改滚动加载处理函数，添加更严格的检查
-    function handleScroll() {
-        // 如果正在加载或没有更多数据，或加载更多按钮不存在，则不处理
-        if (isLoading || !hasMoreData) return;
-
-        const loadMoreBtn = document.getElementById('load-more-btn');
-        if (!loadMoreBtn || loadMoreBtn.style.display === 'none') {
-            return;
-        }
-
-        // 计算距离底部的距离
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        const windowHeight = window.innerHeight;
-        const documentHeight = document.documentElement.scrollHeight;
-
-        // 当滚动到距离底部200px以内时，自动加载更多
-        if (scrollTop + windowHeight >= documentHeight - 200) {
-            fetchData(currentPage + 1, false);
-        }
     }
 
     // 显示没有更多数据

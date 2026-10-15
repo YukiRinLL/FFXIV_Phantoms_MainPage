@@ -10,7 +10,7 @@
     <meta property="og:image" content="assets/images/index-meta.jpg">
     <meta name="twitter:title" content="Phantoms">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-    <link rel="shortcut icon" href="https://img.picgo.net/2024/10/18/frame-1-121x121bc5d878c1dd0d5fc.png"
+    <link rel="shortcut icon" href="https://dlink.host/wx4.sinaimg.cn/large/006fhRoTly8i8u7pljsfoj3045044dfp.jpg"
           onerror="this.onerror=null;this.src='./assets/images/frame-1-121x121.png';"
           type="image/x-icon">
     <meta name="description" content="FF14、FC/CWLS Phantomsのホームページです。">
@@ -55,49 +55,114 @@
             border-radius: 5px;
             overflow: hidden;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            position: relative; /* Add this */
-            width: 550px; /* Add this */
-            height: 550px; /* Add this */
-            display: flex; /* Add this */
-            align-items: center; /* Add this */
-            justify-content: center; /* Add this */
+            position: relative;
+            width: 550px;
+            height: 550px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .gallery-item img {
             width: auto;
             height: auto;
-            max-width: 100%; /* Change this */
-            max-height: 100%; /* Change this */
+            max-width: 100%;
+            max-height: 100%;
             display: block;
             transition: transform 0.6s ease;
         }
         .gallery-item:hover img {
             transform: scale(1.05);
         }
+
+        /* 组图样式 */
+        .group-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            width: 100%;
+            height: 100%;
+        }
+        .group-item {
+            position: relative;
+            overflow: hidden;
+        }
+        .group-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .group-label {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            z-index: 10;
+        }
+
         .lightbox {
             display: none;
             position: fixed;
             z-index: 1000;
-            min-width: 100%;
-            min-height: 100%;
-            object-fit: contain;
             top: 0;
             left: 0;
-            background: rgba(0, 0, 0, 0.8);
-            /*display: flex;*/
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
             align-items: center;
             justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+            flex-direction: column; /* 改为垂直排列 */
         }
         .lightbox img {
             max-width: 90%;
-            max-height: 80%;
+            max-height: 90%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 5px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+        }
+        .lightbox img, .group-lightbox-container img {
+            max-width: 90%;
+            max-height: 70vh; /* 进一步减少高度，为关闭按钮留更多空间 */
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 5px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+            margin-bottom: 0; /* 移除margin-bottom，改用容器的flex布局 */
+        }
+        .lightbox-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 90%;
+            max-height: 90%;
         }
         .close-lightbox {
             cursor: pointer;
-            position: fixed;
-            top: 20px;
-            right: 20px;
+            position: relative; /* 改为相对定位 */
+            margin-top: 20px; /* 在图片和按钮之间添加间距 */
             color: #fff;
-            font-size: 25px;
+            font-size: 35px;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.7);
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+            transition: background 0.3s;
+            border: 2px solid white;
+        }
+        .close-lightbox:hover {
+            background: rgba(255, 255, 255, 0.9);
+            color: #000;
         }
         .caption {
             position: absolute;
@@ -117,7 +182,52 @@
         .title {
             /* 作品名样式 */
         }
+
+        /* 组图灯箱样式 */
+        .group-lightbox-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 90%;
+            max-height: 90%;
+        }
+        .group-lightbox-container img {
+            max-width: 100%;
+            max-height: calc(90vh - 80px); /* 为导航栏留出空间 */
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 5px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+        }
+        .group-nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            color: white;
+            width: 100%;
+        }
+        .group-nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            padding: 10px 15px;
+            margin: 0 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .group-nav-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+        #group-counter {
+            margin: 0 15px;
+            font-size: 16px;
+        }
     </style>
+    <!-- 全局配置（必须在其他脚本之前加载） -->
+    <script src="./assets/js/config.js"></script>
 </head>
 
 <body>
@@ -147,7 +257,7 @@
 
     .title {
         font-size: 0.8em; /* 大字 */
-        color: #666; /* 深灰色 */
+        color: black;
     }
 
     .subtitle {
@@ -167,198 +277,462 @@
 <script src="./assets/web/assets/jquery/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-        $("#menu").load("./additions/menu/menu1.html", function() {
-            adjustLinks();
-            window.addEventListener('resize', adjustLinks);
+        $("#menu").load("./additions/menu/menu.html", function() {
+            // 延迟一小段时间，确保 menu.html 中的脚本已执行
+            setTimeout(function() {
+                if (typeof adjustLinks === 'function') {
+                    adjustLinks();
+                    window.addEventListener('resize', adjustLinks);
+                }
+            }, 100);
         });
     });
 </script>
 
-<div class="mbr-section-btn mt-3" id="fixedButton">
-    <a class="btn btn-light display-4" target="_blank" href="https://www.picgo.net/album/Srhn2" aria-expanded="false">
-        <div class="title">PicGo图床</div>
-        <div class="subtitle">点击跳转</div>
-    </a>
-</div>
+<!--<div class="mbr-section-btn mt-3" id="fixedButton">-->
+<!--    <a class="btn btn-light display-4" target="_blank" href="https://www.picgo.net/album/Srhn2" aria-expanded="false">-->
+<!--        <div class="title">PicGo图床</div>-->
+<!--        <div class="subtitle">点击跳转</div>-->
+<!--    </a>-->
+<!--</div>-->
 
 <div class="gallery-container">
     <!-- Gallery Items -->
-    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/16203abc06869b783d62c061750eab7e7de31e2cb54d050d.jpg')">
-        <img src="https://img.picgo.net/2024/10/18/16203abc06869b783d62c061750eab7e7de31e2cb54d050d.md.jpg" alt="Gallery Image" />
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f2a4b516d.jpeg')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f2a4b516d.jpeg" alt="Gallery Image" />
         <div class="caption">
             <span class="author">YukiRinLL</span>
             <span class="title"><strong></strong></span>
         </div>
     </div>
-    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/751b8ca50bd7ab9c5c14d5936ba2f9e73eb4cf267d7f4996.jpg')">
-        <img src="https://img.picgo.net/2024/10/18/751b8ca50bd7ab9c5c14d5936ba2f9e73eb4cf267d7f4996.md.jpg" alt="Gallery Image" />
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f2abded2b.jpeg')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f2abded2b.jpeg" alt="Gallery Image" />
         <div class="caption">
             <span class="author">YukiRinLL</span>
             <span class="title"><strong></strong></span>
         </div>
     </div>
-    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/0f0769f1f8eed6498814b9fbaa29cf2793b258e793cc3aad.jpg')">
-        <img src="https://img.picgo.net/2024/10/18/0f0769f1f8eed6498814b9fbaa29cf2793b258e793cc3aad.md.jpg" alt="Gallery Image" />
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f29bb07bc.jpeg')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f29bb07bc.jpeg" alt="Gallery Image" />
         <div class="caption">
             <span class="author">YukiRinLL</span>
             <span class="title"><strong>Ronka</strong></span>
         </div>
     </div>
-    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/aa1b3db1ed6dab4fc6.jpg')">
-        <img src="https://img.picgo.net/2024/10/18/aa1b3db1ed6dab4fc6.md.jpg" alt="Gallery Image" />
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f2b78dd9c.jpeg')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f2b78dd9c.jpeg" alt="Gallery Image" />
         <div class="caption">
             <span class="author">YukiRinLL</span>
             <span class="title"><strong>雨中</strong></span>
         </div>
     </div>
-    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_013c7a03964af991e8d.jpg')">
-        <img src="https://img.picgo.net/2024/10/18/IMG_013c7a03964af991e8d.md.jpg" alt="Gallery Image" />
-        <div class="caption">
-            <span class="author">朝夕优</span>
-            <span class="title"><strong></strong></span>
-        </div>
-    </div>
-    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/216E80AA15ED7DE65F0E8E92BC173164bbc7dbee9238b90a.jpeg')">
-        <img src="https://img.picgo.net/2024/10/18/216E80AA15ED7DE65F0E8E92BC173164bbc7dbee9238b90a.md.jpeg" alt="Gallery Image" />
-    </div>
-    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/llbb308d6690c35c82.jpg')">
-        <img src="https://img.picgo.net/2024/10/18/llbb308d6690c35c82.md.jpg" alt="Gallery Image" />
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f2ac2ae30.jpeg')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f2ac2ae30.jpeg" alt="Gallery Image" />
         <div class="caption">
             <span class="author">YukiRinLL</span>
             <span class="title"><strong>角色自画像</strong></span>
         </div>
     </div>
-    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_01192373d6739840ac4.png')">
-        <img src="https://img.picgo.net/2024/10/18/IMG_01192373d6739840ac4.md.png" alt="Gallery Image" />
+    <!--    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/69522ad7e7f27.png')">-->
+    <!--        <img src="https://free.picui.cn/free/2025/12/29/69522ad7e7f27.png" alt="Gallery Image" />-->
+    <!--        <div class="caption">-->
+    <!--            <span class="author">YukiRinLL</span>-->
+    <!--            <span class="title"><strong>角色自画像</strong></span>-->
+    <!--        </div>-->
+    <!--    </div>-->
+
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f293d7fc8.png')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f293d7fc8.png" alt="Gallery Image" />
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f28e42c0a.png')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f28e42c0a.png" alt="Gallery Image" />
         <div class="caption">
             <span class="author">朝夕优</span>
             <span class="title"><strong></strong></span>
         </div>
     </div>
-    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_010aded14e83e228ab7.png')">
-        <img src="https://img.picgo.net/2024/10/18/IMG_010aded14e83e228ab7.md.png" alt="Gallery Image" />
-        <div class="caption">
-            <span class="author">朝夕优</span>
-            <span class="title"><strong></strong></span>
-        </div>
-    </div>
-    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_008c69bef7dd6784a93.png')">
-        <img src="https://img.picgo.net/2024/10/18/IMG_008c69bef7dd6784a93.md.png" alt="Gallery Image" />
-        <div class="caption">
-            <span class="author">朝夕优</span>
-            <span class="title"><strong></strong></span>
-        </div>
-    </div>
-    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_0094ed144dfdc93eb7a.png')">
-        <img src="https://img.picgo.net/2024/10/18/IMG_0094ed144dfdc93eb7a.md.png" alt="Gallery Image" />
-        <div class="caption">
-            <span class="author">朝夕优</span>
-            <span class="title"><strong></strong></span>
-        </div>
-    </div>
-    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_0065924cad9c8344886.png')">
-        <img src="https://img.picgo.net/2024/10/18/IMG_0065924cad9c8344886.md.png" alt="Gallery Image" />
-        <div class="caption">
-            <span class="author">朝夕优</span>
-            <span class="title"><strong></strong></span>
-        </div>
-    </div>
-    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/CPa7c87a3fad998fad.jpg')">
-        <img src="https://img.picgo.net/2024/10/18/CPa7c87a3fad998fad.md.jpg" alt="Gallery Image" />
-        <div class="caption">
-            <span class="author">YukiRinLL</span>
-            <span class="title"><strong></strong></span>
-        </div>
-    </div>
-    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG5df9ec9265d50c4a.png')">
-        <img src="https://img.picgo.net/2024/10/18/IMG5df9ec9265d50c4a.md.png" alt="Gallery Image" />
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f2b81ab3f.jpeg')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f2b81ab3f.jpeg" alt="Gallery Image" />
         <div class="caption">
             <span class="author">Yan</span>
             <span class="title"><strong></strong></span>
         </div>
     </div>
-    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_014f3afce7efc3954d5.png')">
-        <img src="https://img.picgo.net/2024/10/18/IMG_014f3afce7efc3954d5.md.png" alt="Gallery Image" />
-        <div class="caption">
-            <span class="author">朝夕优</span>
-            <span class="title"><strong></strong></span>
-        </div>
-    </div>
-    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_0022e66f914b51d223a.png')">
-        <img src="https://img.picgo.net/2024/10/18/IMG_0022e66f914b51d223a.md.png" alt="GalleryImage" />
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f29b78a20.png')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f29b78a20.png" alt="Gallery Image" />
         <div class="caption">
             <span class="author">Yan</span>
             <span class="title"><strong></strong></span>
         </div>
     </div>
-    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_00715b84a00543aea85.png')">
-        <img src="https://img.picgo.net/2024/10/18/IMG_00715b84a00543aea85.md.png" alt="Gallery Image" />
-        <div class="caption">
-            <span class="author">朝夕优</span>
-            <span class="title"><strong></strong></span>
-        </div>
-    </div>
-    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_004964694cb331379db.jpg')">
-        <img src="https://img.picgo.net/2024/10/18/IMG_004964694cb331379db.md.jpg" alt="Gallery Image" />
-        <div class="caption">
-            <span class="author">朝夕优</span>
-            <span class="title"><strong></strong></span>
-        </div>
-    </div>
-    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_005ac9def51dab57fae.jpg')">
-        <img src="https://img.picgo.net/2024/10/18/IMG_005ac9def51dab57fae.md.jpg" alt="Gallery Image" />
-        <div class="caption">
-            <span class="author">朝夕优</span>
-            <span class="title"><strong></strong></span>
-        </div>
-    </div>
-    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_00140055024436b9786.jpg')">
-        <img src="https://img.picgo.net/2024/10/18/IMG_00140055024436b9786.md.jpg" alt="Gallery Image" />
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f26bb8914.jpeg')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f26bb8914.jpeg" alt="GalleryImage" />
         <div class="caption">
             <span class="author">Yan</span>
             <span class="title"><strong></strong></span>
         </div>
     </div>
-    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/IMG_00335bb81ba5c3ab5f6.jpg')">
-        <img src="https://img.picgo.net/2024/10/18/IMG_00335bb81ba5c3ab5f6.md.jpg" alt="Gallery Image" />
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f2ad2ec86.jpeg')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f2ad2ec86.jpeg" alt="Gallery Image" />
         <div class="caption">
             <span class="author">鲸波万仞</span>
             <span class="title"><strong></strong></span>
         </div>
     </div>
-    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/9500463C-2849-4792-A758-FDF132F77CD4_hd1a7081d54d0d5276.jpg')">
-        <img src="https://img.picgo.net/2024/10/18/9500463C-2849-4792-A758-FDF132F77CD4_hd1a7081d54d0d5276.md.jpg" alt="Gallery Image" />
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f299a6dcc.jpeg')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f299a6dcc.jpeg" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">鲸波万仞</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f277153e2.jpeg')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f277153e2.jpeg" alt="Gallery Image" />
         <div class="caption">
             <span class="author">YukiRinLL</span>
             <span class="title"><strong>猫猫Yan</strong></span>
         </div>
     </div>
-    <div class="gallery-item" onclick="openLightbox('https://img.picgo.net/2024/10/18/75B25F2160F64384E26287DA3F7A926A994664b4259bf053.jpeg')">
-        <img src="https://img.picgo.net/2024/10/18/75B25F2160F64384E26287DA3F7A926A994664b4259bf053.jpeg" alt="Gallery Image" />
+
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f275767c5.jpeg')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f275767c5.jpeg" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">YukiRinLL</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f2b07ac5d.png')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f2b07ac5d.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Alduin</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f2b726463.jpeg')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f2b726463.jpeg" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Nxy</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/69522ad7d0bf5.png')">
+        <img src="https://free.picui.cn/free/2025/12/29/69522ad7d0bf5.png" alt="Gallery Image" />
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://dlink.host/wx2.sinaimg.cn/large/006fhRoTly8i8rqvkrvk0j30u018vaef.jpg')">
+        <img src="https://dlink.host/wx2.sinaimg.cn/large/006fhRoTly8i8rqvkrvk0j30u018vaef.jpg" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f2ad5bd57.png')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f2ad5bd57.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f27889913.jpeg')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f27889913.jpeg" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f2b3103f9.png')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f2b3103f9.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f2a3e8c18.png')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f2a3e8c18.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f29cf2c6c.png')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f29cf2c6c.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f29966118.jpeg')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f29966118.jpeg" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f295aa32c.jpeg')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f295aa32c.jpeg" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f2977b9d5.png')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f2977b9d5.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f2945be0e.png')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f2945be0e.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f2959af04.png')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f2959af04.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+<!--    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f28536ea8.png')">-->
+<!--        <img src="https://free.picui.cn/free/2025/12/29/6951f28536ea8.png" alt="Gallery Image" />-->
+<!--        <div class="caption">-->
+<!--            <span class="author">Artist</span>-->
+<!--            <span class="title"><strong></strong></span>-->
+<!--        </div>-->
+<!--    </div>-->
+
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f273d065d.png')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f273d065d.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">朝夕优</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f26c54f67.png')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f26c54f67.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">朝夕优</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f26ed2d12.png')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f26ed2d12.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">朝夕优</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f27176f08.png')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f27176f08.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">朝夕优</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f26c748fc.png')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f26c748fc.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">朝夕优</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f2709f86c.png')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f2709f86c.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">朝夕优</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f27e5d527.png')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f27e5d527.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">朝夕优</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f275196d9.png')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f275196d9.png" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">朝夕优</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+    <div class="gallery-item" onclick="openLightbox('https://free.picui.cn/free/2025/12/29/6951f26b00844.jpeg')">
+        <img src="https://free.picui.cn/free/2025/12/29/6951f26b00844.jpeg" alt="Gallery Image" />
+        <div class="caption">
+            <span class="author">Artist</span>
+            <span class="title"><strong></strong></span>
+        </div>
+    </div>
+
+    <!-- 组图 -->
+    <div class="gallery-item" onclick="openGroupLightbox(['https://free.picui.cn/free/2025/12/29/6951f29ea85f1.png', 'https://free.picui.cn/free/2025/12/29/6951f2a0f1c8d.png', 'https://free.picui.cn/free/2025/12/29/6951f2b49a082.png', 'https://free.picui.cn/free/2025/12/29/6951f29d41408.png'])">
+        <div class="group-container">
+            <div class="group-item">
+                <img src="https://free.picui.cn/free/2025/12/29/6951f29ea85f1.png" alt="组图1" />
+            </div>
+            <div class="group-item">
+                <img src="https://free.picui.cn/free/2025/12/29/6951f2a0f1c8d.png" alt="组图2" />
+            </div>
+            <div class="group-item">
+                <img src="https://free.picui.cn/free/2025/12/29/6951f2b49a082.png" alt="组图3" />
+            </div>
+            <div class="group-item">
+                <img src="https://free.picui.cn/free/2025/12/29/6951f29d41408.png" alt="组图4" />
+            </div>
+        </div>
+        <div class="group-label">组图</div>
+        <div class="caption">
+            <span class="author">鲸波万仞</span>
+            <span class="title"><strong>表情包</strong></span>
+        </div>
+    </div>
+    <!-- 组图 -->
+    <div class="gallery-item" onclick="openGroupLightbox(['https://free.picui.cn/free/2025/12/29/6951f2b45ccc5.jpeg', 'https://free.picui.cn/free/2025/12/29/6951f2b4d2420.jpeg', 'https://free.picui.cn/free/2025/12/29/6951f2b5c5044.jpeg'])">
+        <div class="group-container">
+            <div class="group-item">
+                <img src="https://free.picui.cn/free/2025/12/29/6951f2b45ccc5.jpeg" alt="组图1" />
+            </div>
+            <div class="group-item">
+                <img src="https://free.picui.cn/free/2025/12/29/6951f2b4d2420.jpeg" alt="组图2" />
+            </div>
+            <div class="group-item">
+                <img src="https://free.picui.cn/free/2025/12/29/6951f2b5c5044.jpeg" alt="组图3" />
+            </div>
+        </div>
+        <div class="group-label">组图</div>
+        <div class="caption">
+            <span class="author">鲸波万仞</span>
+            <span class="title"><strong>表情包</strong></span>
+        </div>
+    </div>
+    <!-- 组图 -->
+    <div class="gallery-item" onclick="openGroupLightbox(['https://free.picui.cn/free/2025/12/29/6951f26b61fea.png', 'https://free.picui.cn/free/2025/12/29/6951f2b44b5c5.png','https://free.picui.cn/free/2025/12/29/6951f26f54b6e.png','https://free.picui.cn/free/2025/12/29/6951f26fdc6f7.png'])">
+        <div class="group-container">
+            <div class="group-item">
+                <img src="https://free.picui.cn/free/2025/12/29/6951f26b61fea.png" alt="Gallery Image" />
+            </div>
+            <div class="group-item">
+                <img src="https://free.picui.cn/free/2025/12/29/6951f2b44b5c5.png" alt="Gallery Image" />
+            </div>
+            <div class="group-item">
+                <img src="https://free.picui.cn/free/2025/12/29/6951f26f54b6e.png" alt="Gallery Image" />
+            </div>
+            <div class="group-item">
+                <img src="https://free.picui.cn/free/2025/12/29/6951f26fdc6f7.png" alt="Gallery Image" />
+            </div>
+        </div>
+        <div class="group-label">组图</div>
+        <div class="caption">
+            <span class="author">鲸波万仞</span>
+            <span class="title">表情包</span>
+        </div>
     </div>
 </div>
-<!-- Lightbox -->
+
+<!-- 单图灯箱 -->
 <div id="lightbox" class="lightbox">
-    <img src="" alt="Lightbox Image" />
-    <span id="close-lightbox" class="close-lightbox">&times;</span>
+    <div class="lightbox-content">
+        <img src="" alt="Lightbox Image" />
+        <span id="close-lightbox" class="close-lightbox">&times;</span>
+    </div>
 </div>
+
+<!-- 组图灯箱 -->
+<div id="group-lightbox" class="lightbox">
+    <div class="group-lightbox-container">
+        <img src="" alt="Group Lightbox Image" />
+        <div class="group-nav">
+            <button id="prev-btn" class="group-nav-btn">&#10094;</button>
+            <span id="group-counter">1 / 2</span>
+            <button id="next-btn" class="group-nav-btn">&#10095;</button>
+        </div>
+        <span id="close-group-lightbox" class="close-lightbox">&times;</span>
+    </div>
+</div>
+
 <script>
+    // 单图灯箱功能
     let lightboxImg = document.getElementById('lightbox').querySelector('img');
     let closeLightbox = document.getElementById('close-lightbox');
     let lightbox = document.getElementById('lightbox');
+
     function openLightbox(src) {
         lightbox.style.display = 'flex';
         lightboxImg.src = src;
     }
+
     closeLightbox.onclick = function() {
         lightbox.style.display = 'none';
     }
+
     window.onclick = function(event) {
         if (event.target == lightbox) {
             lightbox.style.display = 'none';
         }
-    }</script>
+    }
 
+    // 组图灯箱功能
+    let groupLightbox = document.getElementById('group-lightbox');
+    let groupLightboxImg = groupLightbox.querySelector('img');
+    let closeGroupLightbox = document.getElementById('close-group-lightbox');
+    let prevBtn = document.getElementById('prev-btn');
+    let nextBtn = document.getElementById('next-btn');
+    let groupCounter = document.getElementById('group-counter');
+
+    let currentGroupImages = [];
+    let currentGroupIndex = 0;
+
+    function openGroupLightbox(images) {
+        currentGroupImages = images;
+        currentGroupIndex = 0;
+        updateGroupLightbox();
+        groupLightbox.style.display = 'flex';
+    }
+
+    function updateGroupLightbox() {
+        // 确保使用源文件链接（不带.md的链接）
+        groupLightboxImg.src = currentGroupImages[currentGroupIndex];
+        groupCounter.textContent = `${currentGroupIndex + 1} / ${currentGroupImages.length}`;
+
+        // 图片加载完成后确保适应窗口
+        groupLightboxImg.onload = function() {
+            // 确保图片不会超出窗口
+            this.style.maxWidth = '100%';
+            this.style.maxHeight = 'calc(90vh - 80px)';
+            this.style.width = 'auto';
+            this.style.height = 'auto';
+            this.style.objectFit = 'contain';
+        };
+    }
+
+    prevBtn.onclick = function() {
+        if (currentGroupIndex > 0) {
+            currentGroupIndex--;
+            updateGroupLightbox();
+        }
+    }
+
+    nextBtn.onclick = function() {
+        if (currentGroupIndex < currentGroupImages.length - 1) {
+            currentGroupIndex++;
+            updateGroupLightbox();
+        }
+    }
+
+    closeGroupLightbox.onclick = function() {
+        groupLightbox.style.display = 'none';
+    }
+
+    window.addEventListener('click', function(event) {
+        if (event.target == groupLightbox) {
+            groupLightbox.style.display = 'none';
+        }
+    });
+</script>
 
 <section style="background-color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif; color:#aaa; font-size:12px; padding: 0; align-items: center; display: flex;">
     <p style="flex: 0 0 auto; margin:0; padding-right:1rem;">Page was <a href="https://mobirise.site/g" style="color:#aaa;">designed</a> with Mobirise</p>
@@ -384,7 +758,7 @@
 <script src="./assets/web/assets/jquery/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-        $("#foot").load("./additions/foot/profile-round.html");
+        
     });
 </script>
 <!-- 引入访客统计模块 -->

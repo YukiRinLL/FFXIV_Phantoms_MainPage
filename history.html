@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="generator" content="Mobirise v5.2.0, mobirise.com">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-    <link rel="shortcut icon" href="https://img.picgo.net/2024/10/18/frame-1-121x121bc5d878c1dd0d5fc.png"
+    <link rel="shortcut icon" href="https://dlink.host/wx4.sinaimg.cn/large/006fhRoTly8i8u7pljsfoj3045044dfp.jpg"
           onerror="this.onerror=null;this.src='./assets/images/frame-1-121x121.png';"
           type="image/x-icon">
     <meta name="description" content="FCの歴史を記載しています">
@@ -58,6 +58,41 @@
             border-bottom: none;
             margin-bottom: 0;
         }
+        /* 成员社媒链接小按钮 */
+        .member-social {
+            margin: 5px 0;
+        }
+        .social-link {
+            display: inline-block;
+            font-size: 12px;
+            line-height: 1;
+            padding: 4px 10px;
+            margin-right: 6px;
+            border: 1px solid transparent;
+            border-radius: 10px;
+            background-color: transparent;
+            text-decoration: none !important;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .social-link:last-child {
+            margin-right: 0;
+        }
+        .social-link.social-bili {
+            border-color: #4a6fa5;
+            color: #4a6fa5;
+        }
+        .social-link.social-bili:hover {
+            background-color: #4a6fa5;
+            color: #ffffff;
+        }
+        .social-link.social-xhs {
+            border-color: #ff2442;
+            color: #ff2442;
+        }
+        .social-link.social-xhs:hover {
+            background-color: #ff2442;
+            color: #ffffff;
+        }
     </style>
     <link rel="stylesheet" href="assets/web/assets/mobirise-icons2/mobirise2.css">
     <link rel="stylesheet" href="assets/tether/tether.min.css">
@@ -103,6 +138,8 @@
     <script src="assets/theme/js/script.js">
     </script>
 
+    <!-- 全局配置（必须在其他脚本之前加载） -->
+    <script src="./assets/js/config.js"></script>
 </head>
 <body>
 
@@ -110,9 +147,14 @@
 <script src="./assets/web/assets/jquery/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-        $("#menu").load("./additions/menu/menu1.html", function() {
-            adjustLinks();
-            window.addEventListener('resize', adjustLinks);
+        $("#menu").load("./additions/menu/menu.html", function() {
+            // 延迟一小段时间，确保 menu.html 中的脚本已执行
+            setTimeout(function() {
+                if (typeof adjustLinks === 'function') {
+                    adjustLinks();
+                    window.addEventListener('resize', adjustLinks);
+                }
+            }, 100);
         });
     });
 </script>
@@ -122,7 +164,9 @@
         <iframe src="additions/nest.html" frameborder="hide" style="width: 100%; height: 100%; max-width: 100%; object-fit: none; opacity: 1;position: fixed"></iframe>
     </div>
     <div class="mbr-overlay" style="opacity:0.07; background-color: rgb(35,36,35);position: fixed">
-        <img class="mbr-overlay" src="https://img.picgo.net/2024/10/18/WC12e0de22d9bab8f01.png" style="position: fixed;width: 100%; height: 100%; max-width: 100%;  padding-top: 60px; object-fit: cover; opacity: 1; background-color: rgb(35,36,35)">
+        <img class="mbr-overlay" src="https://dlink.host/wx4.sinaimg.cn/large/006fhRoTly8i8u6ujw176j30sb0htdms.jpg"
+             onerror="this.onerror=null;this.src='./assets/images/WC1.PNG';"
+             style="position: fixed;width: 100%; height: 100%; max-width: 100%;  padding-top: 60px; object-fit: cover; opacity: 1; background-color: rgb(35,36,35)">
     </div>
     <div class="timelines-container container" mbri-timelines="">
         <div class="mbr-section-head">
@@ -144,15 +188,21 @@
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>Freecompany建立</strong></h4>
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-10"><strong>FC Phantom が設立された</strong></h4>
                     <div class="image-wrapper mb-4">
-                        <img src="https://img.picgo.net/2024/10/18/CLf695492da2b9de0f.png" alt="FC設立日" title="">
-<!--                        <img src="assets/images/mbr-948x597.jpg" alt="FC設立日" title="">-->
+                        <img src="https://dlink.host/wx1.sinaimg.cn/large/006fhRoTly8i8u7ks2vmej30cb0cf0tm.jpg"
+                             onerror="this.onerror=null;this.src='./assets/images/CL.png';"
+                             alt="FC設立日" title="">
                     </div>
                     <button class="member-toggle">人员名单</button>
                     <div class="member-list">
-                        <p class="mbr-text mbr-fonts-style display-7">创建人(Astral):<strong>绯雪yuki</strong></p>
-                        <p class="mbr-text mbr-fonts-style display-7">署名人(Umbral):<strong>舞九</strong></p>
-                        <p class="mbr-text mbr-fonts-style display-7">署名人(Umbral):<strong>咸鱼ab</strong></p>
-                        <p class="mbr-text mbr-fonts-style display-7">署名人(Umbral):<strong>珂露西亚原木(一颗李子)</strong></p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>绯雪yuki</strong> 创建人(Astral)</p>
+                        <p>这个人很菜的<br>
+                            他一开始不想当部队长，直到听说可以再买一套房子<p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>舞九</strong> 署名人(Umbral)</p>
+                        <p>很有钱的，我觉得她长得越来越像罗薇娜了。</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>咸鱼ab</strong> 署名人(Umbral)</p>
+                        <p>你就叫他AB吧，因为他已经很咸鱼了</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>珂露西亚原木(一颗李子)</strong> 署名人(Umbral)</p>
+                        <p>普通款珂露西亚人男</p>
                     </div>
                 </div>
             </div>
@@ -163,40 +213,25 @@
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(1期)</strong></h4>
                     <button class="member-toggle">人员名单</button>
                     <div class="member-list">
+                        <!--member-item 暂未使用-->
                         <div class="member-item">
                             <p class="mbr-text mbr-fonts-style display-7"><strong>爱瑠</strong> 加入了FC</p>
-                            <p>部队创始人</p>
-                        </div>
-                        <div class="member-item">
                             <p class="mbr-text mbr-fonts-style display-7"><strong>虫语</strong> 加入了FC</p>
-                            <p>部队创始人，兼部队管理员</p>
-
-                        </div>
-                        <div class="member-item">
+                            <p>部队管理员:"这是个谐音"</p>
                             <p class="mbr-text mbr-fonts-style display-7"><strong>Theyu</strong> 加入了FC</p>
+                            <p class="mbr-text mbr-fonts-style display-7"><strong>Endker(恩克)</strong> 加入了FC</p>
+                            <p>名副其实的版本最强冒险者，初期带队导师</p>
+                            <p class="mbr-text mbr-fonts-style display-7"><strong>独步寻花</strong> 加入了FC</p>
+                            <p>人族男性，两个月通关三绝の最速传说。
+                                <br>不知为何他的周围总是美女相伴。
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
             <span class="iconBackground"></span>
         </div>
-        <div class="row timeline-element mb-2">
-            <div class="col-12 col-md-6">
-                <div class="timeline-text-wrapper">
-                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(2期)</strong></h4>
-                    <button class="member-toggle">人员名单</button>
-                    <div class="member-list">
-                        <p class="mbr-text mbr-fonts-style display-7"><strong>Endker(恩克)</strong> 加入了FC</p>
-                        <p>名副其实的版本最强冒险者，初期带队导师</p>
-                        <p class="mbr-text mbr-fonts-style display-7"><strong>独步寻花</strong> 加入了FC</p>
-                        <p>人族男性，两个月通关三绝の最速传说。
-                            <br>不知为何他的周围总是美女相伴。
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <span class="iconBackground"></span>
-        </div>
+
         <div class="row timeline-element mb-2 mt-4">
             <div class="timeline-date col-12 col-md-6">
                 <div class="timeline-date-wrapper">
@@ -208,18 +243,48 @@
                 <div class="timeline-text-wrapper">
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>FC House 购买</strong></h4>
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-10"><strong>FCハウス購入</strong></h4>
-                    <div class="image-wrapper mb-4">
-                        <img src="assets/images/MF.png" alt="FC house" title="">
-                    </div>
+                    <details class="mb-3">
+                        <summary class="btn btn-outline-secondary w-100 mb-2">展开/收起</summary>
+                        <div style="padding: 8px 0;">
+                            <div class="image-wrapper mb-4">
+                                <img src="https://dlink.host/wx2.sinaimg.cn/large/006fhRoTly8i8u94pg3j0j30fv0h7q66.jpg"
+                                     onerror="this.onerror=null;this.src='./assets/images/MF.png';"
+                                     alt="FC house" title="">
+                            </div>
+                        </div>
+                    </details>
                     <p class="mbr-text mbr-fonts-style display-7">在薰衣草苗圃第18区4号购买S土地<br>从此有了部队房屋</p>
                     <p class="mbr-text mbr-fonts-style display-7">特别鸣谢hxd<strong>舞九</strong>凌晨起来蹲房，从众多脚本哥中一把拿下</p>
                 </div>
             </div>
         </div>
+
+        <div class="row timeline-element mb-2 mt-4">
+            <div class="timeline-date col-12 col-md-6">
+                <div class="timeline-date-wrapper">
+                    <p class="mbr-timeline-date mbr-fonts-style display-5">2020/11/09<br></p>
+                </div>
+            </div>
+            <span class="iconBackground"></span>
+            <div class="col-12 col-md-6">
+                <div class="timeline-text-wrapper">
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>装修完成</strong></h4>
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-10"><strong>家の内装が完成した</strong></h4>
+                    <div class="image-wrapper mb-4">
+                        <img src="https://dlink.host/wx1.sinaimg.cn/large/006fhRoTly8i8u7ljnok6j31hc0u015u.jpg"
+                             onerror="this.onerror=null;this.src='./assets/images/ms/BH.PNG';"
+                             alt="FC house" title="">
+                    </div>
+                    <p class="mbr-text mbr-fonts-style display-7">装修完成！<br>开设了一些其他用途的房间</p>
+                    <p class="mbr-text mbr-fonts-style display-7">家の内装が完成した<br>他の用途の部屋がいくつか開設されています</p>
+                </div>
+            </div>
+        </div>
+
         <div class="row timeline-element mb-2">
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
-                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(3期)</strong></h4>
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(2期)</strong></h4>
                     <button class="member-toggle">人员名单</button>
                     <div class="member-list">
                         <p class="mbr-text mbr-fonts-style display-7"><strong>Fleabag</strong> 加入了FC</p>
@@ -230,7 +295,7 @@
                             <br>你去老地方大概率能看见他。
                         </p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>雨雪琉璃</strong> 加入了FC</p>
-                         <p class="mbr-text mbr-fonts-style display-7"><strong>沐雪茗</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>沐雪茗</strong> 加入了FC</p>
                         <p>生活玩家，生产和采集的爱好者，
                             <br>主职业-采矿工(国一矿)。
                             <br>“这个人他越挖越精神的。”
@@ -244,37 +309,21 @@
             </div>
             <span class="iconBackground"></span>
         </div>
-        <div class="row timeline-element mb-2 mt-4">
-            <div class="timeline-date col-12 col-md-6">
-                <div class="timeline-date-wrapper">
-                    <p class="mbr-timeline-date mbr-fonts-style display-5">2020/11/09<br></p>
-                </div>
-            </div>
-            <span class="iconBackground"></span>
-            <div class="col-12 col-md-6">
-                <div class="timeline-text-wrapper">
-                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>装修完成</strong></h4>
-                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-10"><strong>家の内装が完成した</strong></h4>
-                    <div class="image-wrapper mb-4">
-                        <img src="https://img.picgo.net/2024/10/18/mbr-1-948x63218c02d395fd4bac0.jpg" alt="FC house" title="">
-                    </div>
-                    <p class="mbr-text mbr-fonts-style display-7">装修完成！<br>开设了一些其他用途的房间</p>
-                    <p class="mbr-text mbr-fonts-style display-7">家の内装が完成した<br>他の用途の部屋がいくつか開設されています</p>
-                </div>
-            </div>
-        </div>
+
         <div class="row timeline-element mb-2">
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
-                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(4期)</strong></h4>
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(3期)</strong></h4>
                     <button class="member-toggle">人员名单</button>
                     <div class="member-list">
                         <p class="mbr-text mbr-fonts-style display-7"><strong>德蕾洛斯</strong> 加入了FC</p>
+                        <p>早上好, Doctor</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>阿黎</strong> 加入了Link-shell</p>
-                        <p>原服务器 豆豆柴区 伊修加德</p>
+                        <p>后来她去了豆豆柴区的伊修加德服务器，再后来又回来了</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>小怪兽</strong> 加入了Link-shell</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>月凛</strong> 加入了Link-shell</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>终末之冬</strong> 加入了Link-shell</p>
+                        <p>灰色头像不会再跳动</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>明堂</strong> 加入了FC</p>
                         <p>后来他成为了非常老练の百科全书级导师。</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>休斯</strong> 加入了FC</p>
@@ -287,24 +336,57 @@
             <span class="iconBackground"></span>
         </div>
 
+        <div class="row timeline-element mb-2 mt-4">
+            <div class="timeline-date col-12 col-md-6">
+                <div class="timeline-date-wrapper">
+                    <p class="mbr-timeline-date mbr-fonts-style display-5">2021<br></p>
+                </div>
+            </div>
+            <span class="iconBackground"></span>
+            <div class="col-12 col-md-6">
+                <div class="timeline-text-wrapper">
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-6">FC联动的相关活动</h4>
+                    <details class="mb-3">
+                        <summary class="btn btn-outline-secondary w-100 mb-2">展开/收起</summary>
+                        <div style="padding: 8px 0;">
+                            <div style="display: flex; gap: 6px; margin: 0 0 16px 0; padding: 0; border: none !important; outline: none !important;">
+                                <img src="https://dlink.host/wx2.sinaimg.cn/large/006fhRoTly8ibkr1uw32zj31hc0u0dlv.jpg"
+                                     onerror="this.onerror=null; this.src='assets/images/friendFC/99b7f399375a2bd10ee5918b337107c6.jpeg';"
+                                     style="flex: 1; width: 50%; max-width: 50%; display: block;
+                        border: none !important; outline: none !important;
+                        box-shadow: none !important; border-radius: 4px;">
+                                <img src="https://dlink.host/wx2.sinaimg.cn/large/006fhRoTly8ibkr28d3ztj31hc0u0tdy.jpg"
+                                     onerror="this.onerror=null; this.src='assets/images/friendFC/57913eafad645cc094ed597193fdf1bd.jpeg';"
+                                     style="flex: 1; width: 50%; max-width: 50%; display: block;
+                        border: none !important; outline: none !important;
+                        box-shadow: none !important; border-radius: 4px;">
+                            </div>
+                            <p class="mbr-text mbr-fonts-style display-7"><strong>偶尔会去找别的部队一起玩</strong></p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+
         <div class="row timeline-element mb-2">
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
-                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(5期)</strong></h4>
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(4期)</strong></h4>
                     <button class="member-toggle">人员名单</button>
                     <div class="member-list">
                         <p class="mbr-text mbr-fonts-style display-7"><strong>Luluba(露露白)</strong> 加入了FC</p>
+                        <p class="member-social"><a class="social-link social-bili" href="https://space.bilibili.com/2232319?spm_id_from=333.1387.fans.user_card.click" target="_blank" rel="noopener noreferrer">露露的B站主页</a></p>
                         <p>熟识的人都称赞她甜美的嗓音和其平和包容的印象。
                             <br>或许温柔的女性描述的就是她吧。
                         </p>
-                        <p></p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>雲天</strong> 加入了FC</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>Hssssy</strong> 加入了FC</p>
                         <p>时不时的能发现他在身后不远处平静的看着你</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>蜘蛛zz</strong> 加入了FC</p>
+                        <p>zzzzz</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>Zwei</strong> 加入了FC</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>幻泷</strong> 加入了FC</p>
-                        <p>那天我最后一次见他，后来他走了再也没回来过</p>
+                        <p>那天我最后一次见幻幻，后来他走了再也没回来过</p>
                     </div>
                 </div>
             </div>
@@ -314,7 +396,7 @@
         <div class="row timeline-element mb-2">
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
-                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(6期)</strong></h4>
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(5期)</strong></h4>
                     <button class="member-toggle">人员名单</button>
                     <div class="member-list">
                         <p class="mbr-text mbr-fonts-style display-7"><strong>Renow</strong> 加入了FC</p>
@@ -327,6 +409,7 @@
                         <p class="mbr-text mbr-fonts-style display-7"><strong>Meilu</strong> 加入了FC</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>尤玛妮</strong> 加入了FC</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>阿尔蒂娅</strong> 加入了FC</p>
+                        <p>是"阿尔"也是"蒂娅"
                         <p class="mbr-text mbr-fonts-style display-7"><strong>沐梨</strong> 加入了Linkshell</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>柚缕缕</strong> 加入了FC</p>
                     </div>
@@ -347,7 +430,9 @@
                 <div class="timeline-text-wrapper">
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>略称変更：星靈-->虛妄</strong></h4>
                     <div class="image-wrapper mb-4" style="max-width: 100px;max-height: 100px">
-                        <img src="./assets/images/frame-1-290x290.png" alt="FC クレスト" title="" style="max-width: 100px;max-height: 100px">
+                        <img src="https://dlink.host/wx3.sinaimg.cn/large/006fhRoTly8i8u95j16t0j3045044dfp.jpg"
+                             onerror="this.onerror=null;this.src='./assets/images/frame-1-290x290.png';"
+                             alt="FC クレスト" title="" style="max-width: 100px;max-height: 100px">
                     </div>
                     <p class="mbr-text mbr-fonts-style display-7">
                         部队名称设置为Phantom<br>后缀设置为 虛妄<br>FC的标志采用了世界树的元素<br>
@@ -358,7 +443,7 @@
         <div class="row timeline-element mb-2">
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
-                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(7期)</strong></h4>
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(6期)</strong></h4>
                     <button class="member-toggle">人员名单</button>
                     <div class="member-list">
                         <p class="mbr-text mbr-fonts-style display-7"><strong>Yan</strong> 加入了FC</p>
@@ -385,30 +470,56 @@
             </div>
             <span class="iconBackground"></span>
         </div>
+
+        <div class="row timeline-element mb-2">
+            <div class="timeline-date col-12 col-md-6">
+                <div class="timeline-date-wrapper">
+                    <p class="mbr-timeline-date mbr-fonts-style display-5"><strong>2022/12/31</strong></p>
+                </div>
+            </div>
+            <span class="iconBackground"></span>
+            <div class="col-12 col-md-6">
+                <div class="timeline-text-wrapper">
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-6">2022->2023跨年活动</h4>
+                    <details class="mb-3">
+                        <summary class="btn btn-outline-secondary w-100 mb-2">展开/收起</summary>
+                        <div style="padding: 8px 0;">
+                            <div class="image-wrapper mb-4">
+                                <img src="https://dlink.host/wx3.sinaimg.cn/large/006fhRoTly8ibkqzyov5zj31fq0u010y.jpg"
+                                     onerror="this.onerror=null; this.src='assets/images/fes/NewYear/1c735983cca9b5a983b68abd7f6fdbee.jpeg';"
+                                     alt="Mobirise" title="">
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+
         <div class="row timeline-element mb-2">
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
-                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(8期)</strong></h4>
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(7期)</strong></h4>
                     <button class="member-toggle">人员名单</button>
                     <div class="member-list">
                         <p class="mbr-text mbr-fonts-style display-7"><strong>鲸波万仞(Ncesut)</strong> 加入了FC</p>
+                        <p class="member-social"><a class="social-link social-bili" href="https://space.bilibili.com/4775958?spm_id_from=333.1387.fans.user_card.click" target="_blank" rel="noopener noreferrer">小鲸的B站主页</a><a class="social-link social-xhs" href="https://xhslink.cn/o/8mrpsBEGBWm" target="_blank" rel="noopener noreferrer">小鲸的小红书</a></p>
                         <p>富有魅力的Miqo'te族女性。
                             <br>她充满知性的平和的声音偶尔会讲述一些压箱底的冷笑话，
                             <br>作为喜欢悬疑恐怖的人我很享受这些故事。
                         </p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>Jill(朝夕优)</strong> 加入了FC</p>
                         <p>独行的捕鱼人，
-                            <br>后来她去经营了一家氛围很不错的酒吧。
+                            <br>后来她离开去经营了一家氛围很不错的酒吧。
                             <br>有机会请一定去坐一坐
                         </p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>Xiao布丁</strong> 加入了FC</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>无敌的果子哟</strong> 加入了FC</p>
                         <p>有爱的拉拉肥</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>世代圈(Qvancc)</strong> 加入了FC</p>
+                        <p>○CC</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>梅贝尔</strong> 加入了FC</p>
                         <p>穿着很暴露的超大只粉嫩可爱兔娘</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>皮皮橙子</strong> 加入了FC</p>
-
                         <p class="mbr-text mbr-fonts-style display-7"><strong>花巳</strong> 加入了FC</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>Unvoler</strong> 加入了FC</p>
                         <p>危险又迷人的Viera族男性，
@@ -432,6 +543,31 @@
             </div>
             <span class="iconBackground"></span>
         </div>
+
+        <div class="row timeline-element mb-2">
+            <div class="timeline-date col-12 col-md-6">
+                <div class="timeline-date-wrapper">
+                    <p class="mbr-timeline-date mbr-fonts-style display-5"><strong>2023/10</strong></p>
+                </div>
+            </div>
+            <span class="iconBackground"></span>
+            <div class="col-12 col-md-6">
+                <div class="timeline-text-wrapper">
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-6">守护天节欢聚合影</h4>
+                    <details class="mb-3">
+                        <summary class="btn btn-outline-secondary w-100 mb-2">展开/收起</summary>
+                        <div style="padding: 8px 0;">
+                            <div class="image-wrapper mb-4">
+                                <img src="https://dlink.host/wx4.sinaimg.cn/large/006fhRoTly8ibkqx3ja5qj31fh0u00yw.jpg"
+                                     onerror="this.onerror=null; this.src='assets/images/fes/Halloween/12e1a871b3926c60930c0ce0ff7f2740.png';"
+                                     alt="Mobirise" title="">
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+
         <div class="row timeline-element mb-2">
             <div class="timeline-date col-12 col-md-6">
                 <div class="timeline-date-wrapper">
@@ -443,31 +579,65 @@
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-6">部队储物箱被洗劫了 Orz</h4>
-                    <div class="image-wrapper mb-4">
-                        <img src="./assets/images/c6f9ffb077fc2b48637d622ed18eabc.jpg" style="max-width: 230px;max-height: 300px">
-                    </div>
-                    <div class="image-wrapper mb-4">
-                        <img src="./assets/images/41aad3301c8fc049c667a65810a4b8d.jpg" style="max-width: 230px;max-height: 400px">
-                    </div>
-                    <p class="mbr-text mbr-fonts-style display-7">
-                        被恶意玩家混进来，清空了部队储物箱（悲）<br>
-                    </p>
-                    <p>损失了一些 金币/绝版物品/潜艇部件/飞空艇部件/一般等价物 以及一些其他用品</p>
-                    <p style="color: blue;">
-                        <strong>从此之后设置了阶级的操作权限，对重要物资的存放进行隔离，
-                            <br>并对游戏内申请加入的新成员设定了1周(7天)观察期。</strong>
-                    </p>
-                    <p style="color: blue;">
-                        <strong>为避免类似情况再次发生，
-                        <br>由管理人统一进行阶级的权限设置和委托任命。</strong>
-                    </p>
+                    <details class="mb-3">
+                        <summary class="btn btn-outline-secondary w-100 mb-2">展开/收起</summary>
+                        <div style="padding: 8px 0;">
+                            <div class="image-wrapper mb-4">
+                                <img src="https://dlink.host/wx2.sinaimg.cn/large/006fhRoTly8i8u95zbvfzj30ku0iit9j.jpg"
+                                     onerror="this.onerror=null;this.src='./assets/images/c6f9ffb077fc2b48637d622ed18eabc.jpg';"
+                                     style="max-width: 230px;max-height: 300px">
+                            </div>
+                            <div class="image-wrapper mb-4">
+                                <img src="https://dlink.host/wx1.sinaimg.cn/large/006fhRoTly8i8u96vxeepj30ku0s3mza.jpg"
+                                     onerror="this.onerror=null;this.src='./assets/images/41aad3301c8fc049c667a65810a4b8d.jpg';"
+                                     style="max-width: 230px;max-height: 400px">
+                            </div>
+                            <p class="mbr-text mbr-fonts-style display-7">
+                                被恶意玩家混进来，清空了部队储物箱（悲）<br>
+                            </p>
+                            <p>损失了一些 金币/绝版物品/潜艇部件/飞空艇部件/一般等价物 以及一些其他用品</p>
+                            <p style="color: blue;">
+                                <strong>从此之后设置了阶级的操作权限，对重要物资的存放进行隔离，
+                                    <br>并对游戏内申请加入的新成员设定了1周(7天)观察期。</strong>
+                            </p>
+                            <p style="color: blue;">
+                                <strong>为避免类似情况再次发生，
+                                    <br>由管理人统一进行阶级的权限设置和委托任命。</strong>
+                            </p>
+                        </div>
+                    </details>
                 </div>
             </div>
         </div>
+
+        <div class="row timeline-element mb-2">
+            <div class="timeline-date col-12 col-md-6">
+                <div class="timeline-date-wrapper">
+                    <p class="mbr-timeline-date mbr-fonts-style display-5"><strong>2023/12/24</strong></p>
+                </div>
+            </div>
+            <span class="iconBackground"></span>
+            <div class="col-12 col-md-6">
+                <div class="timeline-text-wrapper">
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-6">星芒节的冬日活动</h4>
+                    <details class="mb-3">
+                        <summary class="btn btn-outline-secondary w-100 mb-2">展开/收起</summary>
+                        <div style="padding: 8px 0;">
+                            <div class="image-wrapper mb-4">
+                                <img src="https://dlink.host/wx4.sinaimg.cn/large/006fhRoTly8ibkqs6rh86j30u0140ai5.jpg"
+                                     onerror="this.onerror=null; this.src='assets/images/fes/Christmas/5f6c0411c146a43e593940ef6d6f49f2.jpeg';"
+                                     alt="Mobirise" title="">
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+
         <div class="row timeline-element mb-2">
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
-                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(9期)</strong></h4>
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(8期)</strong></h4>
                     <button class="member-toggle">人员名单</button>
                     <div class="member-list">
                         <p class="mbr-text mbr-fonts-style display-7"><strong>浪漫運作(守墓人)</strong> 加入了FC</p>
@@ -475,7 +645,7 @@
 
                         <p class="mbr-text mbr-fonts-style display-7"><strong>采药人</strong> 加入了FC</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>卷心酸菜鱼</strong> 加入了FC</p>
-
+                        <p>我是一只酸菜鱼</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>芬代尔</strong> 加入了FC</p>
                         <p>Elezen族男性，黑色皮肤的银发男子，
                             <br>手持巨剑的传奇骑士
@@ -486,6 +656,31 @@
             </div>
             <span class="iconBackground"></span>
         </div>
+
+        <div class="row timeline-element mb-2">
+            <div class="timeline-date col-12 col-md-6">
+                <div class="timeline-date-wrapper">
+                    <p class="mbr-timeline-date mbr-fonts-style display-5"><strong>2023/12/31</strong></p>
+                </div>
+            </div>
+            <span class="iconBackground"></span>
+            <div class="col-12 col-md-6">
+                <div class="timeline-text-wrapper">
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-6">2023->2024跨年活动</h4>
+                    <details class="mb-3">
+                        <summary class="btn btn-outline-secondary w-100 mb-2">展开/收起</summary>
+                        <div style="padding: 8px 0;">
+                            <div class="image-wrapper mb-4">
+                                <img src="https://dlink.host/wx1.sinaimg.cn/large/006fhRoTly8ibkr0f5npgj31c00u0grm.jpg"
+                                     onerror="this.onerror=null; this.src='assets/images/fes/NewYear/644403cfffb96a53273953ddae1036dc.jpeg';"
+                                     alt="Mobirise" title="">
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+
         <div class="row timeline-element mb-2">
             <div class="timeline-date col-12 col-md-6">
                 <div class="timeline-date-wrapper">
@@ -498,8 +693,9 @@
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>设定细化</strong></h4>
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-7"><strong>テッセレーションの設定</strong></h4>
                     <div class="image-wrapper mb-4">
-                        <!--                        <img src="assets/images/mbr-948x632.jpg" alt="Mobirise" title="">-->
-                        <img src="https://img.picgo.net/2024/10/18/poster1722726838981140b2eec213e2.jpeg" alt="Mobirise" title="">
+                        <img src="https://dlink.host/wx2.sinaimg.cn/large/006fhRoTly8i8u7mm1jbtj313h0u0gq2.jpg"
+                             onerror="this.onerror=null;this.src='./assets/images/ms/LK.jpg';"
+                             alt="Mobirise" title="">
                     </div>
                     <p class="mbr-text mbr-fonts-style display-7">主が神話好きなことと、世界史好き、そしてFF14が流行っていることも有り、名前をfantasticのPhantomへ変更<br>
                         ここでのPhantomは幻影、幻靈のこと。</p>
@@ -509,7 +705,7 @@
         <div class="row timeline-element mb-2">
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
-                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(10期)</strong></h4>
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(9期)</strong></h4>
                     <button class="member-toggle">人员名单</button>
                     <div class="member-list">
                         <p class="mbr-text mbr-fonts-style display-7"><strong>大白鹅</strong> 加入了FC</p>
@@ -553,8 +749,9 @@
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-7"><strong>LOGOとテーマ曲を設計された</strong></h4>
 
                     <div class="image-wrapper mb-4">
-                        <!--                        <img src="assets/images/logo%20-%20S.jpg" alt="FC クレスト" title="">-->
-                        <img src="https://img.picgo.net/2024/10/18/JoinPhantomsNow1722725387cc0c919c86a272f3.jpeg" alt="FC クレスト" title="">
+                        <img src="https://dlink.host/wx4.sinaimg.cn/large/006fhRoTly8i8u7nsa2bwj30u00u0wi3.jpg"
+                             onerror="this.onerror=null;this.src='./assets/images/logo - S.jpg';"
+                             alt="FC クレスト" title="">
                     </div>
                 </div>
             </div>
@@ -562,16 +759,17 @@
         <div class="row timeline-element mb-2">
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
-                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(11期)</strong></h4>
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(10期)</strong></h4>
                     <button class="member-toggle">人员名单</button>
                     <div class="member-list">
-                        <p class="mbr-text mbr-fonts-style display-7"><strong>隼人</strong> 加入了FC</p>
-                        <p>现在他已经是土豆猪咪了</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>隼人(土豆猪咪)</strong> 加入了FC</p>
+                        <p>现在他已经是网恋的土豆猪咪了</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>包心小鱼丸</strong> 加入了FC</p>
                         <p>非常友善的朋友，不论做什么都可以约上他，
                             <br>——他总是很乐意参与的。
                         </p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>奈奈生(机智的土豆)</strong> 加入了FC</p>
+                        <p>后来去一个人旅行了</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>褚梨梨</strong> 加入了FC</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>帕特里克w(Patric)</strong> 加入了FC</p>
                         <p>Lalafell族男性: 睿智的贤者、独当一面的冒险者
@@ -596,16 +794,42 @@
                         <p>高难玩家。
                             <br>朋友们都钦佩他乐于助人的热心和过人的实力，
                             <br>正所谓可靠的同伴。
+                            <br>——即便是他喝醉的时候，嗯
                         </p>
                     </div>
                 </div>
             </div>
             <span class="iconBackground"></span>
         </div>
+
+        <div class="row timeline-element mb-2">
+            <div class="timeline-date col-12 col-md-6">
+                <div class="timeline-date-wrapper">
+                    <p class="mbr-timeline-date mbr-fonts-style display-5"><strong>2023/10</strong></p>
+                </div>
+            </div>
+            <span class="iconBackground"></span>
+            <div class="col-12 col-md-6">
+                <div class="timeline-text-wrapper">
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-6">守护天节的魔人盛宴</h4>
+                    <details class="mb-3">
+                        <summary class="btn btn-outline-secondary w-100 mb-2">展开/收起</summary>
+                        <div style="padding: 8px 0;">
+                            <div class="image-wrapper mb-4">
+                                <img src="https://dlink.host/wx1.sinaimg.cn/large/006fhRoTly8ibkqxirl8yj31c00u0ajz.jpg"
+                                     onerror="this.onerror=null; this.src='assets/images/fes/Halloween/12e1a871b3926c60930c0ce0ff7f2740.png';"
+                                     alt="Mobirise" title="">
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+
         <div class="row timeline-element mb-2">
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
-                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(12期)</strong></h4>
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(11期)</strong></h4>
                     <button class="member-toggle">人员名单</button>
                     <div class="member-list">
                         <p class="mbr-text mbr-fonts-style display-7"><strong>L丶</strong> 加入了FC</p>
@@ -624,16 +848,47 @@
                         <p class="mbr-text mbr-fonts-style display-7"><strong>栗子lz & 栗山香橙</strong> 加入了FC</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>Eika大雪</strong> 加入了FC</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>邑小小干</strong> 加入了FC</p>
-                        <p>帅气的酷酷的女性角色</p>
+                        <p>喜欢rap的帅气的酷酷女性角色</p>
                     </div>
                 </div>
             </div>
             <span class="iconBackground"></span>
         </div>
+
+
         <div class="row timeline-element mb-2">
             <div class="timeline-date col-12 col-md-6">
                 <div class="timeline-date-wrapper">
-                    <p class="mbr-timeline-date mbr-fonts-style display-5"><strong>2025.1.2</strong></p>
+                    <p class="mbr-timeline-date mbr-fonts-style display-5"><strong>2024/12/24</strong></p>
+                </div>
+            </div>
+            <span class="iconBackground"></span>
+            <div class="col-12 col-md-6">
+                <div class="timeline-text-wrapper">
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-6">星芒节的团聚活动</h4>
+                    <details class="mb-3">
+                        <summary class="btn btn-outline-secondary w-100 mb-2">展开/收起</summary>
+                        <div style="padding: 8px 0;">
+                            <div class="image-wrapper mb-4">
+                                <img src="https://dlink.host/wx4.sinaimg.cn/large/006fhRoTly8ibkr44fu7kj30r00hz43g.jpg"
+                                     onerror="this.onerror=null; this.src='assets/images/fes/Christmas/fa01cc9ad960b69362280ba0ebdf.png';"
+                                     alt="Mobirise" title="">
+                                <img src="https://dlink.host/wx2.sinaimg.cn/large/006fhRoTly8ibkqtk172bj31hc0u0jxw.jpg"
+                                     onerror="this.onerror=null; this.src='assets/images/fes/Christmas/20330ce94585a597b8215722b3117260.jpeg';"
+                                     alt="Mobirise" title="">
+                            </div>
+                        </div>
+                    </details>
+                    <a href="https://www.bilibili.com/video/BV1FmkdYqEwj/" class="btn btn-black mb-3" target="_blank">Vedio</a>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row timeline-element mb-2">
+            <div class="timeline-date col-12 col-md-6">
+                <div class="timeline-date-wrapper">
+                    <p class="mbr-timeline-date mbr-fonts-style display-5"><strong>2025/01/02</strong></p>
                 </div>
             </div>
             <span class="iconBackground"></span>
@@ -642,7 +897,9 @@
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>FC House 购买</strong></h4>
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-10"><strong>FCハウス購入</strong></h4>
                     <div class="image-wrapper mb-4">
-                        <img src="assets/images/F5CB618BD67AF7E4CF73F006986B9C71.png" alt="Mobirise" title="">
+                        <img src="https://dlink.host/wx3.sinaimg.cn/large/006fhRoTly8i8u9857fj0j30l00fijsl.jpg"
+                             onerror="this.onerror=null;this.src='./assets/images/F5CB618BD67AF7E4CF73F006986B9C71.png';"
+                             alt="Mobirise" title="">
                     </div>
                     <p class="mbr-text mbr-fonts-style display-7">组织成员集体抽选了L房屋 薰衣草苗圃第29区58号土地</p>
                     <p class="mbr-text mbr-fonts-style display-7">特别鸣谢<strong>幽靈花</strong>のNo.103強運一抽</p>
@@ -650,10 +907,11 @@
                 </div>
             </div>
         </div>
+
         <div class="row timeline-element mb-2">
             <div class="timeline-date col-12 col-md-6">
                 <div class="timeline-date-wrapper">
-                    <p class="mbr-timeline-date mbr-fonts-style display-5"><strong>2025.1.4</strong></p>
+                    <p class="mbr-timeline-date mbr-fonts-style display-5"><strong>2025/01/04</strong></p>
                 </div>
             </div>
             <span class="iconBackground"></span>
@@ -662,16 +920,19 @@
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>装修完成</strong></h4>
                     <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-10"><strong>家の内装が完成した</strong></h4>
                     <div class="image-wrapper mb-4">
-                        <img src="assets/images/F9A21EF1BCBA36B7F232324001690D2C.png" alt="Mobirise" title="">
+                        <img src="https://dlink.host/wx1.sinaimg.cn/large/006fhRoTly8i8u98tnd7ej30sw1hck56.jpg"
+                             onerror="this.onerror=null;this.src='./assets/images/F9A21EF1BCBA36B7F232324001690D2C.png';"
+                             alt="Mobirise" title="">
                     </div>
                     <p class="mbr-text mbr-fonts-style display-7">装修基本完成!</p>
                 </div>
             </div>
         </div>
+
         <div class="row timeline-element mb-2">
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
-                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(13期)</strong></h4>
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(12期)</strong></h4>
                     <button class="member-toggle">人员名单</button>
                     <div class="member-list">
                         <p class="mbr-text mbr-fonts-style display-7"><strong>祥月(饮江)</strong> 加入了FC</p>
@@ -680,7 +941,6 @@
                         <p>——"真的要抽吗？"</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>网友小雨</strong> 加入了Link-shell</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>锦鲤</strong> 加入了Link-shell</p>
-
                         <p class="mbr-text mbr-fonts-style display-7"><strong>千绘o</strong> 加入了FC</p>
                         <p>这个豆芽稀里糊涂说自己是女生，
                             <br>直到后来我们一起连麦才发现是个xd。
@@ -706,6 +966,7 @@
                         </p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>怜愛</strong> 加入了FC</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>夜谈问饭</strong> 加入了FC</p>
+                        <p>晚上好饿饭饭</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>迪布瓦</strong> 加入了Link-shell</p>
                     </div>
                 </div>
@@ -715,27 +976,32 @@
         <div class="row timeline-element mb-2">
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
-                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(14期)</strong></h4>
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(13期)</strong></h4>
                     <button class="member-toggle">人员名单</button>
                     <div class="member-list">
                         <p class="mbr-text mbr-fonts-style display-7"><strong>村里最靓的仔</strong> 加入了FC</p>
+                        <p style="font-size: 12px;">
+                            靓仔
+                        </p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>墨蓝鳞</strong> 加入了FC</p>
+                        <p style="font-size: 12px;">
+                            靓仔的CP也是靓仔
+                        </p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>卡卡莫拉</strong> 加入了FC</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>雪晴cc</strong> 加入了FC</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>兔兔赖赖 & 梦游清清</strong> 加入了FC</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>杰弦</strong> 加入了FC</p>
-
                         <p class="mbr-text mbr-fonts-style display-7"><strong>伏見学</strong> 加入了FC</p>
-
                         <p class="mbr-text mbr-fonts-style display-7"><strong>Utonia</strong> 加入了FC</p>
+                        <p>Nia可爱捏</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>Haiwen</strong> 加入了FC</p>
                         <p>据说是因为在好友列表里面看见我们部队后缀很炫酷</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>反义词(Nox)</strong> 加入了FC</p>
-                        <p>社恐犯了> <</p>
+                        <p>社恐老农咪> <</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>觉醒吧鳕鱼王</strong> 加入了FC</p>
                         <p>欸 原来如此</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>北村秋成</strong> 加入了FC</p>
-                        <p>发出了叫声:"嘎 wwww"</p>
+                        <p>有机会去听一下她宛转动人的歌声吧，一定会为之心醉的www</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>海鲜拉面侠</strong> 加入了FC</p>
                         <p>-"他怎么连续几周大半夜的在野图刷fate?"</p>
                         <p>-"不会是脚本吧..."</p>
@@ -744,9 +1010,10 @@
                         <p class="mbr-text mbr-fonts-style display-7"><strong>玛格利安</strong> 加入了FC</p>
                         <p>"袜！"</p>
                         <p>她的名字是Maglian,也可以称呼昵称"利安"</p>
-                        <p>如果你打错字的话她就会"我要攻击你"了</p>
+                        <p>如果你打错字的话她就会"嘎？"然后"我要攻击你"了</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>鱿鱿</strong> 加入了FC</p>
                         <p>今天也是在跟着车头打纷争前线</p>
+                        <p>总会有一些过去的流言蜚语，但她现在是快乐的水产</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>哈克mon(rks)</strong> 加入了Link-shell</p>
                         <p>好胜心很强 执着于攒金币成为首富的哈导</p>
                     </div>
@@ -754,14 +1021,30 @@
             </div>
             <span class="iconBackground"></span>
         </div>
+
+        <div class="row timeline-element mb-2">
+            <div class="timeline-date col-12 col-md-6">
+                <div class="timeline-date-wrapper">
+                    <p class="mbr-timeline-date mbr-fonts-style display-5"><strong>2025/05/06</strong></p>
+                </div>
+            </div>
+            <span class="iconBackground"></span>
+            <div class="col-12 col-md-6">
+                <div class="timeline-text-wrapper">
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-6">大家一起为 <strong>緋雪yuki</strong> 庆祝了生日</h4>
+                    <a href="./album/birthday/20250506birthday.html" class="btn btn-black mb-3" target="_blank">纪念相册</a>
+                </div>
+            </div>
+        </div>
+
         <div class="row timeline-element mb-2">
             <div class="col-12 col-md-6">
                 <div class="timeline-text-wrapper">
-                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(15期)</strong></h4>
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(14期)</strong></h4>
                     <button class="member-toggle">人员名单</button>
                     <div class="member-list">
                         <p class="mbr-text mbr-fonts-style display-7"><strong>血糖</strong> 加入了FC</p>
-                        <p>热心高难导</p>
+                        <p>别看他这样其实人很可爱的家伙</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>优弥娅 & 维斯珀</strong> 加入了FC</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>Yastod</strong> 加入了FC</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>Ningg</strong> 加入了FC</p>
@@ -777,12 +1060,181 @@
                         <p class="mbr-text mbr-fonts-style display-7"><strong>夜也</strong> 加入了FC</p>
                         <p>会主动看副本攻略的T是好T</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>露西亚</strong> 加入了FC</p>
+                        <p style="font-size: 12px;">
+                            在艾欧泽亚是没有帕弥什病毒的吧?
+                        </p>
+
                     </div>
                 </div>
             </div>
             <span class="iconBackground"></span>
         </div>
 
+        <div class="row timeline-element mb-2">
+            <div class="timeline-date col-12 col-md-6">
+                <div class="timeline-date-wrapper">
+                    <p class="mbr-timeline-date mbr-fonts-style display-5"><strong>2025/06/09</strong></p>
+                </div>
+            </div>
+            <span class="iconBackground"></span>
+            <div class="col-12 col-md-6">
+                <div class="timeline-text-wrapper">
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-6">众人一起登顶了潮风亭</h4>
+                    <p class="mbr-text mbr-fonts-style display-7">讨伐极楼神</p>
+
+                    <details class="mb-3">
+                        <summary class="btn btn-outline-secondary w-100 mb-2">展开/收起</summary>
+                        <div style="padding: 8px 0;">
+                            <img
+                                    src="https://dlink.host/wx1.sinaimg.cn/large/006fhRoTly8ibkr1as838j318g0p0gp2.jpg"
+                                    onerror="this.onerror=null;this.src='./assets/images/fes/5f4b6826c8c4d024a1ff8dee4c64cac3.jpeg';"
+                                    alt="Mobirise" title=""
+                                    class="img-fluid rounded"
+                                    style="max-height: 400px; object-fit: contain;"
+                            >
+                        </div>
+                    </details>
+                    <p class="mbr-text mbr-fonts-style display-7">掉下去之后再起不能的成员会按照透明度α=30%设置大头飘在空中（音容宛在）</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row timeline-element mb-2">
+            <div class="timeline-date col-12 col-md-6">
+                <div class="timeline-date-wrapper">
+                    <p class="mbr-timeline-date mbr-fonts-style display-5"><strong>2025/09/01</strong></p>
+                </div>
+            </div>
+            <span class="iconBackground"></span>
+            <div class="col-12 col-md-6">
+                <div class="timeline-text-wrapper">
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-6">之后又去完成了永夏魔城挑战</h4>
+                    <details class="mb-3">
+                        <summary class="btn btn-outline-secondary w-100 mb-2">展开/收起</summary>
+                        <div style="padding: 8px 0;">
+                            <img src="https://dlink.host/wx3.sinaimg.cn/large/006fhRoTly8ibkqwcb43oj31c00u042d.jpg"
+                                    onerror="this.onerror=null; this.src='./assets/images/fes/Guren/584c3ac6ce204f8cbaa87d91105f1905.jpeg';"
+                                    alt="Mobirise" title=""
+                                    class="img-fluid rounded"
+                                    style="max-height: 400px; object-fit: contain;"
+                            >
+                        </div>
+                    </details>
+                    <a href="https://www.bilibili.com/video/BV1YraHz2EMj/?spm_id_from=333.1387.homepage.video_card.click" class="btn btn-black mb-3" target="_blank">Vedio</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row timeline-element mb-2">
+            <div class="timeline-date col-12 col-md-6">
+                <div class="timeline-date-wrapper">
+                    <p class="mbr-timeline-date mbr-fonts-style display-5"><strong></strong></p>
+                </div>
+            </div>
+            <span class="iconBackground"></span>
+            <div class="col-12 col-md-6">
+                <div class="timeline-text-wrapper">
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-6">红莲节的合影</h4>
+                    <details class="mb-3">
+                        <summary class="btn btn-outline-secondary w-100 mb-2">展开/收起</summary>
+                        <div style="padding: 8px 0;">
+                            <img src="https://dlink.host/wx4.sinaimg.cn/large/006fhRoTly8ibkqqw1j8kj31fe0u0tfw.jpg"
+                                    onerror="this.onerror=null; this.src='assets/images/fes/0916/fa483971125a5769b0945110c7329c92.jpeg';"
+                                    alt="红莲节合照"
+                                    class="img-fluid rounded"
+                                    style="max-height: 400px; object-fit: contain;"
+                            >
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+
+        <div class="row timeline-element mb-2">
+            <div class="col-12 col-md-6">
+                <div class="timeline-text-wrapper">
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(15期)</strong></h4>
+                    <button class="member-toggle">人员名单</button>
+                    <div class="member-list">
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>提瑞斯法(登楼)</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>黑色深渊</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>伽蓝</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>迪亚贝尔维亚</strong> 加入了FC</p>
+                        <p>赤瞳的龙</p>
+                    </div>
+                </div>
+            </div>
+            <span class="iconBackground"></span>
+        </div>
+
+        <div class="row timeline-element mb-2">
+            <div class="timeline-date col-12 col-md-6">
+                <div class="timeline-date-wrapper">
+                    <p class="mbr-timeline-date mbr-fonts-style display-5"><strong>2025/12/24</strong></p>
+                </div>
+            </div>
+            <span class="iconBackground"></span>
+            <div class="col-12 col-md-6">
+                <div class="timeline-text-wrapper">
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-6">星芒节的团聚活动</h4>
+                    <div class="image-wrapper mb-4">
+                        <img src="https://dlink.host/wx4.sinaimg.cn/large/006fhRoTly8ibkqsjpgmij31900tzqe7.jpg"
+                             onerror="this.onerror=null;this.src='./assets/images/fes/Christmas/36a8ffd9a34568aba82b466742b82650.jpeg';"
+                             alt="Mobirise" title="">
+                    </div>
+                    <p class="mbr-text mbr-fonts-style display-7">祝福和交换礼物的日子<br>天气寒冷的时候适合聚在一起取暖</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row timeline-element mb-2">
+            <div class="col-12 col-md-6">
+                <div class="timeline-text-wrapper">
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(16期)</strong></h4>
+                    <button class="member-toggle">人员名单</button>
+                    <div class="member-list">
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>絵空释(言酱)</strong> 加入了FC</p>
+                        <p>岩浆是言酱的谐音</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>嗜雪龙少</strong> 加入了FC</p>
+                        <p>龙少怎么40多级了还是枪术师</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>JinxZ</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>泷丶</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>诘安w</strong> 加入了FC</p>
+                        <p style="font-size: 12px;">
+                            她喜欢那些听起来就很痛的穿刺饰品<br>
+                            <br>"是为了装B"她说
+                            <br>"不装的钉子我不打。"
+                        </p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>东方月白</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>村云江</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>机智豆</strong> 加入了FC</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row timeline-element mb-2">
+            <div class="col-12 col-md-6">
+                <div class="timeline-text-wrapper">
+                    <h4 class="mbr-timeline-title mbr-fonts-style mb-4 display-5"><strong>新增成员(17期)</strong></h4>
+                    <button class="member-toggle">人员名单</button>
+                    <div class="member-list">
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Zafir</strong> 加入了FC</p>
+                        <p>FF14攻略UP主 Zafir_Official <a class="social-link social-bili" href="https://space.bilibili.com/23105654?spm_id_from=333.337.0.0" target="_blank" rel="noopener noreferrer">B站主页</a></p>
+                        <p>"你的声音听起来好熟悉..你该不会是顾跑跑吧!"</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Kamuic(无糖馒头飞踢)</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>Yangtk</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>欲望海</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>别寻</strong> 加入了FC</p>
+                        <p>QwQ</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>花间酌</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>极黑乌龙茶</strong> 加入了FC</p>
+                        <p class="mbr-text mbr-fonts-style display-7"><strong>罗季昂</strong> 加入了FC</p>
+                        <p>女骑士！(她刚刚叫我'大人'欸！)</p>
+                    </div>
+                </div>
+            </div>
+            <span class="iconBackground"></span>
+        </div>
     </div>
 </section>
 
@@ -793,7 +1245,9 @@
                 <div class="image-wrapper">
                     <!--                    <a href="index.html#features14-t" target="_blank">-->
                     <a>
-                        <img src="https://img.picgo.net/2024/10/18/community-carda3bdfd8ef4bfe3ca.png" style="width: 100%; max-width: 100%; align:center; padding:20px 0;">
+                        <img src="https://dlink.host/wx4.sinaimg.cn/large/006fhRoTly8i8u7onlaobj30n50dtdh2.jpg"
+                             onerror="this.onerror=null;this.src='./assets/images/logo - S.jpg';"
+                             style="width: 100%; max-width: 100%; align:center; padding:20px 0;">
                     </a>
                     <p class="mbr-description mbr-fonts-style mt-2 align-center display-4">Community Finder</p>
                 </div>
@@ -809,8 +1263,9 @@
     <!--    </div>-->
     <div class="container">
         <div class="row justify-content-center" style="opacity:1; background-color: rgb(255, 255, 255);">
-<!--            <audio id="myAudio" src="https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com/storage/v1/object/public/assets/audio/BGM.mp3" controls="smallconsole" autoplay loop></audio>-->
-            <audio src="./audio/BGM.mp3" autostart=”true” volume="0.3" loop controls="smallconsole"></audio>
+<!--            旧的自动播放方式-->
+<!--            <audio id="myAudio" src="./audio/Sonnet Phantom.mp3" controls="smallconsole" autoplay loop></audio>-->
+            <audio src="./audio/Sonnet Phantom.mp3" autostart=”true” volume="0.3" loop controls="smallconsole"></audio>
             <script>
                 var audio = document.getElementById('myAudio');
                 audio.volume = 0;
@@ -839,7 +1294,7 @@
             </script>
             <div class="col-12 col-lg-10">
                 <div class="image-wrapper">
-                    <p class="mbr-description mbr-fonts-style mt-2 align-center display-4">プレリュード - Final Fantasy Vocal Collections II</p>
+                    <p class="mbr-description mbr-fonts-style mt-2 align-center display-4">十四行诗：幻影 - Sonnet Phantom Vocal Collections I</p>
                 </div>
             </div>
         </div>
@@ -888,14 +1343,13 @@
 
 
 <footer>
-
     <!--回到顶部按钮-->
     <!--Yuki:20190724-->
     <style>
         .box{
             position:fixed;
             right:20px;
-            bottom: 380px;
+            bottom: 480px;
             height:50px;
             width: 50px;
             text-align:center;
@@ -962,12 +1416,12 @@
             var titleTime;
             document.addEventListener('visibilitychange', function () {
                 if (document.hidden) {
-                    //$('[rel="shortcut icon"]').attr('href', "/Content/Images/fail.ico");
+                    $('[rel="shortcut icon"]').attr('href', "/Content/Images/fail.ico");
                     document.title = '( * ￣▽￣)／肿么不看了呢？';
                     clearTimeout(titleTime);
                 }
                 else {
-                    //$('[rel="shortcut icon"]').attr('href', "/Content/Images/icon.png");
+                    $('[rel="shortcut icon"]').attr('href', "/Content/Images/icon.png");
                     // document.title = '(～￣▽￣)～咦！又开始看了！' + OriginTitile;
                     document.title = '(～￣▽￣)～咦！又开始看了！';
                     titleTime = setTimeout(function () {
@@ -1042,7 +1496,7 @@
 <script src="./assets/web/assets/jquery/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-        $("#foot").load("./additions/foot/profile-round.html");
+        
     });
 </script>
 <!-- 引入访客统计模块 -->

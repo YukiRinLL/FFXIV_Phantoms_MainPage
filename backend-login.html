@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FF14 Rising Stones 登录</title>
+    <!-- 使用qrcodejs库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .login-container {
+            margin: 20px 0;
+            padding: 20px;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+        }
+        #qrCodeContainer {
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #qrcode {
+            width: 250px;
+            height: 250px;
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 10px;
+        }
+        .qr-info {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .qr-info a {
+            color: #007bff;
+            text-decoration: none;
+            word-break: break-all;
+        }
+        .qr-info a:hover {
+            text-decoration: underline;
+        }
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        button.secondary {
+            background-color: #6c757d;
+        }
+        button.secondary:hover {
+            background-color: #545b62;
+        }
+        .section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+        }
+        .section h3 {
+            color: #495057;
+            margin-bottom: 15px;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .info-card {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #007bff;
+        }
+        .reward-item, .log-item, .dynamic-item {
+            background-color: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+            text-align: left;
+        }
+        .reward-item h4, .log-item h4, .dynamic-item h4 {
+            color: #495057;
+            margin-top: 0;
+        }
+        .reward-buttons {
+            margin-top: 10px;
+        }
+        .highlight {
+            color: #007bff;
+            font-weight: bold;
+        }
+        .danger {
+            color: #dc3545;
+        }
+        .success-text {
+            color: #28a745;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .countdown {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        .qr-expired {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .mobile-hint {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+        .mobile-hint img {
+            width: 20px;
+            height: 20px;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+        #qrcode canvas {
+            width: 250px !important;
+            height: 250px !important;
+        }
+        .quick-actions {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+            text-align: left;
+        }
+        .quick-actions h3 {
+            margin-top: 0;
+            color: #495057;
+        }
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .action-buttons button {
+            margin: 0;
+            flex: 1;
+            min-width: 150px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>FF14 Rising Stones 登录</h1>
+    <p>使用叨鱼APP扫描二维码登录，完成签到和其他功能</p>
+
+    <div class="login-container">
+        <div class="status info" id="status">
+            点击"检查登录状态"查看当前状态，或点击"生成登录二维码"开始登录
+        </div>
+
+        <div id="qrCodeContainer" style="display: none;">
+            <div id="qrcode"></div>
+        </div>
+
+        <div id="qrInfo" class="qr-info" style="display: none;">
+            <p>请使用叨鱼APP扫描上方二维码，或点击链接在手机中打开：</p>
+            <p><a href="#" id="qrLink" target="_blank" rel="noopener noreferrer"></a></p>
+            <p id="countdown" class="countdown"></p>
+        </div>
+
+        <div class="mobile-hint" style="display: none;" id="mobileHint">
+            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZkMDQ3IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBhdGggZD0iTTE4IDJINmMtMS4xIDAtMiAuOS0yIDJ2MTZjMCAxLjEuOSAyIDIgMmgxMmMxLjEgMCAyLS45IDItMlY0YzAtMS4xLS45LTItMi0yWiIvPjxwYXRoIGQ9Ik0xMiAxOGgwLjAxIi8+PC9zdmc+" alt="手机">
+            提示：如果二维码无法扫描，请尝试将上方链接复制到手机浏览器打开
+        </div>
+
+        <div class="button-group">
+            <button onclick="checkLoginStatus()" id="checkStatusBtn">
+                <span id="checkStatusBtnText">检查登录状态</span>
+                <span id="checkStatusLoading" style="display:none;" class="loading"></span>
+            </button>
+            <button onclick="generateQrCode()" id="generateBtn">生成登录二维码</button>
+            <button onclick="fullLogin()" class="secondary">完整登录流程</button>
+        </div>
+
+        <!-- 快速操作区域 -->
+        <div class="quick-actions" id="quickActions" style="display: none;">
+            <h3>快速操作</h3>
+            <p id="loginStatusInfo"></p>
+            <div class="action-buttons">
+                <button onclick="getCharacterBindInfo()">获取角色信息</button>
+                <button onclick="doSignIn()" class="success-text">执行签到</button>
+                <button onclick="getSignRewardList()">查看签到奖励</button>
+                <button onclick="getSignLog()">查看签到日志</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="userInfo" class="section" style="display: none;">
+        <h2>用户信息</h2>
+        <div class="info-grid" id="loginInfo"></div>
+    </div>
+
+    <div id="signSection" class="section" style="display: none;">
+        <h3>签到功能</h3>
+        <div id="signInResult"></div>
+
+        <div id="signLogResult" style="margin-top: 20px;"></div>
+        <div id="rewardsList" style="margin-top: 20px;"></div>
+    </div>
+
+    <div id="dynamicSection" class="section" style="display: none;">
+        <h3>动态功能</h3>
+        <div class="button-group">
+            <button onclick="createDynamic()">创建动态</button>
+            <button onclick="createComment()">创建评论</button>
+        </div>
+        <div id="dynamicResult" style="margin-top: 20px;"></div>
+    </div>
+</div>
+
+<script>
+    let checkInterval = null;
+    let qrExpireTimer = null;
+    let qrExpireTime = null;
+    let qrCodeInstance = null;
+    const baseUrl = 'https://phantoms-backend.onrender.com';
+    // const baseUrl = 'http://localhost:8080'; // 根据实际情况修改
+    const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
+
+    // 页面加载时立即检查登录状态
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('页面已加载');
+        if (typeof QRCode === 'undefined') {
+            console.error('QRCode库未加载！请检查网络连接或CDN地址');
+            showStatus('二维码库加载失败，部分功能可能受限', 'warning');
+        } else {
+            console.log('QRCode库已加载，版本:', QRCode.version);
+        }
+
+        // 自动检查登录状态
+        setTimeout(checkLoginStatus, 500);
+    });
+
+    // 检查登录状态
+    async function checkLoginStatus() {
+        showButtonLoading('checkStatusBtn', true);
+
+        try {
+            const response = await fetch(`${baseUrl}/api/ffxiv/signin/check/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                const result = data.data;
+                const isLoggedIn = result.isLogin;
+
+                if (isLoggedIn) {
+                    showStatus('已登录，可以执行相关操作', 'success');
+
+                    // 显示用户信息
+                    document.getElementById('userInfo').style.display = 'block';
+                    document.getElementById('signSection').style.display = 'block';
+                    document.getElementById('dynamicSection').style.display = 'block';
+
+                    // 显示快速操作区域
+                    document.getElementById('quickActions').style.display = 'block';
+                    document.getElementById('loginStatusInfo').innerHTML = `
+                        <strong>登录状态：</strong><span class="success-text">已登录</span><br>
+                        <strong>用户ID：</strong>${result.userId || '未知'}<br>
+                        <strong>昵称：</strong>${result.nickname || '未知'}
+                    `;
+
+                    // 加载基本用户信息
+                    loadBasicUserInfo(result);
+                } else {
+                    showStatus('未登录，请生成二维码进行登录', 'info');
+                    document.getElementById('quickActions').style.display = 'block';
+                    document.getElementById('loginStatusInfo').innerHTML = `
+                        <strong>登录状态：</strong><span class="danger">未登录</span><br>
+                        <p>请点击"生成登录二维码"进行登录</p>
+                    `;
+                    hideSections();
+                }
+            } else {
+                showStatus(`检查登录状态失败: ${data.message}`, 'error');
+                document.getElementById('quickActions').style.display = 'block';
+                document.getElementById('loginStatusInfo').innerHTML = `
+                    <strong>登录状态：</strong><span class="danger">检查失败</span><br>
+                    <p>${data.message}</p>
+                `;
+            }
+        } catch (error) {
+            showStatus(`检查登录状态错误: ${error.message}`, 'error');
+        } finally {
+            showButtonLoading('checkStatusBtn', false);
+        }
+    }
+
+    // 加载基本用户信息
+    function loadBasicUserInfo(userData) {
+        let html = `
+            <div class="info-card">
+                <h4>登录状态</h4>
+                <p>状态: <span class="highlight success-text">已登录</span></p>
+                <p>用户ID: ${userData.userId || '未知'}</p>
+                ${userData.nickname ? `<p>昵称: ${userData.nickname}</p>` : ''}
+                ${userData.avatar ? `<p>头像: ${userData.avatar}</p>` : ''}
+            </div>`;
+
+        document.getElementById('loginInfo').innerHTML = html;
+    }
+
+    // 生成二维码并显示
+    async function generateQrCode() {
+        showStatus('正在生成二维码...', 'info');
+        document.getElementById('generateBtn').disabled = true;
+
+        try {
+            const response = await fetch(`${baseUrl}/api/ffxiv/signin/login/qrcode`);
+            const data = await response.json();
+
+            if (data.success) {
+                const qrCodeUrl = data.data;
+                showStatus('二维码已生成，请使用叨鱼APP扫描', 'info');
+
+                // 显示二维码容器
+                document.getElementById('qrCodeContainer').style.display = 'flex';
+                document.getElementById('qrInfo').style.display = 'block';
+                document.getElementById('mobileHint').style.display = 'block';
+
+                // 生成二维码图片
+                generateQRCodeImage(qrCodeUrl);
+
+                // 显示链接
+                const qrLink = document.getElementById('qrLink');
+                qrLink.href = qrCodeUrl;
+                qrLink.textContent = qrCodeUrl;
+
+                // 设置二维码过期时间
+                setQrExpireTimer(120);
+
+                // 开始轮询检查登录状态
+                startPolling();
+            } else {
+                showStatus(`生成二维码失败: ${data.message}`, 'error');
+                document.getElementById('generateBtn').disabled = false;
+            }
+        } catch (error) {
+            showStatus(`生成二维码错误: ${error.message}`, 'error');
+            document.getElementById('generateBtn').disabled = false;
+        }
+    }
+
+    // 使用qrcodejs库生成二维码图片
+    function generateQRCodeImage(url) {
+        const qrcodeDiv = document.getElementById('qrcode');
+
+        // 清空之前的二维码
+        qrcodeDiv.innerHTML = '';
+
+        try {
+            if (typeof QRCode !== 'undefined') {
+                qrCodeInstance = new QRCode(qrcodeDiv, {
+                    text: url,
+                    width: 250,
+                    height: 250,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+                console.log('二维码生成成功');
+            } else {
+                console.error('QRCode库未加载');
+                showQRCodeFallback(url, qrcodeDiv);
+            }
+        } catch (error) {
+            console.error('生成二维码时出错:', error);
+            showQRCodeFallback(url, qrcodeDiv);
+        }
+    }
+
+    // 备用方案
+    function showQRCodeFallback(url, container) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 20px;">
+                <p style="color: #dc3545; margin-bottom: 10px;">二维码生成失败</p>
+                <p style="margin-bottom: 10px;">请直接点击下方链接：</p>
+                <a href="${url}" target="_blank" style="color: #007bff; word-break: break-all;">
+                    ${url}
+                </a>
+                <p style="margin-top: 10px; font-size: 12px; color: #6c757d;">
+                    或者复制链接到叨鱼APP中打开
+                </p>
+            </div>
+        `;
+    }
+
+    // 设置二维码过期倒计时
+    function setQrExpireTimer(seconds) {
+        if (qrExpireTimer) {
+            clearInterval(qrExpireTimer);
+        }
+
+        qrExpireTime = Date.now() + seconds * 1000;
+        updateCountdown();
+
+        qrExpireTimer = setInterval(() => {
+            updateCountdown();
+        }, 1000);
+    }
+
+    // 更新倒计时显示
+    function updateCountdown() {
+        const now = Date.now();
+        const remainingSeconds = Math.max(0, Math.floor((qrExpireTime - now) / 1000));
+
+        const countdownElement = document.getElementById('countdown');
+        if (remainingSeconds > 0) {
+            const minutes = Math.floor(remainingSeconds / 60);
+            const seconds = remainingSeconds % 60;
+            countdownElement.innerHTML = `二维码将在 <span class="highlight">${minutes}:${seconds.toString().padStart(2, '0')}</span> 后失效`;
+        } else {
+            countdownElement.innerHTML = '<span class="qr-expired">二维码已过期，请重新生成</span>';
+            if (qrExpireTimer) {
+                clearInterval(qrExpireTimer);
+                qrExpireTimer = null;
+            }
+        }
+    }
+
+    // 开始轮询检查登录状态
+    function startPolling() {
+        showStatus('正在检查登录状态...', 'info');
+
+        // 先立即检查一次
+        checkLoginPoll();
+
+        // 然后每2秒检查一次
+        if (checkInterval) clearInterval(checkInterval);
+        checkInterval = setInterval(checkLoginPoll, 2000);
+    }
+
+    // 轮询检查登录状态
+    async function checkLoginPoll() {
+        try {
+            const response = await fetch(`${baseUrl}/api/ffxiv/signin/login/status`);
+            const data = await response.json();
+
+            if (data.success) {
+                if (data.data.status === 'LOGIN_SUCCESS') {
+                    const ticket = data.data.ticket;
+                    showStatus('登录成功！正在完成登录流程...', 'success');
+                    clearInterval(checkInterval);
+                    checkInterval = null;
+
+                    // 清除二维码过期计时器
+                    if (qrExpireTimer) {
+                        clearInterval(qrExpireTimer);
+                        qrExpireTimer = null;
+                    }
+
+                    // 隐藏二维码
+                    document.getElementById('qrCodeContainer').style.display = 'none';
+                    document.getElementById('qrInfo').style.display = 'none';
+                    document.getElementById('mobileHint').style.display = 'none';
+
+                    // 完成登录流程
+                    finishLogin(ticket);
+                } else if (data.data.status === 'QRCODE_EXPIRED') {
+                    showStatus('二维码已失效，请重新生成', 'error');
+                    clearInterval(checkInterval);
+                    checkInterval = null;
+
+                    document.getElementById('countdown').innerHTML =
+                        '<span class="qr-expired">二维码已失效，请重新生成</span>';
+
+                    document.getElementById('generateBtn').disabled = false;
+                } else if (data.data.status === 'WAITING_FOR_SCAN') {
+                    showStatus('等待用户扫描二维码...', 'info');
+                }
+            } else {
+                showStatus(`检查登录状态失败: ${data.message}`, 'error');
+                clearInterval(checkInterval);
+                checkInterval = null;
+            }
+        } catch (error) {
+            showStatus(`检查登录状态错误: ${error.message}`, 'error');
+            clearInterval(checkInterval);
+            checkInterval = null;
+        }
+    }
+
+    // 完成登录
+    async function finishLogin(ticket) {
+        try {
+            const response = await fetch(`${baseUrl}/api/ffxiv/signin/login/finish`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ ticket })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                showStatus('登录完成！', 'success');
+                document.getElementById('generateBtn').disabled = false;
+
+                // 重新检查登录状态以更新界面
+                setTimeout(checkLoginStatus, 1000);
+            } else {
+                showStatus(`完成登录失败: ${data.message}`, 'error');
+                document.getElementById('generateBtn').disabled = false;
+            }
+        } catch (error) {
+            showStatus(`完成登录错误: ${error.message}`, 'error');
+            document.getElementById('generateBtn').disabled = false;
+        }
+    }
+
+    // 完整登录流程
+    async function fullLogin() {
+        showStatus('开始完整登录流程...', 'info');
+        document.getElementById('generateBtn').disabled = true;
+
+        try {
+            const response = await fetch(`${baseUrl}/api/ffxiv/signin/login/full`);
+            const data = await response.json();
+
+            if (data.success) {
+                showStatus('完整登录流程完成！', 'success');
+                setTimeout(checkLoginStatus, 1000);
+            } else {
+                showStatus(`完整登录失败: ${data.message}`, 'error');
+            }
+        } catch (error) {
+            showStatus(`完整登录错误: ${error.message}`, 'error');
+        } finally {
+            document.getElementById('generateBtn').disabled = false;
+        }
+    }
+
+    // 获取角色绑定信息
+    async function getCharacterBindInfo() {
+        try {
+            const response = await fetch(`${baseUrl}/api/ffxiv/signin/character/bind`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                const result = data.data.data;
+                let html = `
+                    <div class="info-card">
+                        <h4>角色信息</h4>
+                        <p>角色ID: ${result.character_id || '未知'}</p>
+                        <p>角色名: ${result.character_name || '未知'}</p>
+                        <p>服务器: ${result.area_name || '未知'}</p>
+                        <p>所属群组: ${result.group_name || '未知'}</p>
+                        <p>是否签到: ${result.isSign ? '已签到' : '未签到'}</p>
+                    </div>`;
+
+                // 如果有角色详细信息，也显示出来
+                if (result.characterDetail) {
+                    html += `
+                        <div class="info-card">
+                            <h4>角色详细信息</h4>
+                            <p>创建时间: ${result.characterDetail.create_time || '未知'}</p>
+                            <p>最后登录时间: ${result.characterDetail.last_login_time || '未知'}</p>
+                            <p>游戏时长: ${result.characterDetail.play_time || '未知'}</p>
+                            <p>公会名称: ${result.characterDetail.guild_name || '无'}</p>
+                            <p>公会标签: ${result.characterDetail.guild_tag || '无'}</p>
+                        </div>`;
+                }
+
+                document.getElementById('loginInfo').innerHTML = html;
+                showStatus('获取角色信息成功', 'success');
+            } else {
+                showStatus(`获取角色信息失败: ${data.message}`, 'error');
+            }
+        } catch (error) {
+            showStatus(`获取角色信息错误: ${error.message}`, 'error');
+        }
+    }
+
+    // 执行签到
+    async function doSignIn() {
+        try {
+            const response = await fetch(`${baseUrl}/api/ffxiv/signin/sign/in`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                const result = data.data;
+                let html = `
+                    <div class="status success">
+                        <h4>签到成功！</h4>
+                        <p>签到天数: ${result.signDays || '未知'}</p>
+                        <p>奖励名称: ${result.rewardName || '无'}</p>
+                        <p>消息: ${result.message || '签到完成'}</p>
+                    </div>`;
+
+                document.getElementById('signInResult').innerHTML = html;
+
+                // 刷新签到日志
+                setTimeout(getSignLog, 1000);
+            } else {
+                document.getElementById('signInResult').innerHTML = `
+                    <div class="status error">
+                        <h4>签到失败</h4>
+                        <p>${data.message}</p>
+                    </div>`;
+            }
+        } catch (error) {
+            document.getElementById('signInResult').innerHTML = `
+                <div class="status error">
+                    <h4>签到错误</h4>
+                    <p>${error.message}</p>
+                </div>`;
+        }
+    }
+
+    // 获取签到日志
+    async function getSignLog() {
+        try {
+            const response = await fetch(`${baseUrl}/api/ffxiv/signin/sign/log`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    month: currentMonth
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                const result = data.data;
+                let html = `<h4>${currentMonth} 签到日志</h4>`;
+
+                if (result.signLogs && result.signLogs.length > 0) {
+                    result.signLogs.forEach(log => {
+                        html += `
+                            <div class="log-item">
+                                <p>日期: ${log.date}</p>
+                                <p>状态: <span class="${log.signed ? 'success-text' : 'danger'}">
+                                    ${log.signed ? '已签到' : '未签到'}
+                                </span></p>
+                            </div>`;
+                    });
+                } else {
+                    html += '<p>暂无签到记录</p>';
+                }
+
+                document.getElementById('signLogResult').innerHTML = html;
+            } else {
+                document.getElementById('signLogResult').innerHTML = `
+                    <div class="status error">
+                        <p>获取签到日志失败: ${data.message}</p>
+                    </div>`;
+            }
+        } catch (error) {
+            document.getElementById('signLogResult').innerHTML = `
+                <div class="status error">
+                    <p>获取签到日志错误: ${error.message}</p>
+                </div>`;
+        }
+    }
+
+    // 获取签到奖励列表
+    async function getSignRewardList() {
+        try {
+            const response = await fetch(`${baseUrl}/api/ffxiv/signin/sign/reward/list`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    month: currentMonth
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                const result = data.data;
+                let html = `<h4>${currentMonth} 签到奖励列表</h4>`;
+
+                if (result.rewards && result.rewards.length > 0) {
+                    result.rewards.forEach(reward => {
+                        html += `
+                            <div class="reward-item">
+                                <h4>${reward.name || '未命名奖励'}</h4>
+                                <p>天数要求: ${reward.requiredDays}天</p>
+                                <p>状态: <span class="${reward.received ? 'success-text' : 'highlight'}">
+                                    ${reward.received ? '已领取' : '可领取'}
+                                </span></p>
+                                <p>奖励ID: ${reward.id}</p>
+                                ${!reward.received ? `
+                                    <div class="reward-buttons">
+                                        <button onclick="getSignReward(${reward.id})">领取奖励</button>
+                                    </div>
+                                ` : ''}
+                            </div>`;
+                    });
+                } else {
+                    html += '<p>暂无奖励信息</p>';
+                }
+
+                document.getElementById('rewardsList').innerHTML = html;
+            } else {
+                document.getElementById('rewardsList').innerHTML = `
+                    <div class="status error">
+                        <p>获取奖励列表失败: ${data.message}</p>
+                    </div>`;
+            }
+        } catch (error) {
+            document.getElementById('rewardsList').innerHTML = `
+                <div class="status error">
+                    <p>获取奖励列表错误: ${error.message}</p>
+                </div>`;
+        }
+    }
+
+    // 领取指定奖励
+    async function getSignReward(rewardId) {
+        try {
+            const response = await fetch(`${baseUrl}/api/ffxiv/signin/sign/reward/get`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: rewardId,
+                    month: currentMonth
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                alert('奖励领取成功！');
+                // 刷新奖励列表
+                getSignRewardList();
+            } else {
+                alert(`领取奖励失败: ${data.message}`);
+            }
+        } catch (error) {
+            alert(`领取奖励错误: ${error.message}`);
+        }
+    }
+
+    // 创建动态
+    async function createDynamic() {
+        const content = prompt('请输入动态内容：');
+        if (!content) return;
+
+        const scope = prompt('请输入可见范围（1-公开，2-仅粉丝，3-仅自己）：', '1');
+
+        try {
+            const response = await fetch(`${baseUrl}/api/ffxiv/signin/dynamic/create`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    content: content,
+                    scope: parseInt(scope),
+                    pic_url: ""
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                document.getElementById('dynamicResult').innerHTML = `
+                    <div class="status success">
+                        <p>创建动态成功！</p>
+                        <p>动态ID: ${data.data.dynamicId || '未知'}</p>
+                    </div>`;
+            } else {
+                document.getElementById('dynamicResult').innerHTML = `
+                    <div class="status error">
+                        <p>创建动态失败: ${data.message}</p>
+                    </div>`;
+            }
+        } catch (error) {
+            document.getElementById('dynamicResult').innerHTML = `
+                <div class="status error">
+                    <p>创建动态错误: ${error.message}</p>
+                </div>`;
+        }
+    }
+
+    // 创建评论
+    async function createComment() {
+        const posts_id = prompt('请输入动态ID：');
+        if (!posts_id) return;
+
+        const content = prompt('请输入评论内容：');
+        if (!content) return;
+
+        try {
+            const response = await fetch(`${baseUrl}/api/ffxiv/signin/post/comment`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    content: content,
+                    posts_id: posts_id,
+                    parent_id: "0",
+                    root_parent: "0",
+                    comment_pic: ""
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                document.getElementById('dynamicResult').innerHTML = `
+                    <div class="status success">
+                        <p>创建评论成功！</p>
+                        <p>评论ID: ${data.data.commentId || '未知'}</p>
+                    </div>`;
+            } else {
+                document.getElementById('dynamicResult').innerHTML = `
+                    <div class="status error">
+                        <p>创建评论失败: ${data.message}</p>
+                    </div>`;
+            }
+        } catch (error) {
+            document.getElementById('dynamicResult').innerHTML = `
+                <div class="status error">
+                    <p>创建评论错误: ${error.message}</p>
+                </div>`;
+        }
+    }
+
+    // 显示状态信息
+    function showStatus(message, type) {
+        const statusDiv = document.getElementById('status');
+        statusDiv.textContent = message;
+        statusDiv.className = `status ${type}`;
+    }
+
+    // 显示/隐藏按钮加载状态
+    function showButtonLoading(buttonId, isLoading) {
+        const button = document.getElementById(buttonId);
+        const textSpan = button.querySelector('span:first-child');
+        const loadingSpan = button.querySelector('.loading');
+
+        if (isLoading) {
+            textSpan.style.display = 'none';
+            loadingSpan.style.display = 'inline-block';
+            button.disabled = true;
+        } else {
+            textSpan.style.display = 'inline';
+            loadingSpan.style.display = 'none';
+            button.disabled = false;
+        }
+    }
+
+    // 隐藏所有功能区域
+    function hideSections() {
+        document.getElementById('userInfo').style.display = 'none';
+        document.getElementById('signSection').style.display = 'none';
+        document.getElementById('dynamicSection').style.display = 'none';
+        document.getElementById('qrCodeContainer').style.display = 'none';
+        document.getElementById('qrInfo').style.display = 'none';
+        document.getElementById('mobileHint').style.display = 'none';
+
+        // 清空内容
+        document.getElementById('loginInfo').innerHTML = '';
+        document.getElementById('signInResult').innerHTML = '';
+        document.getElementById('signLogResult').innerHTML = '';
+        document.getElementById('rewardsList').innerHTML = '';
+        document.getElementById('dynamicResult').innerHTML = '';
+    }
+</script>
+</body>
+</html>
