@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="generator" content="Mobirise v5.2.0, mobirise.com">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-    <link rel="shortcut icon" href="https://img.picgo.net/2024/10/18/frame-1-121x121bc5d878c1dd0d5fc.png"
+    <link rel="shortcut icon" href="https://dlink.host/wx4.sinaimg.cn/large/006fhRoTly8i8u7pljsfoj3045044dfp.jpg"
           onerror="this.onerror=null;this.src='./assets/images/frame-1-121x121.png';"
           type="image/x-icon">
 
@@ -47,7 +47,7 @@
         .chat-main-container {
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            min-height: 70vh;
         }
 
         /* 消息容器 - 可滚动区域 */
@@ -311,6 +311,54 @@
             margin: 0 2px;
         }
 
+        /* 文件消息样式 */
+        .file-message {
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            max-width: 400px;
+        }
+
+        .file-message .file-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-message .file-icon {
+            font-size: 24px;
+        }
+
+        .file-message .file-info {
+            flex: 1;
+        }
+
+        .file-message .file-name {
+            font-weight: bold;
+            margin-bottom: 4px;
+            word-break: break-all;
+        }
+
+        .file-message .file-size {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .file-message .download-btn {
+            padding: 6px 12px;
+            background: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+
+        .file-message .download-btn:hover {
+            background: #0056b3;
+        }
+
         /* 移动端优化 */
         @media (max-width: 768px) {
             .chat-main-container {
@@ -379,6 +427,10 @@
             }
 
             .chat-audio-message {
+                max-width: 100%;
+            }
+
+            .file-message {
                 max-width: 100%;
             }
         }
@@ -501,6 +553,212 @@
             background: #a8a8a8;
         }
 
+        /* 视图切换样式 */
+        .view-toggle-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 8px;
+            padding: 6px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border-bottom: 1px solid #ddd;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .view-toggle-btn {
+            padding: 6px 12px;
+            margin: 0 3px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background-color: #e9ecef;
+            color: #495057;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .view-toggle-btn.active {
+            background-color: #6c757d;
+            color: white;
+            box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+        }
+
+        .view-toggle-btn:hover:not(.active) {
+            background-color: #dee2e6;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .view-toggle-btn:active {
+            transform: translateY(0);
+        }
+
+        /* 游戏视图样式 */
+        .game-view-container {
+            width: 100%;
+            height: 600px;
+            background-color: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 游戏视图iframe - 响应式调整 */
+        .game-view-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+            transform-origin: top left;
+        }
+
+        /* 响应式调整 - 确保完整显示游戏画面 */
+        @media (max-width: 768px) {
+            .game-view-container {
+                height: 480px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-view-container {
+                height: 400px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .game-view-container {
+                height: 350px;
+            }
+        }
+
+        /* 视图容器 */
+        .view-container {
+            width: 100%;
+            min-height: 600px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* 聊天视图内容 */
+        #chat-view {
+            width: 100%;
+        }
+
+        /* 确保聊天消息容器可以滚动 */
+        #chat-view .chat-message-container {
+            width: 100%;
+            height: 600px;
+            overflow-y: auto;
+            background-color: #fff;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        /* 游戏视图内容 */
+        #game-view {
+            width: 100%;
+        }
+
+        .view-content {
+            display: none;
+            width: 100%;
+        }
+
+        .view-content.active {
+            display: block;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .game-view-container {
+                height: 480px;
+            }
+            
+            .view-container {
+                min-height: 480px;
+                border-radius: 6px;
+            }
+            
+            #chat-view .chat-message-container {
+                height: 480px;
+            }
+            
+            .view-toggle-container {
+                padding: 8px;
+                margin-bottom: 10px;
+            }
+
+            .view-toggle-btn {
+                padding: 8px 16px;
+                font-size: 13px;
+                margin: 0 3px;
+            }
+        }
+
+        @media (max-width: 480px) and (min-width: 360px) {
+            .game-view-container {
+                height: 400px;
+            }
+            
+            .view-container {
+                min-height: 400px;
+            }
+            
+            #chat-view .chat-message-container {
+                height: 400px;
+            }
+            
+            .view-toggle-container {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .view-toggle-btn {
+                margin: 0;
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 359px) {
+            .game-view-container {
+                height: 350px;
+            }
+            
+            .view-container {
+                min-height: 350px;
+            }
+            
+            #chat-view .chat-message-container {
+                height: 350px;
+            }
+            
+            .view-toggle-container {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .view-toggle-btn {
+                margin: 0;
+                width: 100%;
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+            
+            /* 进一步优化小屏幕上的游戏显示 */
+            .game-view-wrapper {
+                max-width: 100%;
+                max-height: 100%;
+            }
+        }
+
         /* 悬浮按钮样式 */
         .floating-btn {
             position: fixed;
@@ -563,7 +821,203 @@
                 font-size: 20px;
             }
         }
+
+        /* 图片发送弹窗样式 */
+        .image-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            display: none;
+        }
+
+        .image-modal {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            width: 90%;
+            max-width: 500px;
+            overflow: hidden;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .image-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e1e1e1;
+            background-color: #f8f9fa;
+        }
+
+        .image-modal-title {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .image-modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .image-modal-close:hover {
+            background-color: #e9ecef;
+            color: #333;
+        }
+
+        .image-modal-body {
+            padding: 20px;
+        }
+
+        .image-modal-form-group {
+            margin-bottom: 20px;
+        }
+
+        .image-modal-form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .image-modal-form-group input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: #fafafa;
+        }
+
+        .image-modal-form-group input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #fafafa;
+        }
+
+        .image-modal-form-group input[type="text"]:focus {
+            outline: none;
+            border-color: #007bff;
+            background-color: #fff;
+        }
+
+        .image-preview {
+            margin-top: 15px;
+            border: 1px solid #e1e1e1;
+            border-radius: 6px;
+            padding: 10px;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 4px;
+            object-fit: contain;
+        }
+
+        .image-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 15px 20px;
+            border-top: 1px solid #e1e1e1;
+            background-color: #f8f9fa;
+        }
+
+        .image-modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .image-modal-btn.cancel {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .image-modal-btn.cancel:hover {
+            background-color: #5a6268;
+        }
+
+        .image-modal-btn.send {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .image-modal-btn.send:hover {
+            background-color: #0069d9;
+        }
+
+        .image-modal-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* 发送图片按钮样式 */
+        .send-image-btn {
+            background: Black;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-image-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .send-image-btn:active {
+            transform: translateY(0);
+        }
     </style>
+    <!-- 全局配置（必须在其他脚本之前加载） -->
+    <script src="./assets/js/config.js"></script>
 </head>
 <body>
 
@@ -571,7 +1025,7 @@
 <script src="assets/web/assets/jquery/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-        $("#menu").load("../additions/menu/menu1.html", function() {
+        $("#menu").load("../additions/menu/menu.html", function() {
             adjustLinks();
             window.addEventListener('resize', adjustLinks);
         });
@@ -579,13 +1033,32 @@
 </script>
 
 <!--plugin began-->
-<section class="header1 cid-s48MCQYojq mbr-fullscreen" id="chatRecords-f">
+<section class="header1 cid-s48MCQYojq" id="chatRecords-f">
     <div class="mbr-overlay" style="opacity:1; background-color: #ffffff;"></div>
     <div class="align-center container-fluid">
         <!-- 替换为 QQchat 的内容 -->
         <div class="chat-main-container">
-            <!-- 消息显示区域 - 可滚动 -->
-            <div class="chat-message-container" id="chat-message-container"></div>
+            <!-- 视图容器 -->
+            <div class="view-container">
+                <!-- 聊天视图 -->
+                <div class="view-content active" id="chat-view">
+                    <!-- 消息显示区域 - 可滚动 -->
+                    <div class="chat-message-container" id="chat-message-container"></div>
+                </div>
+
+                <!-- 游戏视图 -->
+                <div class="view-content" id="game-view">
+                    <div class="game-view-container">
+                        <iframe class="game-view-iframe" src="phantom_canvas_game/phantom_canvas_game.html" title="Phantoms Game"></iframe>
+                    </div>
+                </div>
+            </div>
+                        
+            <!-- 视图切换控制器 -->
+            <div class="view-toggle-container">
+                <button class="view-toggle-btn active" data-view="chat">聊天视图</button>
+                <button class="view-toggle-btn" data-view="game">游戏视图</button>
+            </div>
 
             <!-- 固定底部表单区域 -->
             <div class="chat-fixed-form-container">
@@ -598,16 +1071,31 @@
                         <label for="chat-signature">Signature[署名]:</label>
                         <input type="text" id="chat-signature" name="signature" required placeholder="请输入您的署名">
                     </div>
-                    <div class="chat-form-group">
-                        <button type="submit">Send</button>
+                    <div class="chat-form-group" style="display: flex; gap: 10px;">
+                        <button type="button" class="send-image-btn" id="open-image-modal" style="flex: 0 0 80px;">Pic</button>
+                        <button type="submit" id="send-message-btn" style="flex: 1;">Send</button>
                     </div>
+                    <!-- 遮罩式加载指示器 -->
+                    <div id="loading-indicator" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255, 255, 255, 0.8); z-index: 2500; align-items: center; justify-content: center;">
+                        <div style="background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); text-align: center;">
+                            <div style="font-size: 18px; color: #333; margin-bottom: 10px;">发送中...</div>
+                            <div style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+                        </div>
+                    </div>
+                    <style>
+                        @keyframes spin {
+                            0% { transform: rotate(0deg); }
+                            100% { transform: rotate(360deg); }
+                        }
+                    </style>
                     <div class="chat-form-group">
                         <p style="color: gray; font-size: 0.9em; margin: 0; text-align: center;">
-                            音频/图片/链接相关功能不可用，仅发送文字消息
+                            音频/链接相关功能不可用，图片功能已启用
                         </p>
                     </div>
                 </form>
             </div>
+
         </div>
     </div>
 </section>
@@ -657,18 +1145,23 @@
 <!-- QQchat JavaScript 代码 -->
 <script>
     // QQchat JavaScript 代码
-    const supabaseURL = 'https://dshmbsawwrbuycnivcjs.supabase.co';
-    const supabaseAPIKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzaG1ic2F3d3JidXljbml2Y2pzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5Mjg2OTAsImV4cCI6MjA2OTUwNDY5MH0.fwRJD-WuST7mCbJf9h2i2Xk0z6mtCMCeV--JGUecC6A';
+    // 从全局配置获取（如果未加载则使用回退值）
+    const supabaseURL = (window.APP_CONFIG && window.APP_CONFIG.SUPABASE_URL) || 'https://dshmbsawwrbuycnivcjs.supabase.co';
+    const supabaseAPIKey = (window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || '';
 
     const displayedMessages = new Set();
     const fetchedImages = new Set();
     let fetchIntervalId;
     let systemInfo;
-    const imageProxyUrl = 'https://res.cloudinary.com/your-cloud-name/image/fetch/';
+    const imageProxyUrl = (window.APP_CONFIG && window.APP_CONFIG.PROXY && window.APP_CONFIG.PROXY.image) || 'https://images.weserv.nl/?url=';
     const audioProxyUrl = 'https://audio-converter.example.com/convert?url=';
 
     function cacheImage(proxyUrl, originalUrl) {
-        localStorage.setItem(originalUrl, proxyUrl);
+        if (window.cacheImage) {
+            window.cacheImage(proxyUrl, originalUrl);
+        } else {
+            localStorage.setItem(originalUrl, proxyUrl);
+        }
     }
 
     function fallbackToProxy(imgElement, proxyUrl) {
@@ -752,7 +1245,9 @@
 
     async function fetchLatestMessages() {
         try {
-            const response = await fetch('https://phantoms-backend.onrender.com/onebot/latest?limit=30');
+            const apiUrl = (window.getApiUrl && window.getApiUrl('onebotLatest'))
+                || 'https://phantoms-backend.onrender.com/onebot/latest';
+            const response = await fetch(`${apiUrl}?limit=30`);
             if (!response.ok) {
                 throw new Error('Network response was not ok ' + response.statusText);
             }
@@ -791,86 +1286,156 @@
             ).toLocaleString();
 
             let displayMessage = message.message;
-            if (message.message.startsWith("{type=text, data={text=")) {
-                const start = message.message.indexOf("{text=") + 6;
-                const end = message.message.indexOf("}}", start);
-                displayMessage = message.message.substring(start, end);
-            } else if (message.message.startsWith("{type=face, data={id=")) {
-                const faceId = message.message.match(/id=(\d+)/)[1];
-                displayMessage = `[表情 ${faceId}]`;
-            } else if (message.message.startsWith("{type=image, data={")) {
-                const imageUrlMatch = message.message.match(/url=(https?:\/\/[^,]+)/);
-                if (imageUrlMatch) {
-                    const imageUrl = imageUrlMatch[1];
-                    if (!fetchedImages.has(imageUrl)) {
-                        fetchedImages.add(imageUrl);
-                        displayMessage = `<img src="${imageProxyUrl}${encodeURIComponent(imageUrl)}" alt="Image" onload="cacheImage('${imageProxyUrl}${encodeURIComponent(imageUrl)}', '${imageUrl}')">`;
+
+            // 处理 OneBot 消息段格式
+            if (message.message.startsWith("{type=")) {
+                try {
+                    // 提取消息类型
+                    const typeMatch = message.message.match(/type=([^,]+)/);
+                    if (!typeMatch) {
+                        displayMessage = "[消息格式错误]";
                     } else {
-                        const cachedUrl = localStorage.getItem(imageUrl);
-                        if (cachedUrl) {
-                            displayMessage = `<img src="${cachedUrl}" alt="Image">`;
-                        } else {
-                            displayMessage = `<img src="./Napcat/placeholder.png" alt="Image">`;
+                        const msgType = typeMatch[1];
+
+                        switch(msgType) {
+                            case 'text':
+                                const textMatch = message.message.match(/text=([^}]+)/);
+                                displayMessage = textMatch ? decodeURIComponent(textMatch[1]) : "[文本消息解析失败]";
+                                break;
+
+                            case 'face':
+                                const faceId = message.message.match(/id=(\d+)/)[1];
+                                displayMessage = `<span class="chat-face-message">[表情 ${faceId}]</span>`;
+                                break;
+
+                            case 'image':
+                                const imageUrlMatch = message.message.match(/url=(https?:\/\/[^,}]+)/);
+                                if (imageUrlMatch) {
+                                    const imageUrl = imageUrlMatch[1];
+                                    if (!fetchedImages.has(imageUrl)) {
+                                        fetchedImages.add(imageUrl);
+                                        displayMessage = `<img src="${imageProxyUrl}${encodeURIComponent(imageUrl)}" alt="Image" onload="cacheImage('${imageProxyUrl}${encodeURIComponent(imageUrl)}', '${imageUrl}')">`;
+                                    } else {
+                                        const cachedUrl = localStorage.getItem(imageUrl);
+                                        if (cachedUrl) {
+                                            displayMessage = `<img src="${cachedUrl}" alt="Image">`;
+                                        } else {
+                                            displayMessage = `<img src="./Napcat/placeholder.png" alt="Image">`;
+                                        }
+                                    }
+                                } else {
+                                    displayMessage = "[图片消息]";
+                                }
+                                break;
+
+                            case 'record':
+                                const urlMatch = message.message.match(/url=(https?:\/\/[^,}]+)/);
+                                const fileSizeMatch = message.message.match(/file_size=(\d+)/);
+
+                                if (urlMatch) {
+                                    const audioUrl = urlMatch[1];
+                                    const fileSize = fileSizeMatch ? parseInt(fileSizeMatch[1]) : 0;
+                                    const fileSizeText = fileSize > 0 ? ` (${formatFileSize(fileSize)})` : '';
+
+                                    displayMessage = `
+                                        <div class="chat-audio-message">
+                                            <div class="chat-audio-info">
+                                                <span class="chat-audio-icon">🎤</span>
+                                                <span class="chat-audio-text">语音消息${fileSizeText}</span>
+                                            </div>
+                                        </div>
+                                    `;
+                                } else {
+                                    displayMessage = "🎤 [语音消息]";
+                                }
+                                break;
+
+                            case 'at':
+                                const atUserId = message.message.match(/qq=(\d+)/)[1];
+                                displayMessage = `<span class="at">@${atUserId}</span>`;
+                                const userInfo = getUserInfo(atUserId);
+                                displayMessage += ` <span class="chat-user-info"><img src="http://q1.qlogo.cn/g?b=qq&nk=${atUserId}&s=100"><span>${userInfo.nickname}</span></span>`;
+                                break;
+
+                            case 'reply':
+                                const replyId = message.message.match(/id=(\d+)/)[1];
+                                displayMessage = `<span class="reply">[回复 ${replyId}]</span>`;
+                                break;
+
+                            case 'json':
+                                try {
+                                    const jsonData = JSON.parse(message.message.match(/{type=json, data=({.*})}/)[1]);
+                                    const meta = jsonData.data.meta.news;
+
+                                    displayMessage = `<div class="chat-json-message">
+                                        <a href="${meta.jumpUrl}" target="_blank">
+                                            <img src="${meta.preview}" alt="${meta.title}" style="max-width: 200px; max-height: 200px; border-radius: 8px;">
+                                            <div style="font-weight: bold;">${meta.title}</div>
+                                            <div>${meta.desc}</div>
+                                        </a>
+                                    </div>`;
+                                } catch (error) {
+                                    console.error('Error parsing JSON message:', error);
+                                    displayMessage = "[JSON 消息解析失败]";
+                                }
+                                break;
+
+                            case 'forward':
+                                displayMessage = `
+                                    <div class="forward-message">
+                                        <div class="forward-header">
+                                            <span class="forward-icon">✉</span>
+                                            <span class="forward-text">[合并转发消息]</span>
+                                        </div>
+                                    </div>
+                                `;
+                                break;
+
+                            case 'file':
+                                // 处理文件消息
+                                const fileNameMatch = message.message.match(/file=([^,]+)/);
+                                const fileSizeMatchFile = message.message.match(/file_size=(\d+)/);
+                                const fileUrlMatch = message.message.match(/file_id=([^,}]+)/);
+
+                                if (fileNameMatch) {
+                                    const fileName = fileNameMatch[1];
+                                    const fileSize = fileSizeMatchFile ? parseInt(fileSizeMatchFile[1]) : 0;
+                                    const fileSizeText = fileSize > 0 ? formatFileSize(fileSize) : "未知大小";
+                                    const fileUrl = fileUrlMatch ? fileUrlMatch[1] : "#";
+
+                                    displayMessage = `
+                                        <div class="file-message">
+                                            <div class="file-content">
+                                                <span class="file-icon">📎</span>
+                                                <div class="file-info">
+                                                    <div class="file-name">${fileName}</div>
+                                                    <div class="file-size">${fileSizeText}</div>
+                                                </div>
+<!--                                                ${fileUrl !== "#" ? `<a href="${fileUrl}" target="_blank" class="download-btn">下载</a>` : ""}-->
+                                            </div>
+                                        </div>
+                                    `;
+                                } else {
+                                    displayMessage = "[文件消息]";
+                                }
+                                break;
+
+                            default:
+                                // 尝试提取文本内容
+                                const textMatchDefault = message.message.match(/text=([^}]+)/);
+                                if (textMatchDefault) {
+                                    displayMessage = decodeURIComponent(textMatchDefault[1]);
+                                } else {
+                                    displayMessage = `[${msgType}类型消息]`;
+                                }
                         }
                     }
-                } else {
-                    displayMessage = "[图片链接提取失败]";
-                }
-            } else if (message.message.startsWith("{type=record, data={")) {
-                const urlMatch = message.message.match(/url=(https?:\/\/[^,]+)/);
-                const fileSizeMatch = message.message.match(/file_size=(\d+)/);
-
-                if (urlMatch) {
-                    const audioUrl = urlMatch[1];
-                    const fileSize = fileSizeMatch ? parseInt(fileSizeMatch[1]) : 0;
-                    const fileSizeText = fileSize > 0 ? ` (${formatFileSize(fileSize)})` : '';
-
-                    displayMessage = `
-                        <div class="chat-audio-message">
-                            <div class="chat-audio-info">
-                                <span class="chat-audio-icon">🎤</span>
-                                <span class="chat-audio-text">语音消息${fileSizeText}</span>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    displayMessage = "🎤 [语音消息]";
-                }
-            } else if (message.message.startsWith("{type=at, data={qq=")) {
-                const atUserId = message.message.match(/qq=(\d+)/)[1];
-                displayMessage = `<span class="at">@${atUserId}</span>`;
-                const userInfo = getUserInfo(atUserId);
-                displayMessage += ` <span class="chat-user-info"><img src="http://q1.qlogo.cn/g?b=qq&nk=${atUserId}&s=100"><span>${userInfo.nickname}</span></span>`;
-            } else if (message.message.startsWith("{type=reply, data={id=")) {
-                const replyId = message.message.match(/id=(\d+)/)[1];
-                displayMessage = `<span class="reply">[回复 ${replyId}]</span>`;
-            } else if (message.message.startsWith("{type=json, data={")) {
-                try {
-                    const jsonData = JSON.parse(message.message.match(/{type=json, data=({.*})}/)[1]);
-                    const meta = jsonData.data.meta.news;
-
-                    displayMessage = `<div class="chat-json-message">
-                        <a href="${meta.jumpUrl}" target="_blank">
-                            <img src="${meta.preview}" alt="${meta.title}" style="max-width: 200px; max-height: 200px; border-radius: 8px;">
-                            <div style="font-weight: bold;">${meta.title}</div>
-                            <div>${meta.desc}</div>
-                        </a>
-                    </div>`;
                 } catch (error) {
-                    console.error('Error parsing JSON message:', error);
-                    displayMessage = "[JSON 消息解析失败]";
+                    console.error('Error parsing message segment:', error, message.message);
+                    displayMessage = "[消息解析错误]";
                 }
-            } else if (message.message.startsWith("{type=forward, data={")) {
-                // 处理合并转发消息
-                displayMessage = `
-                <div class="forward-message">
-                    <div class="forward-header">
-                        <span class="forward-icon">✉</span>
-                        <span class="forward-text">[合并转发消息]</span>
-                    </div>
-                </div>
-            `;
             } else {
+                // 如果不是消息段格式，直接显示
                 displayMessage = message.message;
             }
 
@@ -907,6 +1472,9 @@
     }
 
     function formatFileSize(bytes) {
+        if (window.formatFileSize) {
+            return window.formatFileSize(bytes);
+        }
         if (bytes === 0) return '0 B';
         const k = 1024;
         const sizes = ['B', 'KB', 'MB', 'GB'];
@@ -956,14 +1524,14 @@
     }
 
     window.onload = () => {
-        fetchSystemInfo();
+        systemInfo = fetchSystemInfo();
         fetchLatestMessages();
         startFetchInterval();
         fetchUserProfile();
     };
 
     function fetchUserProfile() {
-        const userId = getCookie('user_id');
+        const userId = sessionStorage.getItem('supabase_user_id');
 
         if (!userId) {
             console.log('No user_id found in cookies.');
@@ -973,7 +1541,8 @@
         fetch(`${supabaseURL}/rest/v1/users?select=username&user_id=eq.${userId}`, {
             method: 'GET',
             headers: {
-                'apikey': supabaseAPIKey
+                'apikey': supabaseAPIKey,
+                'Authorization': `Bearer ${sessionStorage.getItem('supabase_access_token') || supabaseAPIKey}`
             }
         })
             .then(response => response.json())
@@ -994,6 +1563,9 @@
     }
 
     function getCookie(name) {
+        if (window.CookieUtil && window.CookieUtil.get) {
+            return window.CookieUtil.get(name);
+        }
         let cookieArray = document.cookie.split(';');
         for (let i = 0; i < cookieArray.length; i++) {
             let cookie = cookieArray[i].trim();
@@ -1004,6 +1576,28 @@
         return "";
     }
 
+    // 视图切换功能
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleButtons = document.querySelectorAll('.view-toggle-btn');
+        const viewContents = document.querySelectorAll('.view-content');
+
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const targetView = this.getAttribute('data-view');
+
+                // 更新按钮状态
+                toggleButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+
+                // 更新视图显示
+                viewContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(`${targetView}-view`).classList.add('active');
+            });
+        });
+    });
+
     document.getElementById('chat-messageForm').addEventListener('submit', function(event) {
         event.preventDefault();
 
@@ -1011,6 +1605,15 @@
         const signature = document.getElementById('chat-signature').value;
 
         const formattedMessage = `[${signature}] ${message}`;
+
+        // 显示加载指示器
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const sendButton = document.getElementById('send-message-btn');
+        const picButton = document.getElementById('open-image-modal');
+        
+        loadingIndicator.style.display = 'flex';
+        sendButton.disabled = true;
+        picButton.disabled = true;
 
         startFetchInterval();
 
@@ -1044,11 +1647,11 @@
         messageDiv.appendChild(contentDiv);
         messageDiv.appendChild(timestampSpan);
 
-        displayedMessages.add(message.id);
-
         container.appendChild(messageDiv);
 
-        const url = new URL('https://phantoms-backend.onrender.com/onebot/send-to-group');
+        const sendUrl = (window.getApiUrl && window.getApiUrl('onebotSendGroup'))
+            || 'https://phantoms-backend.onrender.com/onebot/send-to-group';
+        const url = new URL(sendUrl);
         url.searchParams.append('groupId', '787909466');
         fetch(url, {
             method: 'POST',
@@ -1057,20 +1660,296 @@
             },
             body: JSON.stringify({ message: formattedMessage, systemInfo: systemInfo })
         })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                document.getElementById('chat-message').value = '';
+            } else {
+                alert('Failed to send message: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while sending the message.'+ error.message);
+        })
+        .finally(() => {
+            // 隐藏加载指示器
+            loadingIndicator.style.display = 'none';
+            sendButton.disabled = false;
+            picButton.disabled = false;
+        });
+    });
+
+    // 图片发送功能
+    document.addEventListener('DOMContentLoaded', function() {
+        const imageModalOverlay = document.getElementById('image-modal-overlay');
+        const openImageModalBtn = document.getElementById('open-image-modal');
+        const closeImageModalBtn = document.getElementById('close-image-modal');
+        const cancelImageSendBtn = document.getElementById('cancel-image-send');
+        const confirmImageSendBtn = document.getElementById('confirm-image-send');
+        const imageTypeRadios = document.querySelectorAll('input[name="image-type"]');
+        const localImageSection = document.getElementById('local-image-section');
+        const urlImageSection = document.getElementById('url-image-section');
+        const imageUpload = document.getElementById('image-upload');
+        const imageUrl = document.getElementById('image-url');
+        const imagePreview = document.getElementById('image-preview');
+        const urlImagePreview = document.getElementById('url-image-preview');
+        const previewPlaceholder = document.getElementById('preview-placeholder');
+        const urlPreviewPlaceholder = document.getElementById('url-preview-placeholder');
+
+        // 打开图片发送弹窗
+        openImageModalBtn.addEventListener('click', function() {
+            imageModalOverlay.style.display = 'flex';
+        });
+
+        // 关闭图片发送弹窗
+        function closeImageModal() {
+            imageModalOverlay.style.display = 'none';
+            // 重置表单
+            imageUpload.value = '';
+            imageUrl.value = '';
+            imagePreview.innerHTML = '<span id="preview-placeholder">预览区域</span>';
+            urlImagePreview.innerHTML = '<span id="url-preview-placeholder">预览区域</span>';
+        }
+
+        closeImageModalBtn.addEventListener('click', closeImageModal);
+        cancelImageSendBtn.addEventListener('click', closeImageModal);
+
+        // 点击弹窗外部关闭
+        imageModalOverlay.addEventListener('click', function(e) {
+            if (e.target === imageModalOverlay) {
+                closeImageModal();
+            }
+        });
+
+        // 切换图片发送方式
+        imageTypeRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'local') {
+                    localImageSection.style.display = 'block';
+                    urlImageSection.style.display = 'none';
+                } else {
+                    localImageSection.style.display = 'none';
+                    urlImageSection.style.display = 'block';
+                }
+            });
+        });
+
+        // 本地图片预览
+        imageUpload.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.innerHTML = `<img src="${e.target.result}" alt="预览图片">`;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.innerHTML = '<span id="preview-placeholder">预览区域</span>';
+            }
+        });
+
+        // 网络图片预览
+        imageUrl.addEventListener('input', function() {
+            const url = this.value;
+            if (url) {
+                urlImagePreview.innerHTML = `<img src="${url}" alt="预览图片" onerror="this.onerror=null; this.src='./Napcat/placeholder.png';">`;
+            } else {
+                urlImagePreview.innerHTML = '<span id="url-preview-placeholder">预览区域</span>';
+            }
+        });
+
+        // 发送图片
+        confirmImageSendBtn.addEventListener('click', function() {
+            const signature = document.getElementById('chat-signature').value;
+            if (!signature) {
+                alert('请先填写署名');
+                return;
+            }
+
+            const selectedType = document.querySelector('input[name="image-type"]:checked').value;
+            let imageData = null;
+
+            // 显示加载指示器
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const sendButton = document.getElementById('send-message-btn');
+            const picButton = document.getElementById('open-image-modal');
+            
+            loadingIndicator.style.display = 'flex';
+            sendButton.disabled = true;
+            picButton.disabled = true;
+            confirmImageSendBtn.disabled = true;
+            cancelImageSendBtn.disabled = true;
+
+            if (selectedType === 'local') {
+                const file = imageUpload.files[0];
+                if (!file) {
+                    alert('请选择本地图片');
+                    // 隐藏加载指示器
+                    loadingIndicator.style.display = 'none';
+                    sendButton.disabled = false;
+                    picButton.disabled = false;
+                    confirmImageSendBtn.disabled = false;
+                    cancelImageSendBtn.disabled = false;
+                    return;
+                }
+
+                // 转换为base64
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64Data = e.target.result.split(',')[1]; // 移除data:image/xxx;base64,前缀
+                    sendImageToAPI(signature, `base64://${base64Data}`, loadingIndicator, sendButton, picButton, confirmImageSendBtn, cancelImageSendBtn);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                const url = imageUrl.value;
+                if (!url) {
+                    alert('请输入图片URL');
+                    // 隐藏加载指示器
+                    loadingIndicator.style.display = 'none';
+                    sendButton.disabled = false;
+                    picButton.disabled = false;
+                    confirmImageSendBtn.disabled = false;
+                    cancelImageSendBtn.disabled = false;
+                    return;
+                }
+                sendImageToAPI(signature, url, loadingIndicator, sendButton, picButton, confirmImageSendBtn, cancelImageSendBtn);
+            }
+        });
+
+        // 发送图片到API
+        function sendImageToAPI(signature, imageFile, loadingIndicator, sendButton, picButton, confirmImageSendBtn, cancelImageSendBtn) {
+            const container = document.getElementById('chat-message-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message';
+
+            const messageHeader = document.createElement('div');
+            messageHeader.className = 'chat-message-header';
+
+            const avatarImg = document.createElement('img');
+            avatarImg.className = 'chat-user-avatar';
+            avatarImg.src = `http://q1.qlogo.cn/g?b=qq&nk=${signature}&s=100`;
+
+            const userName = document.createElement('strong');
+            userName.textContent = signature;
+            userName.style.marginLeft = '8px';
+
+            messageHeader.appendChild(avatarImg);
+            messageHeader.appendChild(userName);
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'chat-message-content';
+            
+            // 显示图片预览
+            if (imageFile.startsWith('base64://')) {
+                const base64Data = imageFile.replace('base64://', '');
+                contentDiv.innerHTML = `<img src="data:image/jpeg;base64,${base64Data}" alt="发送的图片">`;
+            } else {
+                contentDiv.innerHTML = `<img src="${imageFile}" alt="发送的图片" onerror="this.onerror=null; this.src='./Napcat/placeholder.png';">`;
+            }
+
+            const timestampSpan = document.createElement('span');
+            timestampSpan.className = 'chat-timestamp';
+            timestampSpan.textContent = new Date().toLocaleString();
+
+            messageDiv.appendChild(messageHeader);
+            messageDiv.appendChild(contentDiv);
+            messageDiv.appendChild(timestampSpan);
+
+            container.appendChild(messageDiv);
+
+            // 发送到API
+            const payload = {
+                "group_id": "787909466",
+                "message": [
+                    {
+                        "type": "image",
+                        "data": {
+                            "file": imageFile
+                        }
+                    }
+                ]
+            };
+
+            fetch('https://qjplikqiufzx.us-west-1.clawcloudrun.com/send_group_msg', {
+                method: 'POST',
+                headers: {
+                    'Authorization': '7saligia',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'ok') {
-                    document.getElementById('chat-message').value = '';
+                    closeImageModal();
+                    alert('图片发送成功');
                 } else {
-                    alert('Failed to send message: ' + data.error);
+                    alert('发送失败: ' + (data.error || '未知错误'));
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('An error occurred while sending the message.'+ error.message);
+                alert('发送失败: ' + error.message);
+            })
+            .finally(() => {
+                // 隐藏加载指示器
+                loadingIndicator.style.display = 'none';
+                sendButton.disabled = false;
+                picButton.disabled = false;
+                confirmImageSendBtn.disabled = false;
+                cancelImageSendBtn.disabled = false;
             });
+        }
     });
 </script>
+
+<!-- 图片发送弹窗 -->
+<div class="image-modal-overlay" id="image-modal-overlay">
+    <div class="image-modal">
+        <div class="image-modal-header">
+            <h3 class="image-modal-title">发送图片</h3>
+            <button class="image-modal-close" id="close-image-modal">&times;</button>
+        </div>
+        <div class="image-modal-body">
+            <div class="image-modal-form-group">
+                <label>选择发送方式</label>
+                <div style="display: flex; gap: 10px; margin-top: 8px;">
+                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                        <input type="radio" name="image-type" value="local" checked>
+                        本地图片
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 5px; cursor: pointer;">
+                        <input type="radio" name="image-type" value="url">
+                        网络图片URL
+                    </label>
+                </div>
+            </div>
+            
+            <!-- 本地图片上传 -->
+            <div id="local-image-section" class="image-modal-form-group">
+                <label for="image-upload">选择图片文件</label>
+                <input type="file" id="image-upload" accept="image/*">
+                <div class="image-preview" id="image-preview">
+                    <span id="preview-placeholder">预览区域</span>
+                </div>
+            </div>
+            
+            <!-- 网络图片URL -->
+            <div id="url-image-section" class="image-modal-form-group" style="display: none;">
+                <label for="image-url">图片URL</label>
+                <input type="text" id="image-url" placeholder="请输入图片URL">
+                <div class="image-preview" id="url-image-preview">
+                    <span id="url-preview-placeholder">预览区域</span>
+                </div>
+            </div>
+        </div>
+        <div class="image-modal-footer">
+            <button class="image-modal-btn cancel" id="cancel-image-send">取消</button>
+            <button class="image-modal-btn send" id="confirm-image-send">发送图片</button>
+        </div>
+    </div>
+</div>
 
 </body>
 
@@ -1078,7 +1957,7 @@
 <script src="./assets/web/assets/jquery/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-        $("#foot").load("./additions/foot/profile-round.html");
+        
     });
 </script>
 

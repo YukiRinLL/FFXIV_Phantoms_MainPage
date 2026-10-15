@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="generator" content="Mobirise v5.2.0, mobirise.com">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
-    <link rel="shortcut icon" href="https://img.picgo.net/2024/10/18/frame-1-121x121bc5d878c1dd0d5fc.png"
+    <link rel="shortcut icon" href="https://dlink.host/wx4.sinaimg.cn/large/006fhRoTly8i8u7pljsfoj3045044dfp.jpg"
           onerror="this.onerror=null;this.src='./assets/images/frame-1-121x121.png';"
           type="image/x-icon">
     <meta name="description" content="All tools index">
@@ -31,8 +31,11 @@
     <meta name="twitter:title" content="Phantoms">
 
     <link rel="stylesheet" href="additions/mouse.css">
+    <link rel="stylesheet" href="additions/tools-status.css">
     <!--added by Yuki 20221002-->
 
+    <!-- 全局配置（必须在其他脚本之前加载） -->
+    <script src="./assets/js/config.js"></script>
 </head>
 <body>
 
@@ -40,9 +43,14 @@
 <script src="./assets/web/assets/jquery/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-        $("#menu").load("./additions/menu/menu1.html", function() {
-            adjustLinks();
-            window.addEventListener('resize', adjustLinks);
+        $("#menu").load("./additions/menu/menu.html", function() {
+            // 延迟一小段时间，确保 menu.html 中的脚本已执行
+            setTimeout(function() {
+                if (typeof adjustLinks === 'function') {
+                    adjustLinks();
+                    window.addEventListener('resize', adjustLinks);
+                }
+            }, 100);
         });
     });
 </script>
@@ -89,7 +97,7 @@
                                     </div>
                                 </th>
                                 <th style="max-width: 305px">
-                                    <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                    <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
                                         <div class="panel-body">
 
                                             <table>
@@ -102,7 +110,7 @@
                                                     </a>
                                                 </th>
                                                 <th>
-                                                    <div id="collapseOne_1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                                    <div id="collapseOne_1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
                                                         <div class="panel-body">
                                                             <a role="button" target="_blank" href="https://na.finalfantasyxiv.com/lodestone/">
                                                                 <button class="btn-light" style="min-width: 600px">
@@ -125,6 +133,13 @@
                                                             </a>
                                                         </div>
                                                         <div class="panel-body">
+                                                            <a role="button" target="_blank" href="https://jp.finalfantasyxiv.com/lodestone/playguide/contentsguide/datacentertravel/">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>トラベルガイド（データセンタートラベル）</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                        <div class="panel-body">
                                                             <a role="button" target="_blank" href="https://press.na.square-enix.com/FINAL-FANTASY-XIV-Shadowbringers#">
                                                                 <button class="btn-light" style="min-width: 600px">
                                                                     <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>SQUARE ENIX PRESS</strong></h3>
@@ -135,6 +150,13 @@
                                                             <a role="button" target="_blank" href="https://www.finalfantasyxiv.com/beginner/read/index.html">
                                                                 <button class="btn-light" style="min-width: 600px">
                                                                     <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>初心者の館 新米冒険者ガイド</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <a role="button" target="_blank" href="https://forum.square-enix.com/ffxiv">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>SE Forum</strong></h3>
                                                                 </button>
                                                             </a>
                                                         </div>
@@ -152,16 +174,16 @@
                                                     </a>
                                                 </th>
                                                 <th>
-                                                    <div id="collapseOne_2" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                                    <div id="collapseOne_2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
                                                         <div class="panel-body">
                                                             <a role="button" target="_blank" href="https://ff.web.sdo.com/">
                                                                 <button class="btn-light" style="min-width: 600px">
                                                                     <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>中文官方网站</strong></h3>
                                                                 </button>
                                                             </a>
-                                                            <a role="button" target="_blank" href="https://act1.ff.sdo.com/recruit/web/">
+                                                            <a role="button" target="_blank" href="https://ff14risingstones.web.sdo.com/pc/index.html">
                                                                 <button class="btn-light" style="min-width: 600px">
-                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>拂晓招募</strong></h3>
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>石之家社区</strong></h3>
                                                                 </button>
                                                             </a>
                                                             <a role="button" target="_blank" href="https://actff1.web.sdo.com/20190315Zhaodai/index.html#/index">
@@ -184,6 +206,11 @@
                                                                     <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>服务器状况</strong></h3>
                                                                 </button>
                                                             </a>
+                                                            <a role="button" target="_blank" href="https://actff1.web.sdo.com/project/20190613worldvisit/d9o81h971g9128hiashd21/pc/datacentertravel.html">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>传送指南</strong></h3>
+                                                                </button>
+                                                            </a>
                                                             <a role="button" target="_blank" href="https://ff.web.sdo.com/web8/index.html#/shop">
                                                                 <button class="btn-light" style="min-width: 600px">
                                                                     <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>商城</strong></h3>
@@ -194,12 +221,65 @@
                                                                     <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>游戏充值中心</strong></h3>
                                                                 </button>
                                                             </a>
-                                                            <a role="button" target="_blank" href="https://actff1.web.sdo.com/project/200103ishgardian/index.html">
+                                                            <a role="button" target="_blank" href="https://actff1.web.sdo.com/project/141028dgf/index.html">
                                                                 <button class="btn-light" style="min-width: 600px">
-                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>重建伊修加德</strong></h3>
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>大国防联军后勤补给站</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                            <a role="button" target="_blank" href="https://ffpay.sdo.com/pc/giftsStation/index.html#/index">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>陆行鸟礼物站</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                            <a role="button" target="_blank" href="https://qu.sdo.com/personal-center">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>积分中心</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                            <a role="button" target="_blank" href="https://actff1.web.sdo.com/20200908JingCai/index.html#/index">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>竞猜中心</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                            <a role="button" target="_blank" href="https://actff1.web.sdo.com/project/20190917jobguid/#/index">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>官方职业指南</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                            <a role="button" target="_blank" href="https://act1.ff.sdo.com/recruit/web/">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>拂晓招募(已废弃项目)</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                            <a role="button" target="_blank" href="https://actff1.web.sdo.com/Project/ff14help/jp/index.htm">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>随身神典石(已废弃项目)</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                            <a role="button" target="_blank" href="https://actff1.web.sdo.com/project/151019shuijin/index.asp">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>水晶传承站(已废弃项目)</strong></h3>
                                                                 </button>
                                                             </a>
 
+                                                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne_2-1" aria-expanded="false" aria-controls="collapseOne_2-2">
+                                                                <button class="btn-info" style="height: 50px;width: 150px">
+                                                                    <strong>联合生产采集</strong>
+                                                                    <h3 class="align-center mb-sm-auto mbr-fonts-style"><strong>Crafting</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                            <div id="collapseOne_2-1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne_2-1">
+                                                                <a role="button" target="_blank" href="https://actff1.web.sdo.com/project/200103ishgardian/index.html">
+                                                                    <button class="btn-light" style="min-width: 600px">
+                                                                        <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>重建伊修加德</strong></h3>
+                                                                    </button>
+                                                                </a>
+                                                                <a role="button" target="_blank" href="https://actff1.web.sdo.com/project/20250619cosmicexploration/v4kjfz92uewnum597r5wr0fa3km7bg/index.html#/cosmic_exploration">
+                                                                    <button class="btn-light" style="min-width: 600px">
+                                                                        <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>宇宙探索</strong></h3>
+                                                                    </button>
+                                                                </a>
+                                                            </div>
 
                                                             <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne_2-2" aria-expanded="false" aria-controls="collapseOne_2-2">
                                                                 <button class="btn-info" style="height: 50px;width: 150px">
@@ -221,6 +301,11 @@
                                                                 <a role="button" target="_blank" href="https://actff1.web.sdo.com/20230711deepdungeon3/">
                                                                     <button class="btn-light" style="min-width: 600px">
                                                                         <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>正统优雷卡排行榜</strong></h3>
+                                                                    </button>
+                                                                </a>
+                                                                <a role="button" target="_blank" href="https://actff1.web.sdo.com/20251103deepdungeon4/">
+                                                                    <button class="btn-light" style="min-width: 600px">
+                                                                        <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>朝圣交错路排行榜</strong></h3>
                                                                     </button>
                                                                 </a>
                                                             </div>
@@ -257,18 +342,45 @@
                                                                         <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>零式万魔殿英雄榜</strong></h3>
                                                                     </button>
                                                                 </a>
-                                                                <a role="button" target="_blank" href="https://actff1.web.sdo.com/20180525HeroList/index241108.html">
+                                                                <a role="button" target="_blank" href="https://actff1.web.sdo.com/20180525HeroList/index260105.html">
                                                                     <button class="btn-light" style="min-width: 600px">
-                                                                        <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>阿卡迪亚零式登天斗技场-轻量级</strong></h3>
-                                                                    </button>
-                                                                </a>
-                                                                <a role="button" target="_blank" href="https://actff1.web.sdo.com/20180525HeroList/index250606.html">
-                                                                    <button class="btn-light" style="min-width: 600px">
-                                                                        <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>阿卡迪亚零式登天斗技场-中量级</strong></h3>
+                                                                        <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>阿卡迪亚零式登天斗技场英雄榜</strong></h3>
                                                                     </button>
                                                                 </a>
                                                             </div>
 
+                                                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne_2-4" aria-expanded="false" aria-controls="collapseOne_2-2">
+                                                                <button class="btn-info" style="height: 50px;width: 150px">
+                                                                    <strong>排位赛</strong>
+                                                                    <h3 class="align-center mb-sm-auto mbr-fonts-style"><strong>PVP</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                            <div id="collapseOne_2-4" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne_2-1">
+                                                                <a role="button" target="_blank" href="https://actff1.web.sdo.com/project/ffcrystranking/index.html#/index">
+                                                                    <button class="btn-light" style="min-width: 600px">
+                                                                        <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>水晶冲突排行榜</strong></h3>
+                                                                    </button>
+                                                                </a>
+                                                                <a role="button" target="_blank" href="https://actff1.web.sdo.com/arenaRank/reward.html">
+                                                                    <button class="btn-light" style="min-width: 600px">
+                                                                        <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>狼群盛宴排行榜</strong></h3>
+                                                                    </button>
+                                                                </a>
+                                                            </div>
+
+                                                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne_2-5" aria-expanded="false" aria-controls="collapseOne_2-2">
+                                                                <button class="btn-info" style="height: 50px;width: 150px">
+                                                                    <strong>斗兽奇弈</strong>
+                                                                    <h3 class="align-center mb-sm-auto mbr-fonts-style"><strong>Crucible</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                            <div id="collapseOne_2-5" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne_2-1">
+                                                                <a role="button" target="_blank" href="https://actff1.web.sdo.com/project/20260819crucible_ranking/d10gyvdniqje/index.html#/">
+                                                                    <button class="btn-light" style="min-width: 600px">
+                                                                        <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>斗兽奇弈排行榜</strong></h3>
+                                                                    </button>
+                                                                </a>
+                                                            </div>
 
                                                         </div>
                                                     </div>
@@ -293,7 +405,7 @@
                                     </div>
                                 </th>
                                 <th style="max-width: 305px">
-                                    <div id="collapseTwo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                                    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
                                         <div class="panel-body">
                                             <table>
                                                 <th>
@@ -305,7 +417,7 @@
                                                     </a>
                                                 </th>
                                                 <th>
-                                                    <div id="collapseTwo_1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                                                    <div id="collapseTwo_1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
                                                         <div class="panel-body">
                                                             <a role="button" target="_blank" href="https://ff14.huijiwiki.com/">
                                                                 <button class="btn-light" style="min-width: 600px">
@@ -348,6 +460,13 @@
                                                                 </button>
                                                             </a>
                                                         </div>
+                                                        <div class="panel-body">
+                                                            <a role="button" target="_blank" href="https://wikiwiki.jp/ffdic/">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>FF用語辭典</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                        </div>
 
                                                     </div>
                                                 </th>
@@ -363,7 +482,7 @@
                                                     </a>
                                                 </th>
                                                 <th>
-                                                    <div id="collapseTwo_2" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                                                    <div id="collapseTwo_2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
                                                         <div class="panel-body">
                                                             <a role="button" target="_blank" href="http://bbs.ngacn.cc/thread.php?fid=-362960">
                                                                 <button class="btn-light" style="min-width: 600px">
@@ -415,7 +534,7 @@
                                                     </a>
                                                 </th>
                                                 <th>
-                                                    <div id="collapseTwo_3" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                                                    <div id="collapseTwo_3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
                                                         <div class="panel-body">
                                                             <a role="button" target="_blank" href="https://xivstrat.com/">
                                                                 <button class="btn-light" style="min-width: 600px">
@@ -465,6 +584,34 @@
                                                                 </button>
                                                             </a>
                                                         </div>
+                                                        <div class="panel-body">
+                                                            <a role="button" target="_blank" href="https://www.akhmorning.com/">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>AkhMorning 国际服攻略站</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <a role="button" target="_blank" href="https://saltedxiv.com/">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>SaltedXIV 国际服攻略站</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <a role="button" target="_blank" href="https://www.thebalanceffxiv.com/">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>The Balance 职业指南</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <a role="button" target="_blank" href="https://eorzeaworld.com/en/home">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>Eorzea World the guide on FFXIV</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                        </div>
                                                     </div>
                                                 </th>
                                             </table>
@@ -479,7 +626,7 @@
                                                     </a>
                                                 </th>
                                                 <th>
-                                                    <div id="collapseTwo_4" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                                                    <div id="collapseTwo_4" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
                                                         <div class="panel-body">
                                                             <a role="button" target="_blank" href="https://tnze.yyyy.games/">
                                                                 <button class="btn-light" style="min-width: 600px">
@@ -532,14 +679,14 @@
                                                         <div class="panel-body">
                                                             <a role="button" target="_blank" href="https://caiji.ffxiv.cn/#/">
                                                                 <button class="btn-light" style="min-width: 600px">
-                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>FFXIV Teamcraft</strong></h3>
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>采集时钟(素素)</strong></h3>
                                                                 </button>
                                                             </a>
                                                         </div>
                                                         <div class="panel-body">
                                                             <a role="button" target="_blank" href="http://cn.ff14angler.com/">
                                                                 <button class="btn-light" style="min-width: 600px">
-                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>采集时钟(素素)</strong></h3>
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>饥饿的猫 钓鱼工具</strong></h3>
                                                                 </button>
                                                             </a>
                                                         </div>
@@ -579,6 +726,20 @@
                                                                 </button>
                                                             </a>
                                                         </div>
+                                                        <div class="panel-body">
+                                                            <a role="button" target="_blank" href="https://mooglecrafter.cn/">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>莫古锤子 采集工具</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <a role="button" target="_blank" href="https://hqhelper.nbb.fan/#/">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>HQ Helper 生产成本计算器</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                        </div>
                                                     </div>
                                                 </th>
                                             </table>
@@ -593,7 +754,7 @@
                                                     </a>
                                                 </th>
                                                 <th>
-                                                    <div id="collapseTwo_5" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                                                    <div id="collapseTwo_5" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
                                                         <div class="panel-body">
                                                             <a role="button" target="_blank" href="https://house.ffxiv.cyou/#/">
                                                                 <button class="btn-light" style="min-width: 600px">
@@ -658,6 +819,13 @@
                                                                 </button>
                                                             </a>
                                                         </div>
+                                                        <div class="panel-body">
+                                                            <a role="button" target="_blank" href="shturl.cc/zrkJrRUBPp031lBSoroPhq6Gc">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>MakePlace 装修模拟器(已停止维护)</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                        </div>
                                                     </div>
                                                 </th>
                                             </table>
@@ -672,7 +840,14 @@
                                                     </a>
                                                 </th>
                                                 <th>
-                                                    <div id="collapseTwo_6" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                                                    <div id="collapseTwo_6" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                                                        <div class="panel-body">
+                                                            <a role="button" target="_blank" href="https://youwanc.com/">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>游玩C哩酱</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                        </div>
                                                         <div class="panel-body">
                                                             <a role="button" target="_blank" href="https://www.ffxivsc.cn/#/">
                                                                 <button class="btn-light" style="min-width: 600px">
@@ -690,7 +865,7 @@
                                                         <div class="panel-body">
                                                             <a role="button" target="_blank" href="https://mirapri.com/">
                                                                 <button class="btn-light" style="min-width: 600px">
-                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>FFXIV Mirapri Snap</strong></h3>
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>FFXIV Mirapri Snap 装備手帳</strong></h3>
                                                                 </button>
                                                             </a>
                                                         </div>
@@ -708,7 +883,7 @@
                                                     </a>
                                                 </th>
                                                 <th>
-                                                    <div id="collapseTwo_7" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                                                    <div id="collapseTwo_7" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
                                                         <div class="panel-body">
                                                             <a role="button" target="_blank" href="https://e.ffxivsc.cn/">
                                                                 <!--https://eureka.ffxivsc.cn/-->
@@ -759,7 +934,7 @@
                                                     </a>
                                                 </th>
                                                 <th>
-                                                    <div id="collapseTwo_8" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingTwo">
+                                                    <div id="collapseTwo_8" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
 
                                                         <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo_8-1" aria-expanded="false" aria-controls="collapseTwo_8-1">
                                                             <button class="btn-form" style="height: 100px;width: 300px">
@@ -800,7 +975,7 @@
 
                                                         <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo_8-2" aria-expanded="false" aria-controls="collapseTwo_8-2">
                                                             <button class="btn-form" style="height: 100px;width: 300px">
-                                                                <strong>战斗日志分析</strong>
+                                                                <strong>战斗记录/日志分析</strong>
                                                                 <h3 class="align-center mb-sm-auto mbr-fonts-style"><strong>Combat Log</strong></h3>
                                                             </button>
                                                         </a>
@@ -813,9 +988,16 @@
                                                                 </a>
                                                             </div>
                                                             <div class="panel-body">
-                                                                <a role="button" target="_blank" href="Xivanalysis.com">
+                                                                <a role="button" target="_blank" href="https://xivanalysis.com">
                                                                     <button class="btn-light" style="min-width: 600px">
                                                                         <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>Xivanalysis</strong></h3>
+                                                                    </button>
+                                                                </a>
+                                                            </div>
+                                                            <div class="panel-body">
+                                                                <a role="button" target="_blank" href="https://sumemo.dev/">
+                                                                    <button class="btn-light" style="min-width: 600px">
+                                                                        <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>酥卷</strong></h3>
                                                                     </button>
                                                                 </a>
                                                             </div>
@@ -823,6 +1005,20 @@
                                                                 <a role="button" target="_blank" href="https://dlog.luyulight.cn">
                                                                     <button class="btn-light" style="min-width: 600px">
                                                                         <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>导随记录器</strong></h3>
+                                                                    </button>
+                                                                </a>
+                                                            </div>
+                                                            <div class="panel-body">
+                                                                <a role="button" target="_blank" href="https://parser.ffxiv.cyou/">
+                                                                    <button class="btn-light" style="min-width: 600px">
+                                                                        <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>日志解析工具</strong></h3>
+                                                                    </button>
+                                                                </a>
+                                                            </div>
+                                                            <div class="panel-body">
+                                                                <a role="button" target="_blank" href="https://ffxivlog.orz.tools/">
+                                                                    <button class="btn-light" style="min-width: 600px">
+                                                                        <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>日志查看器</strong></h3>
                                                                     </button>
                                                                 </a>
                                                             </div>
@@ -925,6 +1121,34 @@
                                                                 </a>
                                                             </div>
                                                             <div class="panel-body">
+                                                                <a role="button" target="_blank" href="https://act.diemoe.net/">
+                                                                    <button class="btn-light" style="min-width: 600px">
+                                                                        <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>ACT呆萌版</strong></h3>
+                                                                    </button>
+                                                                </a>
+                                                            </div>
+                                                            <div class="panel-body">
+                                                                <a role="button" target="_blank" href="https://www.ffcafe.cn/act/">
+                                                                    <button class="btn-light" style="min-width: 600px">
+                                                                        <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>ACT Cafe版</strong></h3>
+                                                                    </button>
+                                                                </a>
+                                                            </div>
+                                                            <div class="panel-body">
+                                                                <a role="button" target="_blank" href="https://www.ffxiv-textools.net/">
+                                                                    <button class="btn-light" style="min-width: 600px">
+                                                                        <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>FFXIV TexTools</strong></h3>
+                                                                    </button>
+                                                                </a>
+                                                            </div>
+                                                            <div class="panel-body">
+                                                                <a role="button" target="_blank" href="https://heliosphere.app">
+                                                                    <button class="btn-light" style="min-width: 600px">
+                                                                        <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>Heliosphere MOD站</strong></h3>
+                                                                    </button>
+                                                                </a>
+                                                            </div>
+                                                            <div class="panel-body">
                                                                 <a role="button" target="_blank" href="https://ff14-clientdown.bluefissure.com/">
                                                                     <button class="btn-light" style="min-width: 600px">
                                                                         <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>水獭下崽器</strong></h3>
@@ -949,9 +1173,30 @@
                                                                 </a>
                                                             </div>
                                                             <div class="panel-body">
+                                                                <a role="button" target="_blank" href="https://www.ffxiv.ws/">
+                                                                    <button class="btn-light" style="min-width: 600px">
+                                                                        <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>亚历山德里亚王国经济系统</strong></h3>
+                                                                    </button>
+                                                                </a>
+                                                            </div>
+                                                            <div class="panel-body">
+                                                                <a role="button" target="_blank" href="https://ff14.unlucky.ninja/">
+                                                                    <button class="btn-light" style="min-width: 600px">
+                                                                        <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>杂七杂八工具箱</strong></h3>
+                                                                    </button>
+                                                                </a>
+                                                            </div>
+                                                            <div class="panel-body">
                                                                 <a role="button" target="_blank" href="https://www.ff14pvp.top/">
                                                                     <button class="btn-light" style="min-width: 600px">
                                                                         <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>罗薇娜的手抄本</strong></h3>
+                                                                    </button>
+                                                                </a>
+                                                            </div>
+                                                            <div class="panel-body">
+                                                                <a role="button" target="_blank" href="https://gamecircum.com/tools/ffxiv-trade-calculator/">
+                                                                    <button class="btn-light" style="min-width: 600px">
+                                                                        <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>FF14交易计算工具</strong></h3>
                                                                     </button>
                                                                 </a>
                                                             </div>
@@ -966,20 +1211,6 @@
                                                             </a>
                                                         </div>
                                                         <div class="panel-body">
-                                                            <a role="button" target="_blank" href="https://youwanc.com/">
-                                                                <button class="btn-light" style="min-width: 600px">
-                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>游玩C哩酱</strong></h3>
-                                                                </button>
-                                                            </a>
-                                                        </div>
-                                                        <div class="panel-body">
-                                                            <a role="button" target="_blank" href="https://eorzeaworld.com/en/home">
-                                                                <button class="btn-light" style="min-width: 600px">
-                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>Eorzea World the guide on FFXIV</strong></h3>
-                                                                </button>
-                                                            </a>
-                                                        </div>
-                                                        <div class="panel-body">
                                                             <a role="button" target="_blank" href="http://kdygsz.vps6.mydnns.com/BlueMagicebook/">
                                                                 <button class="btn-light" style="min-width: 600px">
                                                                     <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>BlueMagicebook(旧版本)</strong></h3>
@@ -990,6 +1221,13 @@
                                                             <a role="button" target="_blank" href="http://www.timelysnow.com.cn/bluemagicebook/">
                                                                 <button class="btn-light" style="min-width: 600px">
                                                                     <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>BlueMagicebook</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <a role="button" target="_blank" href="https://thewakingsands.github.io/blue-mage/">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>青魔法师技能学习指南</strong></h3>
                                                                 </button>
                                                             </a>
                                                         </div>
@@ -1022,6 +1260,13 @@
                                                             </a>
                                                         </div>
                                                         <div class="panel-body">
+                                                            <a role="button" target="_blank" href="https://island.ffxiv.cyou/">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>无人岛工坊求解器</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                        <div class="panel-body">
                                                             <a role="button" target="_blank" href="https://strings.wakingsands.com/">
                                                                 <button class="btn-light" style="min-width: 600px">
                                                                     <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>文本检索工具</strong></h3>
@@ -1036,21 +1281,23 @@
                                                             </a>
                                                         </div>
                                                         <div class="panel-body">
+                                                            <a role="button" target="_blank" href="https://ffxivvenues.com/">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>FFXIV VENUES</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                        <div class="panel-body">
                                                             <a role="button" target="_blank" href="https://ff14rp.miraheze.org">
                                                                 <button class="btn-light" style="min-width: 600px">
-                                                                    <h3
-                                                                            class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>最终幻想14 RolePlay Wiki
-                                                                    </strong></h3>
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>最终幻想14 RolePlay Wiki</strong></h3>
                                                                 </button>
                                                             </a>
                                                         </div>
                                                         <div class="panel-body">
                                                             <a role="button" target="_blank" href="https://ff14rp.fandom.com/zh/wiki/%E6%9C%80%E7%BB%88%E5%B9%BB%E6%83%B3XIV%E4%B8%AD%E6%96%87RP_Wiki">
                                                                 <button class="btn-light" style="min-width: 600px">
-                                                                    <h3
-                                                                            class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>
-                                                                        最终幻想XIV中文RP Wiki(不再维护)
-                                                                    </strong></h3>
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>最终幻想XIV中文RP Wiki(不再维护)</strong></h3>
                                                                 </button>
                                                             </a>
                                                         </div>
@@ -1062,9 +1309,37 @@
                                                             </a>
                                                         </div>
                                                         <div class="panel-body">
+                                                            <a role="button" target="_blank" href="https://yilegendoflink.github.io/">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>石之家人口普查计划</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <a role="button" target="_blank" href="https://annangela.github.io/FFXIVSightseeingGuide/#/">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>探索笔记时钟</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                        <div class="panel-body">
                                                             <a role="button" target="_blank" href="https://uptime.ff14.xin/">
                                                                 <button class="btn-light" style="min-width: 600px">
                                                                     <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>限时奖励监控</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <a role="button" target="_blank" href="https://asvel.github.io/ffxiv-weather/">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>天气查询</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <a role="button" target="_blank" href="https://eorzea-weather.com/">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>艾欧泽亚天气</strong></h3>
                                                                 </button>
                                                             </a>
                                                         </div>
@@ -1086,6 +1361,13 @@
                                                             <a role="button" target="_blank" href="https://www.xivsim.com/game/">
                                                                 <button class="btn-light" style="min-width: 600px">
                                                                     <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>xivsim 模拟器</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <a role="button" target="_blank" href="https://board.ff14.xin/">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>战术版在线编辑器</strong></h3>
                                                                 </button>
                                                             </a>
                                                         </div>
@@ -1117,7 +1399,27 @@
                                                                 </button>
                                                             </a>
                                                         </div>
-
+                                                        <div class="panel-body">
+                                                            <a role="button" target="_blank" href="https://ffxivcollect.com/">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>FFXIV Collect</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <a role="button" target="_blank" href="https://xivtodo.com/">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>XIV ToDo</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <a role="button" target="_blank" href="https://xivapi.com/">
+                                                                <button class="btn-light" style="min-width: 600px">
+                                                                    <h3 class="align-left mb-sm-auto text-black-50 mbr-fonts-style"><strong>XIV API 开发者接口</strong></h3>
+                                                                </button>
+                                                            </a>
+                                                        </div>
                                                     </div>
                                                 </th>
                                             </table>
@@ -1137,6 +1439,7 @@
     </div>
 </section>
 <!--plugin end-->
+<script src="assets/js/tools-status.js"></script>
 
 <section style="background-color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif; color:#aaa; font-size:12px; padding: 0; align-items: center; display: flex;">
     <div class="container">
@@ -1254,128 +1557,8 @@
 
 
 <footer>
-
-    <!--回到顶部按钮-->
-    <!--Yuki:20190724-->
-    <style>
-        .box{
-            position:fixed;
-            right:20px;
-            bottom: 480px;
-            height:50px;
-            width: 50px;
-            text-align:center;
-            padding-top:20px;
-            background-color: black;
-            border-radius: 20%;
-            overflow: hidden;
-        }.box:hover:before{
-             top:50%
-         }.box:hover .box-in{
-              visibility: hidden;
-          }.box:before{
-               position: absolute;
-               top: -50%;
-               left: 50%;
-               transform: translate(-50%,-50%);
-               content:'TOP';
-               width: 40px;
-               color:white;
-               font-weight:bold;
-           }.box-in{
-                visibility: visible;
-                display:inline-block;
-                height:20px;
-                width: 20px;
-                border: 3px solid black;
-                border-color: white transparent transparent white;
-                transform:rotate(45deg);
-            }
-    </style>
-    <div id="box" class="box">
-        <div class="box-in"></div>
-    </div>
-    <script>
-        var timer  = null;
-        box.onclick = function(){
-            cancelAnimationFrame(timer);
-            timer = requestAnimationFrame(
-                function fn(){
-                    var oTop = document.body.scrollTop || document.documentElement.scrollTop;
-                    if(oTop > 0){
-                        document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
-                        timer = requestAnimationFrame(fn);
-                    }
-                    else{
-                        cancelAnimationFrame(timer);
-                    }
-                }
-            );
-        }
-    </script>
-
-    <!--更改网页标题-->
-    <!--Yuki:20190724-->
-    <title>标题</title>
-    <script>
-        document.title = '(ノ￣▽￣) Phantoms !'
-    </script>
-    <!--网页标题(title)动态改变-->
-    <!--离开和回到当前页 网页标题改变-->
-    <script>
-        window.onload = function () {
-            var OriginTitile = document.title;
-            var titleTime;
-            document.addEventListener('visibilitychange', function () {
-                if (document.hidden) {
-                    //$('[rel="shortcut icon"]').attr('href', "/Content/Images/fail.ico");
-                    document.title = '( * ￣▽￣)／肿么不看了呢？';
-                    clearTimeout(titleTime);
-                }
-                else {
-                    //$('[rel="shortcut icon"]').attr('href', "/Content/Images/icon.png");
-                    // document.title = '(～￣▽￣)～咦！又开始看了！' + OriginTitile;
-                    document.title = '(～￣▽￣)～咦！又开始看了！';
-                    titleTime = setTimeout(function () {
-                        document.title = OriginTitile;
-                    }, 2000);
-                }
-            });
-        }
-    </script>
-
-    <!--text click effect-->
-    <!--Yuki:20190724-->
-    <script type="text/javascript">
-        var a_idx = 0;
-        jQuery(document).ready(function($) {
-            $("body").click(function(e) {
-                var a = new Array("Astral","Umbral","Arcanum","Polyglot","Transcendent","Material","Original","Xenogeneic","Etheral","Sin" ,"Missionary","Requiem","Clement","Cristal","Zodiac");
-                var $i = $("<span></span>").text(a[a_idx]);
-                a_idx = (a_idx + 1) % a.length;
-                var x = e.pageX,
-                    y = e.pageY;
-                $i.css({
-                    "z-index": 999999999999999999999999999999999999999999999999999999999999999999999,
-                    "top": y - 20,
-                    "left": x,
-                    "position": "absolute",
-                    "font-weight": "bold",
-                    "color": "rgb("+~~(255*Math.random())+","+~~(255*Math.random())+","+~~(255*Math.random())+")"
-                });
-                $("body").append($i);
-                $i.animate({
-                        "top": y - 180,
-                        "opacity": 0
-                    },
-                    1500,
-                    function() {
-                        $i.remove();
-                    });
-            });
-        });
-    </script>
-
+    <link rel="stylesheet" href="./additions/foot/common.css">
+    <script src="./additions/foot/common.js"></script>
 </footer>
 
 
@@ -1384,7 +1567,7 @@
 <script src="./assets/web/assets/jquery/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
-        $("#foot").load("./additions/foot/profile-round.html");
+        
     });
 </script>
 <!-- 引入访客统计模块 -->

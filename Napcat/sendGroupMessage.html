@@ -53,6 +53,8 @@
             width: 50%; /* 缩小输入框宽度 */
         }
     </style>
+    <!-- 全局配置（必须在其他脚本之前加载） -->
+    <script src="../assets/js/config.js"></script>
 </head>
 <body>
 <div class="container">
@@ -143,7 +145,8 @@
 
                 // Send the message and system information to the server
                 // fetch('http://localhost:8080/onebot/send-to-group', {
-                fetch('https://phantoms-backend.onrender.com/onebot/send-to-group', {
+                const sendGroupApiUrl = (window.getApiUrl && window.getApiUrl('onebotSendGroup')) || 'https://phantoms-backend.onrender.com/onebot/send-to-group';
+                fetch(sendGroupApiUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

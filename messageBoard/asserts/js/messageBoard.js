@@ -1,11 +1,12 @@
+// messageBoard.js
+// 依赖：assets/js/config.js, utils.js（通过 shared-loader.js 加载）
+
+// 从全局配置获取（如果未加载则使用回退值）
 const config = {
-    apiKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzaG1ic2F3d3JidXljbml2Y2pzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5Mjg2OTAsImV4cCI6MjA2OTUwNDY5MH0.fwRJD-WuST7mCbJf9h2i2Xk0z6mtCMCeV--JGUecC6A',
-    authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzaG1ic2F3d3JidXljbml2Y2pzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5Mjg2OTAsImV4cCI6MjA2OTUwNDY5MH0.fwRJD-WuST7mCbJf9h2i2Xk0z6mtCMCeV--JGUecC6A',
-    //apiKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzIzOTg2MzAwNSwiaWF0IjoxNzAxOTQzMDA1LCJpc3MiOiJzdXBhYmFzZSJ9.LYLqWA0Ov-yKdFBXksbu3JNnldMOM-7Kth3LPFhLmA8',
-    //authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImV4cCI6MzIzOTg2MzAwNSwiaWF0IjoxNzAxOTQzMDA1LCJpc3MiOiJzdXBhYmFzZSJ9.LYLqWA0Ov-yKdFBXksbu3JNnldMOM-7Kth3LPFhLmA8',
+    apiKey: (window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || '',
+    authorization: 'Bearer ' + (sessionStorage.getItem('supabase_access_token') || ((window.APP_CONFIG && window.APP_CONFIG.ANON_KEY) || '')),
     prefer: 'return=minimal',
-//    baseUrl: 'https://cnlchrq5g6hen2t5llr0.baseapi.memfiredb.com'
-    baseUrl: 'https://dshmbsawwrbuycnivcjs.supabase.co'
+    baseUrl: (window.APP_CONFIG && window.APP_CONFIG.SUPABASE_URL) || 'https://dshmbsawwrbuycnivcjs.supabase.co'
 };
 
 
@@ -44,14 +45,19 @@ function hideLoadingOverlay() {
 document.getElementById('messageForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
-    var access_token = getCookie('access_token');
+    var access_token = sessionStorage.getItem('supabase_access_token');
     if (!access_token) {
         alert('You must be logged in to post a comment.');
         return;
     }
 
     var message = document.getElementById('message').value;
-    var authUserId = getCookie('user_id'); // 从cookie中获取user_id
+    var authUserId = sessionStorage.getItem('supabase_user_id');
+    if (!authUserId) {
+        alert('Your login session is missing the user ID. Please log in again.');
+        hideLoadingOverlay();
+        return;
+    }
 
     // 显示遮罩层
     showLoadingOverlay();
@@ -78,11 +84,11 @@ document.getElementById('messageForm').addEventListener('submit', function(event
             var legacy_user_id = data[0].id;
 
             // Create a new message
-            fetch(`${config.baseUrl}/rest/v1/messages`, {
+            return fetch(`${config.baseUrl}/rest/v1/messages`, {
                 method: 'POST',
                 headers: {
                     'apikey': config.apiKey,
-                    'Authorization': `Bearer ${getCookie('access_token')}`, // 使用 cookie 中的 token
+                    'Authorization': `Bearer ${sessionStorage.getItem('supabase_access_token') || ''}`,
                     'Content-Type': 'application/json',
                     'Prefer': config.prefer
                 },
@@ -94,22 +100,27 @@ document.getElementById('messageForm').addEventListener('submit', function(event
             .then(function(response) {
                 if (response.ok) {
                     console.log('Message posted successfully');
+                    document.getElementById('message').value = '';
                     // Reload the iframe to update the messages
                     var iframe = document.querySelector('#messages iframe');
                     iframe.src = iframe.src;
                 } else {
-                    console.log('Message posting failed');
+                    return response.text().then(function(details) {
+                        throw new Error(`Message posting failed: ${response.status} ${details}`);
+                    });
                 }
             })
             .catch(function(error) {
                 console.error('Error:', error);
+                alert('Failed to post the message. Please try again.');
             });
         } else {
-            console.log('User not found');
+            throw new Error('No legacy user record found for the logged-in account.');
         }
     })
     .catch(function(error) {
         console.error('Error fetching user:', error);
+        alert('Unable to find your user profile. Please log in again.');
     })
     .finally(() => {
         // 隐藏遮罩层
@@ -117,8 +128,11 @@ document.getElementById('messageForm').addEventListener('submit', function(event
     });
 });
 
-// 获取cookie的函数
+// 获取cookie的函数（使用全局 CookieUtil，如果可用）
 function getCookie(name) {
+    if (window.CookieUtil && window.CookieUtil.get) {
+        return window.CookieUtil.get(name);
+    }
     let cookieArray = document.cookie.split(';');
     for (let i = 0; i < cookieArray.length; i++) {
         let cookie = cookieArray[i].trim();
@@ -132,7 +146,7 @@ function getCookie(name) {
 
 // 在文档加载完成后立即检查是否登录，并显示提示
 window.addEventListener('DOMContentLoaded', function() {
-    var access_token = getCookie('access_token');
+    var access_token = sessionStorage.getItem('supabase_access_token');
     if (!access_token) {
         document.getElementById('loginSuggest').style.display = 'block';
     }

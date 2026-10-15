@@ -1,0 +1,19 @@
+/* 回到顶部按钮样式 */
+.box {
+    position: fixed;
+    right: 20px;
+    bottom: 380px;
+    height: 89px;/* 图片177px */
+    width: 52px;/* 图片103px */
+    text-align: center;
+    background-color: transparent;
+    border-radius: 20%;
+    overflow: hidden;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.box:hover {
+    opacity: 1;
+}

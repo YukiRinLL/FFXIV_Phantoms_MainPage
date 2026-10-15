@@ -19,3 +19,8 @@ Branches:
 
 Phantoms_DB: mdtcnsxevtlouxilvisn
 Phantoms_DB_Reboot: dshmbsawwrbuycnivcjs
+
+使用图床：（原本picgo的不能使用了）
+聚合图床 https://www.superbed.cn/
+微博图床（gimhoy工具） https://pic.gimhoy.com/
+picui https://picui.cn/
