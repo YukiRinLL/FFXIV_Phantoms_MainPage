@@ -93,6 +93,621 @@
             background-color: #ff2442;
             color: #ffffff;
         }
+
+        /* History views */
+        .history-view-switcher {
+            display: inline-flex;
+            justify-content: center;
+            margin: 30px auto 24px;
+            padding: 4px;
+            border: 1px solid rgba(74, 111, 165, 0.26);
+            border-radius: 999px;
+            background: rgba(235, 240, 247, 0.8);
+            box-shadow: inset 0 1px 3px rgba(35, 36, 35, 0.08);
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .history-view-button {
+            min-width: 112px;
+            border: 0;
+            border-radius: 999px;
+            padding: 8px 18px;
+            color: #657487;
+            background: transparent;
+            cursor: pointer;
+            font-size: 0.88rem;
+            line-height: 1.3;
+            transition: color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .history-view-button + .history-view-button {
+            margin-left: 2px;
+        }
+        .history-view-button:hover {
+            color: #394f6a;
+            background: rgba(255, 255, 255, 0.55);
+        }
+        .history-view-button.active {
+            color: #fff;
+            background: #4a6fa5;
+            box-shadow: 0 3px 9px rgba(74, 111, 165, 0.28);
+        }
+        @media (max-width: 600px) {
+            .history-view-switcher {
+                display: flex;
+                width: calc(100% - 24px);
+            }
+            .history-view-button {
+                flex: 1 1 0;
+                min-width: 0;
+                padding: 8px 7px;
+                font-size: 0.8rem;
+            }
+        }
+        .history-view-summary {
+            max-width: 760px;
+            margin: 0 auto 30px;
+            padding: 18px 22px;
+            border: 1px solid rgba(74, 111, 165, 0.16);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.8);
+            text-align: center;
+        }
+        .history-view-summary strong {
+            color: #4a6fa5;
+        }
+        .history-panel[hidden] {
+            display: none !important;
+        }
+        /* The event view uses a steady archive layout instead of alternating timeline cards. */
+        .history-events-panel {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 8px 0 18px;
+        }
+        .history-events-panel .event-archive {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .history-events-panel .event-card {
+            display: grid;
+            grid-template-columns: 128px minmax(0, 1fr);
+            gap: 18px;
+            align-items: start;
+        }
+        .history-events-panel .event-date {
+            padding-top: 13px;
+            color: #4a6fa5;
+            font-family: Georgia, serif;
+            font-size: 0.82rem;
+            line-height: 1.3;
+            text-align: right;
+        }
+        .history-events-panel .event-date span {
+            display: inline-block;
+            padding: 6px 8px;
+            border: 1px solid rgba(74, 111, 165, 0.25);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.86);
+        }
+        .history-events-panel .event-card-body {
+            min-width: 0;
+            max-width: 100%;
+            overflow: visible;
+            padding: 16px 18px;
+            border: 1px solid rgba(74, 111, 165, 0.16);
+            border-left: 4px solid rgba(74, 111, 165, 0.62);
+            border-radius: 9px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 14px rgba(35, 36, 35, 0.055);
+        }
+        .history-events-panel .event-card-title {
+            margin: 0 0 10px;
+            color: #394f6a;
+            font-size: 1.12rem;
+            line-height: 1.35;
+        }
+        .history-events-panel .event-card-subtitle {
+            display: block !important;
+            height: auto !important;
+            max-height: none !important;
+            overflow: visible !important;
+            margin: -2px 0 10px;
+            padding: 3px 0 5px;
+            color: #7c8792;
+            font-family: inherit !important;
+            font-size: 0.78rem !important;
+            font-weight: 400 !important;
+            line-height: 1.8 !important;
+            white-space: normal !important;
+        }
+        .history-events-panel .event-card-content {
+            min-width: 0;
+            max-width: 100%;
+            overflow: visible;
+        }
+        .history-events-panel .event-card-content > * {
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+        .history-events-panel .event-card-content img,
+        .history-events-panel .event-card-content .event-image-frame,
+        .history-events-panel .event-card-content .event-image-group,
+        .history-events-panel .event-card-content details,
+        .history-events-panel .event-card-content details > div {
+            max-width: 100% !important;
+            min-width: 0 !important;
+            max-inline-size: 100% !important;
+            box-sizing: border-box;
+        }
+        .history-events-panel .event-card-content img {
+            display: block;
+            width: auto !important;
+            height: auto !important;
+            max-width: 320px !important;
+            max-inline-size: 100% !important;
+            max-height: 320px !important;
+            margin: 10px 0;
+            object-fit: contain !important;
+        }
+        .history-events-panel .event-card-content .event-image-frame {
+            display: flex;
+            width: 100%;
+            max-width: 100%;
+            justify-content: flex-start;
+            align-items: flex-start;
+            height: auto !important;
+            overflow: visible;
+        }
+        .history-events-panel .event-card-content .event-image-frame img {
+            flex: 0 1 auto;
+            max-width: 320px !important;
+            max-height: 320px !important;
+        }
+        .history-events-panel .event-card-content .event-image-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            gap: 8px;
+            width: 100%;
+            max-width: 100%;
+            height: auto !important;
+            overflow: visible;
+        }
+        .history-events-panel .event-card-content .event-image-group img {
+            flex: 1 1 calc(50% - 4px);
+            width: calc(50% - 4px) !important;
+            max-width: 320px !important;
+            max-inline-size: 320px !important;
+            max-height: 320px !important;
+            min-width: 0;
+            margin: 0;
+            height: auto !important;
+            object-fit: contain !important;
+        }
+        .history-events-panel .event-card-content p {
+            margin-bottom: 8px;
+        }
+        .history-events-panel .timeline-element {
+            display: grid !important;
+            grid-template-columns: 116px minmax(0, 1fr);
+            gap: 18px;
+            margin: 0 0 12px !important;
+            padding: 0 !important;
+            align-items: start;
+        }
+        .history-events-panel .timeline-date,
+        .history-events-panel .timeline-element > .col-12:first-child:not(:has(.timeline-text-wrapper)) {
+            width: auto !important;
+            max-width: none !important;
+            padding: 12px 0 0 !important;
+            text-align: right;
+        }
+        .history-events-panel .timeline-date-wrapper {
+            position: sticky;
+            top: 80px;
+        }
+        .history-events-panel .mbr-timeline-date {
+            display: inline-block;
+            margin: 0;
+            padding: 6px 9px;
+            border: 1px solid rgba(74, 111, 165, 0.24);
+            border-radius: 5px;
+            color: #4a6fa5;
+            background: rgba(255, 255, 255, 0.84);
+            font-family: Georgia, serif;
+            font-size: 0.8rem;
+            line-height: 1.25;
+        }
+        .history-events-panel .timeline-element > .col-12:last-child,
+        .history-events-panel .timeline-element > .col-12:first-child:has(.timeline-text-wrapper) {
+            grid-column: 2;
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0;
+            padding: 0 !important;
+        }
+        .history-events-panel .timeline-text-wrapper {
+            position: relative;
+            min-width: 0;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+            padding: 17px 20px 15px;
+            border: 1px solid rgba(74, 111, 165, 0.16);
+            border-left: 4px solid rgba(74, 111, 165, 0.62);
+            border-radius: 9px;
+            background: rgba(255, 255, 255, 0.88);
+            box-shadow: 0 4px 14px rgba(35, 36, 35, 0.055);
+        }
+        .history-events-panel .mbr-timeline-title {
+            position: relative;
+            margin-bottom: 9px !important;
+            color: #394f6a;
+            font-size: 1.12rem;
+        }
+        .history-events-panel .image-wrapper,
+        .history-events-panel details > div {
+            margin-top: 10px;
+        }
+        .history-events-panel .timeline-text-wrapper img {
+            display: block;
+            width: 100% !important;
+            max-width: 100% !important;
+            max-height: none !important;
+            height: auto !important;
+            margin: 0 auto;
+            object-fit: contain !important;
+            box-sizing: border-box;
+        }
+        .history-events-panel .timeline-text-wrapper > *,
+        .history-events-panel .timeline-text-wrapper > * > * {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+        .history-events-panel .timeline-text-wrapper details,
+        .history-events-panel .timeline-text-wrapper details > div,
+        .history-events-panel .timeline-text-wrapper .image-wrapper {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0;
+        }
+        .history-events-panel .timeline-text-wrapper [style*="display: flex"] {
+            display: flex !important;
+            flex-wrap: wrap;
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow: visible;
+            gap: 6px !important;
+        }
+        .history-events-panel .timeline-text-wrapper [style*="display: flex"] img {
+            flex: 0 1 calc(50% - 3px);
+            min-width: 0;
+            width: calc(50% - 3px) !important;
+            max-width: calc(50% - 3px) !important;
+        }
+        .history-events-panel .image-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            overflow: visible;
+        }
+        .history-events-panel .timeline-text-wrapper .image-wrapper img {
+            max-height: none !important;
+        }
+        .history-events-panel .timeline-text-wrapper details > div > img,
+        .history-events-panel .timeline-text-wrapper details > div .image-wrapper img {
+            max-height: none !important;
+        }
+        .history-events-panel .timeline-text-wrapper details > div > img {
+            max-width: 100% !important;
+        }
+        .history-events-panel .iconBackground {
+            display: none;
+        }
+        .history-events-panel .timeline-element:after,
+        .history-events-panel .timeline-element:before,
+        .history-events-panel .row:after,
+        .history-events-panel .row:before {
+            display: none !important;
+            content: none !important;
+            background: transparent !important;
+        }
+        .history-events-panel .event-undated {
+            color: #8a8f98;
+            border-color: rgba(120, 125, 135, 0.24);
+        }
+        @media (max-width: 600px) {
+            .history-events-panel .event-card {
+                display: block;
+            }
+            .history-events-panel .event-date {
+                padding: 0 0 5px;
+                text-align: left;
+            }
+            .history-events-panel .event-card-body {
+                padding: 14px 15px;
+            }
+            .history-events-panel .timeline-element {
+                display: block !important;
+                margin-bottom: 14px !important;
+            }
+            .history-events-panel .timeline-date,
+            .history-events-panel .timeline-element > .col-12:first-child:not(:has(.timeline-text-wrapper)) {
+                padding: 0 0 5px !important;
+                text-align: left;
+            }
+            .history-events-panel .timeline-date-wrapper {
+                position: static;
+            }
+            .history-events-panel .timeline-element > .col-12:last-child,
+            .history-events-panel .timeline-element > .col-12:first-child:has(.timeline-text-wrapper) {
+                padding: 0 !important;
+            }
+            .history-events-panel .timeline-text-wrapper {
+                padding: 14px 15px 13px;
+            }
+            .history-events-panel img,
+            .history-events-panel .image-wrapper img {
+                width: auto !important;
+                max-width: 260px !important;
+                max-height: 260px !important;
+            }
+            .history-events-panel .event-card-content img,
+            .history-events-panel .event-card-content .event-image-frame img {
+                width: auto !important;
+                max-width: 260px !important;
+                max-height: 260px !important;
+            }
+            .history-events-panel .event-card-content .event-image-group img {
+                width: calc(50% - 4px) !important;
+                max-width: calc(50% - 4px) !important;
+                max-height: 260px !important;
+            }
+        }
+        .member-archive-toolbar {
+            display: flex;
+            gap: 10px;
+            max-width: 960px;
+            margin: 0 auto 14px;
+            align-items: center;
+        }
+        .member-search {
+            flex: 1;
+            min-width: 180px;
+            border: 1px solid rgba(74, 111, 165, 0.3);
+            border-radius: 999px;
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+        .member-filter {
+            border: 1px solid rgba(74, 111, 165, 0.3);
+            border-radius: 999px;
+            padding: 10px 14px;
+            color: #4a6fa5;
+            background: rgba(255, 255, 255, 0.9);
+        }
+        .member-archive {
+            max-width: 960px;
+            margin: 0 auto;
+        }
+        .member-batch {
+            margin: 0 auto;
+            max-width: 960px;
+        }
+        .member-batch-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: baseline;
+            margin: 0;
+            padding: 0 12px 10px;
+            border-bottom: 1px solid rgba(74, 111, 165, 0.14);
+        }
+        .member-batch-title {
+            margin: 0;
+            color: #394f6a;
+            font-size: 1.02rem;
+        }
+        .member-batch-meta {
+            color: #777;
+            font-size: 0.76rem;
+            white-space: nowrap;
+        }
+        .member-detail-toggle {
+            display: block;
+            margin-top: 15px;
+            color: #4a6fa5;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .member-batch-details {
+            margin: 0;
+            padding: 12px;
+            border: 0;
+            background: transparent;
+        }
+        .member-batch-details .member-list,
+        .member-batch-details .member-detail-list {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            background: transparent;
+        }
+        .member-list-column {
+            display: flex;
+            flex: 1 1 0;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 0;
+            width: 0;
+        }
+        .member-batch-details .member-item {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            break-inside: avoid;
+            min-width: 0;
+            min-height: 66px;
+            margin: 0;
+            padding: 10px 11px;
+            border: 1px solid rgba(74, 111, 165, 0.15);
+            border-left: 3px solid #4a6fa5;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.72);
+            box-shadow: 0 2px 7px rgba(35, 36, 35, 0.035);
+        }
+        .member-batch-details .member-item.link-shell {
+            border-color: rgba(74, 111, 165, 0.15);
+            border-left-color: #4a6fa5;
+            background: rgba(255, 255, 255, 0.72);
+        }
+        .member-batch-details .member-item.period-1 { border-left-color: #6a8caf; }
+        .member-batch-details .member-item.period-2 { border-left-color: #9a7bb5; }
+        .member-batch-details .member-item.period-3 { border-left-color: #6d9b8b; }
+        .member-batch-details .member-item.period-4 { border-left-color: #c18b62; }
+        .member-batch-details .member-item.period-5 { border-left-color: #7287b8; }
+        .member-batch-details .member-item.period-6 { border-left-color: #a47891; }
+        .member-batch-details .member-item.period-7 { border-left-color: #699caa; }
+        .member-batch-details .member-item.period-8 { border-left-color: #ad8d5c; }
+        .member-batch-details .member-item.period-9 { border-left-color: #7d9c73; }
+        .member-batch-details .member-item.period-10 { border-left-color: #9b7181; }
+        .member-batch-details .member-item.period-11 { border-left-color: #678ba1; }
+        .member-batch-details .member-item.period-12 { border-left-color: #ab8162; }
+        .member-batch-details .member-item.period-13 { border-left-color: #7b8cb0; }
+        .member-batch-details .member-item.period-14 { border-left-color: #8d9b68; }
+        .member-batch-details .member-item.period-15 { border-left-color: #b47767; }
+        .member-batch-details .member-item.period-16 { border-left-color: #668f91; }
+        .member-batch-details .member-item.period-17 { border-left-color: #8c79a5; }
+        .member-batch-details .member-item.period-founder { border-left-color: #b08a45; }
+        .member-type-label {
+            display: inline-block;
+            margin-left: 3px;
+            color: #4a6fa5;
+            font-size: 0.68rem;
+            font-weight: normal;
+            letter-spacing: 0.02em;
+        }
+        .member-item.link-shell .member-type-label {
+            color: #4a6fa5;
+        }
+        .member-card-header {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            min-width: 0;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(74, 111, 165, 0.1);
+        }
+        .member-card-name {
+            overflow: hidden;
+            color: #394f6a;
+            font-size: 0.84rem;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .member-item.link-shell .member-card-name {
+            color: #394f6a;
+        }
+        .member-card-type {
+            flex: 0 0 auto;
+            margin-left: auto;
+            padding: 1px 5px;
+            border: 1px solid rgba(74, 111, 165, 0.25);
+            border-radius: 3px;
+            color: #4a6fa5;
+            font-size: 0.6rem;
+            letter-spacing: 0.04em;
+            line-height: 1.3;
+        }
+        .member-item.link-shell .member-card-type {
+            border-color: rgba(74, 111, 165, 0.25);
+            color: #4a6fa5;
+        }
+        .member-card-period {
+            display: inline-block;
+            margin-left: 4px;
+            color: #7b8794;
+            font-size: 0.62rem;
+            font-weight: normal;
+        }
+        .member-card-description {
+            flex: 1;
+            min-width: 0;
+            margin-top: 7px;
+            color: #647080;
+            font-size: 0.74rem;
+            line-height: 1.5;
+        }
+        .member-card-description p {
+            color: inherit;
+            font-size: inherit !important;
+            line-height: inherit !important;
+        }
+        .member-card-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            min-width: 0;
+            margin-top: 8px;
+            padding-top: 6px;
+            border-top: 1px dashed rgba(74, 111, 165, 0.16);
+        }
+        .member-card-links .social-link {
+            padding: 2px 6px;
+            font-size: 0.64rem;
+            margin: 0;
+            white-space: nowrap;
+        }
+        .member-empty {
+            padding: 30px;
+            color: #777;
+            text-align: center;
+        }
+        @media (max-width: 600px) {
+            .member-archive-toolbar {
+                display: block;
+            }
+            .member-search,
+            .member-filter {
+                display: block;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .member-batch {
+                padding: 0;
+            }
+            .member-batch-header {
+                display: block;
+            }
+            .member-batch-meta {
+                display: block;
+                margin-top: 4px;
+            }
+            .member-batch-details .member-item {
+                display: flex;
+                padding: 7px 9px;
+            }
+            .member-batch-details .member-list {
+                display: block;
+            }
+            .member-list-column {
+                display: contents;
+            }
+            .member-card-header {
+                margin-bottom: 3px;
+            }
+        }
     </style>
     <link rel="stylesheet" href="assets/web/assets/mobirise-icons2/mobirise2.css">
     <link rel="stylesheet" href="assets/tether/tether.min.css">
@@ -176,6 +791,13 @@
                 FC的些许历史，攫取其中的一部分记录此处</h4>
             <p class="mbr-section-subtitle mbr-fonts-style align-center mb-0 mt-2 display-10">FCは短いですか歴史があります、その一部を記載しています</p>
         </div>
+        <div class="history-view-switcher" role="tablist" aria-label="历史内容分类">
+            <button class="history-view-button active" type="button" data-history-view="all" role="tab" aria-selected="true">全部</button>
+            <button class="history-view-button" type="button" data-history-view="events" role="tab" aria-selected="false">历史事件</button>
+            <button class="history-view-button" type="button" data-history-view="members" role="tab" aria-selected="false">成员变动</button>
+        </div>
+        <div class="history-panel history-all-panel" data-history-panel="all" hidden></div>
+        <div class="history-panel history-events-panel" data-history-panel="events" hidden>
         <div class="row timeline-element mb-2 mt-4">
             <div class="timeline-date col-12 col-md-6">
                 <div class="timeline-date-wrapper">
@@ -196,7 +818,7 @@
                     <div class="member-list">
                         <p class="mbr-text mbr-fonts-style display-7"><strong>绯雪yuki</strong> 创建人(Astral)</p>
                         <p>这个人很菜的<br>
-                            他一开始不想当部队长，直到听说可以再买一套房子<p>
+                            他一开始不想当部队长，直到想起可以再拥有一套房子<p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>舞九</strong> 署名人(Umbral)</p>
                         <p>很有钱的，我觉得她长得越来越像罗薇娜了。</p>
                         <p class="mbr-text mbr-fonts-style display-7"><strong>咸鱼ab</strong> 署名人(Umbral)</p>
@@ -1235,6 +1857,18 @@
             </div>
             <span class="iconBackground"></span>
         </div>
+        </div>
+        <div class="history-panel history-members-panel" data-history-panel="members" hidden>
+            <div class="member-archive-toolbar">
+                <input class="member-search" type="search" placeholder="搜索成员姓名或介绍..." aria-label="搜索成员">
+                <select class="member-filter" aria-label="成员类型筛选">
+                    <option value="all">全部类型</option>
+                    <option value="fc">FC成员</option>
+                    <option value="link-shell">Link-shell</option>
+                </select>
+            </div>
+            <div class="member-archive" aria-live="polite"></div>
+        </div>
     </div>
 </section>
 
@@ -1465,28 +2099,302 @@
     </script>
 
     <script>
-        // 简单的折叠功能实现
         document.addEventListener('DOMContentLoaded', function() {
-            var toggleButtons = document.querySelectorAll('.member-toggle');
+            var timeline = document.querySelector('.history-events-panel');
+            var archive = document.querySelector('.member-archive');
+            var memberBatches = [];
+            var allHistory = document.querySelector('.history-all-panel');
 
-            toggleButtons.forEach(function(button) {
+            // Keep an untouched copy for the complete chronological view.
+            allHistory.innerHTML = timeline.innerHTML;
+            allHistory.className += ' timelines-container';
+            allHistory.hidden = false;
+            allHistory.querySelectorAll('.member-toggle').forEach(function(button) {
                 button.addEventListener('click', function() {
                     var memberList = this.nextElementSibling;
-
-                    if (memberList.style.display === 'block') {
-                        memberList.style.display = 'none';
-                        this.classList.remove('expanded');
-                    } else {
-                        memberList.style.display = 'block';
-                        this.classList.add('expanded');
-                    }
+                    var expanded = memberList.style.display === 'block';
+                    memberList.style.display = expanded ? 'none' : 'block';
+                    this.classList.toggle('expanded', !expanded);
                 });
             });
+            var originalFirstMemberToggle = allHistory.querySelector('.member-toggle');
+            if (originalFirstMemberToggle) originalFirstMemberToggle.click();
 
-            // 默认展开第一个成员列表
-            if (toggleButtons.length > 0) {
-                toggleButtons[0].click();
+            // Build the event view from the untouched copy, never from the DOM that is
+            // also used to create the member archive.
+            timeline.innerHTML = allHistory.innerHTML;
+
+            // 将原有的 details 内容直接插入页面，历史页不再提供折叠操作。
+            timeline.querySelectorAll('details').forEach(function(details) {
+                var content = document.createElement('div');
+                content.className = details.className;
+                Array.from(details.children).forEach(function(child) {
+                    if (child.tagName.toLowerCase() !== 'summary') {
+                        content.appendChild(child.cloneNode(true));
+                    }
+                });
+                details.replaceWith(content);
+            });
+            timeline.querySelectorAll('.member-toggle').forEach(function(button) {
+                button.remove();
+            });
+
+            timeline.querySelectorAll('.timeline-element').forEach(function(event) {
+                var title = event.querySelector('.mbr-timeline-title strong');
+                var memberList = event.querySelector('.member-list');
+                var isMemberEvent = title && /^新增成员/.test(title.textContent.trim());
+                var isFoundingEvent = memberList && /Freecompany建立/.test(event.textContent);
+                if (!memberList || (!isMemberEvent && !isFoundingEvent)) {
+                    return;
+                }
+
+                var members = [];
+                var currentMember = null;
+                memberList.querySelectorAll(':scope > *').forEach(function(item) {
+                    var name = item.querySelector('strong');
+                    var isMember = name && (isMemberEvent
+                        ? /加入了(?:FC|Link-shell|Linkshell)/i.test(item.textContent)
+                        : true);
+                    if (isMember) {
+                        currentMember = {
+                            name: name.textContent.trim(),
+                            type: /加入了(?:Link-shell|Linkshell)/i.test(item.textContent) ? 'link-shell' : 'fc',
+                            detail: document.createElement('div')
+                        };
+                        members.push(currentMember);
+                    } else if (currentMember) {
+                        // The cash-loan notice belongs to the historical event, not a member profile.
+                        var isCashNotice = item.textContent.trim().indexOf('PS：') === 0 ||
+                            item.style.color === 'red' ||
+                            item.getAttribute('style') && /color\s*:\s*red/i.test(item.getAttribute('style'));
+                        var isLoanIncident = /豆芽稀里糊涂说自己是女生|到处找群友借RMB|没有按约定偿还，被驱逐/.test(item.textContent);
+                        if (isCashNotice || isLoanIncident) return;
+                        currentMember.detail.appendChild(item.cloneNode(true));
+                    }
+                });
+
+                if (members.length) {
+                    memberBatches.push({
+                        title: isFoundingEvent ? '创始成员' : title.textContent.trim(),
+                        period: isFoundingEvent ? 'founder' : ((title.textContent.match(/(\d+)期/) || [])[1] || 'unknown'),
+                        members: members,
+                        source: memberList
+                    });
+                    if (isFoundingEvent) {
+                        var foundingToggle = event.querySelector('.member-toggle');
+                        if (foundingToggle) foundingToggle.remove();
+                        memberList.remove();
+                    } else {
+                        event.remove();
+                    }
+                }
+            });
+
+            // Replace the builder-generated timeline with a clean, event-only archive.
+            var eventArchive = document.createElement('div');
+            eventArchive.className = 'event-archive';
+            timeline.querySelectorAll('.timeline-element').forEach(function(sourceEvent) {
+                var sourceContent = sourceEvent.querySelector('.timeline-text-wrapper');
+                if (!sourceContent) return;
+
+                var titleNode = sourceContent.querySelector('.mbr-timeline-title');
+                var titleText = titleNode ? titleNode.textContent.trim() : '';
+                if (!titleText) return;
+
+                var card = document.createElement('article');
+                card.className = 'event-card';
+                var date = document.createElement('div');
+                date.className = 'event-date';
+                var dateText = sourceEvent.querySelector('.mbr-timeline-date');
+                date.innerHTML = '<span>' + (dateText ? dateText.textContent.trim() : 'Undated') + '</span>';
+                var body = document.createElement('div');
+                body.className = 'event-card-body';
+                var heading = document.createElement('h4');
+                heading.className = 'event-card-title';
+                heading.textContent = titleText;
+                var content = document.createElement('div');
+                content.className = 'event-card-content';
+                // Clone the complete event body first so nested image/details markup is preserved.
+                content.innerHTML = sourceContent.innerHTML;
+                var contentTitles = content.querySelectorAll('.mbr-timeline-title');
+                contentTitles.forEach(function(title, index) {
+                    if (index === 0) {
+                        title.remove();
+                    } else {
+                        title.classList.add('event-card-subtitle');
+                        title.classList.remove('display-10', 'display-5', 'mb-4');
+                    }
+                });
+                content.querySelectorAll('.member-list, .member-toggle').forEach(function(node) {
+                    node.remove();
+                });
+                content.querySelectorAll('[style*="display: flex"]').forEach(function(group) {
+                    group.classList.add('event-image-group');
+                    group.removeAttribute('style');
+                });
+                content.querySelectorAll('details').forEach(function(details) {
+                    var replacement = document.createElement('div');
+                    Array.from(details.children).forEach(function(child) {
+                        if (child.tagName.toLowerCase() !== 'summary') {
+                            replacement.appendChild(child.cloneNode(true));
+                        }
+                    });
+                    details.replaceWith(replacement);
+                });
+                content.querySelectorAll('.image-wrapper').forEach(function(frame) {
+                    frame.classList.add('event-image-frame');
+                    frame.removeAttribute('style');
+                });
+                content.querySelectorAll('img').forEach(function(image) {
+                    image.removeAttribute('width');
+                    image.removeAttribute('height');
+                    image.removeAttribute('style');
+                    image.classList.remove('img-fluid', 'rounded');
+                });
+                body.appendChild(heading);
+                body.appendChild(content);
+                card.appendChild(date);
+                card.appendChild(body);
+                eventArchive.appendChild(card);
+            });
+            timeline.replaceChildren(eventArchive);
+
+            // Normalize dated and undated events to the same two-column structure.
+            timeline.querySelectorAll('.timeline-element').forEach(function(event) {
+                var date = event.querySelector('.timeline-date');
+                var content = event.querySelector('.timeline-text-wrapper');
+                var marker = event.querySelector('.iconBackground');
+                if (marker) marker.remove();
+                if (!date) {
+                    date = document.createElement('div');
+                    date.className = 'timeline-date event-undated';
+                    date.innerHTML = '<div class="timeline-date-wrapper"><p class="mbr-timeline-date">Undated</p></div>';
+                    event.insertBefore(date, event.firstElementChild);
+                }
+                if (content) {
+                    var contentColumn = content.parentElement;
+                    contentColumn.className = 'event-content-column';
+                    contentColumn.classList.add('col-12');
+                }
+                event.classList.add('event-record');
+            });
+
+            function renderMembers() {
+                var query = document.querySelector('.member-search').value.trim().toLowerCase();
+                var filter = document.querySelector('.member-filter').value;
+                archive.innerHTML = '';
+                var visibleCount = 0;
+                var card = document.createElement('section');
+                card.className = 'member-batch';
+                card.innerHTML = '<div class="member-batch-header"><h3 class="member-batch-title">成员名册</h3><span class="member-batch-meta"></span></div>';
+                var details = document.createElement('div');
+                details.className = 'member-batch-details';
+                var list = document.createElement('div');
+                list.className = 'member-list';
+                var columns = [0, 1, 2].map(function() {
+                    var column = document.createElement('div');
+                    column.className = 'member-list-column';
+                    list.appendChild(column);
+                    return column;
+                });
+                var columnHeights = [0, 0, 0];
+                var entries = [];
+                details.appendChild(list);
+                card.appendChild(details);
+                archive.appendChild(card);
+
+                memberBatches.forEach(function(batch) {
+                    var matched = batch.members.filter(function(member) {
+                        var text = member.name + ' ' + member.detail.textContent;
+                        return (filter === 'all' || member.type === filter) &&
+                            (!query || text.toLowerCase().indexOf(query) !== -1);
+                    });
+                    if (!matched.length) return;
+                    visibleCount += matched.length;
+                    matched.forEach(function(member) {
+                        var entry = document.createElement('div');
+                        entry.className = 'member-item ' + member.type + ' period-' + batch.period;
+                        var header = document.createElement('div');
+                        header.className = 'member-card-header';
+                        var name = document.createElement('strong');
+                        name.className = 'member-card-name';
+                        name.textContent = member.name;
+                        var period = document.createElement('span');
+                        period.className = 'member-card-period';
+                        period.textContent = batch.period === 'founder' ? 'Founders' : 'Batch ' + batch.period;
+                        var type = document.createElement('span');
+                        type.className = 'member-card-type';
+                        type.textContent = member.type === 'link-shell' ? 'LINK-SHELL' : 'FC';
+                        header.appendChild(name);
+                        header.appendChild(period);
+                        header.appendChild(type);
+                        entry.appendChild(header);
+                        var detail = member.detail.cloneNode(true);
+                        var social = detail.querySelectorAll('.member-social');
+                        var links = document.createElement('div');
+                        links.className = 'member-card-links';
+                        social.forEach(function(socialItem) {
+                            socialItem.querySelectorAll('.social-link').forEach(function(link) {
+                                links.appendChild(link.cloneNode(true));
+                            });
+                            socialItem.remove();
+                        });
+                        if (detail.textContent.trim()) {
+                            var description = document.createElement('div');
+                            description.className = 'member-card-description';
+                            description.appendChild(detail);
+                            entry.appendChild(description);
+                        }
+                        if (links.children.length) entry.appendChild(links);
+                        entries.push(entry);
+                        // Estimate hidden card height so the initial layout is balanced.
+                        var textLength = member.detail.textContent.trim().length;
+                        var linkHeight = links.children.length ? 24 : 0;
+                        var estimatedHeight = 66 + Math.ceil(textLength / 72) * 18 + linkHeight;
+                        var shortestIndex = columnHeights.indexOf(Math.min.apply(Math, columnHeights));
+                        columns[shortestIndex].appendChild(entry);
+                        columnHeights[shortestIndex] += estimatedHeight + 8;
+                    });
+                });
+                if (!visibleCount) {
+                    archive.innerHTML = '<div class="member-empty">没有找到匹配的成员记录</div>';
+                    return;
+                }
+                card.querySelector('.member-batch-meta').textContent = visibleCount + ' 人';
+
+                function rebalanceVisibleColumns() {
+                    if (document.querySelector('.history-members-panel').hidden) return;
+                    var heights = [0, 0, 0];
+                    columns.forEach(function(column) {
+                        while (column.firstChild) column.removeChild(column.firstChild);
+                    });
+                    entries.forEach(function(entry) {
+                        var shortestIndex = heights.indexOf(Math.min.apply(Math, heights));
+                        columns[shortestIndex].appendChild(entry);
+                        heights[shortestIndex] += entry.getBoundingClientRect().height + 8;
+                    });
+                }
+                window.requestAnimationFrame(rebalanceVisibleColumns);
             }
+
+            document.querySelector('.member-search').addEventListener('input', renderMembers);
+            document.querySelector('.member-filter').addEventListener('change', renderMembers);
+            renderMembers();
+
+            document.querySelectorAll('.history-view-button').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var view = this.dataset.historyView;
+                    document.querySelectorAll('.history-view-button').forEach(function(item) {
+                        var active = item === button;
+                        item.classList.toggle('active', active);
+                        item.setAttribute('aria-selected', active ? 'true' : 'false');
+                    });
+                    document.querySelectorAll('[data-history-panel]').forEach(function(panel) {
+                        panel.hidden = panel.dataset.historyPanel !== view;
+                    });
+                    if (view === 'members') renderMembers();
+                });
+            });
         });
     </script>
 
